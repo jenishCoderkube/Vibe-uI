@@ -1,0 +1,949 @@
+# Pagination
+
+A customizable component for page navigation controls.
+
+## Preview
+
+<ComponentPreview>
+  <PaginationDemoBasic />
+
+```tsx
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+
+// Helper function to calculate active pagination range with ellipsis
+function getPaginationRange(current: number, total: number) {
+  const range: (number | 'ellipsis')[] = []
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) range.push(i)
+    return range
+  }
+  range.push(1)
+  if (current > 3) range.push('ellipsis')
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+  for (let i = start; i <= end; i++) {
+    if (!range.includes(i)) range.push(i)
+  }
+  if (current < total - 2) range.push('ellipsis')
+  if (!range.includes(total)) range.push(total)
+  return range
+}
+
+export default function PaginationDemo() {
+  const [page, setPage] = React.useState(1)
+  const total = 10
+  const range = getPaginationRange(page, total)
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+        {range.map((item, index) => {
+          if (item === 'ellipsis') {
+            return (
+              <PaginationItem key={`ellipsis-${index}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )
+          }
+          return (
+            <PaginationItem key={item}>
+              <PaginationLink
+                isActive={page === item}
+                onClick={() => setPage(item as number)}
+                className="cursor-pointer"
+              >
+                {item}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        })}
+        <PaginationItem>
+          <PaginationNext
+            onClick={() => setPage((p) => Math.min(total, p + 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="pagination" vibeDeps="button">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from './button'
+
+const paginationVariants = tv({
+  base: 'mx-auto flex w-full justify-center',
+  variants: {
+    variant: {
+      default: '',
+      glass: '',
+      retro: '',
+      glow: '',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface PaginationProps
+  extends React.ComponentPropsWithoutRef<'nav'>,
+    VariantProps<typeof paginationVariants> {}
+
+const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
+  ({ className, ...props }, ref) => (
+    <nav
+      ref={ref}
+      role="navigation"
+      aria-label="pagination"
+      className={cn('mx-auto flex w-full justify-center', className)}
+      {...props}
+    />
+  )
+)
+Pagination.displayName = 'Pagination'
+
+const PaginationContent = React.forwardRef<
+  HTMLUListElement,
+  React.ComponentPropsWithoutRef<'ul'>
+>(({ className, ...props }, ref) => (
+  <ul
+    ref={ref}
+    className={cn('flex flex-row items-center gap-1.5', className)}
+    {...props}
+  />
+))
+PaginationContent.displayName = 'PaginationContent'
+
+const PaginationItem = React.forwardRef<
+  HTMLLIElement,
+  React.ComponentPropsWithoutRef<'li'>
+>(({ className, ...props }, ref) => (
+  <li ref={ref} className={cn('', className)} {...props} />
+))
+PaginationItem.displayName = 'PaginationItem'
+
+type PaginationLinkProps = {
+  isActive?: boolean
+} & React.ComponentPropsWithoutRef<'a'> &
+  VariantProps<typeof buttonVariants>
+
+const PaginationLink = ({
+  className,
+  isActive,
+  variant,
+  size = 'icon',
+  ...props
+}: PaginationLinkProps) => (
+  <a
+    aria-current={isActive ? 'page' : undefined}
+    className={cn(
+      buttonVariants({
+        variant: isActive ? (variant === 'retro' ? 'retro' : variant === 'glow' ? 'glow' : 'default') : 'outline',
+        size,
+      }),
+      className
+    )}
+    {...props}
+  />
+)
+PaginationLink.displayName = 'PaginationLink'
+
+const PaginationPrevious = ({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
+  <PaginationLink
+    aria-label="Go to previous page"
+    size="default"
+    className={cn('gap-1 pl-2.5', className)}
+    variant={variant}
+    {...props}
+  >
+    <ChevronLeft className="h-4 w-4" />
+    <span>Previous</span>
+  </PaginationLink>
+)
+PaginationPrevious.displayName = 'PaginationPrevious'
+
+const PaginationNext = ({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
+  <PaginationLink
+    aria-label="Go to next page"
+    size="default"
+    className={cn('gap-1 pr-2.5', className)}
+    variant={variant}
+    {...props}
+  >
+    <span>Next</span>
+    <ChevronRight className="h-4 w-4" />
+  </PaginationLink>
+)
+PaginationNext.displayName = 'PaginationNext'
+
+const PaginationEllipsis = ({
+  className,
+  ...props
+}: React.ComponentProps<'span'>) => (
+  <span
+    aria-hidden
+    className={cn('flex h-9 w-9 items-center justify-center', className)}
+    {...props}
+  >
+    <MoreHorizontal className="h-4 w-4" />
+    <span className="sr-only">More pages</span>
+  </span>
+)
+PaginationEllipsis.displayName = 'PaginationEllipsis'
+
+export {
+  type PaginationProps,
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+}
+```
+
+</Installation>
+
+
+
+## Preset Variations
+
+### Glassmorphic
+
+<ComponentPreview>
+  <PaginationDemoGlass />
+
+```tsx
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+
+// Helper function to calculate active pagination range with ellipsis
+function getPaginationRange(current: number, total: number) {
+  const range: (number | 'ellipsis')[] = []
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) range.push(i)
+    return range
+  }
+  range.push(1)
+  if (current > 3) range.push('ellipsis')
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+  for (let i = start; i <= end; i++) {
+    if (!range.includes(i)) range.push(i)
+  }
+  if (current < total - 2) range.push('ellipsis')
+  if (!range.includes(total)) range.push(total)
+  return range
+}
+
+export default function PaginationDemoGlass() {
+  const [page, setPage] = React.useState(1)
+  const total = 10
+  const range = getPaginationRange(page, total)
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            variant="glass"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+        {range.map((item, index) => {
+          if (item === 'ellipsis') {
+            return (
+              <PaginationItem key={`ellipsis-${index}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )
+          }
+          return (
+            <PaginationItem key={item}>
+              <PaginationLink
+                variant="glass"
+                isActive={page === item}
+                onClick={() => setPage(item as number)}
+                className="cursor-pointer"
+              >
+                {item}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        })}
+        <PaginationItem>
+          <PaginationNext
+            variant="glass"
+            onClick={() => setPage((p) => Math.min(total, p + 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Retro Neobrutalism
+
+<ComponentPreview>
+  <PaginationDemoRetro />
+
+```tsx
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+
+// Helper function to calculate active pagination range with ellipsis
+function getPaginationRange(current: number, total: number) {
+  const range: (number | 'ellipsis')[] = []
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) range.push(i)
+    return range
+  }
+  range.push(1)
+  if (current > 3) range.push('ellipsis')
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+  for (let i = start; i <= end; i++) {
+    if (!range.includes(i)) range.push(i)
+  }
+  if (current < total - 2) range.push('ellipsis')
+  if (!range.includes(total)) range.push(total)
+  return range
+}
+
+export default function PaginationDemoRetro() {
+  const [page, setPage] = React.useState(1)
+  const total = 10
+  const range = getPaginationRange(page, total)
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            variant="retro"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+        {range.map((item, index) => {
+          if (item === 'ellipsis') {
+            return (
+              <PaginationItem key={`ellipsis-${index}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )
+          }
+          return (
+            <PaginationItem key={item}>
+              <PaginationLink
+                variant="retro"
+                isActive={page === item}
+                onClick={() => setPage(item as number)}
+                className="cursor-pointer"
+              >
+                {item}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        })}
+        <PaginationItem>
+          <PaginationNext
+            variant="retro"
+            onClick={() => setPage((p) => Math.min(total, p + 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Neon Glow
+
+<ComponentPreview>
+  <PaginationDemoGlow />
+
+```tsx
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+
+// Helper function to calculate active pagination range with ellipsis
+function getPaginationRange(current: number, total: number) {
+  const range: (number | 'ellipsis')[] = []
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) range.push(i)
+    return range
+  }
+  range.push(1)
+  if (current > 3) range.push('ellipsis')
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+  for (let i = start; i <= end; i++) {
+    if (!range.includes(i)) range.push(i)
+  }
+  if (current < total - 2) range.push('ellipsis')
+  if (!range.includes(total)) range.push(total)
+  return range
+}
+
+export default function PaginationDemoGlow() {
+  const [page, setPage] = React.useState(1)
+  const total = 10
+  const range = getPaginationRange(page, total)
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            variant="glow"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+        {range.map((item, index) => {
+          if (item === 'ellipsis') {
+            return (
+              <PaginationItem key={`ellipsis-${index}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )
+          }
+          return (
+            <PaginationItem key={item}>
+              <PaginationLink
+                variant="glow"
+                isActive={page === item}
+                onClick={() => setPage(item as number)}
+                className="cursor-pointer"
+              >
+                {item}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        })}
+        <PaginationItem>
+          <PaginationNext
+            variant="glow"
+            onClick={() => setPage((p) => Math.min(total, p + 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Premium Use Case Examples
+
+### 1. Simple page jumper input
+<ComponentPreview>
+  <PaginationDemoJumper />
+
+```tsx
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+} from '@/components/ui/pagination'
+import { Input } from '@/components/ui/input'
+
+// Helper function to calculate active pagination range with ellipsis
+function getPaginationRange(current: number, total: number) {
+  const range: (number | 'ellipsis')[] = []
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) range.push(i)
+    return range
+  }
+  range.push(1)
+  if (current > 3) range.push('ellipsis')
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+  for (let i = start; i <= end; i++) {
+    if (!range.includes(i)) range.push(i)
+  }
+  if (current < total - 2) range.push('ellipsis')
+  if (!range.includes(total)) range.push(total)
+  return range
+}
+
+export default function PaginationDemoJumper() {
+  const [page, setPage] = React.useState(1)
+  const total = 10
+  const range = getPaginationRange(page, total)
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Number(e.target.value)
+    if (val >= 1 && val <= total) {
+      setPage(val)
+    }
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <Pagination>
+        <PaginationContent>
+          {range.map((item, index) => {
+            if (item === 'ellipsis') {
+              return (
+                <PaginationItem key={`ellipsis-${index}`}>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )
+            }
+            return (
+              <PaginationItem key={item}>
+                <PaginationLink
+                  isActive={page === item}
+                  onClick={() => setPage(item as number)}
+                  className="cursor-pointer"
+                >
+                  {item}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          })}
+        </PaginationContent>
+      </Pagination>
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <span>Go to page:</span>
+        <Input
+          className="h-7 w-12 text-center text-xs p-1"
+          value={page}
+          onChange={handleInputChange}
+          type="number"
+          min={1}
+          max={total}
+        />
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 2. Compact text-page pagination
+<ComponentPreview>
+  <PaginationDemoCompact />
+
+```tsx
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+
+export default function PaginationDemoCompact() {
+  const [page, setPage] = React.useState(3)
+  const total = 10
+
+  return (
+    <Pagination>
+      <PaginationContent className="gap-3">
+        <PaginationItem>
+          <PaginationPrevious
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+        <PaginationItem className="text-xs text-muted-foreground font-semibold select-none">
+          Page {page} of {total}
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext
+            onClick={() => setPage((p) => Math.min(total, p + 1))}
+            className="cursor-pointer"
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 3. Horizontal dot indicators
+<ComponentPreview>
+  <PaginationDemoDots />
+
+```tsx
+import React from 'react'
+
+export default function PaginationDemoDots() {
+  const [active, setActive] = React.useState(1)
+  return (
+    <div className="flex items-center gap-1.5 p-2 bg-card border rounded-full">
+      {[1, 2, 3, 4].map((i) => (
+        <button
+          key={i}
+          onClick={() => setActive(i)}
+          className={
+            'h-2 rounded-full cursor-pointer transition-all focus:outline-none ' +
+            (i === active
+              ? 'bg-primary w-4'
+              : 'bg-muted-foreground/30 hover:bg-muted-foreground w-2')
+          }
+          aria-label={`Dot ${i}`}
+        />
+      ))}
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 4. Search results data count layout
+<ComponentPreview>
+  <PaginationDemoResults />
+
+```tsx
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+
+export default function PaginationDemoResults() {
+  const [page, setPage] = React.useState(1)
+  const total = 3
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-md gap-4 px-4">
+      <span className="text-xs text-muted-foreground select-none">
+        Showing {(page - 1) * 10 + 1}-{Math.min(page * 10, 28)} of 28 results
+      </span>
+      <Pagination className="mx-0 w-auto">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="cursor-pointer"
+            />
+          </PaginationItem>
+          {Array.from({ length: total }).map((_, i) => (
+            <PaginationItem key={i}>
+              <PaginationLink
+                isActive={page === i + 1}
+                onClick={() => setPage(i + 1)}
+                className="cursor-pointer"
+              >
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => setPage((p) => Math.min(total, p + 1))}
+              className="cursor-pointer"
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 5. Table rows count drop selector
+<ComponentPreview>
+  <PaginationDemoRowSelector />
+
+```tsx
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+
+export default function PaginationDemoRowSelector() {
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const [page, setPage] = React.useState(1)
+  const total = 5
+
+  return (
+    <div className="flex flex-col sm:flex-row items-center gap-4 text-xs text-muted-foreground">
+      <div className="flex items-center gap-1.5 select-none">
+        <span>Rows per page:</span>
+        <select
+          value={rowsPerPage}
+          onChange={(e) => {
+            setRowsPerPage(Number(e.target.value))
+            setPage(1)
+          }}
+          className="bg-background border border-border rounded px-1.5 py-0.5 text-xs text-foreground cursor-pointer outline-none"
+        >
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
+      </div>
+      <Pagination className="mx-0 w-auto">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="cursor-pointer"
+            />
+          </PaginationItem>
+          <span className="text-xs font-semibold px-2 select-none">
+            Page {page} of {total}
+          </span>
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => setPage((p) => Math.min(total, p + 1))}
+              className="cursor-pointer"
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 6. Segmented toggle panel tabs
+<ComponentPreview>
+  <PaginationDemoSegmented />
+
+```tsx
+import React from 'react'
+
+export default function PaginationDemoSegmented() {
+  const [active, setActive] = React.useState(1)
+  return (
+    <div className="flex items-center rounded-lg border border-border bg-card p-0.5">
+      {[1, 2, 3].map((i) => (
+        <button
+          key={i}
+          onClick={() => setActive(i)}
+          className={
+            'px-3 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ' +
+            (i === active
+              ? 'bg-primary text-primary-foreground shadow'
+              : 'text-muted-foreground hover:text-foreground')
+          }
+        >
+          Page {i}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Premium Pagination Layouts
+
+Explore the 4 new advanced pagination layouts, supporting custom themes, indicators, progress controls, and dropdown selects.
+
+### 1. Drag/Scroll Progress Slider (`PaginationSlider`)
+
+Uses an interactive slider component to navigate. Perfect for quickly scanning long pages of data.
+
+<ComponentPreview>
+  <PaginationDemoNewSlider />
+
+```tsx
+import * as React from 'react'
+import { PaginationSlider } from '@/components/ui/pagination'
+
+export default function SliderShowcase() {
+  const [page, setPage] = React.useState(3)
+  return (
+    <PaginationSlider
+      totalPages={10}
+      currentPage={page}
+      onPageChange={setPage}
+      variant="cyberpunk"
+    />
+  )
+}
+```
+
+</ComponentPreview>
+
+### 2. Stateful Load More Button (`PaginationLoadMore`)
+
+A progress bar showing loaded item stats (e.g. `20 of 100 items`) with an interactive "Load More" button and loading spinner.
+
+<ComponentPreview>
+  <PaginationDemoNewLoadMore />
+
+```tsx
+import * as React from 'react'
+import { PaginationLoadMore } from '@/components/ui/pagination'
+
+export default function LoadMoreShowcase() {
+  const [loaded, setLoaded] = React.useState(20)
+  const [loading, setLoading] = React.useState(false)
+
+  const handleLoad = () => {
+    setLoading(true)
+    setTimeout(() => {
+      setLoaded((prev) => Math.min(100, prev + 20))
+      setLoading(false)
+    }, 800)
+  }
+
+  return (
+    <PaginationLoadMore
+      isLoading={loading}
+      onClick={handleLoad}
+      hasNextPage={loaded < 100}
+      loadedCount={loaded}
+      totalCount={100}
+      variant="glow"
+    />
+  )
+}
+```
+
+</ComponentPreview>
+
+### 3. Jumper Dropdown Selector (`PaginationDropdown`)
+
+A select dropdown that lists pages, enabling users to jump instantly to any page in large datasets.
+
+<ComponentPreview>
+  <PaginationDemoNewDropdown />
+
+```tsx
+import * as React from 'react'
+import { PaginationDropdown } from '@/components/ui/pagination'
+
+export default function DropdownShowcase() {
+  const [page, setPage] = React.useState(1)
+  return (
+    <PaginationDropdown
+      totalPages={15}
+      currentPage={page}
+      onPageChange={setPage}
+      variant="glass"
+    />
+  )
+}
+```
+
+</ComponentPreview>
+
+### 4. Arrow Progress Line (`PaginationProgressLine`)
+
+Arrows accompanied by a sleek indicator line that grows relative to the current page.
+
+<ComponentPreview>
+  <PaginationDemoNewProgressLine />
+
+```tsx
+import * as React from 'react'
+import { PaginationProgressLine } from '@/components/ui/pagination'
+
+export default function ProgressLineShowcase() {
+  const [page, setPage] = React.useState(1)
+  return (
+    <PaginationProgressLine
+      totalPages={5}
+      currentPage={page}
+      onPageChange={setPage}
+      variant="default"
+    />
+  )
+}
+```
+
+</ComponentPreview>
+

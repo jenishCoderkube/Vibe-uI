@@ -1,0 +1,11 @@
+{
+  "name": "label",
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "label.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport * as LabelPrimitive from '@radix-ui/react-label'\nimport { tv, type VariantProps } from 'tailwind-variants'\nimport { cn } from '../lib/utils'\n\nconst labelVariants = tv({\n  base: 'text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70 transition-colors duration-150 select-none cursor-pointer',\n})\n\nexport interface LabelProps\n  extends\n    React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>,\n    VariantProps<typeof labelVariants> {}\n\nconst Label = React.forwardRef<\n  React.ElementRef<typeof LabelPrimitive.Root>,\n  LabelProps\n>(({ className, ...props }, ref) => (\n  <LabelPrimitive.Root\n    ref={ref}\n    data-slot=\"label\"\n    className={cn(labelVariants(), className)}\n    {...props}\n  />\n))\nLabel.displayName = LabelPrimitive.Root.displayName\n\nexport { Label }\n"
+    }
+  ]
+}

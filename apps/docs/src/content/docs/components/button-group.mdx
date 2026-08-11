@@ -1,0 +1,734 @@
+# Button Group
+
+A set of grouped buttons for segmented navigation, view toggling, and multi-option filters.
+
+## Preview
+
+<ComponentPreview>
+  <ButtonGroupDemo />
+
+```tsx
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Button } from '@/components/ui/button'
+
+export default function ButtonGroupDemo() {
+  return (
+    <ButtonGroup defaultValue="day">
+      <Button value="day">Day</Button>
+      <Button value="week">Week</Button>
+      <Button value="month">Month</Button>
+      <Button value="year">Year</Button>
+    </ButtonGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="button-group" vibeDeps="button">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+import { Button, type ButtonProps } from '@/components/ui/button'
+
+const buttonGroupVariants = tv({
+  base: 'relative inline-flex items-center justify-center bg-muted/80 p-1 text-muted-foreground select-none border border-border/80 shadow-xs gap-1 max-w-full overflow-x-auto scrollbar-none w-full sm:w-auto [&_button]:relative [&_button]:z-10 [&_button]:!bg-transparent [&_button]:hover:!bg-transparent [&_button]:text-muted-foreground [&_button]:shadow-none [&_button]:hover:shadow-none [&_button]:border-none [&_button]:![transform:none] [&_button]:![translate:none] [&_button]:hover:![transform:none] [&_button]:hover:![translate:none] [&_button]:hover:!translate-y-0 [&_button]:!transition-none [&_button]:hover:opacity-100 [&_button]:h-8 [&_button]:px-3 sm:[&_button]:px-3.5 [&_button]:text-xs [&_button]:font-semibold [&_button]:gap-1.5 sm:[&_button]:gap-2 [&_button]:flex-1 [&_button]:sm:flex-initial [&_button]:min-w-0',
+  variants: {
+    variant: {
+      default: 'bg-muted/80 border-border/80 [&_button[data-state=active]]:!text-foreground',
+      glass:
+        'bg-slate-200/50 dark:bg-black/40 border-black/10 dark:border-white/10 backdrop-blur-md shadow-xs text-foreground/80 [&_button[data-state=active]]:!text-slate-950 dark:[&_button[data-state=active]]:!text-white',
+      retro:
+        'border-2 border-foreground bg-background shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] rounded-none p-1 gap-1 [&_button]:rounded-none [&_button]:text-black dark:[&_button]:text-white [&_button[data-state=active]]:!text-white dark:[&_button[data-state=active]]:!text-black font-bold',
+      glow: 'bg-muted/90 border-primary/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] dark:shadow-[0_0_15px_rgba(168,85,247,0.1)] [&_button[data-state=active]]:!text-primary',
+    },
+    radius: {
+      default: 'rounded-lg',
+      sm: 'rounded-md',
+      lg: 'rounded-xl',
+      full: 'rounded-full',
+      none: 'rounded-none',
+    },
+    orientation: {
+      horizontal: 'flex-row',
+      vertical: 'flex-col w-full [&_button]:w-full [&_button]:justify-start [&_button]:text-left [&_button]:px-3 [&_button]:py-2',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    radius: 'default',
+    orientation: 'horizontal',
+  },
+})
+
+const pillVariants = tv({
+  base: 'absolute pointer-events-none z-0 top-0 left-0 will-change-transform',
+  variants: {
+    variant: {
+      default: 'bg-background shadow-xs border border-border/60',
+      glass:
+        'bg-white dark:bg-white/15 border border-slate-300/80 dark:border-white/20 backdrop-blur-md shadow-xs',
+      retro:
+        'bg-foreground text-background border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-background border border-primary/50 shadow-[0_0_12px_rgba(168,85,247,0.3)]',
+    },
+    radius: {
+      default: 'rounded-md',
+      sm: 'rounded-sm',
+      lg: 'rounded-lg',
+      full: 'rounded-full',
+      none: 'rounded-none',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    radius: 'default',
+  },
+})
+
+export interface ButtonGroupContextValue {
+  value?: string
+  onValueChange?: (value: string) => void
+  variant?: 'default' | 'glass' | 'retro' | 'glow'
+  radius?: 'default' | 'sm' | 'lg' | 'full' | 'none'
+  orientation?: 'horizontal' | 'vertical'
+  registerRef?: (val: string, node: HTMLButtonElement | null) => void
+}
+
+export const ButtonGroupContext = React.createContext<ButtonGroupContextValue | null>(null)
+
+export interface ButtonGroupProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof buttonGroupVariants> {
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+}
+
+const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
+  (
+    {
+      className,
+      variant = 'default',
+      radius = 'default',
+      orientation = 'horizontal',
+      value,
+      defaultValue,
+      onValueChange,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
+    const [localValue, setLocalValue] = React.useState(defaultValue || '')
+    const activeValue = value !== undefined ? value : localValue
+    const itemRefs = React.useRef<Map<string, HTMLButtonElement>>(new Map())
+    const containerRef = React.useRef<HTMLDivElement | null>(null)
+    const isInitialRender = React.useRef(true)
+
+    const [pillStyle, setPillStyle] = React.useState<{
+      left: number
+      top: number
+      width: number
+      height: number
+      opacity: number
+      animate: boolean
+    }>({ left: 0, top: 0, width: 0, height: 0, opacity: 0, animate: false })
+
+    const setCombinedRef = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        containerRef.current = node
+        if (typeof ref === 'function') {
+          ref(node)
+        } else if (ref) {
+          ;(ref as React.MutableRefObject<HTMLDivElement | null>).current = node
+        }
+      },
+      [ref],
+    )
+
+    const registerRef = React.useCallback(
+      (val: string, node: HTMLButtonElement | null) => {
+        if (node) {
+          itemRefs.current.set(val, node)
+        } else {
+          itemRefs.current.delete(val)
+        }
+      },
+      [],
+    )
+
+    const getActiveNode = React.useCallback((): HTMLElement | null => {
+      if (!activeValue || !containerRef.current) return null
+      const registered = itemRefs.current.get(activeValue)
+      if (registered) return registered
+
+      const queried = containerRef.current.querySelector(
+        `[data-value="${CSS.escape(activeValue)}"], [value="${CSS.escape(activeValue)}"], [data-state="active"]`,
+      ) as HTMLElement | null
+
+      return queried
+    }, [activeValue])
+
+    const updatePillPosition = React.useCallback(() => {
+      const activeNode = getActiveNode()
+      const containerNode = containerRef.current
+
+      if (activeNode && containerNode) {
+        const containerRect = containerNode.getBoundingClientRect()
+        const activeRect = activeNode.getBoundingClientRect()
+        const containerStyle = window.getComputedStyle(containerNode)
+
+        const borderLeft = parseFloat(containerStyle.borderLeftWidth) || 0
+        const borderTop = parseFloat(containerStyle.borderTopWidth) || 0
+
+        const left = activeRect.left - containerRect.left - borderLeft
+        const top = activeRect.top - containerRect.top - borderTop
+        const width = activeRect.width
+        const height = activeRect.height
+
+        const shouldAnimate = !isInitialRender.current
+        setPillStyle({
+          left,
+          top,
+          width,
+          height,
+          opacity: 1,
+          animate: shouldAnimate,
+        })
+
+        if (isInitialRender.current) {
+          requestAnimationFrame(() => {
+            isInitialRender.current = false
+          })
+        }
+      } else {
+        setPillStyle((prev) => ({ ...prev, opacity: 0 }))
+      }
+    }, [activeValue, getActiveNode])
+
+    React.useLayoutEffect(() => {
+      updatePillPosition()
+    }, [updatePillPosition, activeValue])
+
+    React.useEffect(() => {
+      if (containerRef.current) {
+        const buttons = containerRef.current.querySelectorAll('button')
+        buttons.forEach((btn) => {
+          const val =
+            btn.getAttribute('data-value') ||
+            btn.getAttribute('value') ||
+            btn.textContent?.trim().toLowerCase()
+          if (val === activeValue) {
+            btn.setAttribute('data-state', 'active')
+          } else {
+            btn.setAttribute('data-state', 'inactive')
+          }
+        })
+      }
+
+      const activeNode = getActiveNode()
+      if (!activeNode || !containerRef.current) return
+
+      const observer = new ResizeObserver(() => {
+        updatePillPosition()
+      })
+      observer.observe(containerRef.current)
+      observer.observe(activeNode)
+      return () => observer.disconnect()
+    }, [activeValue, updatePillPosition, getActiveNode])
+
+    const handleSelect = React.useCallback(
+      (val: string) => {
+        if (value === undefined) {
+          setLocalValue(val)
+        }
+        onValueChange?.(val)
+      },
+      [value, onValueChange],
+    )
+
+    const handleClick = React.useCallback(
+      (e: React.MouseEvent<HTMLDivElement>) => {
+        const target = (e.target as HTMLElement).closest(
+          'button, [data-value], [value]',
+        ) as HTMLElement | null
+        if (target) {
+          const val =
+            target.getAttribute('data-value') ||
+            target.getAttribute('value') ||
+            target.textContent?.trim().toLowerCase()
+          if (val) {
+            handleSelect(val)
+          }
+        }
+        props.onClick?.(e)
+      },
+      [handleSelect, props],
+    )
+
+    return (
+      <ButtonGroupContext.Provider
+        value={{
+          value: activeValue,
+          onValueChange: handleSelect,
+          variant,
+          radius,
+          orientation,
+          registerRef,
+        }}
+      >
+        <div
+          ref={setCombinedRef}
+          data-slot="button-group"
+          onClick={handleClick}
+          className={cn(
+            buttonGroupVariants({ variant, radius, orientation }),
+            className,
+          )}
+          {...props}
+        >
+          {/* Smooth Sliding Pill Indicator */}
+          <div
+            className={cn(
+              pillVariants({ variant, radius }),
+              pillStyle.animate
+                ? 'transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]'
+                : 'transition-none',
+            )}
+            style={{
+              transform: `translate3d(${pillStyle.left}px, ${pillStyle.top}px, 0)`,
+              width: `${pillStyle.width}px`,
+              height: `${pillStyle.height}px`,
+              opacity: pillStyle.opacity,
+            }}
+          />
+          {children}
+        </div>
+      </ButtonGroupContext.Provider>
+    )
+  },
+)
+ButtonGroup.displayName = 'ButtonGroup'
+
+export interface ButtonGroupItemProps extends ButtonProps {
+  value: string
+}
+
+const ButtonGroupItem = React.forwardRef<HTMLButtonElement, ButtonGroupItemProps>(
+  (props, ref) => <Button ref={ref} {...props} />,
+)
+ButtonGroupItem.displayName = 'ButtonGroupItem'
+
+export { ButtonGroup, ButtonGroupItem, Button }
+```
+
+</Installation>
+
+---
+
+### Presets
+
+Explore the different preset variants of the Button Group component, featuring smooth sub-pixel active sliding pill indicators across default, glass, retro, and glowing designs.
+
+<ComponentPreview>
+  <ButtonGroupPresetsDemo />
+
+```tsx
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Button } from '@/components/ui/button'
+
+export default function ButtonGroupPresetsDemo() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center justify-items-center w-full max-w-2xl">
+      {/* Default Segmented */}
+      <ButtonGroup variant="default" defaultValue="day">
+        <Button value="day">Day</Button>
+        <Button value="week">Week</Button>
+        <Button value="month">Month</Button>
+        <Button value="year">Year</Button>
+      </ButtonGroup>
+
+      {/* Glassmorphic */}
+      <ButtonGroup variant="glass" defaultValue="overview">
+        <Button value="overview">Overview</Button>
+        <Button value="analytics">Analytics</Button>
+        <Button value="reports">Reports</Button>
+      </ButtonGroup>
+
+      {/* Retro Neobrutalism */}
+      <ButtonGroup variant="retro" defaultValue="grid">
+        <Button value="grid">Grid View</Button>
+        <Button value="list">List View</Button>
+        <Button value="columns">Columns</Button>
+      </ButtonGroup>
+
+      {/* Neon Glow */}
+      <ButtonGroup variant="glow" defaultValue="all">
+        <Button value="all">All Items</Button>
+        <Button value="active">Active</Button>
+        <Button value="completed">Completed</Button>
+      </ButtonGroup>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Layout & Radius Options
+
+Button groups support custom orientations (horizontal and vertical) as well as concentric radius presets (`default`, `sm`, `lg`, `full`, `none`).
+
+<ComponentPreview>
+  <ButtonGroupVerticalDemo />
+
+```tsx
+import { Settings, ShieldCheck, Mail } from 'lucide-react'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Button } from '@/components/ui/button'
+
+export default function ButtonGroupVerticalDemo() {
+  return (
+    <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center gap-8 py-2">
+      {/* Icon Only Vertical Bar */}
+      <ButtonGroup orientation="vertical" defaultValue="general" className="w-12 p-1 gap-1">
+        <Button value="general" size="icon" className="!w-10 !h-10 !p-0 !justify-center">
+          <Settings className="h-4 w-4 shrink-0" />
+        </Button>
+        <Button value="security" size="icon" className="!w-10 !h-10 !p-0 !justify-center">
+          <ShieldCheck className="h-4 w-4 shrink-0" />
+        </Button>
+        <Button value="notifications" size="icon" className="!w-10 !h-10 !p-0 !justify-center">
+          <Mail className="h-4 w-4 shrink-0" />
+        </Button>
+      </ButtonGroup>
+
+      {/* Vertical List with Left-Aligned Icons & Labels */}
+      <ButtonGroup orientation="vertical" defaultValue="general" className="w-52 p-1 gap-1">
+        <Button value="general" className="!w-full !h-10 !justify-start !text-left !px-3.5">
+          <Settings className="h-4 w-4 shrink-0 mr-2" />
+          <span>General</span>
+        </Button>
+        <Button value="security" className="!w-full !h-10 !justify-start !text-left !px-3.5">
+          <ShieldCheck className="h-4 w-4 shrink-0 mr-2" />
+          <span>Security</span>
+        </Button>
+        <Button value="notifications" className="!w-full !h-10 !justify-start !text-left !px-3.5">
+          <Mail className="h-4 w-4 shrink-0 mr-2" />
+          <span>Notifications</span>
+        </Button>
+      </ButtonGroup>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+
+### Icons & Status Badges
+
+Button groups seamlessly house leading icon indicators and metadata status badges.
+
+<ComponentPreview>
+  <div className="flex flex-col gap-6 items-center">
+    <ButtonGroupIconOnlyDemo />
+    <ButtonGroupIconsDemo />
+    <ButtonGroupBadgesDemo />
+  </div>
+
+```tsx
+import { Bold, Italic, Underline, Strikethrough, LayoutGrid, List, Columns, Loader2 } from 'lucide-react'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Button } from '@/components/ui/button'
+
+export default function ButtonGroupCompositionDemo() {
+  return (
+    <div className="flex flex-col gap-6 items-center">
+      {/* Icon-Only Format Bar */}
+      <ButtonGroup defaultValue="bold">
+        <Button value="bold" className="!px-2.5">
+          <Bold className="h-4 w-4" />
+        </Button>
+        <Button value="italic" className="!px-2.5">
+          <Italic className="h-4 w-4" />
+        </Button>
+        <Button value="underline" className="!px-2.5">
+          <Underline className="h-4 w-4" />
+        </Button>
+        <Button value="strikethrough" className="!px-2.5">
+          <Strikethrough className="h-4 w-4" />
+        </Button>
+      </ButtonGroup>
+
+      {/* With Icons & Labels */}
+      <ButtonGroup defaultValue="grid">
+        <Button value="grid">
+          <LayoutGrid className="h-4 w-4" />
+          <span>Grid View</span>
+        </Button>
+        <Button value="list">
+          <List className="h-4 w-4" />
+          <span>List View</span>
+        </Button>
+        <Button value="columns">
+          <Columns className="h-4 w-4" />
+          <span>Columns</span>
+        </Button>
+      </ButtonGroup>
+
+      {/* With Counts & Loading States */}
+      <ButtonGroup defaultValue="all">
+        <Button value="all">
+          <span>All Messages</span>
+          <span className="ml-1 text-[10px] opacity-70 font-mono">(12)</span>
+        </Button>
+        <Button value="unread">
+          <span>Unread</span>
+          <span className="ml-1 text-[10px] opacity-70 font-mono">(3)</span>
+        </Button>
+        <Button value="archived">
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          <span>Archived</span>
+        </Button>
+      </ButtonGroup>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+
+### Analytics Dashboard Control Bar
+
+A production-ready SaaS dashboard header combining environment switching, layout toggling, and multi-range date filters into a cohesive control center.
+
+<ComponentPreview>
+  <ButtonGroupRealWorldDemo />
+
+```tsx
+import * as React from 'react'
+import { TrendingUp, LayoutGrid } from 'lucide-react'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Button } from '@/components/ui/button'
+
+export default function AnalyticsDashboardControlBar() {
+  const [timeRange, setTimeRange] = React.useState('7d')
+  const [viewMode, setViewMode] = React.useState('chart')
+  const [env, setEnv] = React.useState('prod')
+
+  const statsMap: Record<string, { rev: string; users: string }> = {
+    '24h': { rev: '$12.4k', users: '1.2k' },
+    '7d': { rev: '$84.2k', users: '8.9k' },
+    '30d': { rev: '$342.8k', users: '34.2k' },
+    '1y': { rev: '$4.12M', users: '412k' },
+  }
+  const stats = statsMap[timeRange] || statsMap['7d']
+
+  return (
+    <div className="w-full rounded-xl border border-border/80 bg-card p-4 sm:p-5 shadow-sm text-card-foreground">
+      {/* Top Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border/60">
+        <div className="flex items-center gap-2">
+          <h4 className="font-semibold text-sm text-foreground">Analytics</h4>
+          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            {env === 'prod' ? 'Prod' : 'Staging'}
+          </span>
+        </div>
+
+        <ButtonGroup variant="glass" value={env} onValueChange={setEnv}>
+          <Button value="prod">Prod</Button>
+          <Button value="staging">Staging</Button>
+        </ButtonGroup>
+      </div>
+
+      {/* Control Toolbars */}
+      <div className="flex flex-wrap items-center justify-between gap-3 py-3">
+        <ButtonGroup value={viewMode} onValueChange={setViewMode}>
+          <Button value="chart">
+            <TrendingUp className="h-3.5 w-3.5" />
+            <span>Chart</span>
+          </Button>
+          <Button value="table">
+            <LayoutGrid className="h-3.5 w-3.5" />
+            <span>Grid</span>
+          </Button>
+        </ButtonGroup>
+
+        <ButtonGroup value={timeRange} onValueChange={setTimeRange}>
+          <Button value="24h">24h</Button>
+          <Button value="7d">7d</Button>
+          <Button value="30d">30d</Button>
+          <Button value="1y">1y</Button>
+        </ButtonGroup>
+      </div>
+
+      {/* Short Dynamic Output */}
+      <div className="rounded-md border border-border/60 bg-muted/20 p-3 text-xs">
+        {viewMode === 'chart' ? (
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-muted-foreground">Revenue: </span>
+              <span className="font-bold text-foreground">{stats.rev}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Users: </span>
+              <span className="font-bold text-foreground">{stats.users}</span>
+            </div>
+            <div className="text-emerald-600 dark:text-emerald-400 font-medium">+22.5%</div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span>POST /api/v1/auth</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-medium">200 OK</span>
+            <span>42ms</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### IDE Workspace Navigation Sidebar
+
+A real-world vertical icon navigation rail commonly used in developer tools (IDE panels, Figma toolbars, Notion sidebars) with live content drawer switching.
+
+<ComponentPreview>
+  <ButtonGroupVerticalRealWorldDemo />
+
+```tsx
+import * as React from 'react'
+import { Folder, Search, Terminal, Settings } from 'lucide-react'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Button } from '@/components/ui/button'
+
+export default function WorkspaceVerticalSidebar() {
+  const [activeTab, setActiveTab] = React.useState('files')
+
+  return (
+    <div className="w-full rounded-xl border border-border/80 bg-card p-4 shadow-sm text-card-foreground">
+      <div className="flex items-center justify-between pb-3 border-b border-border/60 mb-3">
+        <h4 className="font-semibold text-sm text-foreground">Workspace Sidebar</h4>
+        <span className="text-[11px] text-muted-foreground font-mono">main branch</span>
+      </div>
+
+      <div className="flex gap-4 items-stretch min-h-[160px]">
+        {/* Vertical Icon Toolbar */}
+        <ButtonGroup orientation="vertical" value={activeTab} onValueChange={setActiveTab} className="w-12 p-1 gap-1 shrink-0">
+          <Button value="files" size="icon" className="!w-10 !h-10 !p-0 !justify-center">
+            <Folder className="h-4 w-4 shrink-0" />
+          </Button>
+          <Button value="search" size="icon" className="!w-10 !h-10 !p-0 !justify-center">
+            <Search className="h-4 w-4 shrink-0" />
+          </Button>
+          <Button value="terminal" size="icon" className="!w-10 !h-10 !p-0 !justify-center">
+            <Terminal className="h-4 w-4 shrink-0" />
+          </Button>
+          <Button value="settings" size="icon" className="!w-10 !h-10 !p-0 !justify-center">
+            <Settings className="h-4 w-4 shrink-0" />
+          </Button>
+        </ButtonGroup>
+
+        {/* Live Content Drawer */}
+        <div className="flex-1 rounded-md border border-border/60 bg-muted/20 p-3 text-xs flex flex-col justify-center">
+          {activeTab === 'files' && (
+            <div className="space-y-1.5 font-mono text-[11px]">
+              <div className="flex items-center gap-2 text-foreground font-semibold">
+                <Folder className="h-3.5 w-3.5 text-blue-500" />
+                <span>packages/ui/src</span>
+              </div>
+              <div className="pl-4 text-muted-foreground space-y-1">
+                <div className="text-emerald-600 dark:text-emerald-400 font-medium">📄 button-group.tsx</div>
+                <div>📄 button.tsx</div>
+                <div>📄 index.ts</div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'search' && (
+            <div className="space-y-2">
+              <span className="font-semibold text-foreground">Global Search</span>
+              <div className="rounded border border-border bg-background px-2.5 py-1.5 text-muted-foreground flex items-center gap-2 text-xs">
+                <Search className="h-3.5 w-3.5" />
+                <span>Search symbols, files...</span>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'terminal' && (
+            <div className="font-mono text-[11px] space-y-1">
+              <span className="text-muted-foreground">$ pnpm dev --filter docs</span>
+              <div className="text-emerald-600 dark:text-emerald-400 font-medium">✓ Ready in 240ms at http://localhost:3000</div>
+            </div>
+          )}
+
+          {activeTab === 'settings' && (
+            <div className="space-y-1.5">
+              <span className="font-semibold text-foreground">Workspace Config</span>
+              <div className="flex items-center justify-between text-muted-foreground pt-1">
+                <span>Auto Save</span>
+                <span className="text-foreground font-medium">Enabled</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Props
+
+<PropsTable title="ButtonGroup">
+  <PropRow
+    prop="variant"
+    type='"default" | "glass" | "retro" | "glow"'
+    default='"default"'
+    description="Visual style theme of the button group container and indicator pill."
+  />
+  <PropRow
+    prop="radius"
+    type='"default" | "sm" | "lg" | "full" | "none"'
+    default='"default"'
+    description="Border radius configuration controlling concentric container and item corner rounding."
+  />
+  <PropRow
+    prop="orientation"
+    type='"horizontal" | "vertical"'
+    default='"horizontal"'
+    description="Layout orientation direction of the button group items."
+  />
+  <PropRow
+    prop="value"
+    type="string"
+    default="-"
+    description="Controlled active value of the selected button group item."
+  />
+  <PropRow
+    prop="defaultValue"
+    type="string"
+    default="-"
+    description="Initial default active value when used uncontrolled."
+  />
+  <PropRow
+    prop="onValueChange"
+    type="(value: string) => void"
+    default="-"
+    description="Event callback invoked when a new item segment is selected."
+  />
+</PropsTable>

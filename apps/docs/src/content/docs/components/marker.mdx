@@ -1,0 +1,226 @@
+# Marker
+
+A flexible element for highlighted section labels, contextual markers, alerts, and inline horizontal separator headers.
+
+## Preview: Basic Marker
+
+<ComponentPreview>
+  <MarkerBasicDemo />
+
+```tsx
+import { Marker, MarkerIcon, MarkerContent } from "@/components/ui/marker"
+import { Info } from "lucide-react"
+
+export default function BasicDemo() {
+  return (
+    <Marker>
+      <MarkerIcon>
+        <Info className="h-4 w-4" />
+      </MarkerIcon>
+      <MarkerContent>Important system notification regarding scheduled downtime.</MarkerContent>
+    </Marker>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="marker">
+
+```tsx
+"use client"
+
+import * as React from "react"
+import { tv, type VariantProps } from "tailwind-variants"
+import { Slot } from "@radix-ui/react-slot"
+import { cn } from "@/lib/utils"
+
+const markerVariants = tv({
+  base: "group/marker relative flex min-h-4 w-full items-center gap-2 text-left text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  variants: {
+    variant: {
+      default: "",
+      separator: "before:mr-1 before:h-px before:min-w-0 before:flex-1 before:bg-border after:ml-1 after:h-px after:min-w-0 after:flex-1 after:bg-border",
+      border: "border-b border-zinc-800 pb-2",
+      glass: "bg-white/5 border border-white/10 rounded-full px-3 py-1.5 backdrop-blur-md text-white/70 w-fit",
+      retro: "border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)] px-3 py-1 w-fit rounded-none font-bold",
+      glow: "text-primary/70 font-semibold drop-shadow-[0_0_8px_rgba(168,85,247,0.4)]",
+      cyberpunk: "text-emerald-500 font-mono before:content-['>_'] animate-pulse",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+})
+
+export interface MarkerProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof markerVariants> {
+  asChild?: boolean
+}
+
+const Marker = React.forwardRef<HTMLDivElement, MarkerProps>(
+  ({ className, variant = "default", asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "div"
+    return (
+      <Comp
+        ref={ref}
+        className={cn(markerVariants({ variant }), className)}
+        {...props}
+      />
+    )
+  }
+)
+Marker.displayName = "Marker"
+
+export interface MarkerIconProps extends React.HTMLAttributes<HTMLSpanElement> {}
+
+const MarkerIcon = React.forwardRef<HTMLSpanElement, MarkerIconProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <span
+        ref={ref}
+        className={cn("size-4 shrink-0 flex items-center justify-center [&_svg]:size-4", className)}
+        {...props}
+      />
+    )
+  }
+)
+MarkerIcon.displayName = "MarkerIcon"
+
+export interface MarkerContentProps extends React.HTMLAttributes<HTMLSpanElement> {}
+
+const MarkerContent = React.forwardRef<HTMLSpanElement, MarkerContentProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <span
+        ref={ref}
+        className={cn(
+          "min-w-0 break-words group-data-[variant=separator]/marker:flex-none group-data-[variant=separator]/marker:text-center",
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
+MarkerContent.displayName = "MarkerContent"
+
+export { Marker, MarkerIcon, MarkerContent }
+```
+
+</Installation>
+
+
+
+## Examples
+
+### Section Separator
+
+<ComponentPreview>
+  <MarkerSeparatorDemo />
+
+```tsx
+import { Marker, MarkerContent } from "@/components/ui/marker"
+
+export default function SeparatorDemo() {
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <Marker variant="separator">
+        <MarkerContent>Today</MarkerContent>
+      </Marker>
+      <div className="text-center text-xs text-muted-foreground">
+        Messages received earlier today will appear here.
+      </div>
+      <Marker variant="separator">
+        <MarkerContent>Yesterday</MarkerContent>
+      </Marker>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Underlined Section Border
+
+<ComponentPreview>
+  <MarkerBorderDemo />
+
+```tsx
+import { Marker, MarkerIcon, MarkerContent } from "@/components/ui/marker"
+import { Bell } from "lucide-react"
+
+export default function BorderDemo() {
+  return (
+    <div className="w-full max-w-sm space-y-2">
+      <Marker variant="border">
+        <MarkerIcon>
+          <Bell className="h-4 w-4 text-primary" />
+        </MarkerIcon>
+        <MarkerContent className="font-semibold text-foreground">Updates & Activity</MarkerContent>
+      </Marker>
+      <p className="text-xs text-muted-foreground pl-6">
+        Configure how notifications, alerts, and mentions are handled in your workspaces.
+      </p>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Visual Presets
+
+<ComponentPreview>
+  <MarkerThemesDemo />
+
+```tsx
+import { Marker, MarkerIcon, MarkerContent } from "@/components/ui/marker"
+import { Info, Sparkles, CheckCircle2 } from "lucide-react"
+
+export default function ThemesDemo() {
+  return (
+    <div className="w-full max-w-md space-y-4">
+      {/* Default */}
+      <Marker variant="default" className="border border-border p-3 rounded-lg bg-card/50">
+        <MarkerIcon>
+          <Info className="h-4 w-4" />
+        </MarkerIcon>
+        <MarkerContent>Standard system notification with clean border styling.</MarkerContent>
+      </Marker>
+
+      {/* Glass */}
+      <Marker variant="glass">
+        <MarkerIcon>
+          <Sparkles className="h-4 w-4 text-cyan-400" />
+        </MarkerIcon>
+        <MarkerContent>Glassmorphic backdrop styling for immersive hero UI segments.</MarkerContent>
+      </Marker>
+
+      {/* Retro */}
+      <Marker variant="retro">
+        <MarkerIcon>
+          <CheckCircle2 className="h-4 w-4" />
+        </MarkerIcon>
+        <MarkerContent>Retro high-contrast flat layout styling with dark shadows.</MarkerContent>
+      </Marker>
+
+      {/* Glow */}
+      <Marker variant="glow">
+        <MarkerIcon>
+          <Sparkles className="h-4 w-4" />
+        </MarkerIcon>
+        <MarkerContent>Vibrant ambient glowing shadow effect tailored for dark modes.</MarkerContent>
+      </Marker>
+
+      {/* Cyberpunk */}
+      <Marker variant="cyberpunk">
+        <MarkerContent>Initializing quantum secure connection protocols...</MarkerContent>
+      </Marker>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>

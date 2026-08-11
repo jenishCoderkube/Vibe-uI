@@ -1,0 +1,564 @@
+'use client'
+
+import * as React from 'react'
+import { Check, ChevronDown, Search, X, ChevronRight } from 'lucide-react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '../lib/utils'
+
+const multiSelectVariants = tv({
+  base: 'flex min-h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-1.5 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 select-none cursor-pointer',
+  variants: {
+    variant: {
+      default: 'border-border bg-background hover:bg-accent/30',
+      glass:
+        'bg-white/10 dark:bg-white/[0.03] backdrop-blur-md border-white/20 dark:border-white/10 text-foreground hover:bg-white/15 dark:hover:bg-white/[0.08] shadow-sm',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:active:shadow-[1px_1px_0px_0px_rgba(255,255,255,1)]',
+      glow: 'bg-primary/10 border border-primary/45 text-primary shadow-[0_0_12px_rgba(168,85,247,0.15)] hover:shadow-[0_0_18px_rgba(168,85,247,0.3)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+interface MultiSelectContextValue {
+  selectedValues: string[]
+  setSelectedValues: (values: string[] | ((prev: string[]) => string[])) => void
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+  toggleValue: (value: string, label: string) => void
+  variant?: 'default' | 'glass' | 'retro' | 'glow'
+  searchQuery: string
+  setSearchQuery: (query: string) => void
+  optionLabels: Record<string, string>
+  registerOptionLabel: (value: string, label: string) => void
+  mode: 'multi' | 'single'
+}
+
+const MultiSelectContext = React.createContext<
+  MultiSelectContextValue | undefined
+>(undefined)
+
+function useMultiSelect() {
+  const context = React.useContext(MultiSelectContext)
+  if (!context) {
+    throw new Error(
+      'MultiSelect subcomponents must be rendered inside a <MultiSelect /> container',
+    )
+  }
+  return context
+}
+
+export interface MultiSelectProps extends VariantProps<
+  typeof multiSelectVariants
+> {
+  value?: string[]
+  defaultValue?: string[]
+  onValueChange?: (values: string[]) => void
+  children?: React.ReactNode
+  mode?: 'multi' | 'single'
+}
+
+export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
+  (
+    {
+      value,
+      defaultValue,
+      onValueChange,
+      variant = 'default',
+      mode = 'multi',
+      children,
+    },
+    ref,
+  ) => {
+    const [selectedValues, setSelectedValues] = React.useState<string[]>(
+      defaultValue || value || [],
+    )
+    const [isOpen, setIsOpen] = React.useState(false)
+    const [searchQuery, setSearchQuery] = React.useState('')
+    const [optionLabels, setOptionLabels] = React.useState<
+      Record<string, string>
+    >({})
+    const containerRef = React.useRef<HTMLDivElement>(null)
+
+    React.useEffect(() => {
+      if (value !== undefined) {
+        setSelectedValues(value)
+      }
+    }, [value])
+
+    const registerOptionLabel = React.useCallback(
+      (val: string, lbl: string) => {
+        setOptionLabels((prev) => {
+          if (prev[val] === lbl) return prev
+          return { ...prev, [val]: lbl }
+        })
+      },
+      [],
+    )
+
+    const toggleValue = React.useCallback(
+      (val: string, lbl: string) => {
+        setSelectedValues((prev) => {
+          let next: string[]
+          if (mode === 'single') {
+            next = prev.includes(val) ? [] : [val]
+          } else {
+            next = prev.includes(val)
+              ? prev.filter((v) => v !== val)
+              : [...prev, val]
+          }
+          onValueChange?.(next)
+          return next
+        })
+        registerOptionLabel(val, lbl)
+      },
+      [onValueChange, registerOptionLabel, mode],
+    )
+
+    React.useEffect(() => {
+      const handleClickOutside = (e: MouseEvent) => {
+        if (
+          containerRef.current &&
+          !containerRef.current.contains(e.target as Node)
+        ) {
+          setIsOpen(false)
+        }
+      }
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
+    return (
+      <MultiSelectContext.Provider
+        value={{
+          selectedValues,
+          setSelectedValues,
+          isOpen,
+          setIsOpen,
+          toggleValue,
+          variant,
+          searchQuery,
+          setSearchQuery,
+          optionLabels,
+          registerOptionLabel,
+          mode,
+        }}
+      >
+        <div
+          ref={containerRef}
+          data-slot="multi-select"
+          className="relative w-full"
+        >
+          {children}
+        </div>
+      </MultiSelectContext.Provider>
+    )
+  },
+)
+MultiSelect.displayName = 'MultiSelect'
+
+export interface MultiSelectTriggerProps extends React.HTMLAttributes<HTMLButtonElement> {
+  placeholder?: string
+  maxVisibleTags?: number
+}
+
+export const MultiSelectTrigger = React.forwardRef<
+  HTMLButtonElement,
+  MultiSelectTriggerProps
+>(
+  (
+    {
+      className,
+      placeholder = 'Select options...',
+      maxVisibleTags = 2,
+      ...props
+    },
+    ref,
+  ) => {
+    const {
+      selectedValues,
+      toggleValue,
+      optionLabels,
+      isOpen,
+      setIsOpen,
+      variant,
+      setSelectedValues,
+      mode,
+    } = useMultiSelect()
+
+    const handleRemoveValue = (e: React.MouseEvent, val: string) => {
+      e.stopPropagation()
+      toggleValue(val, optionLabels[val] || val)
+    }
+
+    const handleClearAll = (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setSelectedValues([])
+    }
+
+    return (
+      <button
+        type="button"
+        ref={ref}
+        data-slot="multi-select-trigger"
+        onClick={() => setIsOpen(!isOpen)}
+        className={cn(multiSelectVariants({ variant }), className)}
+        {...props}
+      >
+        <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
+          {selectedValues.length === 0 ? (
+            <span className="text-muted-foreground">{placeholder}</span>
+          ) : mode === 'single' ? (
+            <span className="text-foreground truncate text-left">
+              {optionLabels[selectedValues[0]] || selectedValues[0]}
+            </span>
+          ) : (
+            <>
+              {selectedValues.slice(0, maxVisibleTags).map((val) => {
+                const label = optionLabels[val] || val
+                return (
+                  <span
+                    key={val}
+                    className="inline-flex items-center gap-1 rounded bg-secondary hover:bg-secondary/80 px-2 py-0.5 text-xs text-secondary-foreground border border-border select-none"
+                  >
+                    <span>{label}</span>
+                    <span
+                      onClick={(e) => handleRemoveValue(e, val)}
+                      className="cursor-pointer hover:text-destructive shrink-0"
+                    >
+                      <X className="h-3 w-3" />
+                    </span>
+                  </span>
+                )
+              })}
+              {selectedValues.length > maxVisibleTags && (
+                <span className="inline-flex items-center rounded bg-secondary px-2 py-0.5 text-xs text-secondary-foreground border border-border font-medium select-none">
+                  +{selectedValues.length - maxVisibleTags} more
+                </span>
+              )}
+            </>
+          )}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {selectedValues.length > 0 && (
+            <span
+              onClick={handleClearAll}
+              className="cursor-pointer opacity-50 hover:opacity-100 hover:text-destructive"
+              title="Clear all"
+            >
+              <X className="h-4 w-4" />
+            </span>
+          )}
+          <ChevronDown
+            className={cn(
+              'h-4 w-4 opacity-50 transition-transform duration-200',
+              isOpen && 'rotate-180',
+            )}
+          />
+        </div>
+      </button>
+    )
+  },
+)
+MultiSelectTrigger.displayName = 'MultiSelectTrigger'
+
+export interface MultiSelectContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  showSearch?: boolean
+}
+
+export const MultiSelectContent = React.forwardRef<
+  HTMLDivElement,
+  MultiSelectContentProps
+>(({ className, children, showSearch = false, ...props }, ref) => {
+  const { isOpen, variant, searchQuery, setSearchQuery } = useMultiSelect()
+
+  if (!isOpen) return null
+
+  return (
+    <div
+      ref={ref}
+      data-slot="multi-select-content"
+      className={cn(
+        'absolute z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-all duration-200 origin-top',
+        variant === 'glass' &&
+          'bg-white/10 dark:bg-white/[0.04] backdrop-blur-md border-white/20 dark:border-white/10',
+        variant === 'retro' &&
+          'border-2 border-foreground bg-background rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]',
+        variant === 'glow' &&
+          'border-primary/45 shadow-[0_0_20px_rgba(168,85,247,0.15)] bg-zinc-950/80',
+        className,
+      )}
+      {...props}
+    >
+      {showSearch && (
+        <div className="flex items-center border-b border-border/80 px-2 py-1.5 gap-2 shrink-0">
+          <Search className="h-3.5 w-3.5 opacity-50" />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            data-slot="multi-select-search"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex h-7 w-full rounded-md bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          />
+        </div>
+      )}
+      <div className="space-y-0.5 pt-1">{children}</div>
+    </div>
+  )
+})
+MultiSelectContent.displayName = 'MultiSelectContent'
+
+// Recursive helper to check if any option or sub-group inside a React node matches search query
+function hasMatchingDescendant(node: React.ReactNode, query: string): boolean {
+  if (!query) return true
+  let match = false
+
+  React.Children.forEach(node, (child: any) => {
+    if (match) return
+    if (!child) return
+
+    // Match if sub-group header matches
+    if (child.props && child.props.heading) {
+      if (
+        String(child.props.heading).toLowerCase().includes(query.toLowerCase())
+      ) {
+        match = true
+        return
+      }
+    }
+
+    // Match if select item matches
+    const isItem = child.props && child.props.value !== undefined
+    if (isItem) {
+      const label = child.props.children || ''
+      const val = child.props.value || ''
+      const keywords = child.props.keywords || []
+      const labelMatch = String(label)
+        .toLowerCase()
+        .includes(query.toLowerCase())
+      const valMatch = String(val).toLowerCase().includes(query.toLowerCase())
+      const keywordMatch = keywords.some((k: string) =>
+        k.toLowerCase().includes(query.toLowerCase()),
+      )
+      if (labelMatch || valMatch || keywordMatch) {
+        match = true
+      }
+    }
+
+    // Recurse into children
+    if (child.props && child.props.children) {
+      if (hasMatchingDescendant(child.props.children, query)) {
+        match = true
+      }
+    }
+  })
+
+  return match
+}
+
+export interface MultiSelectGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  heading: string
+  defaultExpanded?: boolean
+  values?: string[]
+}
+
+export const MultiSelectGroup = React.forwardRef<
+  HTMLDivElement,
+  MultiSelectGroupProps
+>(
+  (
+    {
+      className,
+      heading,
+      defaultExpanded = false,
+      values = [],
+      children,
+      ...props
+    },
+    ref,
+  ) => {
+    const { searchQuery, selectedValues, setSelectedValues, mode } =
+      useMultiSelect()
+    const [expanded, setExpanded] = React.useState(defaultExpanded)
+
+    const isAllChecked =
+      values.length > 0 && values.every((val) => selectedValues.includes(val))
+    const isSomeChecked =
+      values.length > 0 &&
+      values.some((val) => selectedValues.includes(val)) &&
+      !isAllChecked
+
+    const handleToggleAll = (e: React.MouseEvent) => {
+      e.stopPropagation()
+      if (isAllChecked) {
+        setSelectedValues((prev) => prev.filter((val) => !values.includes(val)))
+      } else {
+        setSelectedValues((prev) => {
+          const next = [...prev]
+          values.forEach((val) => {
+            if (!next.includes(val)) next.push(val)
+          })
+          return next
+        })
+      }
+    }
+
+    const filteredChildren = React.Children.toArray(children).filter(
+      (child: any) => {
+        if (!searchQuery) return true
+
+        const isItem = child.props && child.props.value !== undefined
+        if (isItem) {
+          const label = child.props.children || ''
+          const val = child.props.value || ''
+          const keywords = child.props.keywords || []
+          return (
+            String(label).toLowerCase().includes(searchQuery.toLowerCase()) ||
+            String(val).toLowerCase().includes(searchQuery.toLowerCase()) ||
+            keywords.some((k: string) =>
+              k.toLowerCase().includes(searchQuery.toLowerCase()),
+            )
+          )
+        }
+
+        return hasMatchingDescendant(child, searchQuery)
+      },
+    )
+
+    React.useEffect(() => {
+      if (searchQuery) setExpanded(true)
+    }, [searchQuery])
+
+    if (filteredChildren.length === 0) return null
+
+    return (
+      <div
+        ref={ref}
+        data-slot="multi-select-group"
+        className={cn(
+          'border-b border-border/40 pb-1 last:border-b-0',
+          className,
+        )}
+        {...props}
+      >
+        <div
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center justify-between px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase hover:bg-accent/40 rounded-sm cursor-pointer select-none gap-2"
+        >
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            {values.length > 0 && mode !== 'single' && (
+              <div
+                onClick={handleToggleAll}
+                className={cn(
+                  'h-3.5 w-3.5 border border-muted-foreground/60 rounded flex items-center justify-center shrink-0 transition-all duration-150',
+                  isAllChecked &&
+                    'bg-primary border-primary text-primary-foreground',
+                  isSomeChecked &&
+                    'bg-primary/50 border-primary/50 text-primary-foreground',
+                )}
+              >
+                {isAllChecked && <Check className="h-2.5 w-2.5" />}
+                {isSomeChecked && (
+                  <div className="h-1.5 w-1.5 bg-primary-foreground rounded-sm" />
+                )}
+              </div>
+            )}
+            <span className="truncate">{heading}</span>
+          </div>
+          <ChevronRight
+            className={cn(
+              'h-3.5 w-3.5 shrink-0 transition-transform duration-200',
+              expanded && 'rotate-90',
+            )}
+          />
+        </div>
+        {expanded && (
+          <div className="pl-3 mt-0.5 space-y-0.5">{filteredChildren}</div>
+        )}
+      </div>
+    )
+  },
+)
+MultiSelectGroup.displayName = 'MultiSelectGroup'
+
+export interface MultiSelectItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  value: string
+  children: string
+  keywords?: string[]
+}
+
+export const MultiSelectItem = React.forwardRef<
+  HTMLDivElement,
+  MultiSelectItemProps
+>(({ className, value: itemValue, children, keywords, ...props }, ref) => {
+  const {
+    selectedValues,
+    toggleValue,
+    registerOptionLabel,
+    variant,
+    searchQuery,
+    mode,
+  } = useMultiSelect()
+
+  React.useEffect(() => {
+    registerOptionLabel(itemValue, children)
+  }, [itemValue, children, registerOptionLabel])
+
+  const isSelected = selectedValues.includes(itemValue)
+  const isSingle = mode === 'single'
+
+  if (searchQuery) {
+    const matchLabel = children
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+    const matchKeywords = keywords?.some((k) =>
+      k.toLowerCase().includes(searchQuery.toLowerCase()),
+    )
+    if (!matchLabel && !matchKeywords) return null
+  }
+
+  return (
+    <div
+      ref={ref}
+      onClick={() => toggleValue(itemValue, children)}
+      data-slot="multi-select-item"
+      className={cn(
+        'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-9 pr-2 text-sm outline-none transition-all duration-150 gap-2 hover:bg-accent/40 text-foreground',
+        isSelected && 'font-medium text-foreground bg-accent/20',
+        className,
+      )}
+      {...props}
+    >
+      <div
+        className={cn(
+          'absolute left-2.5 flex h-4 w-4 items-center justify-center border border-muted-foreground/60 transition-all duration-150',
+          isSingle ? 'rounded-full' : 'rounded',
+          isSelected && 'bg-primary border-primary text-primary-foreground',
+          variant === 'retro' &&
+            isSelected &&
+            'bg-foreground border-foreground text-background',
+          variant === 'glow' &&
+            isSelected &&
+            'bg-primary border-primary text-primary-foreground shadow-[0_0_8px_rgba(168,85,247,0.3)]',
+        )}
+      >
+        {isSelected &&
+          (isSingle ? (
+            <div
+              className={cn(
+                'h-1.5 w-1.5 bg-primary-foreground rounded-full',
+                variant === 'retro' && 'bg-background',
+              )}
+            />
+          ) : (
+            <Check className="h-3 w-3" />
+          ))}
+      </div>
+      <span className="truncate">{children}</span>
+    </div>
+  )
+})
+MultiSelectItem.displayName = 'MultiSelectItem'

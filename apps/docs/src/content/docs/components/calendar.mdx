@@ -1,0 +1,337 @@
+# Calendar
+
+Calendar component represents a date picker layout calendar grid.
+
+## Preview
+
+<ComponentPreview>
+  <CalendarDemoBasic />
+
+```tsx
+import * as React from 'react'
+import { Calendar } from '@/components/ui/calendar'
+
+export default function CalendarDemo() {
+  const [date, setDate] = React.useState<Date | undefined>(new Date())
+
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+      className="w-fit border border-border rounded-lg bg-card"
+    />
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="calendar" vibeDeps="button">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { DayPicker } from 'react-day-picker'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from './button'
+
+const calendarVariants = tv({
+  base: 'p-3',
+  variants: {
+    variant: {
+      default: 'bg-card border border-border rounded-md',
+      glass:
+        'bg-white/5 dark:bg-white/[0.02] backdrop-blur-md border border-white/10 dark:border-white/5 rounded-lg shadow-lg',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-primary/5 border border-primary/25 shadow-[0_0_20px_rgba(168,85,247,0.1)] rounded-md',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export type CalendarProps = React.ComponentProps<typeof DayPicker> &
+  VariantProps<typeof calendarVariants>
+
+function Calendar({
+  className,
+  classNames,
+  showOutsideDays = true,
+  variant,
+  ...props
+}: CalendarProps) {
+  return (
+    <DayPicker
+      showOutsideDays={showOutsideDays}
+      className={cn(calendarVariants({ variant }), className)}
+      classNames={{
+        months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
+        month: 'space-y-4',
+        caption: 'flex justify-center pt-1 relative items-center',
+        caption_label: 'text-sm font-medium',
+        nav: 'space-x-1 flex items-center',
+        nav_button: cn(
+          buttonVariants({ variant: 'outline' }),
+          'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+        ),
+        nav_button_previous: 'absolute left-1',
+        nav_button_next: 'absolute right-1',
+        table: 'w-full border-collapse space-y-1',
+        head_row: 'flex',
+        head_cell:
+          'text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]',
+        row: 'flex w-full mt-2',
+        cell: 'h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20',
+        day: cn(
+          buttonVariants({ variant: 'ghost' }),
+          'h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-muted',
+        ),
+        day_range_end: 'day-range-end',
+        day_selected: cn(
+          buttonVariants({
+            variant:
+              variant === 'retro'
+                ? 'retro'
+                : variant === 'glow'
+                  ? 'glow'
+                  : 'default',
+          }),
+          'hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
+        ),
+        day_today: 'bg-accent text-accent-foreground',
+        day_outside:
+          'day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30',
+        day_disabled: 'text-muted-foreground opacity-50',
+        day_range_middle:
+          'aria-selected:bg-accent aria-selected:text-accent-foreground',
+        day_hidden: 'invisible',
+        ...classNames,
+      }}
+      components={{
+        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
+        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+      }}
+      {...props}
+    />
+  )
+}
+Calendar.displayName = 'Calendar'
+
+export { Calendar }
+```
+
+</Installation>
+
+---
+
+### Presets
+
+Explore the different calendar styling variants, featuring Default Card, Glassmorphism, Retro Neobrutalism, and Neon Glow.
+
+<ComponentPreview>
+  <CalendarDemoPresets />
+
+```tsx
+import * as React from 'react'
+import { Calendar } from '@/components/ui/calendar'
+
+export default function CalendarPresetsDemo() {
+  const [date1, setDate1] = React.useState<Date | undefined>(new Date())
+  const [date2, setDate2] = React.useState<Date | undefined>(new Date())
+  const [date3, setDate3] = React.useState<Date | undefined>(new Date())
+  const [date4, setDate4] = React.useState<Date | undefined>(new Date())
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center w-full max-w-4xl">
+      {/* Default Card */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Default Card</span>
+        <Calendar mode="single" selected={date1} onSelect={setDate1} className="w-fit border border-border rounded-lg bg-card shadow-xs" />
+      </div>
+
+      {/* Glassmorphic */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Glassmorphic</span>
+        <Calendar variant="glass" mode="single" selected={date2} onSelect={setDate2} className="w-fit" />
+      </div>
+
+      {/* Retro Neobrutalism */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Retro Neobrutalism</span>
+        <Calendar variant="retro" mode="single" selected={date3} onSelect={setDate3} className="w-fit" />
+      </div>
+
+      {/* Neon Glow */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Neon Glow</span>
+        <Calendar variant="glow" mode="single" selected={date4} onSelect={setDate4} className="w-fit" />
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Selection & Filter Patterns
+
+Flexible calendar modes including Date Range, Multi-Date selection, Disabled schedules, and clean month view.
+
+<ComponentPreview>
+  <CalendarDemoSelectionModes />
+
+```tsx
+import * as React from 'react'
+import { Calendar } from '@/components/ui/calendar'
+
+export default function CalendarSelectionModesDemo() {
+  const [range, setRange] = React.useState<any>({
+    from: new Date(),
+    to: new Date(new Date().setDate(new Date().getDate() + 5)),
+  })
+  const [days, setDays] = React.useState<Date[] | undefined>([new Date()])
+  const [singleDate, setSingleDate] = React.useState<Date | undefined>(new Date())
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center w-full max-w-4xl">
+      {/* Date Range Selection */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Date Range Selection</span>
+        <Calendar mode="range" selected={range} onSelect={setRange} className="w-fit border border-border rounded-lg bg-card shadow-xs" />
+      </div>
+
+      {/* Multi-Date Selection */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Multi-Date Selection</span>
+        <Calendar mode="multiple" selected={days} onSelect={setDays} className="w-fit border border-border rounded-lg bg-card shadow-xs" />
+      </div>
+
+      {/* Disabled Weekdays */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Weekdays Only (Weekends Disabled)</span>
+        <Calendar mode="single" selected={singleDate} onSelect={setSingleDate} disabled={{ dayOfWeek: [0, 6] }} className="w-fit border border-border rounded-lg bg-card shadow-xs" />
+      </div>
+
+      {/* Clean Month View */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Clean Month View (No Outside Days)</span>
+        <Calendar mode="single" selected={singleDate} onSelect={setSingleDate} showOutsideDays={false} className="w-fit border border-border rounded-lg bg-card shadow-xs" />
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Real-World Applications
+
+Production-ready integration patterns including meeting booking widgets and Popover DatePicker inputs.
+
+<ComponentPreview name="calendar" vibeDeps="button, popover">
+  <CalendarDemoApplications />
+
+```tsx
+import * as React from 'react'
+import { CalendarDays } from 'lucide-react'
+import { Calendar } from '@/components/ui/calendar'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+
+export default function CalendarApplicationsDemo() {
+  const [bookingDate, setBookingDate] = React.useState<Date | undefined>(new Date())
+  const [pickerDate, setPickerDate] = React.useState<Date | undefined>(new Date())
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center w-full max-w-4xl">
+      {/* Interactive Booking Widget */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Interactive Booking Widget</span>
+        <div className="flex flex-col items-center gap-3 bg-card border border-border rounded-xl p-4 w-full max-w-xs shadow-sm">
+          <div className="text-left w-full mb-1">
+            <div className="font-bold text-xs text-foreground">Schedule Meeting</div>
+            <div className="text-[10px] text-muted-foreground">Select an available date below</div>
+          </div>
+          <Calendar mode="single" selected={bookingDate} onSelect={setBookingDate} className="w-fit p-0 border-0" />
+          <Button className="w-full h-8 text-xs font-semibold">Confirm Reservation</Button>
+        </div>
+      </div>
+
+      {/* Popover DatePicker Input */}
+      <div className="flex flex-col items-center gap-2 w-full">
+        <span className="text-xs text-muted-foreground font-medium">Popover DatePicker Input</span>
+        <div className="flex flex-col items-center justify-center min-h-[260px] w-full bg-card border border-border rounded-xl p-6 shadow-sm">
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="flex items-center gap-2 cursor-pointer bg-background border border-border rounded-lg px-3.5 py-2 text-xs text-foreground shadow-xs hover:border-primary/50 transition-all">
+                <CalendarDays className="h-4 w-4 text-primary" />
+                <span className="font-medium">{pickerDate ? pickerDate.toLocaleDateString() : 'Pick a date'}</span>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 border-none bg-transparent">
+              <Calendar mode="single" selected={pickerDate} onSelect={setPickerDate} className="w-fit border border-border rounded-lg bg-card shadow-xl" />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Props
+
+<PropsTable title="Calendar">
+  <PropRow
+    prop="variant"
+    type='"default" | "glass" | "retro" | "glow"'
+    default='"default"'
+    description="Visual style preset theme of the calendar container and active date selection cell."
+  />
+  <PropRow
+    prop="mode"
+    type='"single" | "range" | "multiple"'
+    default='"single"'
+    description="Selection mode determining whether a single date, date range, or multiple dates can be selected."
+  />
+  <PropRow
+    prop="selected"
+    type="Date | DateRange | Date[]"
+    default="-"
+    description="Currently selected date, date range object ({ from, to }), or array of selected dates."
+  />
+  <PropRow
+    prop="onSelect"
+    type="(date: any) => void"
+    default="-"
+    description="Event callback function triggered when a date or date range selection changes."
+  />
+  <PropRow
+    prop="showOutsideDays"
+    type="boolean"
+    default="true"
+    description="Controls whether dates belonging to adjacent previous/next months are visible in the grid."
+  />
+  <PropRow
+    prop="disabled"
+    type="Matcher | Matcher[]"
+    default="-"
+    description="Date matcher rule or function (e.g. { dayOfWeek: [0, 6] }) to disable selection on specific dates."
+  />
+  <PropRow
+    prop="className"
+    type="string"
+    default="-"
+    description="Additional Tailwind CSS classes applied directly to the root calendar container."
+  />
+</PropsTable>

@@ -1,0 +1,192 @@
+# Checkbox
+
+A control that allows the user to toggle between checked and unchecked states.
+
+## Preview
+
+<ComponentPreview sandbox="checkbox">
+  <div className="flex items-center space-x-2 text-left">
+    <Checkbox id="terms-checkbox" />
+    <Label htmlFor="terms-checkbox" className="pb-0 cursor-pointer">Accept terms and conditions</Label>
+  </div>
+
+```tsx
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+
+export default function CheckboxDemo() {
+  return (
+    <div className="flex items-center space-x-2">
+      <Checkbox id="terms-checkbox" />
+      <Label htmlFor="terms-checkbox" className="pb-0">
+        Accept terms and conditions
+      </Label>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="checkbox" npmDeps="@radix-ui/react-checkbox lucide-react tailwind-variants" vibeDeps="label">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Check } from 'lucide-react'
+
+export interface CheckboxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'type'
+> {
+  checked?: boolean
+  onCheckedChange?: (checked: boolean) => void
+}
+
+const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
+  ({ className, checked, defaultChecked, onCheckedChange, ...props }, ref) => {
+    const [localChecked, setLocalChecked] = React.useState(
+      defaultChecked || false,
+    )
+    const isChecked = checked !== undefined ? checked : localChecked
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (checked === undefined) {
+        setLocalChecked(e.target.checked)
+      }
+      onCheckedChange?.(e.target.checked)
+    }
+
+    const CheckIcon = Check as any
+
+    return (
+      <div className="relative flex items-center justify-center">
+        <input
+          type="checkbox"
+          ref={ref}
+          checked={isChecked}
+          onChange={handleChange}
+          className="peer h-4 w-4 shrink-0 rounded border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 opacity-0 absolute cursor-pointer z-10"
+          {...props}
+        />
+        <div
+          className={cn(
+            'h-4 w-4 shrink-0 rounded border border-input transition-all duration-200 flex items-center justify-center bg-background peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-checked:bg-primary peer-checked:border-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-50 pointer-events-none',
+            className,
+          )}
+        >
+          {isChecked && (
+            <CheckIcon className="h-3 w-3 text-primary-foreground stroke-[3]" />
+          )}
+        </div>
+      </div>
+    )
+  },
+)
+Checkbox.displayName = 'Checkbox'
+
+export { Checkbox }
+```
+
+</Installation>
+
+
+## All Variations
+
+Explore all interactive states and combinations of the Checkbox component.
+
+### Interactive States
+
+<ComponentPreview>
+  <div className="flex flex-wrap items-center gap-8 text-left w-full justify-start">
+    <div className="flex items-center space-x-2">
+      <Checkbox id="cb-unchecked-demo" />
+      <Label htmlFor="cb-unchecked-demo" className="pb-0 cursor-pointer">Unchecked</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Checkbox id="cb-checked-demo" defaultChecked />
+      <Label htmlFor="cb-checked-demo" className="pb-0 cursor-pointer">Checked</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Checkbox id="cb-disabled-un" disabled />
+      <Label htmlFor="cb-disabled-un" className="pb-0 cursor-pointer opacity-50">Disabled Off</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Checkbox id="cb-disabled-ch" disabled defaultChecked />
+      <Label htmlFor="cb-disabled-ch" className="pb-0 cursor-pointer opacity-50">Disabled On</Label>
+    </div>
+  </div>
+
+```tsx
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+
+export default function CheckboxStatesDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-8">
+      <div className="flex items-center space-x-2">
+        <Checkbox id="cb-un" />
+        <Label htmlFor="cb-un">Unchecked</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Checkbox id="cb-ch" defaultChecked />
+        <Label htmlFor="cb-ch">Checked</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Checkbox id="cb-dis-off" disabled />
+        <Label htmlFor="cb-dis-off" className="opacity-50">
+          Disabled Off
+        </Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Checkbox id="cb-dis-on" disabled defaultChecked />
+        <Label htmlFor="cb-dis-on" className="opacity-50">
+          Disabled On
+        </Label>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+
+## Examples
+
+### Disabled State
+
+<ComponentPreview>
+  <div className="flex items-center space-x-2 text-left">
+    <Checkbox id="terms-disabled" disabled />
+    <Label htmlFor="terms-disabled" className="pb-0 cursor-pointer">Accept terms and conditions</Label>
+  </div>
+
+```tsx
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+
+export default function CheckboxDisabled() {
+  return (
+    <div className="flex items-center space-x-2">
+      <Checkbox id="terms-disabled" disabled />
+      <Label htmlFor="terms-disabled" className="pb-0">
+        Accept terms and conditions
+      </Label>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Checkbox component is built on top of Radix UI `Checkbox` primitives. It provides an accessible, fully interactive toggle element for selecting one or more items in lists and forms.
+
+### Accessibility
+
+- **State Sync**: Built-in state indicators mapping to screen-readers automatically.
+- **Keyboard Controls**: Fully navigatable using `Tab` and toggled using `Space`.

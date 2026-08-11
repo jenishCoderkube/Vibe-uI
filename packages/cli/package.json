@@ -1,0 +1,59 @@
+{
+  "name": "vibe-ui-kit",
+  "version": "0.1.20",
+  "description": "The official CLI companion for Vibe UI - A premium themed React and Next.js component library.",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "nextjs",
+    "tailwind",
+    "tailwind-css-v4",
+    "radix-ui",
+    "components",
+    "cli",
+    "vibe-ui-kit",
+    "vibe-ui",
+    "ui-library",
+    "component-library",
+    "glassmorphism",
+    "shadcn-alternative",
+    "dark-mode",
+    "typescript",
+    "accessible",
+    "themed-components",
+    "admin-dashboard",
+    "layout-shell"
+  ],
+  "homepage": "https://vibe-ui-kit.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jenishCoderkube/Vibe-uI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jenishCoderkube/Vibe-uI/issues"
+  },
+  "main": "./dist/index.js",
+  "bin": {
+    "vibe-ui": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "fs-extra": "^11.2.0",
+    "prompts": "^2.4.2",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/prompts": "^2.4.9"
+  }
+}

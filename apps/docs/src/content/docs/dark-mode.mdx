@@ -1,0 +1,103 @@
+# Dark Mode
+
+Learn how to configure dark mode theme switching in your Next.js or Vite application using `next-themes` and Tailwind CSS variables.
+
+<Callout type="tip" title="Automatic Theme Synchronization">
+  Vibe UI components automatically adapt to dark and light mode themes via standard CSS custom properties.
+</Callout>
+
+<Steps>
+
+<Step title="1. Install next-themes">
+
+Install `next-themes` to manage active theme state, system preferences, and theme persistence:
+
+```bash
+npm install next-themes
+```
+
+</Step>
+
+<Step title="2. Create Theme Provider Component">
+
+Create a client-side wrapper file `src/components/theme-provider.tsx`:
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import { type ThemeProviderProps } from 'next-themes'
+
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+}
+```
+
+</Step>
+
+<Step title="3. Wrap Your Application Root Layout">
+
+Wrap your root app layout inside `src/app/layout.tsx` (Next.js) or `src/App.tsx` (Vite) with the `ThemeProvider`:
+
+```tsx
+import { ThemeProvider } from '@/components/theme-provider'
+import '@/app/globals.css'
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+</Step>
+
+<Step title="4. Add Theme Toggle Button">
+
+Create a `ThemeToggle` component (`src/components/theme-toggle.tsx`):
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { Button } from '@/components/ui/button'
+
+export function ThemeToggle() {
+  const { setTheme, theme } = useTheme()
+
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+      className="relative"
+    >
+      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  )
+}
+```
+
+</Step>
+
+</Steps>

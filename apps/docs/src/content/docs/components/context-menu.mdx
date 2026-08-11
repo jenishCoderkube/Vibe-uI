@@ -1,0 +1,232 @@
+# Context Menu
+
+Displays a custom right-click context menu at the pointer position, triggered by right-clicking or long-pressing elements.
+
+## Preview
+
+<ComponentPreview>
+  <ContextMenuDemo />
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
+
+export default function ContextMenuDemo() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-[150px] w-full max-w-[300px] items-center justify-center rounded-xl border border-dashed border-border bg-card text-xs text-muted-foreground select-none">
+        Right click here
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem>Back <ContextMenuShortcut>⌘[</ContextMenuShortcut></ContextMenuItem>
+        <ContextMenuItem disabled>Forward <ContextMenuShortcut>⌘]</ContextMenuShortcut></ContextMenuItem>
+        <ContextMenuItem>Reload <ContextMenuShortcut>⌘R</ContextMenuShortcut></ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuCheckboxItem checked>Show Bookmarks</ContextMenuCheckboxItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="context-menu" npmDeps="@radix-ui/react-context-menu lucide-react tailwind-variants">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
+import { Check, ChevronRight, Circle } from 'lucide-react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const ContextMenu = ContextMenuPrimitive.Root
+const ContextMenuTrigger = ContextMenuPrimitive.Trigger
+const ContextMenuGroup = ContextMenuPrimitive.Group
+const ContextMenuPortal = ContextMenuPrimitive.Portal
+const ContextMenuSub = ContextMenuPrimitive.Sub
+const ContextMenuRadioGroup = ContextMenuPrimitive.RadioGroup
+
+const contextMenuContentVariants = tv({
+  base: 'z-50 min-w-[12rem] overflow-hidden rounded-xl border p-1 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+  variants: {
+    variant: {
+      default: 'bg-popover text-popover-foreground border-border',
+      glass: 'bg-slate-950/85 dark:bg-black/80 text-foreground border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl',
+      retro: 'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-popover text-popover-foreground border-primary/40 shadow-[0_0_25px_rgba(168,85,247,0.25)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface ContextMenuContentProps
+  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content>,
+    VariantProps<typeof contextMenuContentVariants> {}
+
+const ContextMenuContent = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.Content>,
+  ContextMenuContentProps
+>(({ className, variant = 'default', ...props }, ref) => (
+  <ContextMenuPrimitive.Portal>
+    <ContextMenuPrimitive.Content
+      ref={ref}
+      className={cn(contextMenuContentVariants({ variant }), className)}
+      {...props}
+    />
+  </ContextMenuPrimitive.Portal>
+))
+ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName
+
+const ContextMenuItem = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Item> & {
+    inset?: boolean
+  }
+>(({ className, inset, ...props }, ref) => (
+  <ContextMenuPrimitive.Item
+    ref={ref}
+    className={cn(
+      'relative flex cursor-pointer select-none items-center rounded-sm px-2.5 py-1.5 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 gap-2',
+      inset && 'pl-8',
+      className,
+    )}
+    {...props}
+  />
+))
+ContextMenuItem.displayName = ContextMenuPrimitive.Item.displayName
+
+const ContextMenuSeparator = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <ContextMenuPrimitive.Separator
+    ref={ref}
+    className={cn('-mx-1 my-1 h-px bg-border/60', className)}
+    {...props}
+  />
+))
+ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName
+
+const ContextMenuShortcut = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement>) => (
+  <span
+    className={cn(
+      'ml-auto text-[10px] tracking-widest text-muted-foreground uppercase',
+      className,
+    )}
+    {...props}
+  />
+)
+ContextMenuShortcut.displayName = 'ContextMenuShortcut'
+
+export {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+}
+```
+
+</Installation>
+
+## Variations
+
+### Glassmorphic Menu
+
+<ComponentPreview>
+  <ContextMenuGlassDemo />
+
+```tsx
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
+
+export default function ContextMenuGlassDemo() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center rounded-xl border border-white/20 bg-slate-950/60 backdrop-blur-md text-xs text-foreground select-none">
+        Right click (Glass)
+      </ContextMenuTrigger>
+      <ContextMenuContent variant="glass">
+        <ContextMenuItem>New Tab</ContextMenuItem>
+        <ContextMenuItem>New Window</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Neubrutalism Retro
+
+<ComponentPreview>
+  <ContextMenuRetroDemo />
+
+```tsx
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
+
+export default function ContextMenuRetroDemo() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center border-2 border-foreground bg-background text-xs font-bold select-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        RIGHT CLICK (RETRO)
+      </ContextMenuTrigger>
+      <ContextMenuContent variant="retro">
+        <ContextMenuItem>COPY FILE</ContextMenuItem>
+        <ContextMenuItem>PASTE FILE</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Neon Glow Accent
+
+<ComponentPreview>
+  <ContextMenuGlowDemo />
+
+```tsx
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
+
+export default function ContextMenuGlowDemo() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center rounded-xl border border-primary/40 bg-card text-xs text-foreground select-none shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+        Right click (Neon Glow)
+      </ContextMenuTrigger>
+      <ContextMenuContent variant="glow">
+        <ContextMenuItem>Activate Matrix</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Context Menu provides accessible right-click interaction menus with keyboard shortcuts, nested submenus, and theme variants.
+
+### Features
+
+- **Keyboard Shortcuts**: Built-in shortcut indicator `<ContextMenuShortcut>` right-aligned for mac/windows key bindings.
+- **Submenus & Groups**: Supports hierarchical menu structures with nested Radix sub-triggers.

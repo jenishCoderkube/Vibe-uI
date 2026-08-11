@@ -1,0 +1,11 @@
+{
+  "name": "text-glitch",
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "text-glitch.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport { cn } from '../lib/utils'\n\nexport interface TextGlitchProps extends React.HTMLAttributes<HTMLSpanElement> {\n  text: string\n  speed?: 'slow' | 'normal' | 'fast'\n  active?: boolean\n}\n\nconst TextGlitch = React.forwardRef<HTMLSpanElement, TextGlitchProps>(\n  ({ className, text, speed = 'normal', active = true, ...props }, ref) => {\n    const duration =\n      speed === 'slow' ? '2.5s' : speed === 'fast' ? '0.8s' : '1.5s'\n\n    return (\n      <span\n        ref={ref}\n        data-slot=\"text-glitch\"\n        data-text={text}\n        style={\n          {\n            '--glitch-duration': duration,\n          } as React.CSSProperties\n        }\n        className={cn(\n          'relative inline-block font-extrabold tracking-wider select-none',\n          active && [\n            'animate-text-glitch',\n            // Chromatic red glitch offset\n            'before:content-[attr(data-text)] before:absolute before:left-[2px] before:top-0 before:w-full before:h-full before:text-rose-500 before:opacity-85 before:mix-blend-screen before:animate-text-glitch before:[animation-duration:calc(var(--glitch-duration)*0.75)] before:[animation-delay:-0.15s] before:[text-shadow:-1.5px_0_#ef4444]',\n            // Chromatic cyan glitch offset\n            'after:content-[attr(data-text)] after:absolute after:left-[-2px] after:top-0 after:w-full after:h-full after:text-cyan-400 after:opacity-85 after:mix-blend-screen after:animate-text-glitch after:[animation-duration:calc(var(--glitch-duration)*1.25)] after:[animation-delay:-0.35s] after:[text-shadow:1.5px_0_#22d3ee]',\n          ],\n          className,\n        )}\n        {...props}\n      >\n        {text}\n      </span>\n    )\n  },\n)\n\nTextGlitch.displayName = 'TextGlitch'\n\nexport { TextGlitch }\n"
+    }
+  ]
+}

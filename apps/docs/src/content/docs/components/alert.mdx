@@ -1,0 +1,474 @@
+# Alert
+
+Displays a callout block for user attention, system statuses, errors, warnings, or indicators.
+
+## Preview
+
+<ComponentPreview sandbox="alert">
+  <Alert className="max-w-md">
+    <Terminal className="h-4 w-4" />
+    <div>
+      <AlertTitle>Heads up!</AlertTitle>
+      <AlertDescription>You can add components to your app using the vibe-ui CLI tool.</AlertDescription>
+    </div>
+  </Alert>
+
+```tsx
+import { Terminal } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+
+export function AlertDemo() {
+  return (
+    <Alert>
+      <Terminal className="h-4 w-4" />
+      <div>
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          You can add components to your app using the vibe-ui CLI tool.
+        </AlertDescription>
+      </div>
+    </Alert>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="alert">
+
+```tsx
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const alertVariants = tv({
+  base: 'relative w-full rounded-lg border p-4 [&>svg~div]:pl-7 [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg+div]:translate-y-[-1px] select-none flex gap-3 items-start transition-all duration-200',
+  variants: {
+    variant: {
+      default: 'bg-background text-foreground border-border',
+      destructive:
+        'border-destructive/30 text-destructive [&>svg]:text-destructive bg-destructive/5',
+      success:
+        'border-emerald-500/20 text-emerald-600 dark:text-emerald-400 dark:border-emerald-500/20 [&>svg]:text-emerald-600 dark:[&>svg]:text-emerald-400 bg-emerald-500/5',
+      warning:
+        'border-amber-500/20 text-amber-600 dark:text-amber-400 dark:border-amber-500/20 [&>svg]:text-amber-600 dark:[&>svg]:text-amber-400 bg-amber-500/5',
+      glass:
+        'bg-card/70 border border-border text-card-foreground backdrop-blur-md shadow-sm',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow:
+        'border-primary bg-primary/5 text-primary shadow-[0_0_15px_rgba(0,0,0,0.05)] dark:shadow-[0_0_15px_rgba(255,255,255,0.1)]',
+      cyberpunk:
+        'border border-emerald-500/80 bg-card text-emerald-600 dark:text-emerald-400 font-mono rounded-none shadow-[0_0_15px_rgba(16,185,129,0.15)] [&>svg]:text-emerald-600 dark:[&>svg]:text-emerald-400',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+const Alert = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
+>(({ className, variant, ...props }, ref) => (
+  <div
+    ref={ref}
+    role="alert"
+    className={cn(alertVariants({ variant }), className)}
+    {...props}
+  />
+))
+Alert.displayName = 'Alert'
+
+const AlertTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h5
+    ref={ref}
+    className={cn('font-semibold leading-none tracking-tight mb-1 text-sm', className)}
+    {...props}
+  />
+))
+AlertTitle.displayName = 'AlertTitle'
+
+const AlertDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('text-xs opacity-90 leading-relaxed [&_p]:leading-relaxed', className)}
+    {...props}
+  />
+))
+AlertDescription.displayName = 'AlertDescription'
+
+export { Alert, AlertTitle, AlertDescription }
+```
+
+</Installation>
+
+
+## Component Presets
+
+Explore premium combinations and styles of the Alert component.
+
+### Status Stack
+
+A combination of Success and Destructive alerts showing smooth scale hover micro-animations and rich text layouts.
+
+<ComponentPreview>
+  <div className="flex flex-col gap-4 w-full max-w-md">
+    <Alert variant="success" className="hover:scale-[1.01] hover:shadow-md transition-all duration-200">
+      <CheckCircle2 className="h-4 w-4" />
+      <div>
+        <AlertTitle>Deployment Completed</AlertTitle>
+        <AlertDescription>Your production deployment for custom-ui was successful. Service is live.</AlertDescription>
+      </div>
+    </Alert>
+    <Alert variant="destructive" className="hover:scale-[1.01] hover:shadow-md transition-all duration-200">
+      <AlertCircle className="h-4 w-4" />
+      <div>
+        <AlertTitle>API Rate Limit Exceeded</AlertTitle>
+        <AlertDescription>Your account has made too many requests. Please upgrade your billing plan.</AlertDescription>
+      </div>
+    </Alert>
+  </div>
+
+```tsx
+import { CheckCircle2, AlertCircle } from 'lucide-react'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+
+export default function StatusAlertStack() {
+  return (
+    <div className="flex flex-col gap-4 w-full max-w-md">
+      <Alert variant="success" className="hover:scale-[1.01] transition-all">
+        <CheckCircle2 className="h-4 w-4" />
+        <div>
+          <AlertTitle>Deployment Completed</AlertTitle>
+          <AlertDescription>Your production deployment was successful. Service is live.</AlertDescription>
+        </div>
+      </Alert>
+      <Alert variant="destructive" className="hover:scale-[1.01] transition-all">
+        <AlertCircle className="h-4 w-4" />
+        <div>
+          <AlertTitle>API Rate Limit Exceeded</AlertTitle>
+          <AlertDescription>Too many requests. Please upgrade your billing plan.</AlertDescription>
+        </div>
+      </Alert>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Actionable Alerts
+
+Alerts containing action triggers (like diagnostic buttons) and inline dismiss controls.
+
+<ComponentPreview>
+  <div className="flex flex-col gap-4 w-full max-w-md">
+    <Alert variant="warning" className="relative pr-24 hover:shadow-sm transition-all duration-200">
+      <AlertTriangle className="h-4 w-4" />
+      <div>
+        <AlertTitle>Security Warning</AlertTitle>
+        <AlertDescription>Unusual login attempt detected from Chrome on Windows OS.</AlertDescription>
+      </div>
+      <button className="absolute right-4 top-1/2 -translate-y-1/2 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 px-2.5 py-1 text-[10px] font-bold transition-colors cursor-pointer select-none">
+        Review
+      </button>
+    </Alert>
+    <Alert className="relative pr-10 hover:shadow-sm transition-all duration-200">
+      <Info className="h-4 w-4" />
+      <div>
+        <AlertTitle>System Update</AlertTitle>
+        <AlertDescription>Vibe UI version v1.2.0 is now available. Reload to apply changes.</AlertDescription>
+      </div>
+      <button className="absolute right-4 top-4 text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors">✕</button>
+    </Alert>
+  </div>
+
+```tsx
+import { AlertTriangle, Info } from 'lucide-react'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+
+export default function ActionableAlertStack() {
+  return (
+    <div className="flex flex-col gap-4 w-full max-w-md">
+      <Alert variant="warning" className="relative pr-24">
+        <AlertTriangle className="h-4 w-4" />
+        <div>
+          <AlertTitle>Security Warning</AlertTitle>
+          <AlertDescription>Unusual login attempt detected from Chrome on Windows OS.</AlertDescription>
+        </div>
+        <button className="absolute right-4 top-1/2 -translate-y-1/2 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 px-2.5 py-1 text-[10px] font-bold cursor-pointer">
+          Review
+        </button>
+      </Alert>
+      <Alert className="relative pr-10">
+        <Info className="h-4 w-4" />
+        <div>
+          <AlertTitle>System Update</AlertTitle>
+          <AlertDescription>Vibe UI version v1.2.0 is now available.</AlertDescription>
+        </div>
+        <button className="absolute right-4 top-4 text-muted-foreground hover:text-foreground cursor-pointer">✕</button>
+      </Alert>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Custom Themes
+
+Frosted Glassmorphic presets and high-contrast terminal Cyberpunk themes rendered together.
+
+<ComponentPreview>
+  <div className="flex flex-col gap-4 w-full max-w-md">
+    <Alert variant="glass" className="hover:bg-white/10 dark:hover:bg-black/35 transition-all duration-200">
+      <Layers className="h-4 w-4" />
+      <div>
+        <AlertTitle>Glassmorphism Preset</AlertTitle>
+        <AlertDescription>A beautiful frosted backdrop overlay with soft thin border lines.</AlertDescription>
+      </div>
+    </Alert>
+    <Alert variant="cyberpunk" className="hover:border-emerald-400 transition-all duration-200 font-mono">
+      <Terminal className="h-4 w-4" />
+      <div>
+        <AlertTitle>CYBER_GRID_ACTIVE</AlertTitle>
+        <AlertDescription>Proxy link established. Port 8080 secure under standard sandbox protocol.</AlertDescription>
+      </div>
+    </Alert>
+  </div>
+
+```tsx
+import { Layers, Terminal } from 'lucide-react'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+
+export default function ThemedAlerts() {
+  return (
+    <div className="flex flex-col gap-4 w-full max-w-md">
+      <Alert variant="glass">
+        <Layers className="h-4 w-4" />
+        <div>
+          <AlertTitle>Glassmorphism Preset</AlertTitle>
+          <AlertDescription>Frosted backdrop overlay styling with thin border lines.</AlertDescription>
+        </div>
+      </Alert>
+      <Alert variant="cyberpunk" className="font-mono">
+        <Terminal className="h-4 w-4" />
+        <div>
+          <AlertTitle>CYBER_GRID_ACTIVE</AlertTitle>
+          <AlertDescription>Proxy link established under standard sandbox protocol.</AlertDescription>
+        </div>
+      </Alert>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Accent & Outline
+
+High-contrast Neobrutalist retro outlines and color-highlighted accent border indicators.
+
+<ComponentPreview>
+  <div className="flex flex-col gap-4 w-full max-w-md">
+    <Alert variant="retro" className="hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transition-all duration-200">
+      <Settings className="h-4 w-4" />
+      <div>
+        <AlertTitle>Hardware Diagnostic</AlertTitle>
+        <AlertDescription>Retro Neobrutalism high contrast layouts with thick outline shadows.</AlertDescription>
+      </div>
+    </Alert>
+    <Alert className="border-l-4 border-l-primary hover:shadow-sm transition-all duration-200">
+      <VolumeX className="h-4 w-4" />
+      <div>
+        <AlertTitle>Audio Alert</AlertTitle>
+        <AlertDescription>System volume muted during focus hours mode settings.</AlertDescription>
+      </div>
+    </Alert>
+  </div>
+
+```tsx
+import { Settings, VolumeX } from 'lucide-react'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+
+export default function AccentAlertStack() {
+  return (
+    <div className="flex flex-col gap-4 w-full max-w-md">
+      <Alert variant="retro">
+        <Settings className="h-4 w-4" />
+        <div>
+          <AlertTitle>Hardware Diagnostic</AlertTitle>
+          <AlertDescription>Retro Neobrutalism layouts with thick outline shadows.</AlertDescription>
+        </div>
+      </Alert>
+      <Alert className="border-l-4 border-l-primary">
+        <VolumeX className="h-4 w-4" />
+        <div>
+          <AlertTitle>Audio Alert</AlertTitle>
+          <AlertDescription>System volume muted during focus hours mode settings.</AlertDescription>
+        </div>
+      </Alert>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### System Monitor
+
+A live cloud diagnostic dashboard widget displaying deploy tags and high-RAM warn meters.
+
+<ComponentPreview>
+  <div className="flex flex-col gap-4 w-full max-w-md">
+    <Alert variant="glow" className="relative pr-24 hover:scale-[1.01] transition-all duration-200">
+      <Settings className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <AlertTitle className="mb-0">us-east-1 Deploy</AlertTitle>
+          <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Active</span>
+        </div>
+        <AlertDescription>Automatic pipeline build succeeded. Registry sync completed in 12s.</AlertDescription>
+      </div>
+      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-mono text-muted-foreground">99.9% SLA</span>
+    </Alert>
+    <Alert variant="warning" className="relative pr-20 hover:scale-[1.01] transition-all duration-200 bg-amber-500/5 border-amber-500/20">
+      <AlertTriangle className="h-4 w-4 text-amber-500" />
+      <div>
+        <AlertTitle>High RAM Overhead</AlertTitle>
+        <AlertDescription>Node instance ram utilization at 89%. Server scaling initiated.</AlertDescription>
+      </div>
+      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-amber-600 dark:text-amber-400">8.9 GB</span>
+    </Alert>
+  </div>
+
+```tsx
+import { Settings, AlertTriangle } from 'lucide-react'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+
+export default function CloudMonitorAlert() {
+  return (
+    <div className="flex flex-col gap-4 w-full max-w-md">
+      <Alert variant="glow" className="relative pr-24">
+        <Settings className="h-4 w-4 text-primary" />
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <AlertTitle className="mb-0">us-east-1 Deploy</AlertTitle>
+            <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-medium text-emerald-600 border border-emerald-500/20">Active</span>
+          </div>
+          <AlertDescription>Automatic pipeline build succeeded. Registry sync completed.</AlertDescription>
+        </div>
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-mono text-muted-foreground">99.9% SLA</span>
+      </Alert>
+      <Alert variant="warning" className="relative pr-20 bg-amber-500/5 border-amber-500/20">
+        <AlertTriangle className="h-4 w-4 text-amber-500" />
+        <div>
+          <AlertTitle>High RAM Overhead</AlertTitle>
+          <AlertDescription>Node instance ram utilization at 89%. Server scaling initiated.</AlertDescription>
+        </div>
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-amber-500">8.9 GB</span>
+      </Alert>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Security Center
+
+Full actionable security threat panels featuring control buttons to block IPs or setup Multi-factor Authentication (MFA).
+
+<ComponentPreview vibeDeps="button">
+  <div className="flex flex-col gap-4 w-full max-w-md">
+    <Alert variant="destructive" className="flex flex-col gap-3 items-stretch p-5 border-destructive/20 bg-destructive/5 hover:scale-[1.01] transition-all duration-200">
+      <div className="flex gap-3 items-start">
+        <ShieldAlert className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+        <div>
+          <AlertTitle className="text-sm font-bold text-destructive">Unauthorized SSH Attempt</AlertTitle>
+          <AlertDescription className="text-xs text-destructive/80 leading-normal">SSH entry request blocked from IP 192.168.12.98 (Shenzhen, CN) at 17:34:12.</AlertDescription>
+        </div>
+      </div>
+      <div className="flex gap-2 justify-end pt-2 border-t border-destructive/10">
+        <Button variant="outline" size="sm">Ignore</Button>
+        <Button variant="destructive" size="sm">Block IP</Button>
+      </div>
+    </Alert>
+    <Alert className="flex flex-col gap-3 items-stretch p-5 hover:scale-[1.01] transition-all duration-200">
+      <div className="flex gap-3 items-start">
+        <Bell className="h-5 w-5 text-foreground shrink-0 mt-0.5" />
+        <div>
+          <AlertTitle className="text-sm font-bold">MFA Lock Warning</AlertTitle>
+          <AlertDescription className="text-xs text-muted-foreground leading-normal">Multi-factor authentication (MFA) is not enabled for your administrator account.</AlertDescription>
+        </div>
+      </div>
+      <div className="flex justify-end pt-2 border-t border-border/60">
+        <Button className="bg-foreground hover:bg-foreground/90 !text-white dark:!text-black" size="sm">Setup MFA</Button>
+      </div>
+    </Alert>
+  </div>
+
+```tsx
+import { ShieldAlert, Bell } from 'lucide-react'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+
+export default function SecurityCenterAlert() {
+  return (
+    <div className="flex flex-col gap-4 w-full max-w-md">
+      <Alert variant="destructive" className="flex flex-col gap-3 items-stretch p-5">
+        <div className="flex gap-3 items-start">
+          <ShieldAlert className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+          <div>
+            <AlertTitle className="text-sm font-bold text-destructive">Unauthorized SSH Attempt</AlertTitle>
+            <AlertDescription className="text-xs text-destructive/80">SSH entry request blocked from IP 192.168.12.98 at 17:34:12.</AlertDescription>
+          </div>
+        </div>
+        <div className="flex gap-2 justify-end pt-2 border-t border-destructive/10">
+          <Button variant="outline" size="sm">
+            Ignore
+          </Button>
+          <Button variant="destructive" size="sm">
+            Block IP
+          </Button>
+        </div>
+      </Alert>
+      <Alert className="flex flex-col gap-3 items-stretch p-5">
+        <div className="flex gap-3 items-start">
+          <Bell className="h-5 w-5 shrink-0 mt-0.5" />
+          <div>
+            <AlertTitle className="text-sm font-bold">MFA Lock Warning</AlertTitle>
+            <AlertDescription className="text-xs text-muted-foreground">Multi-factor authentication (MFA) is not enabled.</AlertDescription>
+          </div>
+        </div>
+        <div className="flex justify-end pt-2 border-t border-border/60">
+          <Button className="bg-foreground hover:bg-foreground/90 !text-white dark:!text-black" size="sm">
+            Setup MFA
+          </Button>
+        </div>
+      </Alert>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+
+## Props
+
+<PropsTable title="Alert">
+  <PropRow
+    prop="variant"
+    type='"default" | "destructive" | "success" | "warning" | "glass" | "retro" | "glow" | "cyberpunk"'
+    default='"default"'
+    description="Visual preset theme variant."
+  />
+</PropsTable>

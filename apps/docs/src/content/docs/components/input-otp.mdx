@@ -1,0 +1,375 @@
+# Input OTP
+
+A native, highly configurable multi-slot password/PIN code entry field with state focus management.
+
+## Preview: 6-Digit Secure
+
+<ComponentPreview>
+  <OTP6Digit />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function OTPDemo() {
+  const [val, setVal] = useState("")
+
+  return <InputOTP length={6} value={val} onChange={setVal} />
+}
+```
+
+</ComponentPreview>
+
+<Installation name="input-otp" npmDeps="input-otp lucide-react tailwind-variants">
+
+```tsx
+"use client"
+
+import * as React from "react"
+import { tv, type VariantProps } from "tailwind-variants"
+import { cn } from "@/lib/utils"
+
+const otpVariants = tv({
+  base: "flex items-center gap-2 select-none",
+  variants: {
+    variant: {
+      default: "",
+      glass: "",
+      retro: "",
+      glow: "",
+      cyberpunk: "",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+})
+
+const slotVariants = tv({
+  base: "w-10 h-12 flex items-center justify-center border text-base font-semibold transition-all duration-200 text-center outline-none focus:z-10 focus:ring-2 focus:ring-ring focus:ring-offset-1 rounded-md",
+  variants: {
+    variant: {
+      default: "bg-background border-input text-foreground focus:border-primary focus:ring-primary/40",
+      glass: "bg-white/5 border-white/10 backdrop-blur-md text-white focus:border-white/30 focus:bg-white/10 focus:ring-white/20",
+      retro: "border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)] focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[1px_1px_0px_rgba(0,0,0,1)]",
+      glow: "border-primary/20 bg-primary/[0.02] text-primary focus:border-primary focus:shadow-[0_0_12px_rgba(168,85,247,0.3)] focus:ring-primary/30",
+      cyberpunk: "border-emerald-950 bg-black text-emerald-500 font-mono focus:border-emerald-400 focus:shadow-[0_0_10px_rgba(16,185,129,0.35)] focus:ring-emerald-500/20",
+    },
+    disabled: {
+      true: "opacity-50 cursor-not-allowed",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+})
+
+export interface InputOTPProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange">,
+    VariantProps<typeof otpVariants> {
+  length?: number
+  value?: string
+  onChange?: (value: string) => void
+  disabled?: boolean
+  type?: "text" | "password"
+}
+
+const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
+  ({ className, variant, length = 6, value = "", onChange, disabled = false, type = "text", ...props }, ref) => {
+    const inputRefs = React.useRef<HTMLInputElement[]>([])
+
+    const handleChange = (index: number, val: string) => {
+      if (disabled) return
+      const cleanVal = val.replace(/[^0-9a-zA-Z]/g, "").slice(-1)
+      const valuesArray = value.split("")
+      valuesArray[index] = cleanVal
+      const newValue = valuesArray.join("")
+      onChange?.(newValue)
+
+      if (cleanVal && index < length - 1) {
+        inputRefs.current[index + 1]?.focus()
+      }
+    }
+
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (disabled) return
+      if (e.key === "Backspace") {
+        if (!value[index] && index > 0) {
+          const valuesArray = value.split("")
+          valuesArray[index - 1] = ""
+          onChange?.(valuesArray.join(""))
+          inputRefs.current[index - 1]?.focus()
+        } else {
+          const valuesArray = value.split("")
+          valuesArray[index] = ""
+          onChange?.(valuesArray.join(""))
+        }
+      } else if (e.key === "ArrowLeft" && index > 0) {
+        inputRefs.current[index - 1]?.focus()
+      } else if (e.key === "ArrowRight" && index < length - 1) {
+        inputRefs.current[index + 1]?.focus()
+      }
+    }
+
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+      e.preventDefault()
+      if (disabled) return
+      const pasteData = e.clipboardData.getData("text").trim().slice(0, length)
+      if (pasteData) {
+        onChange?.(pasteData)
+        const focusIdx = Math.min(pasteData.length, length - 1)
+        inputRefs.current[focusIdx]?.focus()
+      }
+    }
+
+    return (
+      <div ref={ref} className={cn(otpVariants({ variant }), className)} {...props}>
+        {Array.from({ length }).map((_, idx) => {
+          const char = value[idx] || ""
+          return (
+            <input
+              key={idx}
+              ref={(el) => {
+                if (el) inputRefs.current[idx] = el
+              }}
+              type={type}
+              maxLength={1}
+              value={char}
+              onChange={(e) => handleChange(idx, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(idx, e)}
+              onPaste={handlePaste}
+              disabled={disabled}
+              className={slotVariants({ variant, disabled })}
+            />
+          )
+        })}
+      </div>
+    )
+  }
+)
+InputOTP.displayName = "InputOTP"
+
+export { InputOTP }
+```
+
+</Installation>
+
+
+
+## Standard Variations
+
+### 4-Digit PIN
+
+<ComponentPreview>
+  <OTP4Digit />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function Pin4Demo() {
+  const [val, setVal] = useState('')
+  return <InputOTP length={4} value={val} onChange={setVal} variant="default" />
+}
+```
+
+</ComponentPreview>
+
+### Double Split
+
+<ComponentPreview>
+  <OTPDouble3Digit />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function SplitDemo() {
+  const [val, setVal] = useState('')
+  return (
+    <div className="flex items-center gap-2">
+      <InputOTP
+        length={3}
+        value={val.slice(0, 3)}
+        onChange={(v) => setVal(v + val.slice(3))}
+        variant="default"
+      />
+      <span className="text-zinc-500 font-bold">-</span>
+      <InputOTP
+        length={3}
+        value={val.slice(3)}
+        onChange={(v) => setVal(val.slice(0, 3) + v)}
+        variant="default"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Default Minimal Theme
+
+<ComponentPreview>
+  <OTPDefaultTheme />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function DefaultDemo() {
+  const [val, setVal] = useState('1234')
+  return <InputOTP length={4} value={val} onChange={setVal} variant="default" />
+}
+```
+
+</ComponentPreview>
+
+### Glassmorphic Theme
+
+<ComponentPreview>
+  <OTPGlassTheme />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function GlassDemo() {
+  const [val, setVal] = useState('5678')
+  return <InputOTP length={4} value={val} onChange={setVal} variant="glass" />
+}
+```
+
+</ComponentPreview>
+
+### Retro Brutalist Theme
+
+<ComponentPreview>
+  <OTPRetroTheme />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function RetroDemo() {
+  const [val, setVal] = useState('9012')
+  return <InputOTP length={4} value={val} onChange={setVal} variant="retro" />
+}
+```
+
+</ComponentPreview>
+
+### Neon Glow Theme
+
+<ComponentPreview>
+  <OTPGlowTheme />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function GlowDemo() {
+  const [val, setVal] = useState('3456')
+  return <InputOTP length={4} value={val} onChange={setVal} variant="glow" />
+}
+```
+
+</ComponentPreview>
+
+### Cyberpunk Theme
+
+<ComponentPreview>
+  <OTPCyberTheme />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function CyberDemo() {
+  const [val, setVal] = useState('7890')
+  return <InputOTP length={4} value={val} onChange={setVal} variant="cyberpunk" />
+}
+```
+
+</ComponentPreview>
+
+### Controlled Values
+
+<ComponentPreview>
+  <OTPControlled />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function ControlledDemo() {
+  const [val, setVal] = useState('1111')
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <InputOTP length={4} value={val} onChange={setVal} variant="default" />
+      <span className="text-xs text-primary font-mono font-bold">
+        CURRENT STATE: {val || 'EMPTY'}
+      </span>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Masked Password Mode
+
+<ComponentPreview>
+  <OTPPasswordMode />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function PasswordDemo() {
+  const [val, setVal] = useState('')
+  return <InputOTP length={4} value={val} onChange={setVal} type="password" variant="default" />
+}
+```
+
+</ComponentPreview>
+
+### Disabled State
+
+<ComponentPreview>
+  <OTPDisabled />
+
+```tsx
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function DisabledDemo() {
+  return <InputOTP length={4} disabled value="9999" />
+}
+```
+
+</ComponentPreview>
+
+### Extra Large Sizes
+
+<ComponentPreview>
+  <OTPCustomSlotWidths />
+
+```tsx
+import React, { useState } from 'react'
+import { InputOTP } from '@/components/ui/input-otp'
+
+export default function LargeSizeDemo() {
+  const [val, setVal] = useState('')
+  return (
+    <InputOTP
+      length={4}
+      value={val}
+      onChange={setVal}
+      variant="glow"
+      className="gap-3 *:w-12 *:h-14 *:text-xl"
+    />
+  )
+}
+```
+
+</ComponentPreview>

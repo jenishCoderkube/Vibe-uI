@@ -1,0 +1,81 @@
+# Dashboard 02
+
+An executive SaaS Analytics and Financial Overview Dashboard block featuring responsive sidebars, KPI metrics, transaction tables, and customer activity logs.
+
+## Preview
+
+<ComponentPreview>
+  <Dashboard02Demo />
+
+```tsx
+import { DashboardBlock02 } from '@/components/blocks/dashboard-02'
+
+export default function Dashboard02Demo() {
+  return <DashboardBlock02 />
+}
+```
+
+</ComponentPreview>
+
+<Installation name="dashboard-02" vibeDeps="card, button, input, badge, avatar, sheet">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import {
+  Activity,
+  ArrowUpRight,
+  CircleUser,
+  CreditCard,
+  DollarSign,
+  Menu,
+  Search,
+  Users,
+} from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from './avatar'
+import { Badge } from './badge'
+import { Button } from './button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card'
+import { Input } from './input'
+import { Sheet, SheetContent, SheetTrigger } from './sheet'
+
+export function DashboardBlock02() {
+  return (
+    <div className="flex min-h-screen w-full flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background/95 px-4 backdrop-blur-md md:px-6">
+        <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+          <a href="#" className="flex items-center gap-2 text-lg font-bold tracking-tight text-foreground md:text-base">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-extrabold">V</div>
+            <span>Vibe UI</span>
+          </a>
+          <a href="#" className="text-foreground font-semibold">Dashboard</a>
+          <a href="#" className="text-muted-foreground hover:text-foreground">Orders</a>
+          <a href="#" className="text-muted-foreground hover:text-foreground">Products</a>
+          <a href="#" className="text-muted-foreground hover:text-foreground">Customers</a>
+        </nav>
+      </header>
+      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs font-semibold">Total Revenue</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">$45,231.89</div>
+              <p className="text-xs text-muted-foreground mt-1">+20.1% from last month</p>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+  )
+}
+```
+
+</Installation>
+
+## Block Concept
+
+Vibe UI's Dashboard 02 block serves as an executive analytics dashboard template, integrating top navigation, responsive mobile sheet menus, metric KPI cards, and transaction data grids.

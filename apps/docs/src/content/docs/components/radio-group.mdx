@@ -1,0 +1,506 @@
+# Radio Group
+
+A set of checkable buttons—known as radio buttons—where no more than one button can be checked at a time.
+
+## Preview
+
+<ComponentPreview>
+  <RadioGroup defaultValue="option-one">
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="option-one" id="option-one" />
+      <Label htmlFor="option-one">Option One</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="option-two" id="option-two" />
+      <Label htmlFor="option-two">Option Two</Label>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export function RadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="option-one">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="option-one" id="option-one" />
+        <Label htmlFor="option-one">Option One</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="option-two" id="option-two" />
+        <Label htmlFor="option-two">Option Two</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="radio-group" npmDeps="@radix-ui/react-radio-group lucide-react tailwind-variants" vibeDeps="label">
+
+```tsx
+import * as React from 'react'
+import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
+import { Circle } from 'lucide-react'
+import { tv } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const radioGroupRootVariants = tv({
+  base: 'grid gap-2',
+})
+
+const radioItemVariants = tv({
+  base: 'aspect-square h-4 w-4 shrink-0 rounded-full border border-primary text-primary shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer inline-flex items-center justify-center transition-all duration-200 align-middle select-none',
+  variants: {
+    variant: {
+      default: 'border-input hover:border-primary data-[state=checked]:border-primary data-[state=checked]:bg-primary/5',
+      retro: 'border-2 border-foreground bg-background shadow-[1.5px_1.5px_0px_0px_rgba(0,0,0,1)] dark:shadow-[1.5px_1.5px_0px_0px_rgba(255,255,255,1)] rounded-none h-4.5 w-4.5',
+      glass: 'bg-slate-200/50 dark:bg-black/30 border-black/20 dark:border-white/20 backdrop-blur-md hover:border-primary',
+    }
+  },
+  defaultVariants: {
+    variant: 'default',
+  }
+})
+
+const RadioGroup = React.forwardRef<
+  React.ElementRef<typeof RadioGroupPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
+>(({ className, ...props }, ref) => {
+  return (
+    <RadioGroupPrimitive.Root
+      className={cn(radioGroupRootVariants(), className)}
+      {...props}
+      ref={ref}
+    />
+  )
+})
+RadioGroup.displayName = RadioGroupPrimitive.Root.displayName
+
+interface RadioGroupItemProps extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+  variant?: 'default' | 'retro' | 'glass'
+}
+
+const RadioGroupItem = React.forwardRef<
+  React.ElementRef<typeof RadioGroupPrimitive.Item>,
+  RadioGroupItemProps
+>(({ className, variant, ...props }, ref) => {
+  return (
+    <RadioGroupPrimitive.Item
+      ref={ref}
+      className={cn(radioItemVariants({ variant }), className)}
+      {...props}
+    >
+      <RadioGroupPrimitive.Indicator className="flex items-center justify-center h-full w-full">
+        {variant === 'retro' ? (
+          <span className="h-2 w-2 bg-foreground rounded-none" />
+        ) : (
+          <span className="h-2 w-2 rounded-full bg-primary" />
+        )}
+      </RadioGroupPrimitive.Indicator>
+    </RadioGroupPrimitive.Item>
+  )
+})
+RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
+
+export { RadioGroup, RadioGroupItem }
+```
+
+</Installation>
+
+
+## All Variations
+
+Explore 10 different variations and styling presets of the Radio Group component.
+
+### 1. Default Style (Vertical List)
+
+<ComponentPreview>
+  <RadioGroup defaultValue="apple">
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="apple" id="apple" />
+      <Label htmlFor="apple">Apple</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="banana" id="banana" />
+      <Label htmlFor="banana">Banana</Label>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function DefaultRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="apple">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="apple" id="apple" />
+        <Label htmlFor="apple">Apple</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="banana" id="banana" />
+        <Label htmlFor="banana">Banana</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 2. Horizontal Layout Group
+
+<ComponentPreview>
+  <RadioGroup defaultValue="sms" className="flex flex-row gap-6">
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="sms" id="sms" />
+      <Label htmlFor="sms">SMS</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="email" id="email" />
+      <Label htmlFor="email">Email</Label>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function HorizontalRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="sms" className="flex flex-row gap-6">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="sms" id="sms" />
+        <Label htmlFor="sms">SMS</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="email" id="email" />
+        <Label htmlFor="email">Email</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 3. Retro Neobrutalist Style
+
+<ComponentPreview>
+  <RadioGroup defaultValue="retro1">
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="retro1" id="retro1" variant="retro" />
+      <Label htmlFor="retro1">Retro Option A</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="retro2" id="retro2" variant="retro" />
+      <Label htmlFor="retro2">Retro Option B</Label>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function RetroRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="retro1">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="retro1" id="retro1" variant="retro" />
+        <Label htmlFor="retro1">Retro Option A</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="retro2" id="retro2" variant="retro" />
+        <Label htmlFor="retro2">Retro Option B</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 4. Glassmorphic Style
+
+<ComponentPreview>
+  <RadioGroup defaultValue="glass1">
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="glass1" id="glass1" variant="glass" />
+      <Label htmlFor="glass1">Glass Option A</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="glass2" id="glass2" variant="glass" />
+      <Label htmlFor="glass2">Glass Option B</Label>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function GlassRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="glass1">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="glass1" id="glass1" variant="glass" />
+        <Label htmlFor="glass1">Glass Option A</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="glass2" id="glass2" variant="glass" />
+        <Label htmlFor="glass2">Glass Option B</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 5. Disabled Group Item
+
+<ComponentPreview>
+  <RadioGroup defaultValue="allowed">
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="allowed" id="allowed" />
+      <Label htmlFor="allowed">Allowed Selection</Label>
+    </div>
+    <div className="flex items-center space-x-2 opacity-50">
+      <RadioGroupItem value="blocked" id="blocked" disabled />
+      <Label htmlFor="blocked" className="cursor-not-allowed">Blocked State</Label>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function DisabledRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="allowed">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="allowed" id="allowed" />
+        <Label htmlFor="allowed">Allowed Selection</Label>
+      </div>
+      <div className="flex items-center space-x-2 opacity-50">
+        <RadioGroupItem value="blocked" id="blocked" disabled />
+        <Label htmlFor="blocked" className="cursor-not-allowed">Blocked State</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 6. Wide Padding Spacing List
+
+<ComponentPreview>
+  <RadioGroup defaultValue="spaced1" className="gap-4">
+    <div className="flex items-center space-x-3 p-1">
+      <RadioGroupItem value="spaced1" id="spaced1" />
+      <Label htmlFor="spaced1">Spaced row container 1</Label>
+    </div>
+    <div className="flex items-center space-x-3 p-1">
+      <RadioGroupItem value="spaced2" id="spaced2" />
+      <Label htmlFor="spaced2">Spaced row container 2</Label>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function SpacedRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="spaced1" className="gap-4">
+      <div className="flex items-center space-x-3 p-1">
+        <RadioGroupItem value="spaced1" id="spaced1" />
+        <Label htmlFor="spaced1">Spaced row container 1</Label>
+      </div>
+      <div className="flex items-center space-x-3 p-1">
+        <RadioGroupItem value="spaced2" id="spaced2" />
+        <Label htmlFor="spaced2">Spaced row container 2</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 7. Custom Selection Card Wrapper
+
+<ComponentPreview>
+  <RadioGroup defaultValue="card-default" className="grid grid-cols-2 gap-4 max-w-md w-full">
+    <label htmlFor="card-1" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-accent transition-colors [&:has([data-state=checked])]:border-primary">
+      <div className="flex flex-col">
+        <span className="font-semibold text-sm">Starter Pack</span>
+        <span className="text-xs text-muted-foreground">$10/month</span>
+      </div>
+      <RadioGroupItem value="card-default" id="card-1" />
+    </label>
+    <label htmlFor="card-2" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-accent transition-colors [&:has([data-state=checked])]:border-primary">
+      <div className="flex flex-col">
+        <span className="font-semibold text-sm">Pro Pack</span>
+        <span className="text-xs text-muted-foreground">$30/month</span>
+      </div>
+      <RadioGroupItem value="card-pro" id="card-2" />
+    </label>
+  </RadioGroup>
+
+```tsx
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function CardRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="card-default" className="grid grid-cols-2 gap-4 max-w-md w-full">
+      <label htmlFor="card-1" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-accent transition-colors [&:has([data-state=checked])]:border-primary">
+        <div className="flex flex-col text-left">
+          <span className="font-semibold text-sm">Starter Pack</span>
+          <span className="text-xs text-muted-foreground">$10/month</span>
+        </div>
+        <RadioGroupItem value="card-default" id="card-1" />
+      </label>
+      <label htmlFor="card-2" className="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-accent transition-colors [&:has([data-state=checked])]:border-primary">
+        <div className="flex flex-col text-left">
+          <span className="font-semibold text-sm">Pro Pack</span>
+          <span className="text-xs text-muted-foreground">$30/month</span>
+        </div>
+        <RadioGroupItem value="card-pro" id="card-2" />
+      </label>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 8. Custom Accent Color Rings
+
+<ComponentPreview>
+  <RadioGroup defaultValue="colored1">
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="colored1" id="colored1" className="border-emerald-500 [&>span>svg]:fill-emerald-500 [&>span>svg]:text-emerald-500" />
+      <Label htmlFor="colored1">Custom Emerald Fill</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <RadioGroupItem value="colored2" id="colored2" className="border-rose-500 [&>span>svg]:fill-rose-500 [&>span>svg]:text-rose-500" />
+      <Label htmlFor="colored2">Custom Rose Fill</Label>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function ColoredRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="colored1">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="colored1" id="colored1" className="border-emerald-500 [&>span>svg]:fill-emerald-500 [&>span>svg]:text-emerald-500" />
+        <Label htmlFor="colored1">Custom Emerald Fill</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="colored2" id="colored2" className="border-rose-500 [&>span>svg]:fill-rose-500 [&>span>svg]:text-rose-500" />
+        <Label htmlFor="colored2">Custom Rose Fill</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 9. Radio Group inside Bordered Wrapper
+
+<ComponentPreview>
+  <div className="border rounded-xl p-4 bg-card max-w-sm w-full">
+    <h3 className="font-semibold text-sm mb-3">Notification Options</h3>
+    <RadioGroup defaultValue="updates">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="updates" id="updates" />
+        <Label htmlFor="updates">All system updates</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="direct" id="direct" />
+        <Label htmlFor="direct">Direct mentions only</Label>
+      </div>
+    </RadioGroup>
+  </div>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function BoxedRadioGroupDemo() {
+  return (
+    <div className="border rounded-xl p-4 bg-card max-w-sm w-full">
+      <h3 className="font-semibold text-sm mb-3">Notification Options</h3>
+      <RadioGroup defaultValue="updates">
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="updates" id="updates" />
+          <Label htmlFor="updates">All system updates</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value="direct" id="direct" />
+          <Label htmlFor="direct">Direct mentions only</Label>
+        </div>
+      </RadioGroup>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 10. Label with Descriptions
+
+<ComponentPreview>
+  <RadioGroup defaultValue="desc1" className="gap-4 max-w-md w-full">
+    <div className="flex items-start space-x-3">
+      <RadioGroupItem value="desc1" id="desc1" className="mt-0.5" />
+      <div className="flex flex-col">
+        <Label htmlFor="desc1" className="font-medium text-sm">Full Access</Label>
+        <span className="text-xs text-muted-foreground leading-normal">Allows read, write, edit, and full repository deletion capabilities.</span>
+      </div>
+    </div>
+    <div className="flex items-start space-x-3">
+      <RadioGroupItem value="desc2" id="desc2" className="mt-0.5" />
+      <div className="flex flex-col">
+        <Label htmlFor="desc2" className="font-medium text-sm">Read Only</Label>
+        <span className="text-xs text-muted-foreground leading-normal">Allows listing code files and branches without commit permissions.</span>
+      </div>
+    </div>
+  </RadioGroup>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+export default function DescriptionsRadioGroupDemo() {
+  return (
+    <RadioGroup defaultValue="desc1" className="gap-4 max-w-md w-full">
+      <div className="flex items-start space-x-3">
+        <RadioGroupItem value="desc1" id="desc1" className="mt-0.5" />
+        <div className="flex flex-col">
+          <Label htmlFor="desc1" className="font-medium text-sm">Full Access</Label>
+          <span className="text-xs text-muted-foreground leading-normal">Allows read, write, edit, and full repository deletion capabilities.</span>
+        </div>
+      </div>
+      <div className="flex items-start space-x-3">
+        <RadioGroupItem value="desc2" id="desc2" className="mt-0.5" />
+        <div className="flex flex-col">
+          <Label htmlFor="desc2" className="font-medium text-sm">Read Only</Label>
+          <span className="text-xs text-muted-foreground leading-normal">Allows listing code files and branches without commit permissions.</span>
+        </div>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+</ComponentPreview>
+

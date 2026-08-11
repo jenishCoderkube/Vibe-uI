@@ -1,0 +1,372 @@
+# Command
+
+A keyboard-navigable command menu modal triggered via shortcut keys (`CMD/CTRL + K`).
+
+## Preview
+
+<ComponentPreview>
+  <div className="flex flex-col items-center gap-4">
+    <CommandDialogTriggerDemo />
+  </div>
+
+```tsx
+import * as React from 'react'
+import {
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandGroup,
+  CommandItem,
+  Button
+} from '@/components/ui'
+import { User, Settings, Terminal, Shield, LogOut } from 'lucide-react'
+
+export default function CommandDemo() {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)} variant="glow">
+        Press ⌘K or Click to Open Menu
+      </Button>
+
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <CommandInput placeholder="Type a search query..." />
+        <CommandList>
+          <CommandGroup heading="Suggestions">
+            <CommandItem onSelect={() => alert('Launching Terminal...')}>
+              <Terminal className="h-4 w-4 mr-2 opacity-70" />
+              <span>Developer Terminal</span>
+            </CommandItem>
+            <CommandItem onSelect={() => alert('Opening Profile...')}>
+              <User className="h-4 w-4 mr-2 opacity-70" />
+              <span>User Profile</span>
+            </CommandItem>
+          </CommandGroup>
+          <CommandGroup heading="Settings">
+            <CommandItem onSelect={() => alert('Opening Preferences...')}>
+              <Settings className="h-4 w-4 mr-2 opacity-70" />
+              <span>Preferences</span>
+            </CommandItem>
+            <CommandItem onSelect={() => alert('Accessing Security Panel...')}>
+              <Shield className="h-4 w-4 mr-2 opacity-70" />
+              <span>Security & Access Control</span>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </>
+  )
+}
+```
+</ComponentPreview>
+
+<Installation name="command" vibeDeps="button, dialog">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { Search } from 'lucide-react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const commandVariants = tv({
+  base: 'fixed inset-0 z-50 flex items-start justify-center pt-[15vh] px-4 bg-background/80 backdrop-blur-sm select-none',
+  variants: {
+    variant: {
+      default: '',
+      glass: 'backdrop-blur-md bg-zinc-950/20',
+      retro: 'bg-background/90',
+      glow: 'backdrop-blur-sm bg-zinc-950/70',
+    }
+  },
+  defaultVariants: {
+    variant: 'default'
+  }
+})
+
+interface CommandContextValue {
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+  searchQuery: string
+  setSearchQuery: (query: string) => void
+  activeIndex: number
+  setActiveIndex: (index: number) => void
+  registerItem: (id: string, selectCallback: () => void) => number
+  variant?: 'default' | 'glass' | 'retro' | 'glow'
+}
+
+const CommandContext = React.createContext<CommandContextValue | undefined>(undefined)
+
+function useCommand() {
+  const context = React.useContext(CommandContext)
+  if (!context) {
+    throw new Error('Command elements must be rendered inside a <CommandDialog />')
+  }
+  return context
+}
+
+export interface CommandDialogProps extends VariantProps<typeof commandVariants> {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  children?: React.ReactNode
+  triggerKey?: string
+}
+
+export const CommandDialog = React.forwardRef<HTMLDivElement, CommandDialogProps>(
+  ({ open, onOpenChange, children, variant = 'default', triggerKey = 'k' }, ref) => {
+    const [localOpen, setLocalOpen] = React.useState(open || false)
+    const [searchQuery, setSearchQuery] = React.useState('')
+    const [activeIndex, setActiveIndex] = React.useState(0)
+    const isOpen = open !== undefined ? open : localOpen
+    const containerRef = React.useRef<HTMLDivElement>(null)
+    const itemsRef = React.useRef<{ id: string; selectCallback: () => void }[]>([])
+
+    const setIsOpen = React.useCallback(
+      (newOpen: boolean) => {
+        if (open === undefined) {
+          setLocalOpen(newOpen)
+        }
+        onOpenChange?.(newOpen)
+        if (!newOpen) {
+          setSearchQuery('')
+          setActiveIndex(0)
+        }
+      },
+      [open, onOpenChange]
+    )
+
+    const registerItem = React.useCallback((id: string, selectCallback: () => void) => {
+      const idx = itemsRef.current.findIndex(item => item.id === id)
+      if (idx === -1) {
+        itemsRef.current.push({ id, selectCallback })
+        return itemsRef.current.length - 1
+      }
+      return idx
+    }, [])
+
+    React.useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === triggerKey && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault()
+          setIsOpen(!isOpen)
+        }
+      }
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }, [isOpen, setIsOpen, triggerKey])
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (!isOpen) return
+
+      switch (e.key) {
+        case 'Escape':
+          setIsOpen(false)
+          break
+        case 'ArrowDown':
+          e.preventDefault()
+          setActiveIndex(prev => (prev + 1) % itemsRef.current.length)
+          break
+        case 'ArrowUp':
+          e.preventDefault()
+          setActiveIndex(prev => (prev - 1 + itemsRef.current.length) % itemsRef.current.length)
+          break
+        case 'Enter':
+          e.preventDefault()
+          if (activeIndex >= 0 && activeIndex < itemsRef.current.length) {
+            itemsRef.current[activeIndex].selectCallback()
+          }
+          break
+      }
+    }
+
+    React.useEffect(() => {
+      itemsRef.current = []
+      setActiveIndex(0)
+    }, [searchQuery])
+
+    const handleBackdropClick = (e: React.MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (!isOpen) return null
+
+    return (
+      <CommandContext.Provider
+        value={{
+          isOpen,
+          setIsOpen,
+          searchQuery,
+          setSearchQuery,
+          activeIndex,
+          setActiveIndex,
+          registerItem,
+          variant,
+        }}
+      >
+        <div
+          onClick={handleBackdropClick}
+          className={commandVariants({ variant })}
+        >
+          <div
+            ref={containerRef}
+            onKeyDown={handleKeyDown}
+            className={cn(
+              'w-full max-w-lg rounded-xl border bg-popover shadow-2xl overflow-hidden flex flex-col transition-all duration-300 transform scale-100',
+              variant === 'glass' && 'bg-white/10 dark:bg-white/[0.03] backdrop-blur-md border-white/20 dark:border-white/10',
+              variant === 'retro' && 'border-2 border-foreground bg-background rounded-none shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]',
+              variant === 'glow' && 'border-primary/45 shadow-[0_0_30px_rgba(168,85,247,0.2)] bg-zinc-950/90',
+            )}
+          >
+            {children}
+          </div>
+        </div>
+      </CommandContext.Provider>
+    )
+  }
+)
+CommandDialog.displayName = 'CommandDialog'
+
+export const CommandInput = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(({ className, ...props }, ref) => {
+  const { searchQuery, setSearchQuery } = useCommand()
+  return (
+    <div className="flex items-center border-b border-border/80 px-4 py-3 gap-3 shrink-0">
+      <Search className="h-4 w-4 opacity-50 shrink-0" />
+      <input
+        ref={ref}
+        type="text"
+        placeholder="Type a command or search..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className={cn(
+          'flex h-10 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+          className
+        )}
+        {...props}
+      />
+      <div className="text-[10px] border border-border px-1.5 py-0.5 rounded bg-muted text-muted-foreground select-none shrink-0 font-sans">
+        ESC
+      </div>
+    </div>
+  )
+})
+CommandInput.displayName = 'CommandInput'
+
+export const CommandList = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, children, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('flex-1 overflow-y-auto max-h-[300px] p-2 space-y-1.5', className)}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+})
+CommandList.displayName = 'CommandList'
+
+export interface CommandGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  heading?: string
+}
+
+export const CommandGroup = React.forwardRef<HTMLDivElement, CommandGroupProps>(
+  ({ className, heading, children, ...props }, ref) => {
+    const { searchQuery } = useCommand()
+
+    const activeChildren = React.Children.toArray(children).filter((child: any) => {
+      if (!searchQuery) return true
+      const searchTerms = child.props.keywords || []
+      const content = child.props.children || ''
+      const matchLabel = String(content).toLowerCase().includes(searchQuery.toLowerCase())
+      const matchKeyword = searchTerms.some((term: string) =>
+        term.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      return matchLabel || matchKeyword
+    })
+
+    if (activeChildren.length === 0) return null
+
+    return (
+      <div
+        ref={ref}
+        className={cn('space-y-1', className)}
+        {...props}
+      >
+        {heading && (
+          <div className="px-2.5 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider select-none">
+            {heading}
+          </div>
+        )}
+        <div className="space-y-0.5">{activeChildren}</div>
+      </div>
+    )
+  }
+)
+CommandGroup.displayName = 'CommandGroup'
+
+export interface CommandItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  onSelect?: () => void
+  keywords?: string[]
+}
+
+export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(
+  ({ className, onSelect, keywords, children, ...props }, ref) => {
+    const { activeIndex, setActiveIndex, registerItem, variant, setIsOpen } = useCommand()
+    const id = React.useId()
+    const indexRef = React.useRef<number>(-1)
+
+    const handleSelect = React.useCallback(() => {
+      onSelect?.()
+      setIsOpen(false)
+    }, [onSelect, setIsOpen])
+
+    React.useEffect(() => {
+      indexRef.current = registerItem(id, handleSelect)
+    }, [id, registerItem, handleSelect])
+
+    const isActive = activeIndex === indexRef.current
+
+    return (
+      <div
+        ref={ref}
+        onClick={handleSelect}
+        onMouseEnter={() => setActiveIndex(indexRef.current)}
+        className={cn(
+          'relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm outline-none transition-all duration-150 gap-3 text-foreground',
+          isActive && 'bg-accent text-accent-foreground',
+          variant === 'retro' && isActive && 'bg-foreground text-background rounded-none',
+          variant === 'glow' && isActive && 'bg-primary/25 text-primary-foreground',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    )
+  }
+)
+CommandItem.displayName = 'CommandItem'
+```
+
+</Installation>
+
+
+
+---
+
+## Unified Theme Variants
+
+To change the design, pass `variant` to the `CommandDialog`:
+
+* `variant="glass"`: Frosted glass backing.
+* `variant="glow"`: Cyberpunk purple aura border.
+* `variant="retro"`: Brutalist black offset border shadow.

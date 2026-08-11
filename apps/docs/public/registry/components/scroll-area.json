@@ -1,0 +1,16 @@
+{
+  "name": "scroll-area",
+  "dependencies": [
+    "@radix-ui/react-scroll-area",
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "scroll-area.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area'\nimport { tv, type VariantProps } from 'tailwind-variants'\nimport { cn } from '../lib/utils'\n\nconst scrollBarVariants = tv({\n  base: 'flex touch-none select-none transition-colors duration-200',\n  variants: {\n    orientation: {\n      vertical: 'h-full w-2.5 border-l border-l-transparent p-[1px]',\n      horizontal: 'h-2.5 flex-col border-t border-t-transparent p-[1px]',\n    },\n    variant: {\n      default:\n        'hover:bg-muted/50 [&>div]:bg-muted-foreground/30 hover:[&>div]:bg-muted-foreground/50',\n      glass:\n        'hover:bg-white/5 [&>div]:bg-white/20 hover:[&>div]:bg-white/40 backdrop-blur-sm',\n      retro:\n        'border-2 border-foreground bg-background [&>div]:bg-foreground [&>div]:rounded-none w-3.5',\n      glow: 'hover:bg-primary/5 [&>div]:bg-primary/30 hover:[&>div]:bg-primary/60 hover:shadow-[0_0_8px_rgba(168,85,247,0.4)]',\n    },\n  },\n  defaultVariants: {\n    orientation: 'vertical',\n    variant: 'default',\n  },\n})\n\nexport interface ScrollAreaProps\n  extends\n    React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>,\n    VariantProps<typeof scrollBarVariants> {}\n\nconst ScrollArea = React.forwardRef<\n  React.ElementRef<typeof ScrollAreaPrimitive.Root>,\n  ScrollAreaProps\n>(({ className, children, variant, ...props }, ref) => (\n  <ScrollAreaPrimitive.Root\n    ref={ref}\n    data-slot=\"scroll-area\"\n    className={cn('relative overflow-hidden', className)}\n    {...props}\n  >\n    <ScrollAreaPrimitive.Viewport\n      data-slot=\"scroll-area-viewport\"\n      className=\"h-full w-full rounded-[inherit] [&>div]:!block\"\n    >\n      {children}\n    </ScrollAreaPrimitive.Viewport>\n    <ScrollBar variant={variant} />\n    <ScrollAreaPrimitive.Corner />\n  </ScrollAreaPrimitive.Root>\n))\nScrollArea.displayName = ScrollAreaPrimitive.Root.displayName\n\nconst ScrollBar = React.forwardRef<\n  React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,\n  React.ComponentPropsWithoutRef<\n    typeof ScrollAreaPrimitive.ScrollAreaScrollbar\n  > &\n    VariantProps<typeof scrollBarVariants>\n>(({ className, orientation = 'vertical', variant, ...props }, ref) => (\n  <ScrollAreaPrimitive.ScrollAreaScrollbar\n    ref={ref}\n    data-slot=\"scroll-area-scrollbar\"\n    orientation={orientation}\n    className={cn(scrollBarVariants({ orientation, variant }), className)}\n    {...props}\n  >\n    <ScrollAreaPrimitive.ScrollAreaThumb\n      data-slot=\"scroll-area-thumb\"\n      className=\"relative flex-1 rounded-full bg-border transition-colors\"\n    />\n  </ScrollAreaPrimitive.ScrollAreaScrollbar>\n))\nScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName\n\nexport { ScrollArea, ScrollBar }\n"
+    }
+  ]
+}

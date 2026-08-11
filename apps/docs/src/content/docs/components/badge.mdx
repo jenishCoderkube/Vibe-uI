@@ -1,0 +1,310 @@
+# Badge
+
+Displays a badge or a component that looks like a badge for statuses, tags, count indicators, and categories.
+
+## Preview
+
+<ComponentPreview name="badge">
+  <div className="p-6 flex flex-wrap items-center gap-3 justify-center">
+    <Badge variant="default">Default</Badge>
+    <Badge variant="secondary">Secondary</Badge>
+    <Badge variant="outline">Outline</Badge>
+    <Badge variant="glow">Glow</Badge>
+    <Badge variant="glass">Glass</Badge>
+    <Badge variant="retro">Retro</Badge>
+  </div>
+
+```tsx
+import { Badge } from '@/components/ui/badge'
+
+export default function BadgeDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <Badge variant="default">Default</Badge>
+      <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="outline">Outline</Badge>
+      <Badge variant="glow">Glow</Badge>
+      <Badge variant="glass">Glass</Badge>
+      <Badge variant="retro">Retro</Badge>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="badge" npmDeps="tailwind-variants lucide-react">
+
+```tsx
+// @/components/ui/badge.tsx
+'use client'
+
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const badgeVariants = tv({
+  base: 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 select-none shrink-0',
+  variants: {
+    variant: {
+      default:
+        'border-transparent bg-primary text-primary-foreground hover:bg-primary/90',
+      secondary:
+        'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/90',
+      destructive:
+        'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/90',
+      outline:
+        'border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground',
+      glass:
+        'bg-card/70 dark:bg-card/40 border border-border text-foreground backdrop-blur-md hover:bg-card/90 shadow-sm',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] font-bold',
+      glow: 'border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60 shadow-[0_0_10px_rgba(0,0,0,0.05)] dark:shadow-[0_0_12px_rgba(255,255,255,0.12)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface BadgeProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {}
+
+const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
+  ({ className, variant, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(badgeVariants({ variant }), className)}
+        {...props}
+      />
+    )
+  },
+)
+Badge.displayName = 'Badge'
+
+export { Badge, badgeVariants }
+```
+
+</Installation>
+
+---
+
+## 1. Styles & Variations
+
+### Presets
+
+<ComponentPreview name="badge">
+  <div className="flex flex-wrap items-center gap-3 justify-center p-6">
+    <Badge variant="default">Default</Badge>
+    <Badge variant="secondary">Secondary</Badge>
+    <Badge variant="outline">Outline</Badge>
+    <Badge variant="destructive">Destructive</Badge>
+    <Badge variant="glow">Glow Accent</Badge>
+    <Badge variant="glass">Glassmorphic</Badge>
+    <Badge variant="retro">Retro Brutalist</Badge>
+  </div>
+
+```tsx
+import { Badge } from '@/components/ui/badge'
+
+export default function BadgePresets() {
+  return (
+    <div className="flex flex-wrap items-center gap-3 p-4">
+      <Badge variant="default">Default</Badge>
+      <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="outline">Outline</Badge>
+      <Badge variant="destructive">Destructive</Badge>
+      <Badge variant="glow">Glow Accent</Badge>
+      <Badge variant="glass">Glassmorphic</Badge>
+      <Badge variant="retro">Retro Brutalist</Badge>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Accents & Indicators
+
+<ComponentPreview name="badge">
+  <div className="flex flex-wrap items-center gap-4 justify-center p-6">
+    {/* Live Pulse Dot */}
+    <Badge variant="outline" className="gap-1.5 px-2.5 py-1 border-emerald-500/40 text-emerald-900 dark:text-emerald-200 bg-emerald-500/15 font-bold inline-flex items-center">
+      <span className="relative flex h-2 w-2 items-center justify-center shrink-0">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+      </span>
+      <span className="leading-none">Live System</span>
+    </Badge>
+
+    {/* Gradient Border Accent */}
+    <div className="p-[1.5px] rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-flex items-center justify-center">
+      <div className="bg-background text-foreground font-semibold rounded-full px-3 py-1 text-xs inline-flex items-center leading-none">
+        Gradient Accent
+      </div>
+    </div>
+
+    {/* Icon Prefix Badge */}
+    <Badge variant="secondary" className="gap-1.5 px-2.5 py-1 inline-flex items-center text-foreground font-semibold">
+      <svg className="w-3.5 h-3.5 text-amber-500 fill-current shrink-0 self-center" viewBox="0 0 20 20">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+      </svg>
+      <span className="leading-none">Featured</span>
+    </Badge>
+
+    {/* Counter Pill */}
+    <Badge variant="outline" className="gap-2 px-2.5 py-1 inline-flex items-center text-foreground font-semibold border-border bg-background">
+      <span className="leading-none">Messages</span>
+      <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full bg-primary text-black dark:text-black text-[10px] font-mono font-bold leading-none">
+        12
+      </span>
+    </Badge>
+
+  </div>
+
+```tsx
+import { Badge } from '@/components/ui/badge'
+
+export default function BadgeAccents() {
+  return (
+    <div className="flex flex-wrap items-center gap-4 p-4">
+      {/* Live Pulse Dot */}
+      <Badge
+        variant="outline"
+        className="gap-1.5 px-2.5 py-1 border-emerald-500/40 text-emerald-900 dark:text-emerald-200 bg-emerald-500/15 font-bold inline-flex items-center"
+      >
+        <span className="relative flex h-2 w-2 items-center justify-center shrink-0">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+        </span>
+        <span className="leading-none">Live System</span>
+      </Badge>
+
+      {/* Gradient Border Accent */}
+      <div className="p-[1.5px] rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 inline-flex items-center justify-center">
+        <div className="bg-background text-foreground font-semibold rounded-full px-3 py-1 text-xs inline-flex items-center leading-none">
+          Gradient Accent
+        </div>
+      </div>
+
+      {/* Icon Prefix Badge */}
+      <Badge
+        variant="secondary"
+        className="gap-1.5 px-2.5 py-1 inline-flex items-center text-foreground font-semibold"
+      >
+        <svg
+          className="w-3.5 h-3.5 text-amber-500 fill-current shrink-0 self-center"
+          viewBox="0 0 20 20"
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+        <span className="leading-none">Featured</span>
+      </Badge>
+
+      {/* Counter Pill */}
+      <Badge
+        variant="outline"
+        className="gap-2 px-2.5 py-1 inline-flex items-center text-foreground font-semibold border-border bg-background"
+      >
+        <span className="leading-none">Messages</span>
+        <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full bg-primary text-black dark:text-black text-[10px] font-mono font-bold leading-none">
+          12
+        </span>
+      </Badge>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## 2. Composition & Patterns
+
+### Interactive Tags
+
+<ComponentPreview name="badge">
+  <div className="flex flex-wrap items-center gap-3 justify-center p-6">
+    {/* Removable Tag */}
+    <Badge variant="secondary" className="gap-1 pr-1.5 hover:bg-secondary/80 cursor-pointer">
+      React
+      <span className="flex items-center justify-center h-3.5 w-3.5 rounded-full hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground transition-colors">
+        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </span>
+    </Badge>
+
+    <Badge variant="secondary" className="gap-1 pr-1.5 hover:bg-secondary/80 cursor-pointer">
+      TypeScript
+      <span className="flex items-center justify-center h-3.5 w-3.5 rounded-full hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground transition-colors">
+        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </span>
+    </Badge>
+
+    <Badge variant="secondary" className="gap-1 pr-1.5 hover:bg-secondary/80 cursor-pointer">
+      Tailwind CSS
+      <span className="flex items-center justify-center h-3.5 w-3.5 rounded-full hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground transition-colors">
+        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </span>
+    </Badge>
+
+  </div>
+
+```tsx
+import { Badge } from '@/components/ui/badge'
+
+export default function InteractiveBadges() {
+  return (
+    <div className="flex flex-wrap items-center gap-3 p-4">
+      <Badge
+        variant="secondary"
+        className="gap-1 pr-1.5 hover:bg-secondary/80 cursor-pointer"
+      >
+        React
+        <span className="flex items-center justify-center h-3.5 w-3.5 rounded-full hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground transition-colors">
+          ✕
+        </span>
+      </Badge>
+      <Badge
+        variant="secondary"
+        className="gap-1 pr-1.5 hover:bg-secondary/80 cursor-pointer"
+      >
+        TypeScript
+        <span className="flex items-center justify-center h-3.5 w-3.5 rounded-full hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground transition-colors">
+          ✕
+        </span>
+      </Badge>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Props
+
+<PropsTable title="Badge">
+  <PropRow
+    prop="variant"
+    type='"default" | "secondary" | "destructive" | "outline" | "glass" | "retro" | "glow"'
+    default='"default"'
+    description="Visual preset theme variant of the badge element."
+  />
+  <PropRow
+    prop="className"
+    type="string"
+    default="-"
+    description="Additional CSS class names to apply to the badge."
+  />
+</PropsTable>

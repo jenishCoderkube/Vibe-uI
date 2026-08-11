@@ -1,0 +1,1233 @@
+# Alert Dialog
+
+A modal dialog that interrupts the user with important content and expects a response.
+
+## Preview
+
+<ComponentPreview>
+  <AlertDialog>
+    <AlertDialogTrigger asChild>
+      <Button variant="outline">Open Alert Dialog</Button>
+    </AlertDialogTrigger>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        <AlertDialogDescription>
+          This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction>Continue</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+
+export function AlertDialogDemo() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Open Alert Dialog</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your account
+            and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="alert-dialog" npmDeps="@radix-ui/react-alert-dialog lucide-react tailwind-variants" vibeDeps="button">
+
+```tsx
+import * as React from 'react'
+import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
+import { tv } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from './button'
+
+const AlertDialog = AlertDialogPrimitive.Root
+const AlertDialogTrigger = AlertDialogPrimitive.Trigger
+const AlertDialogPortal = AlertDialogPrimitive.Portal
+
+const alertOverlayVariants = tv({
+  base: 'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out',
+  variants: {
+    variant: {
+      default: 'backdrop-blur-sm',
+      glass: 'backdrop-blur-md bg-black/50',
+      retro: '',
+    }
+  },
+  defaultVariants: {
+    variant: 'default',
+  }
+})
+
+const AlertDialogOverlay = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay> & { variant?: 'default' | 'glass' | 'retro' }
+>(({ className, variant, ...props }, ref) => (
+  <AlertDialogPrimitive.Overlay
+    className={cn(alertOverlayVariants({ variant }), className)}
+    {...props}
+    ref={ref}
+  />
+))
+AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
+
+const alertContentVariants = tv({
+  base: 'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-zoom-in data-[state=closed]:animate-zoom-out sm:rounded-lg',
+  variants: {
+    variant: {
+      default: 'border-border',
+      retro: 'border-2 border-foreground bg-background text-foreground shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glass: 'bg-white/10 dark:bg-black/40 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl rounded-2xl',
+    }
+  },
+  defaultVariants: {
+    variant: 'default',
+  }
+})
+
+const AlertDialogContent = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> & { variant?: 'default' | 'glass' | 'retro' }
+>(({ className, variant, ...props }, ref) => (
+  <AlertDialogPortal>
+    <AlertDialogOverlay variant={variant} />
+    <AlertDialogPrimitive.Content
+      ref={ref}
+      className={cn(alertContentVariants({ variant }), className)}
+      {...props}
+    />
+  </AlertDialogPortal>
+))
+AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
+
+const AlertDialogHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      'flex flex-col space-y-2 text-center sm:text-left',
+      className
+    )}
+    {...props}
+  />
+)
+AlertDialogHeader.displayName = 'AlertDialogHeader'
+
+const AlertDialogFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0',
+      className
+    )}
+    {...props}
+  />
+)
+AlertDialogFooter.displayName = 'AlertDialogFooter'
+
+const AlertDialogTitle = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Title
+    ref={ref}
+    className={cn('text-lg font-semibold leading-none tracking-tight', className)}
+    {...props}
+  />
+))
+AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName
+
+const AlertDialogDescription = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Description
+    ref={ref}
+    className={cn('text-sm text-muted-foreground leading-relaxed', className)}
+    {...props}
+  />
+))
+AlertDialogDescription.displayName =
+  AlertDialogPrimitive.Description.displayName
+
+const AlertDialogAction = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Action>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & { buttonVariant?: string }
+>(({ className, buttonVariant = 'default', ...props }, ref) => (
+  <AlertDialogPrimitive.Action
+    ref={ref}
+    className={cn(buttonVariants({ variant: buttonVariant as any }), className)}
+    {...props}
+  />
+))
+AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName
+
+const AlertDialogCancel = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> & { buttonVariant?: string }
+>(({ className, buttonVariant = 'outline', ...props }, ref) => (
+  <AlertDialogPrimitive.Cancel
+    ref={ref}
+    className={cn(
+      buttonVariants({ variant: buttonVariant as any }),
+      className
+    )}
+    {...props}
+  />
+))
+AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName
+
+export {
+  AlertDialog,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+}
+```
+
+</Installation>
+
+### Standard Presets
+
+A collection of standard confirmation, destructive alerts, scrollable bodies, form submittals, and header icon layouts.
+
+<ComponentPreview>
+  <div className="flex flex-wrap items-center gap-3">
+    {/* 1. Standard Confirmation */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Standard Dialog</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Verify Action</AlertDialogTitle>
+          <AlertDialogDescription>Please confirm if you want to proceed with this request.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Proceed</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 2. Destructive Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive">Delete Repository</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Repository?</AlertDialogTitle>
+          <AlertDialogDescription>This action will permanently purge the repository branch. All commits will be lost.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="destructive">Confirm Delete</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 3. Dialog with Top Header Icon */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Icon Header Dialog</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <div className="flex flex-col items-center text-center gap-3">
+          <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-emerald-600 dark:text-emerald-400">✓</div>
+          <AlertDialogTitle>System Initialized</AlertDialogTitle>
+          <AlertDialogDescription>All local configuration files have been written successfully to disk.</AlertDialogDescription>
+        </div>
+        <AlertDialogFooter className="sm:justify-center">
+          <AlertDialogAction className="w-full sm:w-auto">Finish Setup</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 4. Scrollable Overlay Body */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">License Agreement</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Terms of Service</AlertDialogTitle>
+          <div className="max-h-[150px] overflow-y-auto pr-2 text-xs text-muted-foreground flex flex-col gap-2">
+            <p>By using this software, you agree to these terms.</p>
+            <p>1. Software is provided "as is" without warranty of any kind.</p>
+            <p>2. You cannot redistribute or modify source binary maps under commercial scopes.</p>
+            <p>3. License remains active indefinitely until revoked manually.</p>
+            <p>4. End of agreement statement block.</p>
+          </div>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Decline</AlertDialogCancel>
+          <AlertDialogAction>Accept Agreement</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 5. Form-Submit Confirmation */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="glow">Submit Form Fields</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Submit application?</AlertDialogTitle>
+          <AlertDialogDescription>Please double check that all fields are correct. You will not be able to edit this form once sent.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Go Back</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="glow">Submit Anyway</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </div>
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+
+export default function StandardAlertsDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      {/* 1. Standard Confirmation */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">Standard Dialog</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Verify Action</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please confirm if you want to proceed with this request.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction>Proceed</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 2. Destructive Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="destructive">Delete Repository</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Repository?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will permanently purge the repository branch. All commits will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="destructive">Confirm Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 3. Dialog with Top Header Icon */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">Icon Header Dialog</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-emerald-600 dark:text-emerald-400">✓</div>
+            <AlertDialogTitle>System Initialized</AlertDialogTitle>
+            <AlertDialogDescription>
+              All local configuration files have been written successfully to disk.
+            </AlertDialogDescription>
+          </div>
+          <AlertDialogFooter className="sm:justify-center">
+            <AlertDialogAction className="w-full sm:w-auto">Finish Setup</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 4. Scrollable Overlay Body */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">License Agreement</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Terms of Service</AlertDialogTitle>
+            <div className="max-h-[150px] overflow-y-auto pr-2 text-xs text-muted-foreground flex flex-col gap-2">
+              <p>By using this software, you agree to these terms.</p>
+              <p>1. Software is provided "as is" without warranty of any kind.</p>
+              <p>2. You cannot redistribute or modify source binary maps under commercial scopes.</p>
+              <p>3. License remains active indefinitely until revoked manually.</p>
+              <p>4. End of agreement statement block.</p>
+            </div>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Decline</AlertDialogCancel>
+            <AlertDialogAction>Accept Agreement</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 5. Form-Submit Confirmation */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="glow">Submit Form Fields</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Submit application?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please double check that all fields are correct. You will not be able to edit this form once sent.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Go Back</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="glow">Submit Anyway</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Custom & Layout Variations
+
+A showcase of glassmorphic styles, retro brutalist borders, custom action triggers, delayed close options, and multiple footer actions.
+
+<ComponentPreview>
+  <div className="flex flex-wrap items-center gap-3">
+    {/* 1. Glassmorphic Style */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="glass">Open Glassmorphic</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent variant="glass">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Glassmorphic Dialog</AlertDialogTitle>
+          <AlertDialogDescription>Frosted glass backdrop saturation overlay with dynamic background content blur.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel buttonVariant="glass">Dismiss</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="glow">Acknowledge</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 2. Retro Neobrutalist Style */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="retro">Open Retro Dialog</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent variant="retro">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Attention Required!</AlertDialogTitle>
+          <AlertDialogDescription>Bold layout module styling containing structural outline borders and hard offset shadow drops.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel buttonVariant="retro">Go Back</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="retro">Okay</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 3. Custom Close Action Delay / Danger Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Delete Database</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Format Database?</AlertDialogTitle>
+          <AlertDialogDescription>Dangerous operations require caution. Please take a second to review the consequences before clicking continue.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel Immediately</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="destructive">I understand the risk</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 4. Custom Trigger Component Link */}
+    <AlertDialog>
+      <AlertDialogTrigger className="text-primary hover:underline cursor-pointer font-medium text-sm">
+        Read Privacy Consent Policy
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Privacy Consent</AlertDialogTitle>
+          <AlertDialogDescription>We gather system stats data for diagnostics and general usability analytics indicators.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogAction>Acknowledge policy</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 5. Multi-Action Operations Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Open Multi-Action</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Select Action</AlertDialogTitle>
+          <AlertDialogDescription>Select how you want to save your file drafts before leaving this tab screen.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+          <AlertDialogCancel className="sm:mr-auto">Cancel</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="secondary">Save Draft</AlertDialogAction>
+          <AlertDialogAction buttonVariant="default">Publish Changes</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </div>
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+
+export default function CustomLayoutsDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      {/* 1. Glassmorphic Style */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="glass">Open Glassmorphic</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent variant="glass">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Glassmorphic Dialog</AlertDialogTitle>
+            <AlertDialogDescription>
+              Frosted glass backdrop saturation overlay with dynamic background content blur.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel buttonVariant="glass">Dismiss</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="glow">Acknowledge</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 2. Retro Neobrutalist Style */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="retro">Open Retro Dialog</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent variant="retro">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Attention Required!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bold layout module styling containing structural outline borders and hard offset shadow drops.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel buttonVariant="retro">Go Back</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="retro">Okay</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 3. Danger Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">Delete Database</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Format Database?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Dangerous operations require caution. Please take a second to review the consequences before clicking continue.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel Immediately</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="destructive">I understand the risk</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 4. Custom Trigger Link */}
+      <AlertDialog>
+        <AlertDialogTrigger className="text-primary hover:underline cursor-pointer font-medium text-sm">
+          Read Privacy Consent Policy
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Privacy Consent</AlertDialogTitle>
+            <AlertDialogDescription>
+              We gather system stats data for diagnostics and general usability analytics indicators.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction>Acknowledge policy</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 5. Multi-Action Operations Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">Open Multi-Action</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Select Action</AlertDialogTitle>
+            <AlertDialogDescription>
+              Select how you want to save your file drafts before leaving this tab screen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+            <AlertDialogCancel className="sm:mr-auto">Cancel</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="secondary">Save Draft</AlertDialogAction>
+            <AlertDialogAction buttonVariant="default">Publish Changes</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Premium Presets
+
+A showcase of high-end premium interface presets utilizing advanced cyberpunk grids, frosted billing bundles, and neobrutalist hardware diagnostics.
+
+<ComponentPreview>
+  <div className="flex flex-wrap items-center gap-3">
+    {/* 1. Cyber Security Override Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="cyberpunk" className="font-mono">BYPASS_FIREWALL</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="border border-emerald-500/80 bg-black text-emerald-600 dark:text-emerald-400 font-mono rounded-none shadow-[0_0_15px_rgba(16,185,129,0.15)] select-none">
+        <div className="flex items-center gap-2 text-emerald-500 mb-2">
+          <Terminal className="h-5 w-5 animate-pulse" />
+          <AlertDialogTitle className="font-mono uppercase text-emerald-500 text-sm tracking-wider">SYSTEM_SECURITY_OVERRIDE</AlertDialogTitle>
+        </div>
+        <AlertDialogDescription className="font-mono text-xs text-emerald-600/80 dark:text-emerald-400/80 leading-relaxed border-t border-b border-emerald-500/20 py-3 my-2">
+          WARNING: Authorization key required to bypass default secure firewall protocols. Executing this transaction records user diagnostics to system logging traces.
+        </AlertDialogDescription>
+        <AlertDialogFooter className="flex-row justify-end gap-2 mt-4">
+          <AlertDialogCancel buttonVariant="cyberpunk" className="m-0 text-xs py-1.5 h-8">TERMINATE_SESSION</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="cyberpunk" className="m-0 text-xs py-1.5 h-8 bg-emerald-950/40 text-emerald-400 hover:bg-emerald-500/20">AUTHORIZE_BYPASS</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 2. Premium Glassmorphic Upgrade Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="gradient">Unlock Premium</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent variant="glass" className="max-w-md">
+        <div className="flex flex-col items-center text-center gap-3">
+          <div className="h-12 w-12 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+            <Info className="h-6 w-6" />
+          </div>
+          <AlertDialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-amber-600 to-orange-500 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">Unlock Premium Access</AlertDialogTitle>
+          <AlertDialogDescription className="text-xs text-muted-foreground leading-normal px-2">
+            Join elite builders and get unlimited access to 100+ styled React components, advanced animations, and premium page templates.
+          </AlertDialogDescription>
+          <div className="w-full text-left bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-3 flex flex-col gap-2 mt-2">
+            <div className="flex items-center gap-2 text-xs text-foreground">
+              <span className="text-amber-500">✦</span> <span>38+ Premium Themed Blocks</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-foreground">
+              <span className="text-amber-500">✦</span> <span>Priority Developer Support</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-foreground">
+              <span className="text-amber-500">✦</span> <span>Lifetime Free Updates & Assets</span>
+            </div>
+          </div>
+        </div>
+        <AlertDialogFooter className="flex-row justify-end gap-2 mt-4 sm:justify-center">
+          <AlertDialogCancel buttonVariant="glass" className="w-1/2 sm:w-auto text-xs py-1.5 h-8">Maybe Later</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="gradient" className="w-1/2 sm:w-auto text-xs py-1.5 h-8 font-semibold shadow-md shadow-indigo-600/10">Upgrade Now</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 3. Brutalist Sector Diagnosis Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="retro">Diagnostics Check</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent variant="retro" className="max-w-md select-none border-3">
+        <div className="flex gap-3 items-start border-b-2 border-foreground pb-4">
+          <div className="h-10 w-10 border-2 border-foreground bg-amber-400 flex items-center justify-center text-foreground font-bold shrink-0">
+            <ShieldAlert className="h-5 w-5" />
+          </div>
+          <div>
+            <AlertDialogTitle className="text-sm font-black uppercase tracking-wide">SECTOR_7_CRITICAL_WARN</AlertDialogTitle>
+            <AlertDialogDescription className="text-xs text-foreground font-medium leading-normal mt-1">
+              Hardware diagnosis reports elevated temperatures and cache memory overflow blocks in Sector 7.
+            </AlertDialogDescription>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-2 my-4 text-center">
+          <div className="border-2 border-foreground bg-muted/20 p-2 font-mono text-[10px] text-foreground">
+            <div className="font-bold text-[8px] text-muted-foreground uppercase">CPU TEMP</div>
+            <div className="font-black text-red-500 text-xs mt-0.5">94°C</div>
+          </div>
+          <div className="border-2 border-foreground bg-muted/20 p-2 font-mono text-[10px] text-foreground">
+            <div className="font-bold text-[8px] text-muted-foreground uppercase">RAM BLOCKS</div>
+            <div className="font-black text-amber-500 text-xs mt-0.5">87%</div>
+          </div>
+          <div className="border-2 border-foreground bg-muted/20 p-2 font-mono text-[10px] text-foreground">
+            <div className="font-bold text-[8px] text-muted-foreground uppercase">FANS</div>
+            <div className="font-black text-emerald-500 text-xs mt-0.5">100%</div>
+          </div>
+        </div>
+        <AlertDialogFooter className="flex-row justify-end gap-2">
+          <AlertDialogCancel buttonVariant="retro" className="m-0 text-xs py-1.5 h-8">Decline</AlertDialogCancel>
+          <AlertDialogAction buttonVariant="retro" className="m-0 text-xs py-1.5 h-8 bg-amber-400 hover:bg-amber-300 text-foreground font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all">REBOOT_CORE</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 4. Modern API Key Disclosure Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="default" className="!bg-zinc-900 !text-white hover:!bg-zinc-800 dark:!bg-zinc-100 dark:hover:!bg-zinc-200 dark:!text-zinc-950 font-medium text-xs h-9">Create API Key</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-xl select-none">
+        <AlertDialogHeader className="space-y-2">
+          <AlertDialogTitle className="text-zinc-900 dark:text-zinc-50 font-semibold tracking-tight text-lg">API Secret Key Generated</AlertDialogTitle>
+          <AlertDialogDescription className="text-zinc-500 dark:text-zinc-400 text-xs leading-normal">
+            Save this secret token key. For security guidelines, this secret credential won't be shown again in your developer console.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="flex flex-col gap-3 my-4">
+          <div className="flex items-center justify-between gap-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-3 font-mono text-xs text-zinc-800 dark:text-zinc-200">
+            <span>sk_live_51O2aFjKh9zX8bQ0sR...</span>
+            <Button variant="ghost" size="sm" className="h-7 px-2 text-[10px] hover:bg-zinc-200 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400">Copy</Button>
+          </div>
+          <div className="flex gap-2.5 items-start bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl p-3 text-xs leading-relaxed">
+            <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+            <span>Never share this code with anyone or expose it in client-side client applications.</span>
+          </div>
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogAction className="!bg-zinc-900 hover:!bg-zinc-800 dark:!bg-zinc-50 dark:hover:!bg-zinc-200 !text-white dark:!text-zinc-900 font-semibold text-xs py-1.5 h-8">Done, I saved it</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 5. Modern SaaS Usage Limit Alert */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline" className="border-red-200 hover:bg-red-50 dark:border-red-950/40 dark:hover:bg-red-950/20 !text-red-600 dark:!text-red-400 font-medium text-xs h-9">Check Egress Usage</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-xl select-none animate-in fade-in zoom-in duration-200">
+        <AlertDialogHeader className="space-y-1">
+          <div className="flex items-center gap-2 text-red-500 mb-1">
+            <AlertCircle className="h-5 w-5" />
+            <AlertDialogTitle className="text-zinc-900 dark:text-zinc-50 font-bold tracking-tight text-base">Egress Limit Alert</AlertDialogTitle>
+          </div>
+          <AlertDialogDescription className="text-zinc-500 dark:text-zinc-400 text-xs leading-normal">
+            Your billing project has consumed 94% of the allocated monthly data egress. Upgrade now to prevent throttling.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="my-4 space-y-3">
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+              <span>Bandwidth Consumed</span>
+              <span>94.2 GB of 100 GB</span>
+            </div>
+            <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-full w-[94.2%] bg-red-500 rounded-full transition-all duration-300"></div>
+            </div>
+          </div>
+          <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-normal">
+            Additional egress usage beyond limits will be billed at <span className="font-semibold text-zinc-800 dark:text-zinc-200">$0.12/GB</span> or cause execution pauses.
+          </div>
+        </div>
+        <AlertDialogFooter className="gap-2 sm:gap-0">
+          <AlertDialogCancel className="text-xs py-1.5 h-8">Close Panel</AlertDialogCancel>
+          <AlertDialogAction className="!bg-red-600 hover:!bg-red-500 !text-white font-semibold text-xs py-1.5 h-8 border-0 shadow-sm">Upgrade Billing Plan</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 6. Modern Workspace Team Access Invite Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline" className="font-medium text-xs h-9">Configure Member Access</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-xl select-none animate-in fade-in zoom-in duration-200">
+        <AlertDialogHeader className="space-y-2">
+          <AlertDialogTitle className="text-zinc-900 dark:text-zinc-50 font-bold tracking-tight text-lg">Configure Team Permissions</AlertDialogTitle>
+          <AlertDialogDescription className="text-zinc-500 dark:text-zinc-400 text-xs leading-normal">
+            Review and adjust default system permissions prior to finalizing member access.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="my-4 space-y-3">
+          <div className="flex items-center gap-3 border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/30 rounded-xl p-3">
+            <div className="h-8 w-8 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-bold text-xs shrink-0">JD</div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">jane.developer@company.com</span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">Invitation pending</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="border border-indigo-500 bg-indigo-500/5 rounded-xl p-3 flex flex-col gap-1 cursor-pointer select-none text-left">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">Developer Role</span>
+                <span className="text-[9px] bg-indigo-500 text-white px-1.5 py-0.25 rounded-full font-bold">Selected</span>
+              </div>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 leading-normal">Full read-write deployment and code sandbox access scope keys.</span>
+            </div>
+            <div className="border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-transparent rounded-xl p-3 flex flex-col gap-1 cursor-pointer select-none text-left">
+              <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Billing Admin</span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 leading-normal">Manage invoices, plan packages, subscription billing triggers.</span>
+            </div>
+          </div>
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="text-xs py-1.5 h-8">Decline</AlertDialogCancel>
+          <AlertDialogAction className="!bg-indigo-600 hover:!bg-indigo-500 !text-white font-semibold text-xs py-1.5 h-8 border-0 shadow-sm shadow-indigo-600/10">Grant & Invite</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* 7. Modern API Deprecation Sunset Dialog */}
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline" className="border-amber-200 hover:bg-amber-50 dark:border-amber-950/40 dark:hover:bg-amber-950/20 !text-amber-600 dark:!text-amber-400 font-medium text-xs h-9">Deprecate API Version</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-xl select-none animate-in fade-in zoom-in duration-200">
+        <AlertDialogHeader className="space-y-1">
+          <div className="flex items-center gap-2 text-amber-500 mb-1">
+            <Layers className="h-5 w-5" />
+            <AlertDialogTitle className="text-zinc-900 dark:text-zinc-50 font-bold tracking-tight text-base">Deprecate API Version v1.2</AlertDialogTitle>
+          </div>
+          <AlertDialogDescription className="text-zinc-500 dark:text-zinc-400 text-xs leading-normal">
+            Deprecating version v1.2 will immediately flag requests with deprecation headers and start the 30-day sunset countdown.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="my-4 space-y-3">
+          <div className="grid grid-cols-2 gap-2 text-center">
+            <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-xl p-2.5">
+              <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-semibold">Active Consumers</div>
+              <div className="text-sm font-bold text-zinc-800 dark:text-zinc-200 mt-0.5">14 Apps</div>
+            </div>
+            <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-xl p-2.5">
+              <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-semibold">Daily Requests</div>
+              <div className="text-sm font-bold text-zinc-800 dark:text-zinc-200 mt-0.5">1.2M reqs</div>
+            </div>
+          </div>
+          <div className="flex gap-2.5 items-start bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl p-3 text-xs leading-relaxed">
+            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+            <span>Sunsetting will completely shut down access endpoint keys on <strong>September 5, 2026</strong>.</span>
+          </div>
+        </div>
+        <AlertDialogFooter className="gap-2 sm:gap-0">
+          <AlertDialogCancel className="text-xs py-1.5 h-8">Cancel Sunset</AlertDialogCancel>
+          <AlertDialogAction className="!bg-amber-600 hover:!bg-amber-500 !text-white font-semibold text-xs py-1.5 h-8 border-0 shadow-sm shadow-amber-600/10">Confirm Deprecation</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </div>
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { Terminal, ShieldAlert, Info, AlertTriangle, AlertCircle } from 'lucide-react'
+
+export default function PremiumAlertsDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      {/* 1. Cyber Security Override Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="cyberpunk" className="font-mono">BYPASS_FIREWALL</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="border border-emerald-500/80 bg-black text-emerald-600 dark:text-emerald-400 font-mono rounded-none shadow-[0_0_15px_rgba(16,185,129,0.15)] select-none">
+          <div className="flex items-center gap-2 text-emerald-500 mb-2">
+            <Terminal className="h-5 w-5 animate-pulse" />
+            <AlertDialogTitle className="font-mono uppercase text-emerald-500 text-sm tracking-wider">SYSTEM_SECURITY_OVERRIDE</AlertDialogTitle>
+          </div>
+          <AlertDialogDescription className="font-mono text-xs text-emerald-600/80 dark:text-emerald-400/80 leading-relaxed border-t border-b border-emerald-500/20 py-3 my-2">
+            WARNING: Authorization key required to bypass default secure firewall protocols. Executing this transaction records user diagnostics to system logging traces.
+          </AlertDialogDescription>
+          <AlertDialogFooter className="flex-row justify-end gap-2 mt-4">
+            <AlertDialogCancel buttonVariant="cyberpunk" className="m-0 text-xs py-1.5 h-8">TERMINATE_SESSION</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="cyberpunk" className="m-0 text-xs py-1.5 h-8 bg-emerald-950/40 text-emerald-400 hover:bg-emerald-500/20">AUTHORIZE_BYPASS</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 2. Premium Glassmorphic Upgrade Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="gradient">Unlock Premium</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent variant="glass" className="max-w-md">
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="h-12 w-12 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+              <Info className="h-6 w-6" />
+            </div>
+            <AlertDialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-amber-600 to-orange-500 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">Unlock Premium Access</AlertDialogTitle>
+            <AlertDialogDescription className="text-xs text-muted-foreground leading-normal px-2">
+              Join elite builders and get unlimited access to 100+ styled React components, advanced animations, and premium page templates.
+            </AlertDialogDescription>
+            <div className="w-full text-left bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-3 flex flex-col gap-2 mt-2">
+              <div className="flex items-center gap-2 text-xs text-foreground">
+                <span className="text-amber-500">✦</span> <span>38+ Premium Themed Blocks</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-foreground">
+                <span className="text-amber-500">✦</span> <span>Priority Developer Support</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-foreground">
+                <span className="text-amber-500">✦</span> <span>Lifetime Free Updates & Assets</span>
+              </div>
+            </div>
+          </div>
+          <AlertDialogFooter className="flex-row justify-end gap-2 mt-4 sm:justify-center">
+            <AlertDialogCancel buttonVariant="glass" className="w-1/2 sm:w-auto text-xs py-1.5 h-8">Maybe Later</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="gradient" className="w-1/2 sm:w-auto text-xs py-1.5 h-8 font-semibold shadow-md shadow-indigo-600/10">Upgrade Now</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 3. Brutalist Sector Diagnosis Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="retro">Diagnostics Check</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent variant="retro" className="max-w-md select-none border-3">
+          <div className="flex gap-3 items-start border-b-2 border-foreground pb-4">
+            <div className="h-10 w-10 border-2 border-foreground bg-amber-400 flex items-center justify-center text-foreground font-bold shrink-0">
+              <ShieldAlert className="h-5 w-5" />
+            </div>
+            <div>
+              <AlertDialogTitle className="text-sm font-black uppercase tracking-wide">SECTOR_7_CRITICAL_WARN</AlertDialogTitle>
+              <AlertDialogDescription className="text-xs text-foreground font-medium leading-normal mt-1">
+                Hardware diagnosis reports elevated temperatures and cache memory overflow blocks in Sector 7.
+              </AlertDialogDescription>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2 my-4 text-center">
+            <div className="border-2 border-foreground bg-muted/20 p-2 font-mono text-[10px] text-foreground">
+              <div className="font-bold text-[8px] text-muted-foreground uppercase">CPU TEMP</div>
+              <div className="font-black text-red-500 text-xs mt-0.5">94°C</div>
+            </div>
+            <div className="border-2 border-foreground bg-muted/20 p-2 font-mono text-[10px] text-foreground">
+              <div className="font-bold text-[8px] text-muted-foreground uppercase">RAM BLOCKS</div>
+              <div className="font-black text-amber-500 text-xs mt-0.5">87%</div>
+            </div>
+            <div className="border-2 border-foreground bg-muted/20 p-2 font-mono text-[10px] text-foreground">
+              <div className="font-bold text-[8px] text-muted-foreground uppercase">FANS</div>
+              <div className="font-black text-emerald-500 text-xs mt-0.5">100%</div>
+            </div>
+          </div>
+          <AlertDialogFooter className="flex-row justify-end gap-2">
+            <AlertDialogCancel buttonVariant="retro" className="m-0 text-xs py-1.5 h-8">Decline</AlertDialogCancel>
+            <AlertDialogAction buttonVariant="retro" className="m-0 text-xs py-1.5 h-8 bg-amber-400 hover:bg-amber-300 text-foreground font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all">REBOOT_CORE</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+          {/* 4. Modern API Key Disclosure Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="default" className="!bg-zinc-900 !text-white hover:!bg-zinc-800 dark:!bg-zinc-100 dark:hover:!bg-zinc-200 dark:!text-zinc-950 font-medium text-xs h-9">Create API Key</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-xl select-none">
+          <AlertDialogHeader className="space-y-2">
+            <AlertDialogTitle className="text-zinc-900 dark:text-zinc-50 font-semibold tracking-tight text-lg">API Secret Key Generated</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-500 dark:text-zinc-400 text-xs leading-normal">
+              Save this secret token key. For security guidelines, this secret credential won't be shown again in your developer console.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex flex-col gap-3 my-4">
+            <div className="flex items-center justify-between gap-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-3 font-mono text-xs text-zinc-800 dark:text-zinc-200">
+              <span>sk_live_51O2aFjKh9zX8bQ0sR...</span>
+              <Button variant="ghost" size="sm" className="h-7 px-2 text-[10px] hover:bg-zinc-200 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400">Copy</Button>
+            </div>
+            <div className="flex gap-2.5 items-start bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl p-3 text-xs leading-relaxed">
+              <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+              <span>Never share this code with anyone or expose it in client-side client applications.</span>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogAction className="!bg-zinc-900 hover:!bg-zinc-800 dark:!bg-zinc-50 dark:hover:!bg-zinc-200 !text-white dark:!text-zinc-900 font-semibold text-xs py-1.5 h-8">Done, I saved it</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 5. Modern SaaS Usage Limit Alert */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline" className="border-red-200 hover:bg-red-50 dark:border-red-950/40 dark:hover:bg-red-950/20 !text-red-600 dark:!text-red-400 font-medium text-xs h-9">Check Egress Usage</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-xl select-none animate-in fade-in zoom-in duration-200">
+          <AlertDialogHeader className="space-y-1">
+            <div className="flex items-center gap-2 text-red-500 mb-1">
+              <AlertCircle className="h-5 w-5" />
+              <AlertDialogTitle className="text-zinc-900 dark:text-zinc-50 font-bold tracking-tight text-base">Egress Limit Alert</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription className="text-zinc-500 dark:text-zinc-400 text-xs leading-normal">
+              Your billing project has consumed 94% of the allocated monthly data egress. Upgrade now to prevent throttling.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="my-4 space-y-3">
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                <span>Bandwidth Consumed</span>
+                <span>94.2 GB of 100 GB</span>
+              </div>
+              <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-full w-[94.2%] bg-red-500 rounded-full transition-all duration-300"></div>
+              </div>
+            </div>
+            <div className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-normal">
+              Additional egress usage beyond limits will be billed at <span className="font-semibold text-zinc-800 dark:text-zinc-200">$0.12/GB</span> or cause execution pauses.
+            </div>
+          </div>
+          <div className="flex flex-row justify-end gap-2">
+            <AlertDialogCancel className="text-xs py-1.5 h-8">Close Panel</AlertDialogCancel>
+            <AlertDialogAction className="!bg-red-600 hover:!bg-red-500 !text-white font-semibold text-xs py-1.5 h-8 border-0 shadow-sm">Upgrade Billing Plan</AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 6. Modern Workspace Team Access Invite Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline" className="font-medium text-xs h-9">Configure Member Access</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-xl select-none animate-in fade-in zoom-in duration-200">
+          <AlertDialogHeader className="space-y-2">
+            <AlertDialogTitle className="text-zinc-900 dark:text-zinc-50 font-bold tracking-tight text-lg">Configure Team Permissions</AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-500 dark:text-zinc-400 text-xs leading-normal">
+              Review and adjust default system permissions prior to finalizing member access.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="my-4 space-y-3">
+            <div className="flex items-center gap-3 border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/30 rounded-xl p-3">
+              <div className="h-8 w-8 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-bold text-xs shrink-0">JD</div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">jane.developer@company.com</span>
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">Invitation pending</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="border border-indigo-500 bg-indigo-500/5 rounded-xl p-3 flex flex-col gap-1 cursor-pointer select-none text-left">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">Developer Role</span>
+                  <span className="text-[9px] bg-indigo-500 text-white px-1.5 py-0.25 rounded-full font-bold">Selected</span>
+                </div>
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 leading-normal">Full read-write deployment and code sandbox access scope keys.</span>
+              </div>
+              <div className="border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-transparent rounded-xl p-3 flex flex-col gap-1 cursor-pointer select-none text-left">
+                <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Billing Admin</span>
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 leading-normal">Manage invoices, plan packages, subscription billing triggers.</span>
+              </div>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="text-xs py-1.5 h-8">Decline</AlertDialogCancel>
+            <AlertDialogAction className="!bg-indigo-600 hover:!bg-indigo-500 !text-white font-semibold text-xs py-1.5 h-8 border-0 shadow-sm shadow-indigo-600/10">Grant & Invite</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 7. Modern API Deprecation Sunset Dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline" className="border-amber-200 hover:bg-amber-50 dark:border-amber-950/40 dark:hover:bg-amber-950/20 !text-amber-600 dark:!text-amber-400 font-medium text-xs h-9">Deprecate API Version</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="max-w-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 rounded-2xl shadow-xl select-none animate-in fade-in zoom-in duration-200">
+          <AlertDialogHeader className="space-y-1">
+            <div className="flex items-center gap-2 text-amber-500 mb-1">
+              <Layers className="h-5 w-5" />
+              <AlertDialogTitle className="text-zinc-900 dark:text-zinc-50 font-bold tracking-tight text-base">Deprecate API Version v1.2</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription className="text-zinc-500 dark:text-zinc-400 text-xs leading-normal">
+              Deprecating version v1.2 will immediately flag requests with deprecation headers and start the 30-day sunset countdown.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="my-4 space-y-3">
+            <div className="grid grid-cols-2 gap-2 text-center">
+              <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-xl p-2.5">
+                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-semibold">Active Consumers</div>
+                <div className="text-sm font-bold text-zinc-800 dark:text-zinc-200 mt-0.5">14 Apps</div>
+              </div>
+              <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-xl p-2.5">
+                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-semibold">Daily Requests</div>
+                <div className="text-sm font-bold text-zinc-800 dark:text-zinc-200 mt-0.5">1.2M reqs</div>
+              </div>
+            </div>
+            <div className="flex gap-2.5 items-start bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl p-3 text-xs leading-relaxed">
+              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+              <span>Sunsetting will completely shut down access endpoint keys on <strong>September 5, 2026</strong>.</span>
+            </div>
+          </div>
+          <AlertDialogFooter className="gap-2 sm:gap-0">
+            <AlertDialogCancel className="text-xs py-1.5 h-8">Cancel Sunset</AlertDialogCancel>
+            <AlertDialogAction className="!bg-amber-600 hover:!bg-amber-500 !text-white font-semibold text-xs py-1.5 h-8 border-0 shadow-sm shadow-amber-600/10">Confirm Deprecation</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+
+## Props
+
+<div className="space-y-8 mt-6">
+  <div>
+    <div className="text-sm font-bold text-foreground mb-3">AlertDialogContent</div>
+    <div className="w-full overflow-x-auto rounded-lg border border-border custom-scrollbar">
+      <table className="w-full min-w-[650px] text-sm text-left border-collapse table-fixed">
+        <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">
+          <tr>
+            <th className="w-[18%] px-4 py-3 whitespace-nowrap">Prop</th>
+            <th className="w-[34%] px-4 py-3">Type</th>
+            <th className="w-[16%] px-4 py-3 whitespace-nowrap">Default</th>
+            <th className="w-[32%] px-4 py-3">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border text-muted-foreground">
+          <tr className="hover:bg-muted/30 transition-colors">
+            <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">variant</code></td>
+            <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal">"default" | "glass" | "retro"</code></td>
+            <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">"default"</code></td>
+            <td className="px-4 py-3 align-middle leading-normal">Visual preset theme variant for the dialog content window and its backdrop overlay.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <div className="text-sm font-bold text-foreground mb-3">AlertDialogAction</div>
+    <div className="w-full overflow-x-auto rounded-lg border border-border custom-scrollbar">
+      <table className="w-full min-w-[650px] text-sm text-left border-collapse table-fixed">
+        <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">
+          <tr>
+            <th className="w-[18%] px-4 py-3 whitespace-nowrap">Prop</th>
+            <th className="w-[34%] px-4 py-3">Type</th>
+            <th className="w-[16%] px-4 py-3 whitespace-nowrap">Default</th>
+            <th className="w-[32%] px-4 py-3">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border text-muted-foreground">
+          <tr className="hover:bg-muted/30 transition-colors">
+            <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">buttonVariant</code></td>
+            <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal">"default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "glass" | "glow" | "retro" | "gradient" | "cyberpunk"</code></td>
+            <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">"default"</code></td>
+            <td className="px-4 py-3 align-middle leading-normal">Visual preset theme variant for the action trigger button.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <div className="text-sm font-bold text-foreground mb-3">AlertDialogCancel</div>
+    <div className="w-full overflow-x-auto rounded-lg border border-border custom-scrollbar">
+      <table className="w-full min-w-[650px] text-sm text-left border-collapse table-fixed">
+        <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">
+          <tr>
+            <th className="w-[18%] px-4 py-3 whitespace-nowrap">Prop</th>
+            <th className="w-[34%] px-4 py-3">Type</th>
+            <th className="w-[16%] px-4 py-3 whitespace-nowrap">Default</th>
+            <th className="w-[32%] px-4 py-3">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border text-muted-foreground">
+          <tr className="hover:bg-muted/30 transition-colors">
+            <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">buttonVariant</code></td>
+            <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal">"default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "glass" | "glow" | "retro" | "gradient" | "cyberpunk"</code></td>
+            <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">"outline"</code></td>
+            <td className="px-4 py-3 align-middle leading-normal">Visual preset theme variant for the cancel trigger button.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

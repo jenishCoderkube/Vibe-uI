@@ -1,0 +1,424 @@
+# Hover Card
+
+Hover Card triggers context layouts when mouse is hovered.
+
+## Preview
+
+<ComponentPreview>
+  <HoverCardDemoBasic />
+
+```tsx
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
+
+export default function HoverCardDemo() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="font-semibold text-primary underline cursor-pointer">
+          @vibeui
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent>
+        <div className="space-y-1 text-left">
+          <h4 className="text-xs font-bold text-white">Vibe UI Kit</h4>
+          <p className="text-[11px] text-muted-foreground">
+            Premium design presets built for React & Tailwind CSS.
+          </p>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="hover-card" npmDeps="@radix-ui/react-hover-card lucide-react tailwind-variants">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import * as HoverCardPrimitive from '@radix-ui/react-hover-card'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const hoverCardContentVariants = tv({
+  base: 'z-50 w-64 rounded-md border p-4 shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+  variants: {
+    variant: {
+      default: 'bg-popover text-popover-foreground border-border',
+      glass: 'bg-white/10 dark:bg-white/[0.03] backdrop-blur-md border border-white/20 dark:border-white/10 text-foreground',
+      retro: 'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-primary/5 border border-primary/30 shadow-[0_0_20px_rgba(168,85,247,0.15)] text-foreground',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+const HoverCard = HoverCardPrimitive.Root
+
+const HoverCardTrigger = HoverCardPrimitive.Trigger
+
+export interface HoverCardContentProps
+  extends React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content>,
+    VariantProps<typeof hoverCardContentVariants> {}
+
+const HoverCardContent = React.forwardRef<
+  React.ElementRef<typeof HoverCardPrimitive.Content>,
+  HoverCardContentProps
+>(({ className, align = 'center', sideOffset = 4, variant, ...props }, ref) => (
+  <HoverCardPrimitive.Content
+    ref={ref}
+    align={align}
+    sideOffset={sideOffset}
+    className={cn(
+      hoverCardContentVariants({ variant }),
+      className
+    )}
+    {...props}
+  />
+))
+HoverCardContent.displayName = HoverCardPrimitive.Content.displayName
+
+export { HoverCard, HoverCardTrigger, HoverCardContent }
+```
+
+</Installation>
+
+
+
+## Preset Variations
+
+### Glassmorphic
+
+<ComponentPreview>
+  <HoverCardDemoGlass />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+
+export default function HoverCardDemoGlass() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="font-semibold text-cyan-400 cursor-pointer">
+          Glass Card
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent variant="glass">
+        <div className="text-xs text-left">
+          Backdrop blur and thin border styling.
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Retro Neobrutalism
+
+<ComponentPreview>
+  <HoverCardDemoRetro />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+
+export default function HoverCardDemoRetro() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="font-semibold text-amber-500 cursor-pointer">
+          Retro Card
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent variant="retro">
+        <div className="text-xs text-left font-mono">
+          Brutalist solid outline grids.
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Neon Glow
+
+<ComponentPreview>
+  <HoverCardDemoGlow />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+
+export default function HoverCardDemoGlow() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="font-semibold text-violet-400 cursor-pointer">
+          Glow Card
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent variant="glow">
+        <div className="text-xs text-left">
+          Neon drop shadows backlight accents.
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Premium Use Case Examples
+
+### 1. User profile preview
+
+<ComponentPreview>
+  <HoverCardDemoUserProfile />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+
+export default function HoverCardDemoUserProfile() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <div className="flex items-center gap-2 cursor-pointer">
+          <Avatar className="h-6 w-6">
+            <AvatarFallback className="bg-violet-600 text-[8px] text-white">
+              SV
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-xs font-semibold text-white hover:underline">
+            Sarah Vance
+          </span>
+        </div>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-72">
+        <div className="flex gap-3 text-left">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-violet-600 text-xs text-white">
+              SV
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <div className="font-bold text-xs text-white">Sarah Vance</div>
+            <div className="text-[10px] text-muted-foreground">
+              @sarah_design
+            </div>
+            <p className="text-[11px] text-white/80 mt-1.5 leading-relaxed">
+              Product Engineer creating the next generation UI registry.
+            </p>
+            <div className="flex gap-3 text-[10px] text-muted-foreground mt-2">
+              <span>
+                <b>1.2k</b> Followers
+              </span>
+              <span>
+                <b>390</b> Following
+              </span>
+            </div>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 2. E-commerce bundle preview
+
+<ComponentPreview>
+  <HoverCardDemoProduct />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { Button } from '@/components/ui/button'
+
+export default function HoverCardDemoProduct() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="font-semibold text-primary underline cursor-pointer">
+          Vibe Bundle
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-64" variant="glass">
+        <div className="text-left space-y-2">
+          <div className="h-28 w-full bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-md flex items-center justify-center text-white font-extrabold text-sm shadow">
+            Vibe Premium
+          </div>
+          <div className="font-bold text-xs text-white">
+            All-Inclusive Bundle
+          </div>
+          <div className="text-[10px] text-muted-foreground">
+            Access to all 35 components with source files and upgrades.
+          </div>
+          <div className="flex justify-between items-center pt-1.5">
+            <span className="font-bold text-xs text-white">$49</span>
+            <Button size="sm" className="h-7 text-[10px]">
+              Buy Now
+            </Button>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 3. Code definition mapping preview
+
+<ComponentPreview>
+  <HoverCardDemoCode />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+
+export default function HoverCardDemoCode() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono cursor-pointer border border-border">
+          buildRegistry()
+        </code>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80 font-mono text-[11px]" variant="glass">
+        <div className="text-left space-y-1.5">
+          <div className="text-violet-400 font-bold">
+            function buildRegistry(): void
+          </div>
+          <div className="text-muted-foreground">
+            Compiles all JSX/TSX source file nodes in the UI folder to output
+            schema JSON configurations for the dev CLI.
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 4. Server location ping preview
+
+<ComponentPreview>
+  <HoverCardDemoLocation />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+
+export default function HoverCardDemoLocation() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="font-semibold text-white hover:underline cursor-pointer">
+          London, UK
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-56">
+        <div className="text-left space-y-1.5">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-white">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span>London Node</span>
+          </div>
+          <div className="text-[10px] text-muted-foreground">
+            Uptime: 99.98%
+          </div>
+          <div className="text-[10px] text-muted-foreground">
+            Ping Latency: 12ms
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 5. Brutalist dictionary helper
+
+<ComponentPreview>
+  <HoverCardDemoDictionary />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+
+export default function HoverCardDemoDictionary() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="border-b border-dashed border-muted-foreground cursor-pointer">
+          neobrutalism
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-60" variant="retro">
+        <div className="text-left space-y-1">
+          <div className="font-bold text-xs">neobrutalism [noun]</div>
+          <div className="text-[10px] text-muted-foreground">
+            An architectural and web design style defined by flat dark solid
+            borders, high contrast layouts, and raw structure blocks.
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 6. Glow release details check
+
+<ComponentPreview>
+  <HoverCardDemoStatus />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { CheckCircle2 } from 'lucide-react'
+
+export default function HoverCardDemoStatus() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <span className="text-xs text-primary font-bold cursor-pointer">
+          Deployment status
+        </span>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-60" variant="glow">
+        <div className="text-left space-y-1.5">
+          <div className="font-bold text-xs text-white">Production V1.0.6</div>
+          <div className="text-[10px] text-muted-foreground">
+            Successfully published package vibe-ui-kit to npm.
+          </div>
+          <div className="text-[10px] text-emerald-400 font-bold flex items-center gap-1.5">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            <span>Passed checks</span>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
+```
+
+</ComponentPreview>

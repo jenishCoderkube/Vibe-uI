@@ -1,0 +1,129 @@
+# Separator
+
+Visually divides content in layouts horizontally or vertically.
+
+## Preview
+
+<ComponentPreview>
+  <div className="w-[300px] text-left">
+    <div className="space-y-1">
+      <h4 className="text-sm font-semibold leading-none text-foreground">Vibe UI Core</h4>
+      <p className="text-sm text-muted-foreground">A clean, high-performance visual component toolkit.</p>
+    </div>
+    <Separator className="my-4" />
+    <div className="flex h-5 items-center space-x-4 text-sm text-foreground">
+      <span>Blog</span>
+      <Separator orientation="vertical" />
+      <span>Docs</span>
+      <Separator orientation="vertical" />
+      <span>Source</span>
+    </div>
+  </div>
+
+```tsx
+import { Separator } from '@/components/ui/separator'
+
+export default function SeparatorDemo() {
+  return (
+    <div className="w-[300px] text-left">
+      <div className="space-y-1">
+        <h4 className="text-sm font-semibold leading-none text-foreground">Vibe UI Core</h4>
+        <p className="text-sm text-muted-foreground">A clean, high-performance visual component toolkit.</p>
+      </div>
+      <Separator className="my-4" />
+      <div className="flex h-5 items-center space-x-4 text-sm text-foreground">
+        <span>Blog</span>
+        <Separator orientation="vertical" />
+        <span>Docs</span>
+        <Separator orientation="vertical" />
+        <span>Source</span>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="separator" npmDeps="@radix-ui/react-separator lucide-react tailwind-variants">
+
+```tsx
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const separatorVariants = tv({
+  base: 'shrink-0 bg-border transition-all duration-200',
+  variants: {
+    orientation: {
+      horizontal: 'h-[1px] w-full',
+      vertical: 'h-full w-[1px]',
+    },
+    variant: {
+      default: 'bg-border',
+      glass: 'bg-white/20 dark:bg-white/10',
+      retro: 'bg-foreground h-[2px]',
+      glow: 'bg-primary/40',
+    },
+  },
+  defaultVariants: {
+    orientation: 'horizontal',
+    variant: 'default',
+  },
+})
+
+export interface SeparatorProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof separatorVariants> {}
+
+const Separator = React.forwardRef<HTMLDivElement, SeparatorProps>(
+  ({ className, orientation, variant, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(separatorVariants({ orientation, variant }), className)}
+        {...props}
+      />
+    )
+  },
+)
+Separator.displayName = 'Separator'
+
+export { Separator }
+```
+
+</Installation>
+
+
+
+## Variants
+
+### Retro Line style
+
+<ComponentPreview>
+  <div className="w-[300px] text-left">
+    <span className="text-sm font-bold">Retro divider line:</span>
+    <Separator variant="retro" className="my-2" />
+    <span className="text-sm text-muted-foreground">Divider matching Brutalist design styles.</span>
+  </div>
+
+```tsx
+import { Separator } from '@/components/ui/separator'
+
+export default function SeparatorRetro() {
+  return (
+    <div className="w-[300px] text-left">
+      <span className="text-sm font-bold">Retro divider line:</span>
+      <Separator variant="retro" className="my-2" />
+      <span className="text-sm text-muted-foreground">Divider matching Brutalist design styles.</span>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Separator component divides layout structures visually. It wraps the Radix UI `Separator` primitive to provide horizontal or vertical borders with full screen-reader semantic alignment.

@@ -1,0 +1,776 @@
+# Dropdown Menu
+
+Displays a menu to the user—such as a set of actions or functions—triggered by a button.
+
+## Preview
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Open Menu</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-56">
+      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Profile</DropdownMenuItem>
+      <DropdownMenuItem>Billing</DropdownMenuItem>
+      <DropdownMenuItem>Settings</DropdownMenuItem>
+      <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+
+export function DropdownMenuDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Open Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Billing</DropdownMenuItem>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="dropdown-menu" npmDeps="@radix-ui/react-dropdown-menu lucide-react tailwind-variants">
+
+```tsx
+import * as React from 'react'
+import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
+import { Check, ChevronRight, Circle } from 'lucide-react'
+import { tv } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const DropdownMenu = DropdownMenuPrimitive.Root
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
+const DropdownMenuGroup = DropdownMenuPrimitive.Group
+const DropdownMenuPortal = DropdownMenuPrimitive.Portal
+const DropdownMenuSub = DropdownMenuPrimitive.Sub
+const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
+
+const dropdownContentVariants = tv({
+  base: 'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-zoom-in data-[state=closed]:animate-zoom-out data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+  variants: {
+    variant: {
+      default: 'border-border',
+      retro: 'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glass: 'bg-white/10 dark:bg-black/40 border border-white/20 dark:border-white/10 backdrop-blur-md shadow-lg',
+    }
+  },
+  defaultVariants: {
+    variant: 'default',
+  }
+})
+
+const DropdownMenuSubTrigger = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
+    inset?: boolean
+  }
+>(({ className, inset, children, ...props }, ref) => (
+  <DropdownMenuPrimitive.SubTrigger
+    ref={ref}
+    className={cn(
+      'flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground cursor-pointer',
+      inset && 'pl-8',
+      className
+    )}
+    {...props}
+  >
+    {children}
+    <ChevronRight className="ml-auto h-4 w-4" />
+  </DropdownMenuPrimitive.SubTrigger>
+))
+DropdownMenuSubTrigger.displayName =
+  DropdownMenuPrimitive.SubTrigger.displayName
+
+const DropdownMenuSubContent = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent> & { variant?: 'default' | 'retro' | 'glass' }
+>(({ className, variant, ...props }, ref) => (
+  <DropdownMenuPrimitive.SubContent
+    ref={ref}
+    className={cn(dropdownContentVariants({ variant }), className)}
+    {...props}
+  />
+))
+DropdownMenuSubContent.displayName =
+  DropdownMenuPrimitive.SubContent.displayName
+
+const DropdownMenuContent = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content> & {
+    sideOffset?: number
+    variant?: 'default' | 'retro' | 'glass'
+  }
+>(({ className, sideOffset = 4, variant, ...props }, ref) => (
+  <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Content
+      ref={ref}
+      sideOffset={sideOffset}
+      className={cn(dropdownContentVariants({ variant }), className)}
+      {...props}
+    />
+  </DropdownMenuPrimitive.Portal>
+))
+DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
+
+const DropdownMenuItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
+    inset?: boolean
+  }
+>(({ className, inset, ...props }, ref) => (
+  <DropdownMenuPrimitive.Item
+    ref={ref}
+    className={cn(
+      'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 cursor-pointer',
+      inset && 'pl-8',
+      className
+    )}
+    {...props}
+  />
+))
+DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
+
+const DropdownMenuCheckboxItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem>
+>(({ className, children, checked, ...props }, ref) => (
+  <DropdownMenuPrimitive.CheckboxItem
+    ref={ref}
+    className={cn(
+      'relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 cursor-pointer',
+      className
+    )}
+    checked={checked}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <DropdownMenuPrimitive.ItemIndicator>
+        <Check className="h-4 w-4" />
+      </DropdownMenuPrimitive.ItemIndicator>
+    </span>
+    {children}
+  </DropdownMenuPrimitive.CheckboxItem>
+))
+DropdownMenuCheckboxItem.displayName =
+  DropdownMenuPrimitive.CheckboxItem.displayName
+
+const DropdownMenuRadioItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
+>(({ className, children, ...props }, ref) => (
+  <DropdownMenuPrimitive.RadioItem
+    ref={ref}
+    className={cn(
+      'relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 cursor-pointer',
+      className
+    )}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <DropdownMenuPrimitive.ItemIndicator>
+        <Circle className="h-2 w-2 fill-current" />
+      </DropdownMenuPrimitive.ItemIndicator>
+    </span>
+    {children}
+  </DropdownMenuPrimitive.RadioItem>
+))
+DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName
+
+const DropdownMenuLabel = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Label>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
+    inset?: boolean
+  }
+>(({ className, inset, ...props }, ref) => (
+  <DropdownMenuPrimitive.Label
+    ref={ref}
+    className={cn(
+      'px-2 py-1.5 text-sm font-semibold',
+      inset && 'pl-8',
+      className
+    )}
+    {...props}
+  />
+))
+DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName
+
+const DropdownMenuSeparator = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <DropdownMenuPrimitive.Separator
+    ref={ref}
+    className={cn('-mx-1 my-1 h-px bg-muted', className)}
+    {...props}
+  />
+))
+DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
+
+const DropdownMenuShortcut = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement>) => {
+  return (
+    <span
+      className={cn(
+        'ml-auto text-xs tracking-widest opacity-60',
+        className
+      )}
+      {...props}
+    />
+  )
+}
+DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+}
+```
+
+</Installation>
+
+
+## All Variations
+
+Explore 10 different variations and styling presets of the Dropdown Menu component.
+
+### 1. Default Style
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Basic Menu</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-48">
+      <DropdownMenuItem>Profile</DropdownMenuItem>
+      <DropdownMenuItem>Settings</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Logout</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+
+export default function BasicDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Basic Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-48">
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Logout</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 2. Menu with Left Icons
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Icon Menu</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-48">
+      <DropdownMenuItem className="gap-2">
+        <UserIcon className="h-4 w-4" />
+        <span>Profile</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem className="gap-2">
+        <SettingsIcon className="h-4 w-4" />
+        <span>Settings</span>
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem className="gap-2 text-destructive">
+        <LogOutIcon className="h-4 w-4 text-destructive" />
+        <span>Logout</span>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { UserIcon, SettingsIcon, LogOutIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+
+export default function IconDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Icon Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-48">
+        <DropdownMenuItem className="gap-2">
+          <UserIcon className="h-4 w-4" />
+          <span>Profile</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="gap-2">
+          <SettingsIcon className="h-4 w-4" />
+          <span>Settings</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="gap-2 text-destructive">
+          <LogOutIcon className="h-4 w-4 text-destructive" />
+          <span>Logout</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 3. Menu with Keyboard Shortcuts
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Shortcut Menu</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-56">
+      <DropdownMenuItem>
+        New Tab <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
+      </DropdownMenuItem>
+      <DropdownMenuItem>
+        New Window <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
+      </DropdownMenuItem>
+      <DropdownMenuItem disabled>
+        New Private Window <DropdownMenuShortcut>⇧⌘N</DropdownMenuShortcut>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+} from '@/components/ui/dropdown-menu'
+
+export default function ShortcutDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Shortcut Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuItem>
+          New Tab <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          New Window <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled>
+          New Private Window <DropdownMenuShortcut>⇧⌘N</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 4. Section Headers & Multi Groups
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Groups Menu</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-56">
+      <DropdownMenuLabel>Personal Workspace</DropdownMenuLabel>
+      <DropdownMenuGroup>
+        <DropdownMenuItem>Project A</DropdownMenuItem>
+        <DropdownMenuItem>Project B</DropdownMenuItem>
+      </DropdownMenuGroup>
+      <DropdownMenuSeparator />
+      <DropdownMenuLabel>Team Workspaces</DropdownMenuLabel>
+      <DropdownMenuGroup>
+        <DropdownMenuItem>Vibe Organization</DropdownMenuItem>
+      </DropdownMenuGroup>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+
+export default function GroupsDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Groups Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>Personal Workspace</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>Project A</DropdownMenuItem>
+          <DropdownMenuItem>Project B</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Team Workspaces</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>Vibe Organization</DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 5. Checkbox Items (Toggle Options)
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Checkbox toggles</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-56">
+      <DropdownMenuCheckboxItem checked>Show Status Bar</DropdownMenuCheckboxItem>
+      <DropdownMenuCheckboxItem checked={false}>Show Tab Bar</DropdownMenuCheckboxItem>
+      <DropdownMenuCheckboxItem checked>Show Grid Rules</DropdownMenuCheckboxItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from '@/components/ui/dropdown-menu'
+
+export default function CheckboxDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Checkbox toggles</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuCheckboxItem checked>Show Status Bar</DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem checked={false}>Show Tab Bar</DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem checked>Show Grid Rules</DropdownMenuCheckboxItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 6. Radio Items (Exclusive Options)
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Radio selection</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-48">
+      <DropdownMenuRadioGroup value="top">
+        <DropdownMenuRadioItem value="top">Top Alignment</DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="middle">Middle Alignment</DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="bottom">Bottom Alignment</DropdownMenuRadioItem>
+      </DropdownMenuRadioGroup>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from '@/components/ui/dropdown-menu'
+
+export default function RadioDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Radio selection</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-48">
+        <DropdownMenuRadioGroup value="top">
+          <DropdownMenuRadioItem value="top">Top Alignment</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="middle">Middle Alignment</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="bottom">Bottom Alignment</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 7. Nested Submenus
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Submenus Menu</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-56">
+      <DropdownMenuItem>Share Project</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuSub>
+        <DropdownMenuSubTrigger>Invite Collaborators</DropdownMenuSubTrigger>
+        <DropdownMenuPortal>
+          <DropdownMenuSubContent className="w-48">
+            <DropdownMenuItem>Via Email Link</DropdownMenuItem>
+            <DropdownMenuItem>Via Phone Invite</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>More options...</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuPortal>
+      </DropdownMenuSub>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent,
+} from '@/components/ui/dropdown-menu'
+
+export default function SubmenuDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Submenus Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuItem>Share Project</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Invite Collaborators</DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent className="w-48">
+              <DropdownMenuItem>Via Email Link</DropdownMenuItem>
+              <DropdownMenuItem>Via Phone Invite</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>More options...</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 8. Retro Neobrutalist Style
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="retro">Retro Menu</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent variant="retro" className="w-48">
+      <DropdownMenuLabel>Retro Layout</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Profile Settings</DropdownMenuItem>
+      <DropdownMenuItem>Billing Stats</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
+
+export default function RetroDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="retro">Retro Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent variant="retro" className="w-48">
+        <DropdownMenuLabel>Retro Layout</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Profile Settings</DropdownMenuItem>
+        <DropdownMenuItem>Billing Stats</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 9. Glassmorphic Style
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="glass">Glass Menu</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent variant="glass" className="w-48">
+      <DropdownMenuLabel>Glassmorphic UI</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Option A</DropdownMenuItem>
+      <DropdownMenuItem>Option B</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
+
+export default function GlassDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="glass">Glass Menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent variant="glass" className="w-48">
+        <DropdownMenuLabel>Glassmorphic UI</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Option A</DropdownMenuItem>
+        <DropdownMenuItem>Option B</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 10. Avatar Profile Trigger Menu
+
+<ComponentPreview>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <button className="flex items-center justify-center h-10 w-10 rounded-full border bg-muted cursor-pointer overflow-hidden">
+        <span className="font-semibold text-xs">JD</span>
+      </button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-56" align="end">
+      <DropdownMenuLabel>John Doe</DropdownMenuLabel>
+      <DropdownMenuItem className="text-xs text-muted-foreground pt-0 cursor-default">john.doe@vibe-ui.com</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Dashboard</DropdownMenuItem>
+      <DropdownMenuItem>Profile Settings</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem className="text-destructive">Log out</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+
+export default function AvatarDropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="flex items-center justify-center h-10 w-10 rounded-full border bg-muted cursor-pointer overflow-hidden">
+          <span className="font-semibold text-xs">JD</span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end">
+        <DropdownMenuLabel>John Doe</DropdownMenuLabel>
+        <DropdownMenuItem className="text-xs text-muted-foreground pt-0 cursor-default">john.doe@vibe-ui.com</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Dashboard</DropdownMenuItem>
+        <DropdownMenuItem>Profile Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="text-destructive">Log out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+</ComponentPreview>
+

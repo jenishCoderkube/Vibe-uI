@@ -1,0 +1,4801 @@
+# Chart
+
+A beautiful, composable, responsive charting container wrapper powered by Recharts and styled for Vibe UI.
+
+## Area Chart
+
+Area charts are ideal for displaying continuous variables, volumes, and trends over time.
+
+<ComponentPreview>
+  <AreaChartDemo />
+
+```tsx
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+export default function AreaChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Area
+          dataKey="mobile"
+          type="natural"
+          fill="var(--color-mobile)"
+          fillOpacity={0.15}
+          stroke="var(--color-mobile)"
+          stackId="a"
+        />
+        <Area
+          dataKey="desktop"
+          type="natural"
+          fill="var(--color-desktop)"
+          fillOpacity={0.3}
+          stroke="var(--color-desktop)"
+          stackId="a"
+        />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+</ComponentPreview>
+
+<Installation name="chart" npmDeps="recharts lucide-react tailwind-variants">
+
+```tsx
+// @/components/ui/chart.tsx
+'use client'
+
+import * as React from 'react'
+import * as Recharts from 'recharts'
+import { cn } from '@/lib/utils'
+
+export type ChartConfig = Record<
+  string,
+  {
+    label: React.ReactNode
+    icon?: React.ComponentType
+    color?: string
+    theme?: Record<string, string>
+  }
+>
+
+interface ChartContextProps {
+  config: ChartConfig
+}
+
+const ChartContext = React.createContext<ChartContextProps | null>(null)
+
+function useChart() {
+  const context = React.useContext(ChartContext)
+  if (!context) {
+    throw new Error('useChart must be used within a ChartContainer')
+  }
+  return context
+}
+
+export interface ChartContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  config: ChartConfig
+  children: React.ReactElement
+}
+
+const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerProps>(
+  ({ id, className, config, children, ...props }, ref) => {
+    const uniqueId = React.useId()
+    const chartId = `chart-${id || uniqueId.replace(/:/g, '')}`
+
+    return (
+      <ChartContext.Provider value={{ config }}>
+        <div
+          ref={ref}
+          className={cn(
+            'flex aspect-video justify-center text-xs [&_.recharts-cartesian-grid-horizontal_line]:stroke-border/40 [&_.recharts-cartesian-grid-vertical_line]:stroke-border/40 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid-concentric-polygon]:fill-transparent [&_.recharts-polar-grid-concentric-polygon]:stroke-border/40 [&_.recharts-polar-grid-concentric-value]:stroke-border/40 [&_.recharts-reference-line_line]:stroke-border [&_.recharts-sector]:outline-none [&_.recharts-sector.recharts-active-shape]:stroke-white/10 [&_.recharts-surface]:outline-none',
+            className,
+          )}
+          {...props}
+        >
+          <ChartStyle id={chartId} config={config} />
+          <Recharts.ResponsiveContainer>
+            {React.cloneElement(children as React.ReactElement<any>, {
+              className: cn(
+                '[&_.recharts-bar-background-sector]:fill-zinc-800/10 [&_.recharts-bar-rectangle]:fill-primary [&_.recharts-area-rectangle]:fill-primary [&_.recharts-line-rectangle]:stroke-primary',
+                (children.props as any)?.className,
+              ),
+            })}
+          </Recharts.ResponsiveContainer>
+        </div>
+      </ChartContext.Provider>
+    )
+  },
+)
+ChartContainer.displayName = 'ChartContainer'
+
+function ChartStyle({ id, config }: { id: string; config: ChartConfig }) {
+  const colorStyles = React.useMemo(() => {
+    return Object.entries(config)
+      .map(([key, value]) => {
+        if (!value.color) return null
+        return `--color-${key}: ${value.color};`
+      })
+      .filter(Boolean)
+      .join('\n')
+  }, [config])
+
+  if (!colorStyles) return null
+
+  return (
+    <style
+      dangerouslySetInnerHTML={{
+        __html: `[data-chart="${id}"] {
+${colorStyles}
+}`,
+      }}
+    />
+  )
+}
+
+export const ChartTooltip = Recharts.Tooltip
+
+export interface ChartTooltipContentProps
+  extends
+    Omit<React.ComponentProps<typeof Recharts.Tooltip>, 'content'>,
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
+  hideLabel?: boolean
+  hideIndicator?: boolean
+  indicator?: 'line' | 'dot' | 'dashed'
+  nameKey?: string
+  labelKey?: string
+  config?: ChartConfig
+}
+
+const ChartTooltipContent = React.forwardRef<
+  HTMLDivElement,
+  ChartTooltipContentProps
+>(
+  (
+    {
+      active,
+      payload,
+      label,
+      labelFormatter,
+      labelClassName,
+      formatter,
+      hideLabel = false,
+      hideIndicator = false,
+      indicator = 'dot',
+      config: customConfig,
+      className,
+      nameKey,
+      labelKey,
+    },
+    ref,
+  ) => {
+    const { config } = useChart()
+    const tooltipConfig = customConfig || config
+
+    const labelString = React.useMemo(() => {
+      if (!payload || !payload.length) return ''
+      const item = payload[0]
+      const key = `${labelKey || item?.dataKey || item?.name || 'value'}`
+      const configItem = tooltipConfig[key]
+      return configItem ? configItem.label : label
+    }, [payload, label, labelKey, tooltipConfig])
+
+    if (!active || !payload?.length) {
+      return null
+    }
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border bg-zinc-900 px-3 py-2 text-[11px] text-zinc-100 shadow-md',
+          className,
+        )}
+      >
+        {!hideLabel && (
+          <div className={cn('font-medium text-zinc-400', labelClassName)}>
+            {labelFormatter
+              ? labelFormatter(labelString, payload)
+              : labelString}
+          </div>
+        )}
+        <div className="grid gap-1.5">
+          {payload.map((item, index) => {
+            const key = `${nameKey || item.name || item.dataKey || 'value'}`
+            const configItem = tooltipConfig[key]
+            const indicatorColor = item.color || item.payload?.fill || item.fill
+
+            return (
+              <div
+                key={index}
+                className="flex items-center gap-1.5 [&_svg]:h-2.5 [&_svg]:w-2.5 [&_svg]:text-muted-foreground"
+              >
+                {!hideIndicator && (
+                  <div
+                    className={cn(
+                      'shrink-0 rounded-[2px] border-zinc-700',
+                      indicator === 'dot' && 'h-2 w-2 rounded-full',
+                      indicator === 'line' && 'w-1 h-3',
+                      indicator === 'dashed' &&
+                        'h-3 w-0.5 border-r border-dashed',
+                    )}
+                    style={
+                      {
+                        backgroundColor: indicatorColor,
+                      } as React.CSSProperties
+                    }
+                  />
+                )}
+                <div className="flex flex-1 items-center justify-between gap-4">
+                  <span className="text-zinc-400">
+                    {configItem?.label || item.name}
+                  </span>
+                  {item.value !== undefined && (
+                    <span className="font-bold font-mono text-white">
+                      {formatter
+                        ? formatter(
+                            item.value,
+                            item.name ?? '',
+                            item,
+                            index,
+                            payload,
+                          )
+                        : typeof item.value === 'number'
+                          ? item.value.toLocaleString()
+                          : item.value}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  },
+)
+ChartTooltipContent.displayName = 'ChartTooltipContent'
+
+export const ChartLegend = Recharts.Legend
+
+const ChartLegendContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<'div'> &
+    Pick<Recharts.LegendProps, 'payload' | 'verticalAlign'> & {
+      hideIcon?: boolean
+      nameKey?: string
+    }
+>(
+  (
+    { className, payload, verticalAlign = 'bottom', hideIcon = false, nameKey },
+    ref,
+  ) => {
+    const { config } = useChart()
+
+    if (!payload?.length) {
+      return null
+    }
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'flex items-center justify-center gap-4',
+          verticalAlign === 'top' ? 'pb-3' : 'pt-3',
+          className,
+        )}
+      >
+        {payload.map((item: any, index) => {
+          const key = `${nameKey || item.dataKey || item.value || 'value'}`
+          const configItem = config[key]
+          const color = item.color || item.payload?.fill || item.fill
+
+          return (
+            <div
+              key={index}
+              className="flex items-center gap-1.5 text-xs text-zinc-400"
+            >
+              {!hideIcon && (
+                <div
+                  className="h-2 w-2 shrink-0 rounded-full"
+                  style={{
+                    backgroundColor: color,
+                  }}
+                />
+              )}
+              <span>{configItem?.label || item.value}</span>
+            </div>
+          )
+        })}
+      </div>
+    )
+  },
+)
+ChartLegendContent.displayName = 'ChartLegendContent'
+
+export { ChartContainer, ChartTooltipContent, ChartLegendContent }
+```
+
+</Installation>
+
+---
+
+---
+
+## Stacked Area Chart
+
+Stacked Area Charts are ideal for tracking stacked volume changes.
+
+<ComponentPreview>
+  <StackedAreaChartDemo />
+
+```tsx
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'rgba(168, 85, 247, 0.5)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+
+export default function StackedAreaChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Area
+          dataKey="mobile"
+          type="monotone"
+          fill="rgba(168,85,247,0.15)"
+          stroke="rgba(168,85,247,0.5)"
+          stackId="1"
+        />
+        <Area
+          dataKey="desktop"
+          type="monotone"
+          fill="rgba(168,85,247,0.4)"
+          stroke="rgb(168, 85, 247)"
+          stackId="1"
+        />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Simple Area Chart
+
+A simple single-line filled area chart view.
+
+<ComponentPreview>
+  <SimpleAreaChartDemo />
+
+```tsx
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+  { month: 'March', desktop: 237 },
+  { month: 'April', desktop: 73 },
+  { month: 'May', desktop: 209 },
+  { month: 'June', desktop: 214 },
+]
+
+export default function SimpleAreaChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Area
+          dataKey="desktop"
+          type="monotone"
+          fill="rgba(168,85,247,0.15)"
+          stroke="rgb(168, 85, 247)"
+          strokeWidth={2}
+        />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Interactive Area Chart
+
+Toggle different data scopes interactively on an Area chart.
+
+<ComponentPreview>
+  <InteractiveAreaChartDemo />
+
+```tsx
+import * as React from 'react'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop traffic',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile traffic',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+}
+
+const chartData = [
+  { date: '2026-07-01', desktop: 222, mobile: 150 },
+  { date: '2026-07-02', desktop: 345, mobile: 120 },
+  { date: '2026-07-03', desktop: 230, mobile: 290 },
+  { date: '2026-07-04', desktop: 180, mobile: 320 },
+  { date: '2026-07-05', desktop: 390, mobile: 180 },
+  { date: '2026-07-06', desktop: 420, mobile: 250 },
+]
+
+export default function InteractiveAreaChartDemo() {
+  const [activeTab, setActiveTab] = React.useState<'desktop' | 'mobile'>(
+    'desktop',
+  )
+
+  const total = React.useMemo(
+    () => ({
+      desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
+      mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
+    }),
+    [],
+  )
+
+  return (
+    <div className="flex flex-col w-full bg-zinc-900/40 border border-border rounded-xl p-4 gap-4">
+      <div className="flex justify-between items-center border-b border-border pb-4">
+        <div>
+          <h3 className="text-sm font-semibold text-white">
+            Interactive Audience
+          </h3>
+          <p className="text-[11px] text-zinc-400">Total sessions breakdown</p>
+        </div>
+        <div className="flex gap-2">
+          {(['desktop', 'mobile'] as const).map((key) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                activeTab === key
+                  ? 'bg-purple-600 border-purple-500 text-white'
+                  : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-white'
+              }`}
+            >
+              {chartConfig[key].label} ({total[key].toLocaleString()})
+            </button>
+          ))}
+        </div>
+      </div>
+      <ChartContainer config={chartConfig} className="h-[250px] w-full">
+        <AreaChart data={chartData}>
+          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <XAxis dataKey="date" tickLine={false} axisLine={false} />
+          <YAxis tickLine={false} axisLine={false} />
+          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+          <Area
+            dataKey={activeTab}
+            type="monotone"
+            fill="rgba(168,85,247,0.15)"
+            stroke="rgb(168, 85, 247)"
+            strokeWidth={2}
+          />
+        </AreaChart>
+      </ChartContainer>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Area Chart Gradient
+
+An area chart featuring smooth gradient fills representing data ranges.
+
+<ComponentPreview>
+  <AreaChartGradientDemo />
+
+```tsx
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+
+export default function AreaChartGradientDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <defs>
+          <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-desktop)" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="var(--color-desktop)" stopOpacity={0.1} />
+          </linearGradient>
+          <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-mobile)" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="var(--color-mobile)" stopOpacity={0.1} />
+          </linearGradient>
+        </defs>
+        <Area
+          dataKey="mobile"
+          type="natural"
+          fill="url(#fillMobile)"
+          fillOpacity={0.4}
+          stroke="var(--color-mobile)"
+          stackId="a"
+        />
+        <Area
+          dataKey="desktop"
+          type="natural"
+          fill="url(#fillDesktop)"
+          fillOpacity={0.4}
+          stroke="var(--color-desktop)"
+          stackId="a"
+        />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Area Chart Legend
+
+Area chart displaying detailed categorised legend labels inside the canvas.
+
+<ComponentPreview>
+  <AreaChartLegendDemo />
+
+```tsx
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+
+export default function AreaChartLegendDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+        <Area
+          dataKey="mobile"
+          type="natural"
+          fill="var(--color-mobile)"
+          fillOpacity={0.4}
+          stroke="var(--color-mobile)"
+          stackId="a"
+        />
+        <Area
+          dataKey="desktop"
+          type="natural"
+          fill="var(--color-desktop)"
+          fillOpacity={0.4}
+          stroke="var(--color-desktop)"
+          stackId="a"
+        />
+        <ChartLegend content={<ChartLegendContent />} />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Area Chart Linear
+
+An area chart using linear interpolation to connect coordinates.
+
+<ComponentPreview>
+  <AreaChartLinearDemo />
+
+```tsx
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+  { month: 'March', desktop: 237 },
+  { month: 'April', desktop: 73 },
+  { month: 'May', desktop: 209 },
+  { month: 'June', desktop: 214 },
+]
+
+export default function AreaChartLinearDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
+        <Area
+          dataKey="desktop"
+          type="linear"
+          fill="var(--color-desktop)"
+          fillOpacity={0.4}
+          stroke="var(--color-desktop)"
+        />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Area Chart Step
+
+An area chart using step line segments to connect coordinates.
+
+<ComponentPreview>
+  <AreaChartStepDemo />
+
+```tsx
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+  { month: 'March', desktop: 237 },
+  { month: 'April', desktop: 73 },
+  { month: 'May', desktop: 209 },
+  { month: 'June', desktop: 214 },
+]
+
+export default function AreaChartStepDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <AreaChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Area
+          dataKey="desktop"
+          type="step"
+          fill="var(--color-desktop)"
+          fillOpacity={0.4}
+          stroke="var(--color-desktop)"
+        />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Area Chart Stacked Expanded
+
+Stacked area chart showing relative percentage contribution of each dataset.
+
+<ComponentPreview>
+  <AreaChartStackedExpandDemo />
+
+```tsx
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+  other: {
+    label: 'Other',
+    color: 'hsl(var(--chart-3))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80, other: 45 },
+  { month: 'February', desktop: 305, mobile: 200, other: 100 },
+  { month: 'March', desktop: 237, mobile: 120, other: 150 },
+  { month: 'April', desktop: 73, mobile: 190, other: 50 },
+  { month: 'May', desktop: 209, mobile: 130, other: 100 },
+  { month: 'June', desktop: 214, mobile: 140, other: 160 },
+]
+
+export default function AreaChartStackedExpandDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <AreaChart data={chartData} margin={{ left: 12, right: 12 }} stackOffset="expand">
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+        <Area
+          dataKey="other"
+          type="natural"
+          fill="var(--color-other)"
+          fillOpacity={0.1}
+          stroke="var(--color-other)"
+          stackId="a"
+        />
+        <Area
+          dataKey="mobile"
+          type="natural"
+          fill="var(--color-mobile)"
+          fillOpacity={0.4}
+          stroke="var(--color-mobile)"
+          stackId="a"
+        />
+        <Area
+          dataKey="desktop"
+          type="natural"
+          fill="var(--color-desktop)"
+          fillOpacity={0.4}
+          stroke="var(--color-desktop)"
+          stackId="a"
+        />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+---
+
+## Bar Chart
+
+Bar charts are useful for comparison of values across categories.
+
+<ComponentPreview>
+  <BarChartDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+  { month: 'March', desktop: 237 },
+  { month: 'April', desktop: 73 },
+  { month: 'May', desktop: 209 },
+  { month: 'June', desktop: 214 },
+]
+
+export default function BarChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="desktop" fill="rgb(168, 85, 247)" radius={4} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Horizontal Bar Chart
+
+A horizontal layout comparison of values across categories.
+
+<ComponentPreview>
+  <HorizontalBarChartDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+  { month: 'March', desktop: 237 },
+  { month: 'April', desktop: 73 },
+  { month: 'May', desktop: 209 },
+  { month: 'June', desktop: 214 },
+]
+
+export default function HorizontalBarChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData} layout="vertical" margin={{ left: 10 }}>
+        <CartesianGrid horizontal={false} />
+        <XAxis type="number" tickLine={false} axisLine={false} />
+        <YAxis
+          dataKey="month"
+          type="category"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="desktop" fill="rgb(168, 85, 247)" radius={4} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Stacked Bar Chart
+
+Compare grouped data categories stacked inside single bars.
+
+<ComponentPreview>
+  <StackedBarChartDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+
+export default function StackedBarChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="desktop" fill="rgb(168, 85, 247)" stackId="a" />
+        <Bar
+          dataKey="mobile"
+          fill="rgba(168, 85, 247, 0.4)"
+          stackId="a"
+          radius={[4, 4, 0, 0]}
+        />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Horizontal Stacked Bar Chart
+
+Horizontal comparisons stacked into single bars.
+
+<ComponentPreview>
+  <HorizontalStackedBarChartDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+]
+
+export default function HorizontalStackedBarChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData} layout="vertical">
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+        <XAxis type="number" tickLine={false} axisLine={false} />
+        <YAxis
+          dataKey="month"
+          type="category"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="desktop" fill="rgb(168, 85, 247)" stackId="a" />
+        <Bar
+          dataKey="mobile"
+          fill="rgba(168, 85, 247, 0.4)"
+          stackId="a"
+          radius={[0, 4, 4, 0]}
+        />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Interactive Bar Chart
+
+A complex interactive bar chart displaying reactive parameter changes.
+
+<ComponentPreview>
+  <InteractiveBarChartDemo />
+
+```tsx
+import * as React from 'react'
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+}
+
+const chartData = [
+  { date: '2026-07-01', desktop: 222, mobile: 150 },
+  { date: '2026-07-02', desktop: 345, mobile: 120 },
+  { date: '2026-07-03', desktop: 230, mobile: 290 },
+  { date: '2026-07-04', desktop: 180, mobile: 320 },
+  { date: '2026-07-05', desktop: 390, mobile: 180 },
+  { date: '2026-07-06', desktop: 420, mobile: 250 },
+]
+
+export default function InteractiveBarChartDemo() {
+  const [activeTab, setActiveTab] = React.useState<'desktop' | 'mobile'>(
+    'desktop',
+  )
+
+  const total = React.useMemo(
+    () => ({
+      desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
+      mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
+    }),
+    [],
+  )
+
+  return (
+    <div className="flex flex-col w-full bg-zinc-900/40 border border-border rounded-xl p-4 gap-4">
+      <div className="flex justify-between items-center border-b border-border pb-4">
+        <div>
+          <h3 className="text-sm font-semibold text-white">
+            Interactive Performance
+          </h3>
+          <p className="text-[11px] text-zinc-400">
+            Select parameter to view statistics
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {(['desktop', 'mobile'] as const).map((key) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                activeTab === key
+                  ? 'bg-purple-600 border-purple-500 text-white'
+                  : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-white'
+              }`}
+            >
+              {chartConfig[key].label} ({total[key].toLocaleString()})
+            </button>
+          ))}
+        </div>
+      </div>
+      <ChartContainer config={chartConfig} className="h-[250px] w-full">
+        <BarChart data={chartData}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="date"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+          />
+          <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+          <Bar
+            dataKey={activeTab}
+            fill={
+              activeTab === 'desktop'
+                ? 'rgb(168, 85, 247)'
+                : 'rgba(168, 85, 247, 0.4)'
+            }
+            radius={4}
+          />
+        </BarChart>
+      </ChartContainer>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Linear Bar Chart
+
+A horizontal parameter layout plotting single-axis progressions.
+
+<ComponentPreview>
+  <LinearBarChartDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  value: {
+    label: 'Progress',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { name: 'Task Alpha', value: 85 },
+  { name: 'Task Beta', value: 62 },
+  { name: 'Task Gamma', value: 95 },
+]
+
+export default function LinearBarChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData} layout="vertical">
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+        <XAxis
+          type="number"
+          tickLine={false}
+          axisLine={false}
+          domain={[0, 100]}
+        />
+        <YAxis
+          dataKey="name"
+          type="category"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="value" fill="rgb(168, 85, 247)" radius={4} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Biaxial Bar Chart
+
+A bar chart plotting dual distinct Y-axes properties.
+
+<ComponentPreview>
+  <BiaxialBarChartDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop clicks',
+    color: 'rgb(168, 85, 247)',
+  },
+  revenue: {
+    label: 'Revenue ($)',
+    color: '#c084fc',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, revenue: 1800 },
+  { month: 'February', desktop: 305, revenue: 3200 },
+  { month: 'March', desktop: 237, revenue: 2500 },
+  { month: 'April', desktop: 73, revenue: 900 },
+  { month: 'May', desktop: 209, revenue: 2100 },
+  { month: 'June', desktop: 214, revenue: 2200 },
+]
+
+export default function BiaxialBarChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis
+          yAxisId="left"
+          orientation="left"
+          stroke="rgb(168, 85, 247)"
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          stroke="#c084fc"
+          tickLine={false}
+          axisLine={false}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar
+          yAxisId="left"
+          dataKey="desktop"
+          fill="rgb(168, 85, 247)"
+          radius={4}
+        />
+        <Bar yAxisId="right" dataKey="revenue" fill="#c084fc" radius={4} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Bar Chart with Custom Label
+
+Render custom text labels directly on top of bar nodes.
+
+<ComponentPreview>
+  <BarChartCustomLabelDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Signups',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'Jan', desktop: 186 },
+  { month: 'Feb', desktop: 305 },
+  { month: 'Mar', desktop: 237 },
+]
+
+export default function BarChartCustomLabelDemo() {
+  return (
+    <ChartContainer
+      config={chartConfig}
+      className="min-h-[200px] w-full bg-zinc-900/40 p-4 border border-border rounded-xl"
+    >
+      <BarChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="desktop" fill="rgb(168, 85, 247)" radius={4}>
+          <g>
+            {chartData.map((entry, index) => (
+              <text
+                key={index}
+                x={150 + index * 180}
+                y={100}
+                fill="#fff"
+                textAnchor="middle"
+                className="text-xs font-mono font-bold"
+              >
+                {entry.desktop}
+              </text>
+            ))}
+          </g>
+        </Bar>
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Bar Chart Mixed
+
+Mixed categorised horizontal bar chart representing distinct datasets.
+
+<ComponentPreview>
+  <BarChartMixedDemo />
+
+```tsx
+import { Bar, BarChart, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  visitors: {
+    label: 'Visitors',
+  },
+  chrome: {
+    label: 'Chrome',
+    color: 'hsl(var(--chart-1))',
+  },
+  safari: {
+    label: 'Safari',
+    color: 'hsl(var(--chart-2))',
+  },
+  firefox: {
+    label: 'Firefox',
+    color: 'hsl(var(--chart-3))',
+  },
+  edge: {
+    label: 'Edge',
+    color: 'hsl(var(--chart-4))',
+  },
+  other: {
+    label: 'Other',
+    color: 'hsl(var(--chart-5))',
+  },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+  { browser: 'firefox', visitors: 187, fill: 'var(--color-firefox)' },
+  { browser: 'edge', visitors: 173, fill: 'var(--color-edge)' },
+  { browser: 'other', visitors: 90, fill: 'var(--color-other)' },
+]
+
+export default function BarChartMixedDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData} layout="vertical" margin={{ left: 0 }}>
+        <YAxis
+          dataKey="browser"
+          type="category"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tickFormatter={(value) => chartConfig[value as keyof typeof chartConfig]?.label || value}
+        />
+        <XAxis dataKey="visitors" type="number" hide />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Bar dataKey="visitors" radius={5} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Bar Chart Negative
+
+Bar chart layout plotting both positive growth and negative deficit value segments.
+
+<ComponentPreview>
+  <BarChartNegativeDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, Cell, LabelList } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  visitors: {
+    label: 'Visitors',
+  },
+}
+
+const chartData = [
+  { month: 'January', visitors: 186 },
+  { month: 'February', visitors: 205 },
+  { month: 'March', visitors: -207 },
+  { month: 'April', visitors: 173 },
+  { month: 'May', visitors: -209 },
+  { month: 'June', visitors: 214 },
+]
+
+export default function BarChartNegativeDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel hideIndicator />} />
+        <Bar dataKey="visitors">
+          <LabelList position="top" dataKey="month" fillOpacity={1} />
+          {chartData.map((item) => (
+              <Cell
+                key={item.month}
+                fill={item.visitors > 0 ? 'var(--chart-1)' : 'var(--chart-2)'}
+              />
+            ))}
+        </Bar>
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Bar Chart Active
+
+A bar chart with custom active indices highlighted.
+
+<ComponentPreview>
+  <BarChartActiveDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, Rectangle, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  visitors: {
+    label: 'Visitors',
+  },
+  chrome: {
+    label: 'Chrome',
+    color: 'hsl(var(--chart-1))',
+  },
+  safari: {
+    label: 'Safari',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 187, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+]
+
+export default function BarChartActiveDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="browser"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Bar
+          dataKey="visitors"
+          strokeWidth={2}
+          radius={8}
+          shape={(props: any) => {
+            const { index, ...restProps } = props;
+            return index === 1 ? (
+              <Rectangle
+                {...restProps}
+                fillOpacity={0.8}
+                stroke={props.payload.fill}
+                strokeDasharray={4}
+              />
+            ) : (
+              <Rectangle {...restProps} />
+            )
+          }}
+        />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Bar Chart Multiple
+
+A bar chart mapping multiple data series side-by-side.
+
+<ComponentPreview>
+  <BarChartMultipleDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+]
+
+export default function BarChartMultipleDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Bar Chart Label
+
+Bar chart rendering text label lists explicitly on top of columns.
+
+<ComponentPreview>
+  <BarChartLabelDemo />
+
+```tsx
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+]
+
+export default function BarChartLabelDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart data={chartData} margin={{ top: 20 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8}>
+          <LabelList position="top" offset={12} className="fill-foreground" fontSize={12} />
+        </Bar>
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Line Chart
+
+Line charts display data points joined by straight line segments, representing sequential value progression.
+
+<ComponentPreview>
+  <LineChartDemo />
+
+```tsx
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+  { month: 'March', desktop: 237 },
+  { month: 'April', desktop: 73 },
+  { month: 'May', desktop: 209 },
+  { month: 'June', desktop: 214 },
+]
+
+export default function LineChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Line
+          dataKey="desktop"
+          type="monotone"
+          stroke="rgb(168, 85, 247)"
+          strokeWidth={2}
+          dot={false}
+        />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Interactive Line Chart
+
+Select different metrics reactively on a Line chart layout.
+
+<ComponentPreview>
+  <InteractiveLineChartDemo />
+
+```tsx
+import * as React from 'react'
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop Traffic',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile Traffic',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+}
+
+const chartData = [
+  { date: '2026-07-01', desktop: 222, mobile: 150 },
+  { date: '2026-07-02', desktop: 345, mobile: 120 },
+  { date: '2026-07-03', desktop: 230, mobile: 290 },
+  { date: '2026-07-04', desktop: 180, mobile: 320 },
+  { date: '2026-07-05', desktop: 390, mobile: 180 },
+  { date: '2026-07-06', desktop: 420, mobile: 250 },
+]
+
+export default function InteractiveLineChartDemo() {
+  const [activeTab, setActiveTab] = React.useState<'desktop' | 'mobile'>(
+    'desktop',
+  )
+
+  return (
+    <div className="flex flex-col w-full bg-zinc-900/40 border border-border rounded-xl p-4 gap-4">
+      <div className="flex justify-between items-center border-b border-border pb-4">
+        <div>
+          <h3 className="text-sm font-semibold text-white">
+            Interactive Line Performance
+          </h3>
+          <p className="text-[11px] text-zinc-400">Total sessions details</p>
+        </div>
+        <div className="flex gap-2">
+          {(['desktop', 'mobile'] as const).map((key) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                activeTab === key
+                  ? 'bg-purple-600 border-purple-500 text-white'
+                  : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-white'
+              }`}
+            >
+              {chartConfig[key].label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <ChartContainer config={chartConfig} className="h-[250px] w-full">
+        <LineChart data={chartData}>
+          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <XAxis dataKey="date" tickLine={false} axisLine={false} />
+          <YAxis tickLine={false} axisLine={false} />
+          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+          <Line
+            dataKey={activeTab}
+            type="monotone"
+            stroke="rgb(168, 85, 247)"
+            strokeWidth={2}
+            dot={false}
+          />
+        </LineChart>
+      </ChartContainer>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Multi-Line Chart
+
+Plot multiple metrics simultaneously over the same period.
+
+<ComponentPreview>
+  <MultiLineChartDemo />
+
+```tsx
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'rgba(168, 85, 247, 0.5)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+
+export default function MultiLineChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Line
+          dataKey="desktop"
+          type="monotone"
+          stroke="rgb(168, 85, 247)"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          dataKey="mobile"
+          type="monotone"
+          stroke="rgba(168, 85, 247, 0.4)"
+          strokeWidth={2}
+          dot={false}
+        />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Step Line Chart
+
+A line chart showing step progression thresholds.
+
+<ComponentPreview>
+  <StepLineChartDemo />
+
+```tsx
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Value progression',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 100 },
+  { month: 'February', desktop: 100 },
+  { month: 'March', desktop: 250 },
+  { month: 'April', desktop: 250 },
+  { month: 'May', desktop: 180 },
+  { month: 'June', desktop: 300 },
+]
+
+export default function StepLineChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Line
+          type="step"
+          dataKey="desktop"
+          stroke="rgb(168, 85, 247)"
+          strokeWidth={2}
+          dot={false}
+        />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Biaxial Line Chart
+
+A line chart plotting dual Y-axes properties simultaneously.
+
+<ComponentPreview>
+  <BiaxialLineChartDemo />
+
+```tsx
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  temp: {
+    label: 'Temperature (°C)',
+    color: 'rgb(168, 85, 247)',
+  },
+  humidity: {
+    label: 'Humidity (%)',
+    color: '#c084fc',
+  },
+}
+
+const chartData = [
+  { hour: '00:00', temp: 15, humidity: 80 },
+  { hour: '04:00', temp: 12, humidity: 85 },
+  { hour: '08:00', temp: 18, humidity: 70 },
+  { hour: '12:00', temp: 25, humidity: 55 },
+  { hour: '16:00', temp: 22, humidity: 60 },
+  { hour: '20:00', temp: 17, humidity: 75 },
+]
+
+export default function BiaxialLineChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="hour" tickLine={false} axisLine={false} />
+        <YAxis
+          yAxisId="left"
+          orientation="left"
+          stroke="rgb(168, 85, 247)"
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          stroke="#c084fc"
+          tickLine={false}
+          axisLine={false}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Line
+          yAxisId="left"
+          type="monotone"
+          dataKey="temp"
+          stroke="rgb(168, 85, 247)"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Line
+          yAxisId="right"
+          type="monotone"
+          dataKey="humidity"
+          stroke="#c084fc"
+          strokeWidth={2}
+          dot={false}
+        />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Dashed Line Chart
+
+A line chart showing dashed projection layout configurations.
+
+<ComponentPreview>
+  <DashedLineChartDemo />
+
+```tsx
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop Projections',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 120 },
+  { month: 'February', desktop: 180 },
+  { month: 'March', desktop: 240 },
+  { month: 'April', desktop: 220 },
+  { month: 'May', desktop: 310 },
+  { month: 'June', desktop: 400 },
+]
+
+export default function DashedLineChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Line
+          type="monotone"
+          dataKey="desktop"
+          stroke="rgb(168, 85, 247)"
+          strokeWidth={2}
+          strokeDasharray="5 5"
+          dot={false}
+        />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Custom Dot Line Chart
+
+Show custom circular dot nodes at line intersections.
+
+<ComponentPreview>
+  <CustomDotLineChartDemo />
+
+```tsx
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Signups',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 100 },
+  { month: 'February', desktop: 140 },
+  { month: 'March', desktop: 120 },
+  { month: 'April', desktop: 260 },
+  { month: 'May', desktop: 180 },
+  { month: 'June', desktop: 320 },
+]
+
+export default function CustomDotLineChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Line
+          type="monotone"
+          dataKey="desktop"
+          stroke="rgb(168, 85, 247)"
+          strokeWidth={2.5}
+          dot={{
+            r: 6,
+            fill: 'rgb(168, 85, 247)',
+            stroke: '#18181b',
+            strokeWidth: 2,
+          }}
+          activeDot={{ r: 8, fill: 'rgb(168, 85, 247)' }}
+        />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Line Chart Dots
+
+Line chart featuring active coordinate circular bullet point markers.
+
+<ComponentPreview>
+  <LineChartDotsDemo />
+
+```tsx
+import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+
+export default function LineChartDotsDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Line
+          dataKey="desktop"
+          type="natural"
+          stroke="var(--color-desktop)"
+          strokeWidth={2}
+          dot={{ fill: 'var(--color-desktop)' }}
+          activeDot={{ r: 6 }}
+        />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Line Chart Linear
+
+Line chart utilizing linear interpolation curves.
+
+<ComponentPreview>
+  <LineChartLinearDemo />
+
+```tsx
+import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+]
+
+export default function LineChartLinearDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Line dataKey="desktop" type="linear" stroke="var(--color-desktop)" strokeWidth={2} dot={false} />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Line Chart Step
+
+Line chart utilizing step transitions.
+
+<ComponentPreview>
+  <LineChartStepDemo />
+
+```tsx
+import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+]
+
+export default function LineChartStepDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Line dataKey="desktop" type="step" stroke="var(--color-desktop)" strokeWidth={2} dot={false} />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Line Chart Multiple
+
+Line chart displaying multiple lines side-by-side.
+
+<ComponentPreview>
+  <LineChartMultipleDemo />
+
+```tsx
+import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+]
+
+export default function LineChartMultipleDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Line dataKey="desktop" type="monotone" stroke="var(--color-desktop)" strokeWidth={2} dot={false} />
+        <Line dataKey="mobile" type="monotone" stroke="var(--color-mobile)" strokeWidth={2} dot={false} />
+      </LineChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Pie Chart (Donut Chart)
+
+Donut charts are useful to display percentage allocation or data breakdown.
+
+<ComponentPreview>
+  <PieChartDemo />
+
+```tsx
+import { Cell, Pie, PieChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  chrome: {
+    label: 'Chrome',
+    color: '#a855f7',
+  },
+  safari: {
+    label: 'Safari',
+    color: '#c084fc',
+  },
+  firefox: {
+    label: 'Firefox',
+    color: '#e9d5ff',
+  },
+  edge: {
+    label: 'Edge',
+    color: '#f3e8ff',
+  },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: '#a855f7' },
+  { browser: 'safari', visitors: 200, fill: '#c084fc' },
+  { browser: 'firefox', visitors: 187, fill: '#e9d5ff' },
+  { browser: 'edge', visitors: 173, fill: '#f3e8ff' },
+]
+
+export default function PieChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <PieChart>
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent nameKey="browser" />}
+        />
+        <Pie
+          data={chartData}
+          dataKey="visitors"
+          nameKey="browser"
+          innerRadius={60}
+          outerRadius={80}
+          strokeWidth={2}
+          stroke="#18181b"
+        >
+          {chartData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.fill} />
+          ))}
+        </Pie>
+      </PieChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Pie Chart with Custom Labels
+
+Pie Chart with inline percentage labels rendered on top of each slice.
+
+<ComponentPreview>
+  <PieChartCustomLabelDemo />
+
+```tsx
+import { Cell, Pie, PieChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  chrome: {
+    label: 'Chrome',
+    color: '#a855f7',
+  },
+  safari: {
+    label: 'Safari',
+    color: '#c084fc',
+  },
+  firefox: {
+    label: 'Firefox',
+    color: '#e9d5ff',
+  },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: '#a855f7' },
+  { browser: 'safari', visitors: 200, fill: '#c084fc' },
+  { browser: 'firefox', visitors: 187, fill: '#e9d5ff' },
+]
+
+export default function PieChartCustomLabelDemo() {
+  const renderCustomizedLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+  }: any) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+    const RADIAN = Math.PI / 180
+    const x = cx + radius * Math.cos(-midAngle * RADIAN)
+    const y = cy + radius * Math.sin(-midAngle * RADIAN)
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor="middle"
+        dominantBaseline="central"
+        className="text-[10px] font-bold"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    )
+  }
+
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <PieChart>
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent nameKey="browser" />}
+        />
+        <Pie
+          data={chartData}
+          dataKey="visitors"
+          nameKey="browser"
+          labelLine={false}
+          label={renderCustomizedLabel}
+          outerRadius={80}
+          strokeWidth={2}
+          stroke="#18181b"
+        >
+          {chartData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.fill} />
+          ))}
+        </Pie>
+      </PieChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Pie Chart with Custom Legend
+
+Pie Chart mapping configured for clean item breakdown keys.
+
+<ComponentPreview>
+  <PieChartCustomLegendDemo />
+
+```tsx
+import { Cell, Pie, PieChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  active: {
+    label: 'Active Users',
+    color: 'rgb(168, 85, 247)',
+  },
+  idle: {
+    label: 'Idle Users',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+}
+
+const chartData = [
+  { name: 'active', value: 680, fill: 'rgb(168, 85, 247)' },
+  { name: 'idle', value: 320, fill: 'rgba(168, 85, 247, 0.4)' },
+]
+
+export default function PieChartCustomLegendDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <PieChart>
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent nameKey="name" />}
+        />
+        <Pie
+          data={chartData}
+          dataKey="value"
+          nameKey="name"
+          innerRadius={60}
+          outerRadius={80}
+          strokeWidth={2}
+          stroke="#18181b"
+        >
+          {chartData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.fill} />
+          ))}
+        </Pie>
+      </PieChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Pie Chart with Custom Active Shape
+
+Hovering triggers custom pointer lines pointing to active slice metrics.
+
+<ComponentPreview>
+  <PieChartCustomActiveShapeDemo />
+
+```tsx
+import * as React from 'react'
+import { Pie, PieChart, Sector } from 'recharts'
+import { ChartContainer } from '@/components/ui/chart'
+
+const chartConfig = {
+  chrome: {
+    label: 'Chrome',
+    color: '#a855f7',
+  },
+  safari: {
+    label: 'Safari',
+    color: '#c084fc',
+  },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: '#a855f7' },
+  { browser: 'safari', visitors: 200, fill: '#c084fc' },
+]
+
+export default function PieChartCustomActiveShapeDemo() {
+  const [activeIndex, setActiveIndex] = React.useState(0)
+
+  const renderActiveShape = (props: any) => {
+    const RADIAN = Math.PI / 180
+    const {
+      cx,
+      cy,
+      midAngle,
+      innerRadius,
+      outerRadius,
+      startAngle,
+      endAngle,
+      fill,
+      payload,
+      value,
+    } = props
+    const sin = Math.sin(-RADIAN * midAngle)
+    const cos = Math.cos(-RADIAN * midAngle)
+    const sx = cx + (outerRadius + 10) * cos
+    const sy = cy + (outerRadius + 10) * sin
+    const mx = cx + (outerRadius + 30) * cos
+    const my = cy + (outerRadius + 30) * sin
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22
+    const ey = my
+    const textAnchor = cos >= 0 ? 'start' : 'end'
+
+    return (
+      <g>
+        <text
+          x={cx}
+          y={cy}
+          dy={8}
+          textAnchor="middle"
+          fill="#fff"
+          className="text-xs font-bold"
+        >
+          {payload.browser}
+        </text>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius + 6}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+        <path
+          d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+          stroke={fill}
+          fill="none"
+        />
+        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+        <text
+          x={ex + (cos >= 0 ? 1 : -1) * 12}
+          y={ey}
+          textAnchor={textAnchor}
+          fill="#a855f7"
+          className="text-[10px] font-bold"
+        >
+          {`Visitors: ${value}`}
+        </text>
+      </g>
+    )
+  }
+
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <PieChart>
+        <Pie
+          activeIndex={activeIndex}
+          activeShape={renderActiveShape}
+          data={chartData}
+          cx="50%"
+          cy="50%"
+          innerRadius={60}
+          outerRadius={80}
+          dataKey="visitors"
+          onMouseEnter={(_, index) => setActiveIndex(index)}
+        />
+      </PieChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Pie Chart Simple
+
+Minimalist clean standard pie chart layout.
+
+<ComponentPreview>
+  <PieChartSimpleDemo />
+
+```tsx
+import { Pie, PieChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  visitors: { label: 'Visitors' },
+  chrome: { label: 'Chrome', color: 'hsl(var(--chart-1))' },
+  safari: { label: 'Safari', color: 'hsl(var(--chart-2))' },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+]
+
+export default function PieChartSimpleDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <PieChart>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Pie data={chartData} dataKey="visitors" nameKey="browser" />
+      </PieChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Pie Chart Stacked
+
+Stacked concentric layers displaying multi-tier compositions.
+
+<ComponentPreview>
+  <PieChartStackedDemo />
+
+```tsx
+import { Pie, PieChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  visitors: { label: 'Visitors' },
+  desktop: { label: 'Desktop', color: 'hsl(var(--chart-1))' },
+  mobile: { label: 'Mobile', color: 'hsl(var(--chart-2))' },
+}
+
+const chartData1 = [
+  { name: 'Jan-March', visitors: 400, fill: 'var(--color-desktop)' },
+  { name: 'Apr-June', visitors: 300, fill: 'var(--color-mobile)' },
+]
+
+const chartData2 = [
+  { name: 'Chrome', visitors: 150, fill: 'hsl(var(--chart-3))' },
+  { name: 'Safari', visitors: 120, fill: 'hsl(var(--chart-4))' },
+]
+
+export default function PieChartStackedDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <PieChart>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Pie data={chartData1} dataKey="visitors" nameKey="name" outerRadius={50} />
+        <Pie data={chartData2} dataKey="visitors" nameKey="name" innerRadius={60} outerRadius={80} />
+      </PieChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Pie Chart Donut Active
+
+Donut chart with custom active sector shapes on interaction.
+
+<ComponentPreview>
+  <PieChartDonutActiveDemo />
+
+```tsx
+import { Sector, Pie, PieChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  visitors: { label: 'Visitors' },
+  chrome: { label: 'Chrome', color: 'hsl(var(--chart-1))' },
+  safari: { label: 'Safari', color: 'hsl(var(--chart-2))' },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+]
+
+export default function PieChartDonutActiveDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <PieChart>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Pie
+          data={chartData}
+          dataKey="visitors"
+          nameKey="browser"
+          innerRadius={60}
+          outerRadius={80}
+          strokeWidth={5}
+          activeIndex={0}
+          activeShape={({ cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill }: any) => (
+            <g>
+              <Sector
+                cx={cx}
+                cy={cy}
+                innerRadius={innerRadius - 4}
+                outerRadius={outerRadius + 4}
+                startAngle={startAngle}
+                endAngle={endAngle}
+                fill={fill}
+              />
+            </g>
+          )}
+        />
+      </PieChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radar Chart
+
+Radar charts are excellent for comparing multi-dimensional or multivariate datasets.
+
+<ComponentPreview>
+  <RadarChartDemo />
+
+```tsx
+import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+} from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+  { month: 'March', desktop: 237 },
+  { month: 'April', desktop: 273 },
+  { month: 'May', desktop: 209 },
+  { month: 'June', desktop: 214 },
+]
+
+export default function RadarChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <RadarChart data={chartData}>
+        <PolarGrid stroke="#27272a" />
+        <PolarAngleAxis dataKey="month" stroke="#888888" fontSize={11} />
+        <PolarRadiusAxis
+          angle={30}
+          domain={[0, 350]}
+          stroke="#888888"
+          fontSize={10}
+          tick={false}
+          axisLine={false}
+        />
+        <Radar
+          name="Desktop"
+          dataKey="desktop"
+          stroke="rgb(168, 85, 247)"
+          fill="rgba(168, 85, 247, 0.25)"
+          fillOpacity={0.6}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+      </RadarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Interactive Radar Chart
+
+Compare distinct radar categories interactively using selection tabs.
+
+<ComponentPreview>
+  <InteractiveRadarChartDemo />
+
+```tsx
+import * as React from 'react'
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop Focus',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile Focus',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 110 },
+  { month: 'February', desktop: 305, mobile: 240 },
+  { month: 'March', desktop: 237, mobile: 180 },
+  { month: 'April', desktop: 273, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 150 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+
+export default function InteractiveRadarChartDemo() {
+  const [activeTab, setActiveTab] = React.useState<'desktop' | 'mobile'>(
+    'desktop',
+  )
+
+  return (
+    <div className="flex flex-col w-full bg-zinc-900/40 border border-border rounded-xl p-4 gap-4">
+      <div className="flex justify-between items-center border-b border-border pb-4">
+        <div>
+          <h3 className="text-sm font-semibold text-white">
+            Interactive Radar
+          </h3>
+          <p className="text-[11px] text-zinc-400">
+            Parameter specific focus maps
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {(['desktop', 'mobile'] as const).map((key) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                activeTab === key
+                  ? 'bg-purple-600 border-purple-500 text-white'
+                  : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-white'
+              }`}
+            >
+              {key === 'desktop' ? 'Desktop' : 'Mobile'}
+            </button>
+          ))}
+        </div>
+      </div>
+      <ChartContainer config={chartConfig} className="h-[250px] w-full">
+        <RadarChart data={chartData}>
+          <PolarGrid stroke="#27272a" />
+          <PolarAngleAxis dataKey="month" stroke="#888888" fontSize={10} />
+          <Radar
+            name={activeTab === 'desktop' ? 'Desktop' : 'Mobile'}
+            dataKey={activeTab}
+            stroke="rgb(168, 85, 247)"
+            fill="rgba(168, 85, 247, 0.25)"
+            fillOpacity={0.6}
+          />
+          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        </RadarChart>
+      </ChartContainer>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radar Chart Dots
+
+Radar chart rendering visible node circular indicators.
+
+<ComponentPreview>
+  <RadarChartDotsDemo />
+
+```tsx
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+]
+
+export default function RadarChartDotsDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <RadarChart data={chartData}>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <PolarAngleAxis dataKey="month" />
+        <PolarGrid />
+        <Radar dataKey="desktop" fill="var(--color-desktop)" fillOpacity={0.6} dot={{ r: 4, fillOpacity: 1 }} />
+      </RadarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radar Chart Lines Only
+
+Radar chart with outer outline profiles only, skipping area fills.
+
+<ComponentPreview>
+  <RadarChartLinesOnlyDemo />
+
+```tsx
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 160 },
+  { month: 'February', desktop: 305, mobile: 240 },
+]
+
+export default function RadarChartLinesOnlyDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <RadarChart data={chartData}>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <PolarAngleAxis dataKey="month" />
+        <PolarGrid />
+        <Radar dataKey="desktop" stroke="var(--color-desktop)" fill="none" strokeWidth={2} />
+        <Radar dataKey="mobile" stroke="var(--color-mobile)" fill="none" strokeWidth={2} />
+      </RadarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radar Chart Legend
+
+Radar chart displaying detailed key labels aligned below the web.
+
+<ComponentPreview>
+  <RadarChartLegendDemo />
+
+```tsx
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+]
+
+export default function RadarChartLegendDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <RadarChart data={chartData}>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <PolarAngleAxis dataKey="month" />
+        <PolarGrid />
+        <Radar dataKey="desktop" fill="var(--color-desktop)" fillOpacity={0.5} stroke="var(--color-desktop)" />
+        <Radar dataKey="mobile" fill="var(--color-mobile)" fillOpacity={0.5} stroke="var(--color-mobile)" />
+        <ChartLegend content={<ChartLegendContent />} />
+      </RadarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart
+
+A radial chart displaying concentric category circular data.
+
+<ComponentPreview>
+  <RadialChartSimpleDemo />
+
+```tsx
+import { RadialBar, RadialBarChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+  { browser: 'firefox', visitors: 187, fill: 'var(--color-firefox)' },
+  { browser: 'edge', visitors: 173, fill: 'var(--color-edge)' },
+  { browser: 'other', visitors: 90, fill: 'var(--color-other)' },
+]
+
+const chartConfig = {
+  visitors: {
+    label: 'Visitors',
+  },
+  chrome: {
+    label: 'Chrome',
+    color: 'hsl(var(--chart-1))',
+  },
+  safari: {
+    label: 'Safari',
+    color: 'hsl(var(--chart-2))',
+  },
+  firefox: {
+    label: 'Firefox',
+    color: 'hsl(var(--chart-3))',
+  },
+  edge: {
+    label: 'Edge',
+    color: 'hsl(var(--chart-4))',
+  },
+  other: {
+    label: 'Other',
+    color: 'hsl(var(--chart-5))',
+  },
+}
+
+export default function RadialChartSimpleDemo() {
+  return (
+    <ChartContainer
+      config={chartConfig}
+      className="mx-auto aspect-square max-h-[250px]"
+    >
+      <RadialBarChart data={chartData} innerRadius={30} outerRadius={110}>
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent hideLabel nameKey="browser" />}
+        />
+        <RadialBar dataKey="visitors" background />
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart Label
+
+A radial chart showing labels inside the start of each bar.
+
+<ComponentPreview>
+  <RadialChartLabelDemo />
+
+```tsx
+import { LabelList, RadialBar, RadialBarChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+  { browser: 'firefox', visitors: 187, fill: 'var(--color-firefox)' },
+  { browser: 'edge', visitors: 173, fill: 'var(--color-edge)' },
+  { browser: 'other', visitors: 90, fill: 'var(--color-other)' },
+]
+
+const chartConfig = {
+  visitors: {
+    label: 'Visitors',
+  },
+  chrome: {
+    label: 'Chrome',
+    color: 'hsl(var(--chart-1))',
+  },
+  safari: {
+    label: 'Safari',
+    color: 'hsl(var(--chart-2))',
+  },
+  firefox: {
+    label: 'Firefox',
+    color: 'hsl(var(--chart-3))',
+  },
+  edge: {
+    label: 'Edge',
+    color: 'hsl(var(--chart-4))',
+  },
+  other: {
+    label: 'Other',
+    color: 'hsl(var(--chart-5))',
+  },
+}
+
+export default function RadialChartLabelDemo() {
+  return (
+    <ChartContainer
+      config={chartConfig}
+      className="mx-auto aspect-square max-h-[250px]"
+    >
+      <RadialBarChart
+        data={chartData}
+        startAngle={-90}
+        endAngle={380}
+        innerRadius={30}
+        outerRadius={110}
+      >
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent hideLabel nameKey="browser" />}
+        />
+        <RadialBar dataKey="visitors" background>
+          <LabelList
+            position="insideStart"
+            dataKey="browser"
+            className="fill-white capitalize mix-blend-luminosity"
+            fontSize={11}
+          />
+        </RadialBar>
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart Grid
+
+A radial chart with background polar circle grids.
+
+<ComponentPreview>
+  <RadialChartGridDemo />
+
+```tsx
+import { PolarGrid, RadialBar, RadialBarChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+  { browser: 'firefox', visitors: 187, fill: 'var(--color-firefox)' },
+  { browser: 'edge', visitors: 173, fill: 'var(--color-edge)' },
+  { browser: 'other', visitors: 90, fill: 'var(--color-other)' },
+]
+
+const chartConfig = {
+  visitors: {
+    label: 'Visitors',
+  },
+  chrome: {
+    label: 'Chrome',
+    color: 'hsl(var(--chart-1))',
+  },
+  safari: {
+    label: 'Safari',
+    color: 'hsl(var(--chart-2))',
+  },
+  firefox: {
+    label: 'Firefox',
+    color: 'hsl(var(--chart-3))',
+  },
+  edge: {
+    label: 'Edge',
+    color: 'hsl(var(--chart-4))',
+  },
+  other: {
+    label: 'Other',
+    color: 'hsl(var(--chart-5))',
+  },
+}
+
+export default function RadialChartGridDemo() {
+  return (
+    <ChartContainer
+      config={chartConfig}
+      className="mx-auto aspect-square max-h-[250px]"
+    >
+      <RadialBarChart data={chartData} innerRadius={30} outerRadius={100}>
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent hideLabel nameKey="browser" />}
+        />
+        <PolarGrid gridType="circle" />
+        <RadialBar dataKey="visitors" />
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart Text
+
+A radial gauge chart displaying progress with centered text overlay.
+
+<ComponentPreview>
+  <RadialChartTextDemo />
+
+```tsx
+import {
+  Label,
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from 'recharts'
+import { ChartContainer } from '@/components/ui/chart'
+
+const chartData = [
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+]
+
+const chartConfig = {
+  visitors: {
+    label: 'Visitors',
+  },
+  safari: {
+    label: 'Safari',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+export default function RadialChartTextDemo() {
+  return (
+    <ChartContainer
+      config={chartConfig}
+      className="mx-auto aspect-square max-h-[250px]"
+    >
+      <RadialBarChart
+        data={chartData}
+        startAngle={0}
+        endAngle={250}
+        outerRadius={90}
+        innerRadius={80}
+      >
+        <PolarGrid
+          gridType="circle"
+          radialLines={false}
+          stroke="none"
+          className="first:fill-muted last:fill-background"
+          polarRadius={[90, 80]}
+        />
+        <RadialBar dataKey="visitors" background cornerRadius={10} />
+        <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+          <Label
+            content={({ viewBox }) => {
+              if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                return (
+                  <text
+                    x={viewBox.cx}
+                    y={viewBox.cy}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    <tspan
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      className="fill-foreground text-4xl font-bold"
+                    >
+                      {chartData[0].visitors.toLocaleString()}
+                    </tspan>
+                    <tspan
+                      x={viewBox.cx}
+                      y={(viewBox.cy || 0) + 24}
+                      className="fill-muted-foreground"
+                    >
+                      Visitors
+                    </tspan>
+                  </text>
+                )
+              }
+            }}
+          />
+        </PolarRadiusAxis>
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart Shape
+
+A radial chart with custom end boundary angles and circular progress indicator.
+
+<ComponentPreview>
+  <RadialChartShapeDemo />
+
+```tsx
+import {
+  Label,
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from 'recharts'
+import { ChartContainer } from '@/components/ui/chart'
+
+const chartData = [
+  { browser: 'safari', visitors: 1260, fill: 'var(--color-safari)' },
+]
+
+const chartConfig = {
+  visitors: {
+    label: 'Visitors',
+  },
+  safari: {
+    label: 'Safari',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+export default function RadialChartShapeDemo() {
+  return (
+    <ChartContainer
+      config={chartConfig}
+      className="mx-auto aspect-square max-h-[250px]"
+    >
+      <RadialBarChart
+        data={chartData}
+        endAngle={100}
+        innerRadius={65}
+        outerRadius={95}
+      >
+        <PolarGrid
+          gridType="circle"
+          radialLines={false}
+          stroke="none"
+          className="first:fill-muted last:fill-background"
+          polarRadius={[86, 74]}
+        />
+        <RadialBar dataKey="visitors" background />
+        <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+          <Label
+            content={({ viewBox }) => {
+              if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                return (
+                  <text
+                    x={viewBox.cx}
+                    y={viewBox.cy}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                  >
+                    <tspan
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      className="fill-foreground text-4xl font-bold"
+                    >
+                      {chartData[0].visitors.toLocaleString()}
+                    </tspan>
+                    <tspan
+                      x={viewBox.cx}
+                      y={(viewBox.cy || 0) + 24}
+                      className="fill-muted-foreground"
+                    >
+                      Visitors
+                    </tspan>
+                  </text>
+                )
+              }
+            }}
+          />
+        </PolarRadiusAxis>
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart Stacked
+
+A stacked radial chart displaying multiple segment items concurrently.
+
+<ComponentPreview>
+  <RadialChartStackedDemo />
+
+```tsx
+import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartData = [{ month: 'january', mobile: 570, desktop: 1260 }]
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+export default function RadialChartStackedDemo() {
+  const totalVisitors = chartData[0].desktop + chartData[0].mobile
+
+  return (
+    <ChartContainer
+      config={chartConfig}
+      className="mx-auto aspect-square w-full max-w-[250px]"
+    >
+      <RadialBarChart
+        data={chartData}
+        endAngle={180}
+        innerRadius={80}
+        outerRadius={110}
+      >
+        <RadialBar
+          dataKey="mobile"
+          fill="var(--color-mobile)"
+          stackId="a"
+          cornerRadius={5}
+          className="stroke-transparent stroke-2"
+        />
+        <RadialBar
+          dataKey="desktop"
+          stackId="a"
+          cornerRadius={5}
+          fill="var(--color-desktop)"
+          className="stroke-transparent stroke-2"
+        />
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent hideLabel />}
+        />
+        <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+          <Label
+            content={({ viewBox }) => {
+              if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                return (
+                  <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
+                    <tspan
+                      x={viewBox.cx}
+                      y={(viewBox.cy || 0) - 16}
+                      className="fill-foreground text-2xl font-bold"
+                    >
+                      {totalVisitors.toLocaleString()}
+                    </tspan>
+                    <tspan
+                      x={viewBox.cx}
+                      y={(viewBox.cy || 0) + 4}
+                      className="fill-muted-foreground"
+                    >
+                      Visitors
+                    </tspan>
+                  </text>
+                )
+              }
+            }}
+          />
+        </PolarRadiusAxis>
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart Angle
+
+A 180-degree semi-radial gauge plotting visitor progress.
+
+<ComponentPreview>
+  <RadialChartAngleDemo />
+
+```tsx
+import { RadialBarChart, RadialBar, PolarRadiusAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  visitors: { label: 'Visitors' },
+  safari: { label: 'Safari', color: 'hsl(var(--chart-2))' },
+}
+
+const chartData = [
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+]
+
+export default function RadialChartAngleDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <RadialBarChart data={chartData} startAngle={180} endAngle={0} innerRadius={80} outerRadius={110}>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <PolarRadiusAxis tick={false} tickLine={false} axisLine={false} />
+        <RadialBar dataKey="visitors" background cornerRadius={10} />
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart Icon
+
+Radial gauge chart rendering customized category inline icons.
+
+<ComponentPreview>
+  <RadialChartIconDemo />
+
+```tsx
+import { RadialBarChart, RadialBar } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  chrome: { label: 'Chrome', color: 'hsl(var(--chart-1))' },
+  safari: { label: 'Safari', color: 'hsl(var(--chart-2))' },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+]
+
+export default function RadialChartIconDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <RadialBarChart data={chartData} innerRadius={30} outerRadius={100}>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <RadialBar dataKey="visitors" background cornerRadius={5} />
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Radial Chart Legend
+
+Radial chart detailing item indicators in an aligned list config.
+
+<ComponentPreview>
+  <RadialChartLegendDemo />
+
+```tsx
+import { RadialBarChart, RadialBar } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  chrome: { label: 'Chrome', color: 'hsl(var(--chart-1))' },
+  safari: { label: 'Safari', color: 'hsl(var(--chart-2))' },
+}
+
+const chartData = [
+  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
+]
+
+export default function RadialChartLegendDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+      <RadialBarChart data={chartData} innerRadius={40} outerRadius={90}>
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <RadialBar dataKey="visitors" background cornerRadius={5} />
+        <ChartLegend content={<ChartLegendContent nameKey="browser" />} />
+      </RadialBarChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Composed Chart
+
+Combine Area, Bar, and Line elements in one single cohesive data structure.
+
+<ComponentPreview>
+  <ComposedChartDemo />
+
+```tsx
+import {
+  ComposedChart,
+  Area,
+  Bar,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+  average: {
+    label: 'Average',
+    color: '#f3e8ff',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80, average: 133 },
+  { month: 'February', desktop: 305, mobile: 200, average: 252 },
+  { month: 'March', desktop: 237, mobile: 120, average: 178 },
+  { month: 'April', desktop: 73, mobile: 190, average: 131 },
+  { month: 'May', desktop: 209, mobile: 130, average: 169 },
+  { month: 'June', desktop: 214, mobile: 140, average: 177 },
+]
+
+export default function ComposedChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ComposedChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+        />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Area dataKey="mobile" fill="rgba(168,85,247,0.1)" stroke="none" />
+        <Bar
+          dataKey="desktop"
+          fill="rgb(168, 85, 247)"
+          radius={4}
+          barSize={20}
+        />
+        <Line
+          dataKey="average"
+          type="monotone"
+          stroke="#c084fc"
+          strokeWidth={2}
+          dot={false}
+        />
+      </ComposedChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Stacked Composed Chart
+
+A composed data layout rendering stacked categories inside the bar layers.
+
+<ComponentPreview>
+  <StackedComposedChartDemo />
+
+```tsx
+import {
+  Area,
+  Bar,
+  ComposedChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'rgba(168, 85, 247, 0.4)',
+  },
+  average: {
+    label: 'Average',
+    color: '#f3e8ff',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 180, mobile: 60, average: 240 },
+  { month: 'February', desktop: 220, mobile: 80, average: 300 },
+  { month: 'March', desktop: 190, mobile: 70, average: 260 },
+]
+
+export default function StackedComposedChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ComposedChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar
+          dataKey="desktop"
+          fill="rgb(168, 85, 247)"
+          stackId="a"
+          barSize={24}
+        />
+        <Bar
+          dataKey="mobile"
+          fill="rgba(168, 85, 247, 0.4)"
+          stackId="a"
+          radius={[4, 4, 0, 0]}
+        />
+        <Line
+          dataKey="average"
+          type="monotone"
+          stroke="#c084fc"
+          strokeWidth={2}
+          dot={false}
+        />
+      </ComposedChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Composed Line Scatter
+
+Plot coordinate bubble nodes connected by inline linear tracing paths.
+
+<ComponentPreview>
+  <ComposedLineScatterChartDemo />
+
+```tsx
+import {
+  ComposedChart,
+  Line,
+  Scatter,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  signups: {
+    label: 'Signups',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { x: 10, y: 30 },
+  { x: 30, y: 70 },
+  { x: 50, y: 150 },
+  { x: 70, y: 220 },
+  { x: 90, y: 310 },
+]
+
+export default function ComposedLineScatterChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ComposedChart
+        data={chartData}
+        margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis type="number" dataKey="x" tickLine={false} axisLine={false} />
+        <YAxis type="number" dataKey="y" tickLine={false} axisLine={false} />
+        <ChartTooltip
+          cursor={{ strokeDasharray: '3 3' }}
+          content={<ChartTooltipContent />}
+        />
+        <Line
+          type="monotone"
+          dataKey="y"
+          stroke="rgb(168, 85, 247)"
+          strokeWidth={2}
+          dot={false}
+        />
+        <Scatter dataKey="y" fill="rgb(168, 85, 247)" />
+      </ComposedChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Biaxial Composed Chart
+
+Composed layout configured to index parameters across dual Y-axes.
+
+<ComponentPreview>
+  <BiaxialComposedChartDemo />
+
+```tsx
+import { ComposedChart, Bar, Line, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  clicks: {
+    label: 'Clicks',
+    color: 'rgb(168, 85, 247)',
+  },
+  conversion: {
+    label: 'Conversion Ratio (%)',
+    color: '#c084fc',
+  },
+}
+
+const chartData = [
+  { month: 'Jan', clicks: 400, conversion: 2.4 },
+  { month: 'Feb', clicks: 550, conversion: 3.1 },
+  { month: 'Mar', clicks: 700, conversion: 2.8 },
+]
+
+export default function BiaxialComposedChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ComposedChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis
+          yAxisId="left"
+          orientation="left"
+          stroke="rgb(168, 85, 247)"
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          stroke="#c084fc"
+          tickLine={false}
+          axisLine={false}
+        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar
+          yAxisId="left"
+          dataKey="clicks"
+          fill="rgb(168, 85, 247)"
+          radius={4}
+          barSize={20}
+        />
+        <Line
+          yAxisId="right"
+          type="monotone"
+          dataKey="conversion"
+          stroke="#c084fc"
+          strokeWidth={2}
+          dot={false}
+        />
+      </ComposedChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Scatter Chart
+
+Coordinate bubble charts plotting correlation vectors across distinct axes.
+
+<ComponentPreview>
+  <ScatterChartDemo />
+
+```tsx
+import {
+  ScatterChart,
+  Scatter,
+  ZAxis,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'rgb(168, 85, 247)',
+  },
+}
+
+const chartData = [
+  { x: 100, y: 200, z: 200 },
+  { x: 120, y: 100, z: 260 },
+  { x: 170, y: 300, z: 400 },
+  { x: 140, y: 250, z: 280 },
+  { x: 150, y: 400, z: 500 },
+  { x: 110, y: 280, z: 200 },
+]
+
+export default function ScatterChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+        <CartesianGrid />
+        <XAxis
+          type="number"
+          dataKey="x"
+          name="stature"
+          unit="cm"
+          stroke="#888888"
+          fontSize={11}
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          type="number"
+          dataKey="y"
+          name="weight"
+          unit="kg"
+          stroke="#888888"
+          fontSize={11}
+          tickLine={false}
+          axisLine={false}
+        />
+        <ZAxis
+          type="number"
+          dataKey="z"
+          range={[60, 400]}
+          name="score"
+          unit="pts"
+        />
+        <ChartTooltip
+          cursor={{ strokeDasharray: '3 3' }}
+          content={<ChartTooltipContent />}
+        />
+        <Scatter name="A school" data={chartData} fill="rgb(168, 85, 247)" />
+      </ScatterChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Scatter Chart Simple
+
+Coordinate scatter chart plotting discrete data points along X and Y axes.
+
+<ComponentPreview>
+  <ScatterChartSimpleDemo />
+
+```tsx
+import { ScatterChart, Scatter, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'var(--chart-1)',
+  },
+}
+
+const chartData = [
+  { x: 10, y: 30 },
+  { x: 30, y: 200 },
+  { x: 45, y: 100 },
+  { x: 50, y: 400 },
+  { x: 70, y: 150 },
+  { x: 80, y: 250 },
+  { x: 95, y: 320 },
+]
+
+export default function ScatterChartSimpleDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ScatterChart margin={{ left: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis type="number" dataKey="x" tickLine={false} axisLine={false} />
+        <YAxis type="number" dataKey="y" tickLine={false} axisLine={false} width={40} tickMargin={8} />
+        <ChartTooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent />} />
+        <Scatter name="Desktop" data={chartData} fill="var(--color-desktop)" />
+      </ScatterChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Scatter Chart Multiple Series
+
+Compare multiple data series using different colored scatter points.
+
+<ComponentPreview>
+  <ScatterChartMultipleDemo />
+
+```tsx
+import { ScatterChart, Scatter, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'var(--chart-1)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'var(--chart-2)',
+  },
+}
+
+const desktopData = [
+  { x: 10, y: 30 },
+  { x: 30, y: 200 },
+  { x: 50, y: 400 },
+  { x: 70, y: 150 },
+  { x: 90, y: 320 },
+]
+
+const mobileData = [
+  { x: 15, y: 80 },
+  { x: 35, y: 150 },
+  { x: 45, y: 220 },
+  { x: 75, y: 380 },
+  { x: 85, y: 200 },
+]
+
+export default function ScatterChartMultipleDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ScatterChart margin={{ left: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis type="number" dataKey="x" tickLine={false} axisLine={false} />
+        <YAxis type="number" dataKey="y" tickLine={false} axisLine={false} width={40} tickMargin={8} />
+        <ChartTooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent />} />
+        <Scatter name="Desktop" data={desktopData} fill="var(--color-desktop)" />
+        <Scatter name="Mobile" data={mobileData} fill="var(--color-mobile)" />
+        <ChartLegend content={<ChartLegendContent />} />
+      </ScatterChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Scatter Chart Label List
+
+A coordinate scatter chart displaying point label overlays.
+
+<ComponentPreview>
+  <ScatterChartLabelDemo />
+
+```tsx
+import { ScatterChart, Scatter, CartesianGrid, XAxis, YAxis, LabelList } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'var(--chart-1)',
+  },
+}
+
+const chartData = [
+  { x: 20, y: 100, label: 'A' },
+  { x: 40, y: 300, label: 'B' },
+  { x: 60, y: 200, label: 'C' },
+  { x: 80, y: 400, label: 'D' },
+]
+
+export default function ScatterChartLabelDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ScatterChart margin={{ left: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis type="number" dataKey="x" tickLine={false} axisLine={false} />
+        <YAxis type="number" dataKey="y" tickLine={false} axisLine={false} width={40} tickMargin={8} />
+        <ChartTooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent />} />
+        <Scatter name="Desktop" data={chartData} fill="var(--color-desktop)">
+          <LabelList dataKey="label" position="top" fontSize={11} className="fill-foreground font-bold" />
+        </Scatter>
+      </ScatterChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Bubble Chart
+
+A scatter plot where coordinate dots have dynamic bubble sizes representing a Z-axis metric.
+
+<ComponentPreview>
+  <BubbleChartDemo />
+
+```tsx
+import { ScatterChart, Scatter, ZAxis, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'var(--chart-1)',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'var(--chart-2)',
+  },
+}
+
+const desktopData = [
+  { x: 10, y: 80, z: 200 },
+  { x: 30, y: 160, z: 600 },
+  { x: 50, y: 240, z: 800 },
+  { x: 70, y: 120, z: 300 },
+  { x: 90, y: 360, z: 900 },
+]
+
+const mobileData = [
+  { x: 20, y: 120, z: 300 },
+  { x: 40, y: 200, z: 500 },
+  { x: 60, y: 80, z: 200 },
+  { x: 80, y: 300, z: 700 },
+]
+
+export default function BubbleChartDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ScatterChart margin={{ left: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis type="number" dataKey="x" tickLine={false} axisLine={false} />
+        <YAxis type="number" dataKey="y" tickLine={false} axisLine={false} width={40} tickMargin={8} />
+        <ZAxis type="number" dataKey="z" range={[60, 400]} />
+        <ChartTooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent />} />
+        <Scatter name="Desktop" data={desktopData} fill="var(--color-desktop)" />
+        <Scatter name="Mobile" data={mobileData} fill="var(--color-mobile)" />
+        <ChartLegend content={<ChartLegendContent />} />
+      </ScatterChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Scatter Chart Joint Line
+
+A scatter plot featuring a connected joint line tracking point trends.
+
+<ComponentPreview>
+  <ScatterChartTrendLineDemo />
+
+```tsx
+import { ScatterChart, Scatter, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'var(--chart-1)',
+  },
+}
+
+const chartData = [
+  { x: 10, y: 50 },
+  { x: 30, y: 120 },
+  { x: 50, y: 180 },
+  { x: 70, y: 290 },
+  { x: 90, y: 350 },
+]
+
+export default function ScatterChartTrendLineDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ScatterChart margin={{ left: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis type="number" dataKey="x" tickLine={false} axisLine={false} />
+        <YAxis type="number" dataKey="y" tickLine={false} axisLine={false} width={40} tickMargin={8} />
+        <ChartTooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent />} />
+        <Scatter name="Desktop" data={chartData} fill="var(--color-desktop)" line lineJointType="monotone" />
+      </ScatterChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Composed Chart Interactive
+
+Composed chart allowing interactive series filtering.
+
+<ComponentPreview>
+  <ComposedChartInteractiveDemo />
+
+```tsx
+import { ComposedChart, CartesianGrid, XAxis, YAxis, Bar, Line } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'Jan', desktop: 186, mobile: 80 },
+  { month: 'Feb', desktop: 305, mobile: 200 },
+]
+
+export default function ComposedChartInteractiveDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ComposedChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} barSize={20} />
+        <Line dataKey="mobile" type="monotone" stroke="var(--color-mobile)" strokeWidth={2.5} dot={true} />
+      </ComposedChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Composed Chart Horizontal
+
+A horizontal composed layout rendering bar columns and line trends.
+
+<ComponentPreview>
+  <ComposedChartHorizontalDemo />
+
+```tsx
+import { ComposedChart, CartesianGrid, XAxis, YAxis, Bar, Line } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  average: {
+    label: 'Average',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'January', desktop: 186, average: 150 },
+  { month: 'February', desktop: 305, average: 250 },
+]
+
+export default function ComposedChartHorizontalDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ComposedChart data={chartData} layout="vertical" margin={{ left: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis type="number" tickLine={false} axisLine={false} />
+        <YAxis dataKey="month" type="category" tickLine={false} axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} barSize={16} />
+        <Line dataKey="average" type="monotone" stroke="var(--color-average)" strokeWidth={2} dot={true} />
+      </ComposedChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Composed Chart Custom Label
+
+A composed chart plotting coordinates with custom floating text values.
+
+<ComponentPreview>
+  <ComposedChartCustomLabelDemo />
+
+```tsx
+import { ComposedChart, CartesianGrid, XAxis, YAxis, Bar, Line, LabelList } from 'recharts'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'hsl(var(--chart-1))',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'hsl(var(--chart-2))',
+  },
+}
+
+const chartData = [
+  { month: 'Jan', desktop: 100, mobile: 50 },
+  { month: 'Feb', desktop: 150, mobile: 90 },
+]
+
+export default function ComposedChartCustomLabelDemo() {
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ComposedChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} barSize={20} />
+        <Line dataKey="mobile" type="monotone" stroke="var(--color-mobile)" strokeWidth={2} dot={true}>
+          <LabelList dataKey="mobile" position="top" fontSize={11} className="fill-foreground font-bold" />
+        </Line>
+      </ComposedChart>
+    </ChartContainer>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Component Concept
+
+Vibe UI's Chart component is built as a flexible, responsive container wrapper (`ChartContainer`) around Recharts primitives, styled to match the theme color configuration.
+
+### Responsive Theme Mappings
+
+- **Dynamic Theme Accent Sync**: Chart colors are linked directly to CSS variables `--chart-1` through `--chart-5`. By default, `--chart-1` and `--chart-2` are mapped to `var(--primary)` and `var(--primary) / 0.4`, allowing all charts to dynamically update their accents whenever a new color preset (such as Crimson, Purple, or Green) is selected in the customizer.
+- **Adaptive Labels & Fills**: Circular gauges, grid lines, and text labels are styled using theme token classes like `fill-foreground`, `fill-muted-foreground`, and `stroke-border`, making them adapt to light and dark modes.
+
+### Preset Variations
+
+- **Glassmorphic Area & Fills**: Employs frosted glass saturation with high-intensity backdrop blur, semi-transparent borders, and HSL transparency filters.
+- **Theme-Aware Radial Track**: Uses `var(--muted)` background fills for radial bar tracks so that the chart indicators remain visible against the card background on both light and dark backgrounds.

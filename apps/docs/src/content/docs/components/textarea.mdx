@@ -1,0 +1,244 @@
+# Textarea
+
+Displays a multi-line text input field, useful for longer text content inputs.
+
+## Preview
+
+<ComponentPreview>
+  <div className="grid w-full gap-1.5 text-left">
+    <Label htmlFor="message">Your Message</Label>
+    <Textarea placeholder="Type your message here..." id="message" />
+  </div>
+
+```tsx
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+
+export default function TextareaDemo() {
+  return (
+    <div className="grid w-full gap-1.5">
+      <Label htmlFor="message">Your Message</Label>
+      <Textarea placeholder="Type your message here..." id="message" />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="textarea" vibeDeps="label">
+
+```tsx
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const textareaVariants = tv({
+  base: 'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 shadow-sm',
+  variants: {
+    variant: {
+      default: 'border-input focus-visible:ring-2',
+      bottom:
+        'rounded-none border-t-0 border-x-0 border-b border-input px-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary shadow-none',
+      glass:
+        'bg-white/5 dark:bg-black/20 border-white/20 dark:border-white/10 backdrop-blur-md focus-visible:ring-white/30',
+      retro:
+        'border-2 border-foreground bg-background shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:translate-x-[1px] focus-visible:translate-y-[1px] focus-visible:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:focus-visible:shadow-[1px_1px_0px_0px_rgba(255,255,255,1)]',
+      glow: 'border-input focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:shadow-[0_0_15px_rgba(0,0,0,0.05)] dark:focus-visible:shadow-[0_0_15px_rgba(255,255,255,0.1)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface TextareaProps
+  extends
+    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    VariantProps<typeof textareaVariants> {}
+
+const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+  ({ className, variant, ...props }, ref) => {
+    return (
+      <textarea
+        className={cn(textareaVariants({ variant }), className)}
+        ref={ref}
+        {...props}
+      />
+    )
+  },
+)
+Textarea.displayName = 'Textarea'
+
+export { Textarea }
+```
+
+</Installation>
+
+
+
+## Variants
+
+### Bottom Border
+
+<ComponentPreview>
+  <div className="grid w-full gap-1.5 text-left">
+    <Label htmlFor="message-bottom">Comments</Label>
+    <Textarea variant="bottom" placeholder="Type comments here..." id="message-bottom" />
+  </div>
+
+```tsx
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+
+export default function TextareaBottom() {
+  return (
+    <div className="grid w-full gap-1.5">
+      <Label htmlFor="message-bottom">Comments</Label>
+      <Textarea
+        variant="bottom"
+        placeholder="Type comments here..."
+        id="message-bottom"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Glassmorphic
+
+<ComponentPreview>
+  <div className="grid w-full gap-1.5 text-left">
+    <Label htmlFor="message-glass">Glass Feedback</Label>
+    <Textarea variant="glass" placeholder="Type feedback here..." id="message-glass" />
+  </div>
+
+```tsx
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+
+export default function TextareaGlass() {
+  return (
+    <div className="grid w-full gap-1.5">
+      <Label htmlFor="message-glass">Glass Feedback</Label>
+      <Textarea
+        variant="glass"
+        placeholder="Type feedback here..."
+        id="message-glass"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Retro Neobrutalism
+
+<ComponentPreview>
+  <div className="grid w-full gap-1.5 text-left">
+    <Label htmlFor="message-retro">Retro Notes</Label>
+    <Textarea variant="retro" placeholder="Type notes here..." id="message-retro" />
+  </div>
+
+```tsx
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+
+export default function TextareaRetro() {
+  return (
+    <div className="grid w-full gap-1.5">
+      <Label htmlFor="message-retro">Retro Notes</Label>
+      <Textarea
+        variant="retro"
+        placeholder="Type notes here..."
+        id="message-retro"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Glow Highlight
+
+<ComponentPreview>
+  <div className="grid w-full gap-1.5 text-left">
+    <Label htmlFor="message-glow">Glow Review</Label>
+    <Textarea variant="glow" placeholder="Type review here..." id="message-glow" />
+  </div>
+
+```tsx
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+
+export default function TextareaGlow() {
+  return (
+    <div className="grid w-full gap-1.5">
+      <Label htmlFor="message-glow">Glow Review</Label>
+      <Textarea
+        variant="glow"
+        placeholder="Type review here..."
+        id="message-glow"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Examples
+
+### Feedback Form
+
+<ComponentPreview>
+  <form className="w-full max-w-md space-y-4 text-left p-6 rounded-lg border border-border bg-card shadow-sm">
+    <div className="space-y-1">
+      <Label htmlFor="form-email">Email Address</Label>
+      <Input type="email" id="form-email" placeholder="john@example.com" />
+    </div>
+    <div className="space-y-1">
+      <Label htmlFor="form-feedback">Feedback details</Label>
+      <Textarea id="form-feedback" placeholder="Describe your issue or suggestion in detail..." className="min-h-[120px]" />
+    </div>
+    <Button type="submit" className="w-full">Submit Feedback</Button>
+  </form>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+
+export default function FeedbackForm() {
+  return (
+    <form className="w-full max-w-md space-y-4 p-6 rounded-lg border border-border bg-card">
+      <div className="space-y-1">
+        <Label htmlFor="form-email">Email Address</Label>
+        <Input type="email" id="form-email" placeholder="john@example.com" />
+      </div>
+      <div className="space-y-1">
+        <Label htmlFor="form-feedback">Feedback details</Label>
+        <Textarea
+          id="form-feedback"
+          placeholder="Describe in detail..."
+          className="min-h-[120px]"
+        />
+      </div>
+      <Button type="submit" className="w-full">
+        Submit Feedback
+      </Button>
+    </form>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Textarea component captures multi-line text input. It supports flexible styling presets and automatically resizes boundaries visually.

@@ -1,0 +1,664 @@
+# Marquee
+
+A premium, high-performance infinite auto-scroll component built to display seamless scrolling logos, system alerts, dynamic testimonial cards, or tech stack badges.
+
+## Preview
+
+<ComponentPreview sandbox="marquee">
+  <MarqueeHorizontalDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function MarqueeDemo() {
+  return (
+    <Marquee direction="left" speed={20} fade={false}>
+      {['Left-Scrolling Text Strip', 'Custom Layouts', 'High Framerates'].map((text) => (
+        <span key={text} className="text-xs text-zinc-300 px-4 py-1.5 bg-white/5 border border-white/5 rounded-full whitespace-nowrap">
+          {text}
+        </span>
+      ))}
+    </Marquee>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="marquee">
+
+{`"use client"
+
+import * as React from "react"
+import { cn } from "@/lib/utils"
+
+export interface MarqueeProps extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string
+  reverse?: boolean
+  pauseOnHover?: boolean
+  direction?: 'left' | 'right' | 'up' | 'down'
+  speed?: number
+  fade?: boolean
+  gap?: string
+  repeat?: number
+}
+
+const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
+  (
+    {
+      className,
+      reverse = false,
+      pauseOnHover = false,
+      direction = "left",
+      speed = 30,
+      fade = true,
+      gap = "1rem",
+      repeat = 4,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const isVertical = direction === "up" || direction === "down"
+    const marqueeStyles = {
+      "--gap": gap,
+      "--duration": \`\${speed}s\`,
+    } as React.CSSProperties
+
+    return (
+      <div
+        ref={ref}
+        style={marqueeStyles}
+        className={cn(
+          "group relative flex overflow-hidden p-2 select-none",
+          isVertical ? "flex-col" : "flex-row",
+          className
+        )}
+        {...props}
+      >
+        {Array.from({ length: repeat }).map((_, i) => (
+          <div
+            key={i}
+            className={cn(
+              "flex shrink-0 justify-around [gap:var(--gap)]",
+              isVertical
+                ? "flex-col animate-marquee-vertical"
+                : "flex-row animate-marquee",
+              direction === "right" && "animate-marquee-reverse",
+              direction === "down" && "animate-marquee-vertical-reverse",
+              reverse && "[animation-direction:reverse]",
+              pauseOnHover && "group-hover:[animation-play-state:paused]"
+            )}
+          >
+            {children}
+          </div>
+        ))}
+
+        {fade && (
+          <>
+            <div
+              className={cn(
+                "pointer-events-none absolute z-10",
+                isVertical
+                  ? "inset-x-0 top-0 h-12 bg-gradient-to-b from-background to-transparent"
+                  : "inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent"
+              )}
+            />
+            <div
+              className={cn(
+                "pointer-events-none absolute z-10",
+                isVertical
+                  ? "inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background to-transparent"
+                  : "inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent"
+              )}
+            />
+          </>
+        )}
+      </div>
+    )
+  }
+)
+
+Marquee.displayName = "Marquee"
+
+export { Marquee }
+`}
+
+</Installation>
+
+
+
+## Tailwind Configuration (v4)
+
+Ensure you add the marquee custom variables and `@keyframes` into your theme file (e.g., `globals.css` or `tokens.css`):
+
+```css
+@theme {
+  --animate-marquee: marquee var(--duration, 30s) linear infinite;
+  --animate-marquee-reverse: marquee-reverse var(--duration, 30s) linear infinite;
+  --animate-marquee-vertical: marquee-vertical var(--duration, 30s) linear infinite;
+  --animate-marquee-vertical-reverse: marquee-vertical-reverse var(--duration, 30s) linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100% - var(--gap, 1rem))); }
+  }
+  @keyframes marquee-reverse {
+    from { transform: translateX(calc(-100% - var(--gap, 1rem))); }
+    to { transform: translateX(0); }
+  }
+  @keyframes marquee-vertical {
+    from { transform: translateY(0); }
+    to { transform: translateY(calc(-100% - var(--gap, 1rem))); }
+  }
+  @keyframes marquee-vertical-reverse {
+    from { transform: translateY(calc(-100% - var(--gap, 1rem))); }
+    to { transform: translateY(0); }
+  }
+}
+```
+
+## All Variations
+
+Explore all 15+ variations and combinations of the Marquee component.
+
+### 01. Basic Horizontal (Left)
+
+Displays items scrolling horizontally from right to left.
+
+<ComponentPreview>
+  <MarqueeHorizontalDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function BasicMarquee() {
+  return (
+    <Marquee direction="left" speed={20} fade={false}>
+      {['Left-Scrolling Text Strip', 'Custom Layouts', 'High Framerates'].map((t) => (
+        <span key={t} className="text-xs text-zinc-300 font-medium px-4 py-1.5 bg-white/5 border border-white/5 rounded-full">
+          {t}
+        </span>
+      ))}
+    </Marquee>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 02. Basic Horizontal (Right)
+
+Displays items scrolling horizontally from left to right (reverse).
+
+<ComponentPreview>
+  <MarqueeHorizontalReverseDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function ReversedMarquee() {
+  return (
+    <Marquee direction="right" speed={20} fade={false}>
+      {['Right-Scrolling Text Strip', 'Reversed Motion', 'Fluid CSS Keyframes'].map((t) => (
+        <span key={t} className="text-xs text-purple-300 font-medium px-4 py-1.5 bg-purple-500/10 border border-purple-500/10 rounded-full">
+          {t}
+        </span>
+      ))}
+    </Marquee>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 03. Slow Grayscale Brand Ticker
+
+Features a slow brand strip with grayscale SVG icons that gain color on hover.
+
+<ComponentPreview>
+  <MarqueeLogosDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+import { Hexagon, Globe, Command, Sparkles, Code, Layers, Cpu } from 'lucide-react'
+
+const BRANDS = [
+  { name: 'Vercel', icon: Hexagon, color: 'text-white' },
+  { name: 'Framer', icon: Globe, color: 'text-purple-400' },
+  { name: 'Next.js', icon: Command, color: 'text-cyan-400' },
+  { name: 'Tailwind CSS', icon: Sparkles, color: 'text-sky-400' }
+]
+
+export default function LogosMarquee() {
+  return (
+    <Marquee direction="left" speed={45} gap="3rem" pauseOnHover={true}>
+      {BRANDS.map((brand, idx) => {
+        const IconComponent = brand.icon
+        return (
+          <div key={idx} className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 hover:text-white transition-all duration-300 cursor-pointer">
+            <IconComponent className="h-5 w-5" />
+            <span className="text-sm font-semibold tracking-wide font-sans">{brand.name}</span>
+          </div>
+        )
+      })}
+    </Marquee>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 04. Fast Alert & Security Bar
+
+High-contrast alert ticker scrolling fast across the screen with warnings.
+
+<ComponentPreview>
+  <MarqueeAlertDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+import { Shield } from 'lucide-react'
+
+export default function AlertTicker() {
+  return (
+    <div className="overflow-hidden rounded-xl bg-yellow-500 text-black py-2.5 font-bold tracking-widest text-[10px]">
+      <Marquee direction="left" speed={10} fade={false} gap="2rem">
+        {['SYSTEM WARNING: INCOMING DEPLOYMENT SYNC', 'SECURE GATEWAY LOCKED'].map((text) => (
+          <div key={text} className="flex items-center gap-2 uppercase">
+            <Shield className="h-4 w-4 fill-current" />
+            <span>{text}</span>
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 05. Vertical Ticker (Up)
+
+Notification or reviews scroller scrolling vertically upwards.
+
+<ComponentPreview>
+  <MarqueeVerticalUpDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function VerticalUpMarquee() {
+  return (
+    <div className="h-[180px] w-full border border-white/10 rounded-xl bg-black/40 relative overflow-hidden flex items-center justify-center">
+      <Marquee direction="up" speed={15} gap="1rem" className="h-full">
+        {REVIEWS.map((review, idx) => (
+          <div key={idx} className="p-3 bg-white/5 border border-white/10 rounded-lg text-xs w-[240px] space-y-1">
+            <div className="flex items-center gap-2">
+              <div className="h-5 w-5 rounded-full bg-indigo-500" />
+              <span className="font-semibold text-white truncate">{review.name}</span>
+            </div>
+            <p className="text-[10px] text-muted-foreground truncate">{review.body}</p>
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 06. Vertical Ticker (Down)
+
+Technology tags scroller scrolling vertically downwards.
+
+<ComponentPreview>
+  <MarqueeVerticalDownDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function VerticalDownMarquee() {
+  return (
+    <div className="h-[180px] w-full border border-white/10 rounded-xl bg-black/40 relative overflow-hidden flex items-center justify-center">
+      <Marquee direction="down" speed={15} gap="1rem" className="h-full">
+        {['React.js', 'TypeScript', 'Next.js', 'Tailwind'].map((tech, idx) => (
+          <div key={idx} className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-emerald-400 font-mono text-center text-xs w-[180px] font-bold">
+            [ {tech.toUpperCase()} ]
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 07. Interactive Cards (Pause & Scale)
+
+Interactive portfolio project cards that pause and zoom slightly when hovered.
+
+<ComponentPreview>
+  <MarqueeInteractiveDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function InteractiveCardsMarquee() {
+  return (
+    <Marquee direction="left" speed={25} pauseOnHover={true} gap="1.5rem">
+      {IMAGES.map((img, idx) => (
+        <div key={idx} className="relative group w-[180px] aspect-[4/3] rounded-xl overflow-hidden border border-white/15 bg-zinc-900 cursor-pointer transition-all duration-300 hover:scale-105 hover:border-purple-500/40">
+          <img src={img.url} alt={img.title} className="object-cover w-full h-full opacity-80 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-3 flex flex-col justify-end">
+            <span className="text-[9px] text-purple-400 font-mono font-bold uppercase">{img.tag}</span>
+            <h4 className="text-xs font-bold text-white">{img.title}</h4>
+          </div>
+        </div>
+      ))}
+    </Marquee>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 08. Glassmorphic Review Cards
+
+Elegant testimonial review cards using glassmorphism backing blurs and stars rating.
+
+<ComponentPreview>
+  <MarqueeGlassmorphicDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+import { Star } from 'lucide-react'
+
+export default function GlassmorphicReviews() {
+  return (
+    <div className="w-full border border-white/15 rounded-2xl bg-white/5 backdrop-blur-md p-4">
+      <Marquee direction="left" speed={25} pauseOnHover={true} gap="2rem">
+        {REVIEWS.map((review, idx) => (
+          <div key={idx} className="w-[280px] p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-lg space-y-3 text-left">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full border border-white/10 flex items-center justify-center text-xs font-bold bg-zinc-800">
+                {review.name.charAt(0)}
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-white leading-none">{review.name}</h4>
+                <span className="text-[9px] text-muted-foreground">{review.handle}</span>
+              </div>
+            </div>
+            <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{review.body}</p>
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 09. Neon Glow Accent Strips
+
+Accent glow strips using custom color gradients highlighting features on hover.
+
+<ComponentPreview>
+  <MarqueeNeonDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function NeonGlowMarquee() {
+  return (
+    <div className="w-full border border-purple-500/20 rounded-xl bg-zinc-950 p-4 shadow-[inset_0_0_20px_rgba(168,85,247,0.05)]">
+      <Marquee direction="left" speed={30} gap="1.5rem">
+        {[
+          { label: 'Neon Glow Presets', color: 'from-purple-500 to-indigo-500' },
+          { label: 'Retro Brutalism Layouts', color: 'from-pink-500 to-rose-500' }
+        ].map((accent, idx) => (
+          <div key={idx} className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-900 border border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-all duration-300 hover:border-purple-500/30 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] whitespace-nowrap">
+            <div className={`h-2.5 w-2.5 rounded-full bg-gradient-to-r \${accent.color}\`} />
+            <span className="text-xs text-white font-medium">{accent.label}</span>
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 10. Retro Brutalist Badge Strip
+
+Neobrutalism badge elements scrolling with sharp solid borders and thick offsets.
+
+<ComponentPreview>
+  <MarqueeBrutalistDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function BrutalistMarquee() {
+  return (
+    <div className="w-full border-2 border-white bg-zinc-950 p-3 rounded-none">
+      <Marquee direction="left" speed={20} fade={false} gap="2rem">
+        {[
+          { text: 'TRENDING #1', bg: 'bg-yellow-400' },
+          { text: 'BRUTAL DESIGN', bg: 'bg-orange-500' }
+        ].map((badge, idx) => (
+          <div key={idx} className={`px-4 py-2 border-2 border-white font-black text-xs text-black tracking-wider shadow-[3px_3px_0px_#ffffff] uppercase whitespace-nowrap \${badge.bg}\`}>
+            {badge.text}
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 11. Cyberpunk Terminal Stream
+
+A system log scroller formatted for cyberpunk layouts using monospace fonts and green scanline filters.
+
+<ComponentPreview>
+  <MarqueeCyberpunkDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function CyberpunkMarquee() {
+  return (
+    <div className="w-full relative overflow-hidden border border-emerald-500/30 bg-black p-3.5 font-mono text-[11px] text-emerald-400 rounded-none after:content-[''] after:absolute after:inset-0 after:bg-[linear-gradient(rgba(16,185,129,0.03)_50%,rgba(16,185,129,0)_50%)] after:bg-[length:100%_4px]">
+      <Marquee direction="left" speed={25} gap="3rem" fade={false}>
+        {['SYS_STREAM_ONLINE :: [OK]', 'DECRYPT_KEYS_INIT :: 0x8F2F'].map((log) => (
+          <div key={log} className="flex items-center gap-2 whitespace-nowrap">
+            <span className="h-1.5 w-1.5 bg-emerald-400 inline-block animate-pulse" />
+            <span>{log}</span>
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 12. Dual Row Reverse Ticker
+
+Stacked marquees moving in opposite directions for visual texture and complexity.
+
+<ComponentPreview>
+  <MarqueeDoubleDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function DoubleMarquee() {
+  return (
+    <div className="w-full space-y-3 border border-white/10 p-4 rounded-xl bg-black/40">
+      <Marquee direction="left" speed={24} fade={true}>
+        {['TailwindCSS', 'TypeScript', 'React.js'].map(t => (
+          <span key={t} className="text-xs font-mono text-zinc-400 bg-white/5 border border-white/10 px-4 py-2 rounded-lg">
+            {t}
+          </span>
+        ))}
+      </Marquee>
+      <Marquee direction="right" speed={24} fade={true}>
+        {['ESLint', 'Prettier', 'Turborepo'].map(t => (
+          <span key={t} className="text-xs font-mono text-zinc-400 bg-white/5 border border-white/10 px-4 py-2 rounded-lg">
+            {t}
+          </span>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 13. 3D Perspective Floating Strip
+
+Tilt perspectives using skew matrices and rotations to floating ribbon scrollers.
+
+<ComponentPreview>
+  <Marquee3DDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function PerspectiveMarquee() {
+  return (
+    <div className="w-full h-[200px] border border-white/10 rounded-2xl bg-zinc-950/50 flex items-center justify-center [perspective:800px] overflow-hidden">
+      <div className="w-full rotate-x-[15deg] rotate-y-[-10deg] rotate-z-[2deg] scale-95 border-y border-purple-500/20 bg-purple-500/5 py-4 backdrop-blur shadow-[0_20px_50px_rgba(168,85,247,0.1)]">
+        <Marquee direction="left" speed={20} gap="2rem">
+          {['3D PERSPECTIVE', 'ROTATED VIEWPORTS', 'premium visual presets'].map((t) => (
+            <span key={t} className="text-sm font-black tracking-widest text-purple-400 uppercase whitespace-nowrap">
+              ★ {t}
+            </span>
+          ))}
+        </Marquee>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 14. Gradient Fade-Masked Gallery
+
+Large image cards that fade out smoothly at the sides of the container.
+
+<ComponentPreview>
+  <MarqueeFadeDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function FadeMaskedGallery() {
+  return (
+    <div className="w-full border border-white/10 rounded-xl bg-black/40 p-4">
+      <Marquee direction="left" speed={25} fade={true} gap="2rem">
+        {IMAGES.map((img, idx) => (
+          <div key={idx} className="flex items-center gap-3 bg-zinc-900 border border-white/10 p-2 rounded-xl w-[220px]">
+            <img src={img.url} alt={img.title} className="h-12 w-16 object-cover rounded-lg" />
+            <div className="text-left">
+              <h4 className="text-xs font-bold text-white">{img.title}</h4>
+              <span className="text-[10px] text-muted-foreground">{img.tag}</span>
+            </div>
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 15. Multi-Row Staggered Grid
+
+Multiple rows of staggered marquee lists aligned to create a dynamic technical wall grid.
+
+<ComponentPreview>
+  <MarqueeGridDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function StaggeredGridMarquee() {
+  return (
+    <div className="w-full border border-white/10 rounded-xl bg-zinc-950/40 p-4 space-y-2">
+      <Marquee direction="left" speed={30} gap="1rem" fade={true}>
+        {['Design Systems', 'Web Components', 'Visual Quality'].map((t) => (
+          <span key={t} className="text-[11px] font-semibold text-zinc-300 bg-white/5 px-3 py-1 rounded">
+            {t}
+          </span>
+        ))}
+      </Marquee>
+      <Marquee direction="left" speed={20} gap="1rem" fade={true}>
+        {['Radix Primitives', 'Tailwind CSS', 'Next.js App Router'].map((t) => (
+          <span key={t} className="text-[11px] font-semibold text-purple-300 bg-purple-500/10 px-3 py-1 rounded">
+            {t}
+          </span>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 16. Monospace Code Ticker
+
+A sliding monospace scroller representing config code templates or JSON records.
+
+<ComponentPreview>
+  <MarqueeCodeDemo />
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+export default function CodeTicker() {
+  return (
+    <div className="w-full border border-white/10 rounded-xl bg-black p-4 font-mono text-[10px] text-zinc-400 select-all overflow-hidden">
+      <Marquee direction="left" speed={35} gap="4rem" fade={true}>
+        {[
+          '{"component": "Marquee", "theme": "neon"}',
+          'const marquee = <Marquee fade={true} />'
+        ].map((codeStr, idx) => (
+          <span key={idx} className="bg-zinc-900 border border-white/10 px-3 py-1.5 rounded text-yellow-300 whitespace-nowrap">
+            <code>{codeStr}</code>
+          </span>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Marquee component provides a high-performance, CSS-animation-powered scrolling container that duplicates children seamlessly. It is ideal for showcasing brand logos, code feeds, matrix blocks, or any list of items that needs to slide continuously.
+
+### Key Attributes & Options
+
+- **`reverse`**: `boolean` (default `false`) — Reverse the animation direction.
+- **`pauseOnHover`**: `boolean` (default `false`) — Pause scroller motion when mouse hovers over it.
+- **`direction`**: `'left' | 'right' | 'up' | 'down'` (default `'left'`) — Set axis and alignment direction.
+- **`speed`**: `number` (default `30`) — Animation cycle duration in seconds (smaller is faster).
+- **`fade`**: `boolean` (default `true`) — Show smooth overlay fade gradients on scroller edges.
+- **`gap`**: `string` (default `'1rem'`) — Margin spacing gap between consecutive scrolling items.
+- **`repeat`**: `number` (default `4`) — Number of duplicated sets of children to fill view seamlessly.

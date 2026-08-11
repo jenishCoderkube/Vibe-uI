@@ -1,0 +1,759 @@
+# Message Scroller
+
+A scrollable container designed specifically for timeline message lists, server logs, or chatbots. It handles keeping viewports scrolled to the bottom on children additions and displays smooth "scroll to bottom" button shortcuts when the user scrolls up.
+
+## Preview: Standard log listing
+
+<ComponentPreview>
+  <ScrollerBasic />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+} from '@/components/ui/message-scroller'
+
+export default function ScrollerDemo() {
+  return (
+    <div className="h-40 border border-zinc-800 rounded-lg w-full max-w-[340px]">
+      <MessageScroller variant="default">
+        <MessageScrollerViewport>
+          <MessageScrollerContent>
+            {Array.from({ length: 10 }).map((_, idx) => (
+              <MessageScrollerItem key={idx} className="text-xs text-zinc-400">
+                Log line details item segment #{idx + 1}
+              </MessageScrollerItem>
+            ))}
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="message-scroller">
+
+```tsx
+"use client"
+
+import * as React from "react"
+import { ArrowDown } from "lucide-react"
+import { tv, type VariantProps } from "tailwind-variants"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+
+const scrollerVariants = tv({
+  base: "relative flex flex-col w-full h-full overflow-hidden border bg-zinc-950/20",
+  variants: {
+    variant: {
+      default: "border-zinc-800 rounded-xl",
+      glass: "border-white/10 bg-white/5 backdrop-blur-md rounded-xl",
+      retro: "border-2 border-foreground bg-background shadow-[3px_3px_0px_rgba(0,0,0,1)] rounded-none",
+      glow: "border-primary/20 shadow-[0_0_15px_rgba(168,85,247,0.15)] rounded-xl",
+      cyberpunk: "border-emerald-950 bg-black rounded-lg",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+})
+
+const ScrollerContext = React.createContext<{
+  viewportRef: React.RefObject<HTMLDivElement | null>
+  showScrollButton: boolean
+  scrollToBottom: () => void
+  variant: "default" | "glass" | "retro" | "glow" | "cyberpunk"
+} | null>(null)
+
+export interface MessageScrollerProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof scrollerVariants> {
+  threshold?: number
+}
+
+const MessageScroller = React.forwardRef<HTMLDivElement, MessageScrollerProps>(
+  ({ className, variant = "default", threshold = 150, children, ...props }, ref) => {
+    const viewportRef = React.useRef<HTMLDivElement>(null)
+    const [showScrollButton, setShowScrollButton] = React.useState(false)
+    const [autoScroll, setAutoScroll] = React.useState(true)
+
+    const handleScroll = () => {
+      const el = viewportRef.current
+      if (!el) return
+      const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < threshold
+      setShowScrollButton(!isNearBottom)
+      setAutoScroll(isNearBottom)
+    }
+
+    const scrollToBottom = React.useCallback(() => {
+      const el = viewportRef.current
+      if (!el) return
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: "smooth",
+      })
+    }, [])
+
+    React.useLayoutEffect(() => {
+      if (autoScroll) {
+        const el = viewportRef.current
+        if (el) {
+          el.scrollTop = el.scrollHeight
+        }
+      }
+    }, [children, autoScroll])
+
+    return (
+      <ScrollerContext.Provider value={{ viewportRef, showScrollButton, scrollToBottom, variant }}>
+        <div
+          ref={ref}
+          className={cn(scrollerVariants({ variant }), className)}
+          {...props}
+        >
+          {children}
+        </div>
+      </ScrollerContext.Provider>
+    )
+  }
+)
+MessageScroller.displayName = "MessageScroller"
+
+export interface MessageScrollerViewportProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const MessageScrollerViewport = React.forwardRef<HTMLDivElement, MessageScrollerViewportProps>(
+  ({ className, children, onScroll, ...props }, ref) => {
+    const context = React.useContext(ScrollerContext)
+    if (!context) throw new Error("Viewport must be used within MessageScroller")
+
+    const handleScrollCombined = (e: React.UIEvent<HTMLDivElement>) => {
+      onScroll?.(e)
+    }
+
+    React.useEffect(() => {
+      const el = context.viewportRef.current
+      if (!el) return
+      const onScrollUpdate = () => {
+        const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 150
+      }
+      el.addEventListener("scroll", onScrollUpdate)
+      return () => el.removeEventListener("scroll", onScrollUpdate)
+    }, [context])
+
+    return (
+      <div
+        ref={(el) => {
+          if (el) {
+            ;(context.viewportRef as any).current = el
+          }
+          if (typeof ref === "function") ref(el)
+          else if (ref) (ref as any).current = el
+        }}
+        onScroll={handleScrollCombined}
+        className={cn("w-full h-full overflow-y-auto scrollbar-thin scroll-smooth select-none p-4", className)}
+        {...props}
+      >
+        {children}
+      </div>
+    )
+  }
+)
+MessageScrollerViewport.displayName = "MessageScrollerViewport"
+
+export interface MessageScrollerContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const MessageScrollerContent = React.forwardRef<HTMLDivElement, MessageScrollerContentProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn("flex flex-col gap-4 w-full h-fit", className)}
+        {...props}
+      />
+    )
+  }
+)
+MessageScrollerContent.displayName = "MessageScrollerContent"
+
+export interface MessageScrollerItemProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const MessageScrollerItem = React.forwardRef<HTMLDivElement, MessageScrollerItemProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn("w-full shrink-0", className)}
+        {...props}
+      />
+    )
+  }
+)
+MessageScrollerItem.displayName = "MessageScrollerItem"
+
+export interface MessageScrollerButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+
+const MessageScrollerButton = React.forwardRef<HTMLButtonElement, MessageScrollerButtonProps>(
+  ({ className, children, ...props }, ref) => {
+    const context = React.useContext(ScrollerContext)
+    if (!context) throw new Error("Button must be used within MessageScroller")
+
+    const [visible, setVisible] = React.useState(false)
+
+    React.useEffect(() => {
+      const el = context.viewportRef.current
+      if (!el) return
+      const checkScroll = () => {
+        const isScrollable = el.scrollHeight > el.clientHeight
+        const isUp = el.scrollHeight - el.scrollTop - el.clientHeight > 120
+        setVisible(isScrollable && isUp)
+      }
+      el.addEventListener("scroll", checkScroll)
+      setTimeout(checkScroll, 100)
+      return () => el.removeEventListener("scroll", checkScroll)
+    }, [context])
+
+    if (!visible) return null
+
+    return (
+      <Button
+        ref={ref}
+        type="button"
+        variant={context.variant === "retro" ? "retro" : "glass"}
+        className={cn(
+          "absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full shadow-lg h-9 w-9 p-0 flex items-center justify-center border animate-bounce z-20 cursor-pointer",
+          className
+        )}
+        onClick={() => {
+          context.scrollToBottom()
+        }}
+        {...props}
+      >
+        {children ?? <ArrowDown className="h-4 w-4" />}
+      </Button>
+    )
+  }
+)
+MessageScrollerButton.displayName = "MessageScrollerButton"
+
+export {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerButton,
+}
+```
+
+</Installation>
+
+
+
+## Standard Variations
+
+### Auto Scroll to Bottom
+
+<ComponentPreview>
+  <ScrollerAutoScroll />
+
+```tsx
+import React, { useState } from 'react'
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+} from '@/components/ui/message-scroller'
+import { Button } from '@/components/ui/button'
+
+export default function AutoScrollDemo() {
+  const [messages, setMessages] = useState<string[]>([
+    'Initial node setup complete.',
+    'Database cluster status: OK',
+  ])
+
+  const appendLog = () => {
+    setMessages((prev) => [
+      ...prev,
+      `New log line resolved at ${new Date().toLocaleTimeString()}`,
+    ])
+  }
+
+  return (
+    <div className="space-y-3 w-full max-w-[340px]">
+      <div className="h-40 border border-zinc-800 rounded-lg">
+        <MessageScroller variant="default">
+          <MessageScrollerViewport>
+            <MessageScrollerContent>
+              {messages.map((msg, idx) => (
+                <MessageScrollerItem
+                  key={idx}
+                  className="text-xs font-mono text-emerald-400"
+                >
+                  &gt; {msg}
+                </MessageScrollerItem>
+              ))}
+            </MessageScrollerContent>
+          </MessageScrollerViewport>
+        </MessageScroller>
+      </div>
+      <Button
+        variant="glass"
+        size="sm"
+        onClick={appendLog}
+        className="w-full h-8 text-xs"
+      >
+        Append Log Details
+      </Button>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Back to Bottom Button
+
+<ComponentPreview>
+  <ScrollerScrollToBottom />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerButton,
+} from '@/components/ui/message-scroller'
+
+export default function ButtonDemo() {
+  return (
+    <div className="h-40 border border-zinc-800 rounded-lg w-full max-w-[340px]">
+      <MessageScroller variant="default">
+        <MessageScrollerViewport>
+          <MessageScrollerContent>
+            {Array.from({ length: 15 }).map((_, idx) => (
+              <MessageScrollerItem key={idx} className="text-xs text-zinc-400">
+                Message dialog line slot #{idx + 1}
+              </MessageScrollerItem>
+            ))}
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+        <MessageScrollerButton />
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Default Minimal Theme
+
+<ComponentPreview>
+  <ScrollerDefaultTheme />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+} from '@/components/ui/message-scroller'
+
+export default function DefaultDemo() {
+  return (
+    <div className="h-32 w-full max-w-[340px]">
+      <MessageScroller variant="default">
+        <MessageScrollerViewport>
+          <MessageScrollerContent>
+            <MessageScrollerItem className="text-xs">
+              Scroll content blocks ...
+            </MessageScrollerItem>
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Glassmorphic Theme
+
+<ComponentPreview>
+  <ScrollerGlassTheme />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+} from '@/components/ui/message-scroller'
+
+export default function GlassDemo() {
+  return (
+    <div className="h-32 w-full max-w-[340px]">
+      <MessageScroller variant="glass">
+        <MessageScrollerViewport>
+          <MessageScrollerContent>
+            <MessageScrollerItem className="text-xs text-white">
+              Translucent window items ...
+            </MessageScrollerItem>
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Retro Brutalist Theme
+
+<ComponentPreview>
+  <ScrollerRetroTheme />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerButton,
+} from '@/components/ui/message-scroller'
+
+export default function RetroDemo() {
+  return (
+    <div className="h-32 w-full max-w-[340px]">
+      <MessageScroller variant="retro">
+        <MessageScrollerViewport>
+          <MessageScrollerContent>
+            <MessageScrollerItem className="text-xs font-mono text-foreground">
+              Retro terminal scroll ...
+            </MessageScrollerItem>
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+        <MessageScrollerButton />
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Neon Glow Theme
+
+<ComponentPreview>
+  <ScrollerGlowTheme />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+} from '@/components/ui/message-scroller'
+
+export default function GlowDemo() {
+  return (
+    <div className="h-32 w-full max-w-[340px]">
+      <MessageScroller variant="glow">
+        <MessageScrollerViewport>
+          <MessageScrollerContent>
+            <MessageScrollerItem className="text-xs text-primary">
+              Purple highlights ...
+            </MessageScrollerItem>
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Cyberpunk Theme
+
+<ComponentPreview>
+  <ScrollerCyberTheme />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerButton,
+} from '@/components/ui/message-scroller'
+
+export default function CyberDemo() {
+  return (
+    <div className="h-32 w-full max-w-[340px]">
+      <MessageScroller variant="cyberpunk">
+        <MessageScrollerViewport>
+          <MessageScrollerContent>
+            <MessageScrollerItem className="text-xs font-mono text-emerald-500">
+              SYS_CONSOLE_LOADED ...
+            </MessageScrollerItem>
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+        <MessageScrollerButton />
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Scroll Load History
+
+<ComponentPreview>
+  <ScrollerLoadMore />
+
+```tsx
+import React, { useState } from 'react'
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+} from '@/components/ui/message-scroller'
+import { Button } from '@/components/ui/button'
+import { RefreshCw } from 'lucide-react'
+
+export default function LoadMoreDemo() {
+  const [items, setItems] = useState<string[]>(['Item 3', 'Item 4', 'Item 5'])
+  const [loading, setLoading] = useState(false)
+
+  const loadPrevious = () => {
+    setLoading(true)
+    setTimeout(() => {
+      setItems((prev) => ['Loaded Item 1', 'Loaded Item 2', ...prev])
+      setLoading(false)
+    }, 1500)
+  }
+
+  return (
+    <div className="space-y-3 w-full max-w-[340px]">
+      <div className="h-40 border border-zinc-800 rounded-lg">
+        <MessageScroller variant="default">
+          <MessageScrollerViewport>
+            <MessageScrollerContent>
+              <MessageScrollerItem className="text-center py-2">
+                <Button
+                  variant="glass"
+                  size="sm"
+                  onClick={loadPrevious}
+                  disabled={loading}
+                  className="h-7 text-[10px]"
+                >
+                  {loading ? (
+                    <RefreshCw className="h-3 w-3 animate-spin mr-1.5" />
+                  ) : null}
+                  Fetch Historical Logs
+                </Button>
+              </MessageScrollerItem>
+              {items.map((it, idx) => (
+                <MessageScrollerItem
+                  key={idx}
+                  className="text-xs text-zinc-400 pl-2"
+                >
+                  {it}
+                </MessageScrollerItem>
+              ))}
+            </MessageScrollerContent>
+          </MessageScrollerViewport>
+        </MessageScroller>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Compact Scroller Box
+
+<ComponentPreview>
+  <ScrollerMaxHeight />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+} from '@/components/ui/message-scroller'
+
+export default function CompactDemo() {
+  return (
+    <div className="h-24 border border-zinc-850 rounded-lg w-full max-w-[340px]">
+      <MessageScroller variant="default">
+        <MessageScrollerViewport className="p-2">
+          <MessageScrollerContent className="gap-2">
+            <MessageScrollerItem className="text-[11px] text-zinc-400">
+              Micro row slot A
+            </MessageScrollerItem>
+            <MessageScrollerItem className="text-[11px] text-zinc-400">
+              Micro row slot B
+            </MessageScrollerItem>
+            <MessageScrollerItem className="text-[11px] text-zinc-400">
+              Micro row slot C
+            </MessageScrollerItem>
+            <MessageScrollerItem className="text-[11px] text-zinc-400">
+              Micro row slot D
+            </MessageScrollerItem>
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Arrows Overlay
+
+<ComponentPreview>
+  <ScrollerScrollArrows />
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerButton,
+} from '@/components/ui/message-scroller'
+
+export default function ArrowsDemo() {
+  return (
+    <div className="h-36 border border-zinc-800 rounded-lg relative w-full max-w-[340px]">
+      <MessageScroller variant="default">
+        <MessageScrollerViewport>
+          <MessageScrollerContent>
+            {Array.from({ length: 8 }).map((_, idx) => (
+              <MessageScrollerItem key={idx} className="text-xs text-zinc-400">
+                Item listings line #{idx + 1}
+              </MessageScrollerItem>
+            ))}
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+        <MessageScrollerButton />
+      </MessageScroller>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Interactive Chat Interface
+
+<ComponentPreview>
+  <ScrollerChatInterface />
+
+```tsx
+import React, { useState } from 'react'
+import {
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerButton,
+} from '@/components/ui/message-scroller'
+import { Message, MessageContent } from '@/components/ui/message'
+import { Button } from '@/components/ui/button'
+import { Send } from 'lucide-react'
+
+function AvatarPlaceholder({ text }: { text: string }) {
+  return (
+    <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 text-xs font-bold text-white uppercase select-none">
+      {text}
+    </div>
+  )
+}
+
+export default function ChatDemo() {
+  const [messages, setMessages] = useState<string[]>([
+    'Deploying to prod real quick.',
+    "It's 4:55 PM. On a Friday.",
+    "It's a one-line change.",
+  ])
+  const [text, setText] = useState('')
+
+  const send = () => {
+    if (!text.trim()) return
+    setMessages((prev) => [...prev, text])
+    setText('')
+  }
+
+  return (
+    <div className="space-y-3 w-full max-w-md bg-zinc-950 p-6 rounded-2xl border border-zinc-900">
+      <div className="h-48 rounded-lg bg-black/30 overflow-hidden relative">
+        <MessageScroller variant="glass">
+          <MessageScrollerViewport className="p-3">
+            <MessageScrollerContent className="gap-3">
+              {messages.map((msg, idx) => (
+                <MessageScrollerItem key={idx}>
+                  <Message
+                    align={idx % 2 === 0 ? 'end' : 'start'}
+                    variant="glass"
+                    className="items-end gap-2"
+                  >
+                    {idx % 2 !== 0 ? (
+                      <AvatarPlaceholder text="OL" />
+                    ) : (
+                      <AvatarPlaceholder text="ME" />
+                    )}
+                    <MessageContent
+                      className={`text-[11px] py-1.5 px-3 leading-relaxed rounded-2xl ${
+                        idx % 2 === 0
+                          ? 'bg-blue-600 border-transparent text-white rounded-tr-none'
+                          : 'bg-zinc-800 border-transparent text-white rounded-tl-none'
+                      }`}
+                    >
+                      {msg}
+                    </MessageContent>
+                  </Message>
+                </MessageScrollerItem>
+              ))}
+            </MessageScrollerContent>
+          </MessageScrollerViewport>
+          <MessageScrollerButton />
+        </MessageScroller>
+      </div>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && send()}
+          placeholder="Type your message..."
+          className="flex-1 text-xs bg-zinc-900 border border-white/10 rounded px-2.5 py-1.5 text-white outline-none"
+        />
+        <Button
+          variant="glow"
+          onClick={send}
+          className="h-8 w-8 p-0 flex items-center justify-center rounded"
+        >
+          <Send className="h-3.5 w-3.5" />
+        </Button>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>

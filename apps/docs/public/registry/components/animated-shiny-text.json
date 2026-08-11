@@ -1,0 +1,11 @@
+{
+  "name": "animated-shiny-text",
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "animated-shiny-text.tsx",
+      "content": "'use client'\n\nimport {\n  type ComponentPropsWithoutRef,\n  type CSSProperties,\n  type FC,\n} from 'react'\n\nimport { cn } from '../lib/utils'\n\nexport interface AnimatedShinyTextProps extends ComponentPropsWithoutRef<'span'> {\n  shimmerWidth?: number\n}\n\nexport const AnimatedShinyText: FC<AnimatedShinyTextProps> = ({\n  children,\n  className,\n  shimmerWidth = 100,\n  ...props\n}) => {\n  return (\n    <span\n      style={\n        {\n          '--shiny-width': `${shimmerWidth}px`,\n        } as CSSProperties\n      }\n      data-slot=\"animated-shiny-text\"\n      className={cn(\n        'mx-auto max-w-md text-neutral-600/70 dark:text-neutral-400/70',\n        'animate-shiny-text bg-size-[var(--shiny-width)_100%] bg-clip-text bg-position-[0_0] bg-no-repeat [transition:background-position_1s_cubic-bezier(.6,.6,0,1)_infinite]',\n        'bg-linear-to-r from-transparent via-black/80 via-50% to-transparent dark:via-white/80',\n        className,\n      )}\n      {...props}\n    >\n      {children}\n    </span>\n  )\n}\n"
+    }
+  ]
+}

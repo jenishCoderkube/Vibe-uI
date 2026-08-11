@@ -1,0 +1,428 @@
+# Input
+
+Displays a form input field or a component that looks like an input field.
+
+## Preview
+
+<ComponentPreview sandbox="input">
+  <Input type="email" placeholder="Email" className="max-w-xs" />
+
+```tsx
+import { Input } from '@/components/ui/input'
+
+export default function InputDemo() {
+  return <Input type="email" placeholder="Email" />
+}
+```
+
+</ComponentPreview>
+
+<Installation name="input" vibeDeps="label">
+
+```tsx
+// @/components/ui/input.tsx
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  error?: boolean
+  variant?: 'default' | 'bottom' | 'glass'
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, error, variant = 'default', ...props }, ref) => {
+    return (
+      <input
+        type={type}
+        className={cn(
+          'flex h-10 w-full px-3 py-2 text-sm transition-all duration-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+          // Variants
+          variant === 'default' &&
+            'rounded-md border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 shadow-sm',
+          variant === 'bottom' &&
+            'rounded-none border-0 border-b border-input bg-transparent px-0 focus-visible:border-primary shadow-none focus-visible:ring-0',
+          variant === 'glass' &&
+            'rounded-md border border-white/20 dark:border-white/10 bg-white/5 dark:bg-black/20 backdrop-blur-md placeholder:text-muted-foreground/60 focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:bg-white/10 dark:focus-visible:bg-black/30 shadow-sm',
+          // File input overrides
+          'file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground',
+          // Error states
+          error &&
+            variant === 'default' &&
+            'border-destructive focus-visible:ring-destructive',
+          error &&
+            variant === 'bottom' &&
+            'border-destructive focus-visible:border-destructive',
+          error &&
+            variant === 'glass' &&
+            'border-destructive focus-visible:ring-destructive',
+          className,
+        )}
+        ref={ref}
+        {...props}
+      />
+    )
+  },
+)
+Input.displayName = 'Input'
+
+export interface FloatingInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string
+  error?: boolean
+  variant?: 'default' | 'bottom' | 'glass'
+}
+
+const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
+  ({ className, label, type, error, variant = 'default', id, ...props }, ref) => {
+    const inputId = id || React.useId()
+    return (
+      <div className="relative mt-2">
+        <input
+          type={type}
+          id={inputId}
+          placeholder=" "
+          className={cn(
+            'peer flex h-10 w-full px-3 py-2 text-sm transition-all duration-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 pt-5 pb-1.5',
+            // Variants
+            variant === 'default' &&
+              'rounded-md border border-input bg-background ring-offset-background focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary shadow-sm',
+            variant === 'bottom' &&
+              'rounded-none border-0 border-b border-input bg-transparent px-0 focus-visible:border-primary shadow-none focus-visible:ring-0',
+            variant === 'glass' &&
+              'rounded-md border border-white/20 dark:border-white/10 bg-white/5 dark:bg-black/20 backdrop-blur-md focus-visible:ring-1 focus-visible:ring-white/30 focus-visible:bg-white/10 dark:focus-visible:bg-black/30 shadow-sm',
+            // Error states
+            error && 'border-destructive focus-visible:ring-destructive focus-visible:border-destructive',
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+        <label
+          htmlFor={inputId}
+          className={cn(
+            'absolute text-sm text-muted-foreground duration-300 transform -translate-y-3.5 scale-75 top-3 z-10 origin-[0] pointer-events-none select-none transition-all',
+            // Label variant layout
+            variant === 'bottom' ? 'left-0' : 'left-3 bg-background px-1',
+            variant === 'glass' && 'bg-zinc-950 dark:bg-zinc-950 px-1',
+            // Peer states (when focused or has value)
+            'peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0',
+            'peer-focus:scale-75 peer-focus:-translate-y-3.5 peer-focus:text-primary',
+            // Error state
+            error && 'text-destructive peer-focus:text-destructive'
+          )}
+        >
+          {label}
+        </label>
+      </div>
+    )
+  }
+)
+FloatingInput.displayName = 'FloatingInput'
+
+export { Input, FloatingInput }
+```
+
+</Installation>
+
+
+
+## Variants
+
+### Bottom Border Only (Material UI style)
+
+<ComponentPreview>
+  <Input variant="bottom" placeholder="Type message here..." className="max-w-xs" />
+
+```tsx
+import { Input } from '@/components/ui/input'
+
+export default function InputBottom() {
+  return <Input variant="bottom" placeholder="Type message here..." />
+}
+```
+
+</ComponentPreview>
+
+### Glassmorphic (Modern Glass UI)
+
+<ComponentPreview>
+  <Input variant="glass" placeholder="Search components..." className="max-w-xs" />
+
+```tsx
+import { Input } from '@/components/ui/input'
+
+export default function InputGlass() {
+  return <Input variant="glass" placeholder="Search components..." />
+}
+```
+
+</ComponentPreview>
+
+## Examples
+
+### File Input
+
+<ComponentPreview>
+  <Input type="file" className="max-w-xs cursor-pointer" />
+
+```tsx
+import { Input } from '@/components/ui/input'
+
+export default function InputFile() {
+  return <Input type="file" />
+}
+```
+
+</ComponentPreview>
+
+### Disabled State
+
+<ComponentPreview>
+  <Input disabled type="email" placeholder="Email" className="max-w-xs" />
+
+```tsx
+import { Input } from '@/components/ui/input'
+
+export default function InputDisabled() {
+  return <Input disabled type="email" placeholder="Email" />
+}
+```
+
+</ComponentPreview>
+
+### With Label
+
+<ComponentPreview>
+  <div className="grid w-full max-w-sm items-center gap-1.5 text-left">
+    <Label htmlFor="email">Email</Label>
+    <Input type="email" id="email" placeholder="Email" className="max-w-xs" />
+  </div>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+
+export default function InputWithLabel() {
+  return (
+    <div className="grid w-full max-w-sm items-center gap-1.5">
+      <Label htmlFor="email">Email</Label>
+      <Input type="email" id="email" placeholder="Email" />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### With Button
+
+<ComponentPreview>
+  <div className="flex w-full max-w-sm items-center gap-2">
+    <Input type="email" placeholder="Email" className="max-w-xs" />
+    <Button type="submit">Subscribe</Button>
+  </div>
+
+```tsx
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+
+export default function InputWithButton() {
+  return (
+    <div className="flex w-full max-w-sm items-center gap-2">
+      <Input type="email" placeholder="Email" />
+      <Button type="submit">Subscribe</Button>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Error / Validation State
+
+<ComponentPreview>
+  <div className="grid w-full max-w-sm items-center gap-1.5 text-left">
+    <Input error type="email" placeholder="Email" className="max-w-xs" />
+    <span className="text-xs text-destructive font-medium pt-1">Please enter a valid email address.</span>
+  </div>
+
+```tsx
+import { Input } from '@/components/ui/input'
+
+export default function InputError() {
+  return <Input error type="email" placeholder="Email" />
+}
+```
+
+</ComponentPreview>
+
+### Form
+
+<ComponentPreview>
+  <form className="w-full max-w-md space-y-4 text-left p-6 rounded-lg border border-border bg-card shadow-sm">
+    <div className="space-y-1">
+      <Label>Name</Label>
+      <Input placeholder="Evil Rabbit" />
+    </div>
+    <div className="space-y-1">
+      <Label>Email</Label>
+      <Input type="email" placeholder="john@example.com" />
+      <p className="text-xs text-muted-foreground pt-1">We'll never share your email with anyone.</p>
+    </div>
+    <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-1">
+        <Label>Phone</Label>
+        <Input type="tel" placeholder="+1 (555) 123-4567" />
+      </div>
+      <div className="space-y-1">
+        <Label>Country</Label>
+        <select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all duration-200 shadow-sm cursor-pointer">
+          <option>United States</option>
+          <option>United Kingdom</option>
+          <option>Canada</option>
+        </select>
+      </div>
+    </div>
+    <div className="space-y-1">
+      <Label>Address</Label>
+      <Input placeholder="123 Main St" />
+    </div>
+    <Button type="submit" className="w-full mt-2">Submit</Button>
+  </form>
+
+```tsx
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+
+export default function FormDemo() {
+  return (
+    <form className="w-full max-w-md space-y-4 text-left p-6 rounded-lg border border-border bg-card">
+      <div className="space-y-1">
+        <Label>Name</Label>
+        <Input placeholder="Evil Rabbit" />
+      </div>
+      <div className="space-y-1">
+        <Label>Email</Label>
+        <Input type="email" placeholder="john@example.com" />
+        <p className="text-xs text-muted-foreground">We'll never share your email with anyone.</p>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1">
+          <Label>Phone</Label>
+          <Input type="tel" placeholder="+1 (555) 123-4567" />
+        </div>
+        <div className="space-y-1">
+          <Label>Country</Label>
+          <select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all duration-200 shadow-sm cursor-pointer">
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>Canada</option>
+          </select>
+        </div>
+      </div>
+      <div className="space-y-1">
+        <Label>Address</Label>
+        <Input placeholder="123 Main St" />
+      </div>
+      <Button type="submit" className="w-full mt-2">
+        Submit
+      </Button>
+    </form>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Floating Label (Material UI style)
+
+A premium floating label input component. The label scales down and floats up seamlessly when focused or when the input field has active content.
+
+<ComponentPreview>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-lg text-left p-2">
+    <FloatingInput label="Outlined" variant="default" />
+    <FloatingInput label="Filled" variant="filled" />
+    <FloatingInput label="Standard" variant="bottom" />
+  </div>
+
+```tsx
+import { FloatingInput } from '@/components/ui/input'
+
+export default function FloatingInputDemo() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-lg text-left">
+      {/* Outlined (Default) */}
+      <FloatingInput label="Outlined" variant="default" />
+
+      {/* Filled */}
+      <FloatingInput label="Filled" variant="filled" />
+
+      {/* Standard */}
+      <FloatingInput label="Standard" variant="bottom" />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Form Controls & States (Material UI style)
+
+A comprehensive set of floating label input examples showing different native form states (Required, Disabled, Password, Read Only, Search, and Helper text) in both Outlined and Filled layout styles.
+
+<ComponentPreview>
+  <FloatingInputFormPropsDemo />
+
+```tsx
+import { FloatingInput } from '@/components/ui/input'
+
+export default function FormPropsDemo() {
+  return (
+    <div className="w-full max-w-2xl space-y-8 p-6 border rounded-xl bg-card">
+      {/* Outlined Group */}
+      <div className="space-y-4">
+        <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Outlined</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FloatingInput label="Required *" defaultValue="Hello World" required />
+          <FloatingInput label="Disabled" defaultValue="Hello World" disabled />
+          <FloatingInput label="Password" type="password" defaultValue="password" />
+          <FloatingInput label="Read Only" defaultValue="Hello World" readOnly />
+          <FloatingInput label="Search field" type="search" />
+          <div className="flex flex-col">
+            <FloatingInput label="Helper text" defaultValue="Default Value" />
+            <span className="text-[11px] text-muted-foreground mt-1 ml-3">Some important text</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Filled Group */}
+      <div className="space-y-4 pt-4 border-t">
+        <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Filled</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FloatingInput label="Required *" variant="filled" defaultValue="Hello World" required />
+          <FloatingInput label="Disabled" variant="filled" defaultValue="Hello World" disabled />
+          <FloatingInput label="Password" variant="filled" type="password" defaultValue="password" />
+          <FloatingInput label="Read Only" variant="filled" defaultValue="Hello World" readOnly />
+          <FloatingInput label="Search field" variant="filled" type="search" />
+          <div className="flex flex-col">
+            <FloatingInput label="Helper text" variant="filled" defaultValue="Default Value" />
+            <span className="text-[11px] text-muted-foreground mt-1 ml-3">Some important text</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Input component captures single-line text data. It features customized focus ring styles and visual presets to match the overall design framework of the monorepo.
+
+### Preset Variations
+
+- **Glassmorphic**: Frosted input field backgrounds with transparent borders.
+- **Retro**: Thick dark input border outlines with solid background profiles.
+- **Neon Glow**: Highlight focus border frames that cast secondary neon drop shadows.

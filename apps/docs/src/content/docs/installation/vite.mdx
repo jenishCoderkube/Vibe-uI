@@ -1,0 +1,192 @@
+# Vite Installation & Setup
+
+Set up Vibe UI components in a React Single Page Application powered by Vite and `@tailwindcss/vite`.
+
+<Callout type="info" title="Fast SPA Setup">
+  Works seamlessly with both TypeScript (`react-ts`) and JavaScript (`react`) templates.
+</Callout>
+
+<Steps>
+
+<Step title="1. Create a Vite Project">
+
+Create a new Vite application with React:
+
+```bash
+npx create-vite@latest my-vibe-app --template react-ts
+cd my-vibe-app
+npm install
+```
+
+</Step>
+
+<Step title="2. Install Tailwind CSS v4 & Plugin">
+
+Install Tailwind CSS and the Vite plugin:
+
+```bash
+npm add -D tailwindcss @tailwindcss/vite
+```
+
+Configure `@tailwindcss/vite` in your `vite.config.ts`:
+
+```typescript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+})
+```
+
+</Step>
+
+<Step title="3. Configure Path Aliases in tsconfig.json">
+
+Ensure your `@/*` path alias is defined in `tsconfig.json` so component imports resolve cleanly:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+</Step>
+
+<Step title="4. Add Theme Tokens to src/index.css">
+
+Add the HSL color variables to `src/index.css`:
+
+```css
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius: 0.5rem;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Inter", sans-serif;
+  }
+}
+```
+
+</Step>
+
+<Step title="5. Add Components Using the CLI">
+
+Add components to your Vite project on demand:
+
+```bash
+npx vibe-ui-kit@latest add button card
+```
+
+Import and use in `src/App.tsx`:
+
+```tsx
+import { Button } from '@/components/ui/button'
+
+export default function App() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-background">
+      <Button variant="retro">Vite + Vibe UI</Button>
+    </div>
+  )
+}
+```
+
+</Step>
+
+</Steps>

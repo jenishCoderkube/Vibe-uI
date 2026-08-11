@@ -1,0 +1,351 @@
+# Hyper Text
+
+A beautiful text scramble animation component that creates a scrambling matrix-like effect on page load or on hover.
+
+## Preview
+
+<ComponentPreview sandbox="hyper-text">
+  <HyperTextBasicDemo />
+
+```tsx
+import { HyperText } from '@/components/ui/hyper-text'
+
+export default function HyperTextDemo() {
+  return (
+    <HyperText
+      className="text-4xl font-extrabold text-foreground tracking-tight"
+      duration={1000}
+    >
+      HYPERTEXT
+    </HyperText>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="hyper-text" npmDeps="motion">
+
+```tsx
+"use client"
+
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type RefAttributes,
+} from "react"
+import {
+  AnimatePresence,
+  motion,
+  type DOMMotionComponents,
+  type HTMLMotionProps,
+  type MotionProps,
+} from "motion/react"
+
+import { cn } from "@/lib/utils"
+
+type CharacterSet = string[] | readonly string[]
+
+const motionElements = {
+  article: motion.article,
+  div: motion.div,
+  h1: motion.h1,
+  h2: motion.h2,
+  h3: motion.h3,
+  h4: motion.h4,
+  h5: motion.h5,
+  h6: motion.h6,
+  li: motion.li,
+  p: motion.p,
+  section: motion.section,
+  span: motion.span,
+} as const
+
+type MotionElementType = Extract<
+  keyof DOMMotionComponents,
+  keyof typeof motionElements
+>
+type HyperTextMotionComponent = ComponentType<
+  Omit<HTMLMotionProps<"div">, "ref"> & RefAttributes<HTMLElement>
+>
+
+export interface HyperTextProps extends Omit<MotionProps, "children"> {
+  children: string
+  className?: string
+  duration?: number
+  delay?: number
+  as?: MotionElementType
+  startOnView?: boolean
+  animateOnHover?: boolean
+  characterSet?: CharacterSet
+}
+
+const DEFAULT_CHARACTER_SET = Object.freeze(
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
+) as readonly string[]
+
+const getRandomInt = (max: number): number => Math.floor(Math.random() * max)
+
+export function HyperText({
+  children,
+  className,
+  duration = 800,
+  delay = 0,
+  as: Component = "div",
+  startOnView = false,
+  animateOnHover = true,
+  characterSet = DEFAULT_CHARACTER_SET,
+  ...props
+}: HyperTextProps) {
+  const MotionComponent = motionElements[Component] as HyperTextMotionComponent
+
+  const [displayText, setDisplayText] = useState<string[]>(() =>
+    children.split("")
+  )
+  const [isAnimating, setIsAnimating] = useState(false)
+  const iterationCount = useRef(0)
+  const elementRef = useRef<HTMLElement | null>(null)
+
+  const handleAnimationTrigger = () => {
+    if (animateOnHover && !isAnimating) {
+      iterationCount.current = 0
+      setIsAnimating(true)
+    }
+  }
+
+  useEffect(() => {
+    if (!startOnView) {
+      const startTimeout = setTimeout(() => {
+        setIsAnimating(true)
+      }, delay)
+      return () => clearTimeout(startTimeout)
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            setIsAnimating(true)
+          }, delay)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.1, rootMargin: "-30% 0px -30% 0px" }
+    )
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [delay, startOnView])
+
+  useEffect(() => {
+    let animationFrameId: number | null = null
+
+    if (isAnimating) {
+      const maxIterations = children.length
+      const startTime = performance.now()
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime
+        const progress = Math.min(elapsed / duration, 1)
+
+        iterationCount.current = progress * maxIterations
+
+        setDisplayText((currentText) =>
+          currentText.map((letter, index) =>
+            letter === " "
+              ? letter
+              : index <= iterationCount.current
+                ? children[index]
+                : characterSet[getRandomInt(characterSet.length)]
+          )
+        )
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(animate)
+        } else {
+          setIsAnimating(false)
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(animate)
+    }
+
+    return () => {
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
+  }, [children, duration, isAnimating, characterSet])
+
+  return (
+    <MotionComponent
+      ref={elementRef}
+      className={cn("overflow-hidden py-2 text-4xl font-bold", className)}
+      onMouseEnter={handleAnimationTrigger}
+      {...props}
+    >
+      <AnimatePresence>
+        {displayText.map((letter, index) => (
+          <motion.span
+            key={index}
+            className={cn("font-mono", letter === " " ? "w-3" : "")}
+          >
+            {letter.toUpperCase()}
+          </motion.span>
+        ))}
+      </AnimatePresence>
+    </MotionComponent>
+  )
+}
+```
+
+</Installation>
+
+## Variations
+
+### Trigger Scramble on Hover
+
+Animate the text scramble sequence each time the user hovers over the element.
+
+<ComponentPreview>
+  <HyperTextHoverDemo />
+
+```tsx
+import { HyperText } from '@/components/ui/hyper-text'
+
+export default function HyperTextHover() {
+  return (
+    <HyperText
+      className="text-4xl font-extrabold text-primary tracking-tight cursor-default"
+      animateOnHover={true}
+      duration={800}
+    >
+      HOVER ME
+    </HyperText>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Terminal Mockup
+
+<ComponentPreview sandbox="hyper-text">
+  <HyperTextTerminalDemo />
+
+```tsx
+import { HyperText } from '@/components/ui/hyper-text'
+import { Terminal, Cpu, ShieldCheck } from 'lucide-react'
+
+export default function HyperTextTerminalDemo() {
+  return (
+    <div className="w-full max-w-md bg-neutral-950 border border-neutral-800 rounded-lg p-6 font-mono text-sm shadow-2xl relative overflow-hidden text-left mx-auto">
+      {/* Window Controls */}
+      <div className="flex items-center gap-1.5 mb-4 border-b border-neutral-900 pb-3">
+        <div className="h-3 w-3 rounded-full bg-rose-500/80" />
+        <div className="h-3 w-3 rounded-full bg-amber-500/80" />
+        <div className="h-3 w-3 rounded-full bg-emerald-500/80" />
+        <span className="text-[10px] text-muted-foreground ml-2 font-mono">vibe-terminal - sh</span>
+      </div>
+
+      {/* Terminal Output Logs */}
+      <div className="space-y-3.5 text-neutral-300">
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground">$</span>
+          <span>npm run decrypt-core</span>
+        </div>
+
+        <div className="flex items-start gap-2.5">
+          <Terminal className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <span className="text-neutral-500 text-[11px] block">TASK LOG #2847</span>
+            <HyperText className="text-emerald-500 font-bold tracking-tight text-sm cursor-default inline-block" duration={800}>
+              INITIALIZING DECRYPTION ALGORITHM...
+            </HyperText>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-2.5">
+          <Cpu className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <span className="text-neutral-500 text-[11px] block">SECURITY AUDIT</span>
+            <HyperText className="text-primary font-bold tracking-tight text-sm cursor-default inline-block" duration={1200}>
+              ESTABLISHING ENCRYPTED GATEWAY TO HOST...
+            </HyperText>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-2.5 border-t border-neutral-900 pt-3 mt-3">
+          <ShieldCheck className="h-4 w-4 text-rose-500 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <span className="text-neutral-500 text-[11px] block">ACCESS STATUS</span>
+            <HyperText className="text-rose-500 font-extrabold tracking-widest text-sm cursor-default inline-block" duration={1500}>
+              CORE DATA ACCESS GRANTED
+            </HyperText>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Usage
+
+```tsx
+import { HyperText } from "@/components/ui/hyper-text"
+```
+
+```tsx
+<HyperText>HYPER TEXT</HyperText>
+```
+
+## Props
+
+<div className="my-6 w-full overflow-x-auto rounded-lg border border-border">
+  <table className="w-full text-sm text-left border-collapse table-fixed">
+    <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">
+      <tr>
+        <th className="w-[18%] px-4 py-3 whitespace-nowrap">Prop</th>
+        <th className="w-[34%] px-4 py-3">Type</th>
+        <th className="w-[16%] px-4 py-3 whitespace-nowrap">Default</th>
+        <th className="w-[32%] px-4 py-3">Description</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-border text-muted-foreground">
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">children</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap inline-block">string</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">The text string to scramble and decode</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">duration</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap inline-block">number</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">800</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Duration of the scramble decoding effect in milliseconds</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">animateOnHover</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap inline-block">boolean</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">true</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Triggers the scramble animation when hovering over the component</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">className</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap inline-block">string?</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Additional classes for the container</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+This `HyperText` component creates a cybernetic matrix scramble decoding effect on hover or mount.

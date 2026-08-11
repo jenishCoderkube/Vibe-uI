@@ -1,0 +1,11 @@
+{
+  "name": "separator",
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "separator.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport { Slot } from '@radix-ui/react-slot'\nimport { tv, type VariantProps } from 'tailwind-variants'\nimport { cn } from '../lib/utils'\n\nconst separatorVariants = tv({\n  base: 'shrink-0 bg-border transition-all duration-200',\n  variants: {\n    orientation: {\n      horizontal: 'h-[1px] w-full',\n      vertical: 'h-full w-[1px]',\n    },\n    variant: {\n      default: 'bg-border',\n      glass: 'bg-white/20 dark:bg-white/10',\n      retro: 'bg-foreground h-[2px]',\n      glow: 'bg-primary/40',\n    },\n  },\n  defaultVariants: {\n    orientation: 'horizontal',\n    variant: 'default',\n  },\n})\n\nexport interface SeparatorProps\n  extends\n    React.HTMLAttributes<HTMLDivElement>,\n    VariantProps<typeof separatorVariants> {\n  asChild?: boolean\n}\n\nconst Separator = React.forwardRef<HTMLDivElement, SeparatorProps>(\n  (\n    {\n      className,\n      orientation = 'horizontal',\n      variant,\n      asChild = false,\n      ...props\n    },\n    ref,\n  ) => {\n    const Comp = asChild ? Slot : 'div'\n    return (\n      <Comp\n        ref={ref}\n        role=\"separator\"\n        aria-orientation={\n          orientation === 'vertical' ? 'vertical' : 'horizontal'\n        }\n        data-slot=\"separator\"\n        className={cn(separatorVariants({ orientation, variant }), className)}\n        {...props}\n      />\n    )\n  },\n)\nSeparator.displayName = 'Separator'\n\nexport { Separator }\n"
+    }
+  ]
+}

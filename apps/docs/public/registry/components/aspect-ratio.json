@@ -1,0 +1,11 @@
+{
+  "name": "aspect-ratio",
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "aspect-ratio.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport { cn } from '../lib/utils'\n\nexport interface AspectRatioProps extends React.HTMLAttributes<HTMLDivElement> {\n  ratio?: number\n}\n\nconst AspectRatio = React.forwardRef<HTMLDivElement, AspectRatioProps>(\n  ({ className, ratio = 16 / 9, style, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        data-slot=\"aspect-ratio\"\n        style={\n          {\n            aspectRatio: `${ratio}`,\n            ...style,\n          } as React.CSSProperties\n        }\n        className={cn('w-full overflow-hidden relative', className)}\n        {...props}\n      />\n    )\n  },\n)\n\nAspectRatio.displayName = 'AspectRatio'\n\nexport { AspectRatio }\n"
+    }
+  ]
+}

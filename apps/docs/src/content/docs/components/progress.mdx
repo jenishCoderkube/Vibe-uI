@@ -1,0 +1,633 @@
+# Progress
+
+An indicator that displays the progress status of a task, typically represented as a progress bar or circle.
+
+## Preview
+
+<ComponentPreview sandbox="progress">
+  <PreviewWrapper>
+    <Progress value="33" />
+    <PreviewRow>
+      <CircularProgress value="33" size="60" showValue />
+      <CircularProgress value="75" size="60" strokeWidth="8" indicatorVariant="success" showValue />
+    </PreviewRow>
+  </PreviewWrapper>
+
+```tsx
+import { Progress, CircularProgress } from '@/components/ui/progress'
+
+export function ProgressDemo() {
+  return (
+    <div className="flex flex-col gap-4">
+      <Progress value={33} />
+      <CircularProgress value={33} showValue />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="progress" npmDeps="@radix-ui/react-progress lucide-react tailwind-variants">
+
+```tsx
+import * as React from 'react'
+import * as ProgressPrimitive from '@radix-ui/react-progress'
+import { tv } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const progressVariants = tv({
+  base: 'relative overflow-hidden rounded-full transition-all w-full min-w-[200px]',
+  variants: {
+    variant: {
+      default: 'h-3 border border-border/50 bg-secondary/50 dark:bg-zinc-800/80',
+      retro: 'h-5 border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glass: 'h-3 bg-white/10 dark:bg-black/45 border border-white/25 dark:border-white/15 backdrop-blur-md shadow-inner',
+    }
+  },
+  defaultVariants: {
+    variant: 'default',
+  }
+})
+
+const progressIndicatorVariants = tv({
+  base: 'h-full w-full flex-1 transition-all duration-500 ease-out',
+  variants: {
+    variant: {
+      default: 'bg-primary dark:bg-white',
+      success: 'bg-gradient-to-r from-emerald-500 to-teal-400 dark:from-emerald-400 dark:to-teal-300',
+      retro: 'bg-foreground border-r-2 border-foreground',
+      glass: 'bg-gradient-to-r from-violet-500 via-indigo-500 to-blue-500',
+      gradient: 'bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600',
+    }
+  },
+  defaultVariants: {
+    variant: 'default',
+  }
+})
+
+interface ProgressProps extends React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> {
+  variant?: 'default' | 'retro' | 'glass'
+  indicatorVariant?: 'default' | 'success' | 'retro' | 'glass' | 'gradient'
+}
+
+const Progress = React.forwardRef<
+  React.ElementRef<typeof ProgressPrimitive.Root>,
+  ProgressProps
+>(({ className, value, variant, indicatorVariant, ...props }, ref) => (
+  <ProgressPrimitive.Root
+    ref={ref}
+    className={cn(progressVariants({ variant }), className)}
+    {...props}
+  >
+    <ProgressPrimitive.Indicator
+      className={cn(progressIndicatorVariants({ variant: indicatorVariant || (variant as any) }))}
+      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+    />
+  </ProgressPrimitive.Root>
+))
+Progress.displayName = ProgressPrimitive.Root.displayName
+
+interface CircularProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+  value?: number
+  max?: number
+  size?: number
+  strokeWidth?: number
+  variant?: 'default' | 'retro' | 'glass'
+  indicatorVariant?: 'default' | 'success' | 'retro' | 'glass' | 'gradient'
+  showValue?: boolean
+}
+
+const CircularProgress = React.forwardRef<HTMLDivElement, CircularProgressProps>(
+  (
+    {
+      className,
+      value = 0,
+      max = 100,
+      size = 60,
+      strokeWidth = 6,
+      variant = 'default',
+      indicatorVariant = 'default',
+      showValue = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const radius = (size - strokeWidth) / 2
+    const circumference = radius * 2 * Math.PI
+    const offset = circumference - (Math.min(value, max) / max) * circumference
+
+    const trackColor = {
+      default: 'stroke-secondary/50 dark:stroke-zinc-800/80',
+      retro: 'stroke-background border-2 stroke-foreground',
+      glass: 'stroke-white/10 dark:stroke-black/40',
+    }[variant] || 'stroke-secondary/50 dark:stroke-zinc-800/80'
+
+    const indicatorColor = {
+      default: 'stroke-primary dark:stroke-white',
+      success: 'stroke-emerald-500 dark:stroke-emerald-400',
+      retro: 'stroke-foreground',
+      glass: 'stroke-violet-500',
+      gradient: 'stroke-violet-600',
+    }[indicatorVariant] || 'stroke-primary dark:stroke-white'
+
+    return (
+      <div
+        ref={ref}
+        className={cn('relative flex items-center justify-center', className)}
+        style={{ width: size, height: size }}
+        {...props}
+      >
+        <svg className="w-full h-full -rotate-90">
+          <circle
+            className={cn('fill-none', trackColor)}
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            strokeWidth={strokeWidth}
+          />
+          <circle
+            className={cn('fill-none transition-all duration-500 ease-out', indicatorColor)}
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            strokeWidth={strokeWidth}
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+          />
+        </svg>
+        {showValue && (
+          <span className="absolute text-xs font-semibold text-foreground">
+            {children || `${Math.round((value / max) * 100)}%`}
+          </span>
+        )}
+      </div>
+    )
+  }
+)
+CircularProgress.displayName = 'CircularProgress'
+
+export { Progress, CircularProgress }
+export type { ProgressProps, CircularProgressProps }
+```
+
+</Installation>
+
+
+### Interactive Progress Simulator
+
+Use the slider below to control and preview all progress designs in real time.
+
+<ComponentPreview>
+  <ProgressInteractiveDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { Progress, CircularProgress } from '@/components/ui/progress'
+import { Slider } from '@/components/ui/slider'
+
+export default function ProgressInteractiveDemo() {
+  const [value, setValue] = useState([45])
+
+  return (
+    <div className="flex flex-col gap-6 p-6 rounded-xl border border-border bg-card/50 backdrop-blur-sm w-full max-w-2xl mx-auto shadow-sm">
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between items-center">
+          <span className="text-sm font-semibold text-foreground">Interactive Value Controller</span>
+          <span className="text-sm font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+            {value[0]}%
+          </span>
+        </div>
+        <Slider
+          value={value}
+          onValueChange={setValue}
+          max={100}
+          step={1}
+          className="py-4"
+        />
+      </div>
+
+      <div className="border-t border-border/50 pt-4 flex flex-col gap-4">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Horizontal Progress Designs
+        </h4>
+        <div className="grid gap-4">
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Default Style</span>
+            <Progress value={value[0]} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Glassmorphic Glass</span>
+            <Progress value={value[0]} variant="glass" indicatorVariant="glass" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Retro Neobrutalist</span>
+            <Progress value={value[0]} variant="retro" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Gradient Glow</span>
+            <Progress value={value[0]} indicatorVariant="gradient" />
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-border/50 pt-4 flex flex-col gap-4">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Circular Progress Designs
+        </h4>
+        <div className="flex flex-wrap justify-between gap-4">
+          <div className="flex flex-col items-center gap-2 flex-1 min-w-[100px]">
+            <span className="text-[11px] font-medium text-muted-foreground">Default</span>
+            <CircularProgress value={value[0]} showValue size={70} strokeWidth={6} />
+          </div>
+          <div className="flex flex-col items-center gap-2 flex-1 min-w-[100px]">
+            <span className="text-[11px] font-medium text-muted-foreground">Glass</span>
+            <CircularProgress value={value[0]} variant="glass" indicatorVariant="glass" showValue size={70} strokeWidth={6} />
+          </div>
+          <div className="flex flex-col items-center gap-2 flex-1 min-w-[100px]">
+            <span className="text-[11px] font-medium text-muted-foreground">Retro</span>
+            <CircularProgress value={value[0]} variant="retro" showValue size={70} strokeWidth={6} />
+          </div>
+          <div className="flex flex-col items-center gap-2 flex-1 min-w-[100px]">
+            <span className="text-[11px] font-medium text-muted-foreground">Gradient</span>
+            <CircularProgress value={value[0]} indicatorVariant="gradient" showValue size={70} strokeWidth={6} />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+</ComponentPreview>
+
+## All Variations
+
+Explore different variations and styling presets of the Progress and Circular Progress components.
+
+### 1. Default Style (60%)
+
+<ComponentPreview>
+  <PreviewWrapper>
+    <Progress value="60" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function DefaultProgressDemo() {
+  return <Progress value={60} />
+}
+```
+
+</ComponentPreview>
+
+### 2. Success Status Variant
+
+<ComponentPreview>
+  <PreviewWrapper>
+    <Progress value="100" indicatorVariant="success" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function SuccessProgressDemo() {
+  return <Progress value={100} indicatorVariant="success" />
+}
+```
+
+</ComponentPreview>
+
+### 3. Glassmorphic Style
+
+<ComponentPreview>
+  <PreviewWrapper>
+    <Progress value="45" variant="glass" indicatorVariant="glass" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function GlassProgressDemo() {
+  return <Progress value={45} variant="glass" indicatorVariant="glass" />
+}
+```
+
+</ComponentPreview>
+
+### 4. Retro Neobrutalist Style
+
+<ComponentPreview>
+  <PreviewWrapper>
+    <Progress value="75" variant="retro" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function RetroProgressDemo() {
+  return <Progress value={75} variant="retro" />
+}
+```
+
+</ComponentPreview>
+
+### 5. Gradient Glow Indicator
+
+<ComponentPreview>
+  <PreviewWrapper>
+    <Progress value="85" indicatorVariant="gradient" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function GradientProgressDemo() {
+  return <Progress value={85} indicatorVariant="gradient" />
+}
+```
+
+</ComponentPreview>
+
+### 6. Indeterminate / Loading State
+
+<ComponentPreview>
+  <PreviewWrapper>
+    <Progress value="30" className="[&>div]:animate-pulse" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function IndeterminateProgressDemo() {
+  return <Progress value={30} className="[&>div]:animate-pulse" />
+}
+```
+
+</ComponentPreview>
+
+### 7. Thin Height Style
+
+<ComponentPreview>
+  <PreviewWrapper>
+    <Progress value="40" className="h-1" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function ThinProgressDemo() {
+  return <Progress value={40} className="h-1" />
+}
+```
+
+</ComponentPreview>
+
+### 8. Progress with External Label Counter
+
+<ComponentPreview>
+  <PreviewWrapper className="gap-2">
+    <PreviewRow className="w-full justify-between text-xs font-semibold">
+      <span>Uploading files...</span>
+      <span>72%</span>
+    </PreviewRow>
+    <Progress value="72" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function LabeledProgressDemo() {
+  return (
+    <div className="w-full flex flex-col gap-2">
+      <div className="flex justify-between text-xs">
+        <span>Uploading files...</span>
+        <span>72%</span>
+      </div>
+      <Progress value={72} />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 9. Custom Stepped Segment Progress
+
+<ComponentPreview>
+  <PreviewRow className="w-full max-w-md px-4 gap-1">
+    <Progress value="100" className="h-2" />
+    <Progress value="100" className="h-2" />
+    <Progress value="40" className="h-2" />
+    <Progress value="0" className="h-2" />
+  </PreviewRow>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function SteppedProgressDemo() {
+  return (
+    <div className="flex gap-1 w-full">
+      <Progress value={100} className="h-2" />
+      <Progress value={100} className="h-2" />
+      <Progress value={40} className="h-2" />
+      <Progress value={0} className="h-2" />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 10. High Contrast Danger Alert Limit
+
+<ComponentPreview>
+  <PreviewWrapper>
+    <Progress value="95" indicatorVariant="default" className="[&>div]:bg-red-500" />
+  </PreviewWrapper>
+
+```tsx
+import { Progress } from '@/components/ui/progress'
+
+export default function DangerProgressDemo() {
+  return <Progress value={95} className="[&>div]:bg-red-500" />
+}
+```
+
+</ComponentPreview>
+
+### 11. Circular Progress - Default Style
+
+<ComponentPreview>
+  <PreviewRow>
+    <CircularProgress value="45" size="70" />
+    <CircularProgress value="45" size="70" showValue />
+  </PreviewRow>
+
+```tsx
+import { CircularProgress } from '@/components/ui/progress'
+
+export default function DefaultCircularProgressDemo() {
+  return <CircularProgress value={45} showValue />
+}
+```
+
+</ComponentPreview>
+
+### 12. Circular Progress - Success with Large Stroke
+
+<ComponentPreview>
+  <PreviewRow>
+    <CircularProgress value="80" size="80" strokeWidth="10" indicatorVariant="success" showValue />
+  </PreviewRow>
+
+```tsx
+import { CircularProgress } from '@/components/ui/progress'
+
+export default function SuccessCircularProgressDemo() {
+  return <CircularProgress value={80} size={80} strokeWidth={10} indicatorVariant="success" showValue />
+}
+```
+
+</ComponentPreview>
+
+### 13. Circular Progress - Glassmorphic Style
+
+<ComponentPreview>
+  <PreviewRow>
+    <CircularProgress value="65" size="70" variant="glass" indicatorVariant="glass" showValue />
+  </PreviewRow>
+
+```tsx
+import { CircularProgress } from '@/components/ui/progress'
+
+export default function GlassCircularProgressDemo() {
+  return <CircularProgress value={65} variant="glass" indicatorVariant="glass" showValue />
+}
+```
+
+</ComponentPreview>
+
+### 14. Circular Progress - Retro Neobrutalist Style
+
+<ComponentPreview>
+  <PreviewRow>
+    <CircularProgress value="50" size="75" strokeWidth="8" variant="retro" indicatorVariant="retro" showValue />
+  </PreviewRow>
+
+```tsx
+import { CircularProgress } from '@/components/ui/progress'
+
+export default function RetroCircularProgressDemo() {
+  return <CircularProgress value={50} variant="retro" indicatorVariant="retro" showValue />
+}
+```
+
+</ComponentPreview>
+
+### 15. Circular Progress - Gradient Design
+
+<ComponentPreview>
+  <PreviewRow>
+    <CircularProgress value="90" size="80" strokeWidth="8" indicatorVariant="gradient" showValue />
+  </PreviewRow>
+
+```tsx
+import { CircularProgress } from '@/components/ui/progress'
+
+export default function GradientCircularProgressDemo() {
+  return <CircularProgress value={90} size={80} strokeWidth={8} indicatorVariant="gradient" showValue />
+}
+```
+
+</ComponentPreview>
+
+### 16. Real-time Scroll Position Tracker
+
+<ComponentPreview>
+  <ScrollProgressDemo />
+
+```tsx
+// This interactive tracker calculates the page scroll depth percentage
+// and renders real-time circular and horizontal progress metrics as you scroll.
+import React, { useEffect, useState } from 'react'
+import { Progress, CircularProgress } from '@/components/ui/progress'
+
+export function ScrollProgressTracker() {
+  const [scrollPercent, setScrollPercent] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight
+      const percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
+      setScrollPercent(percent)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // initial calculation
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  return (
+    <div className="flex flex-col items-center gap-6 p-4 w-full">
+      <div className="flex gap-8 items-center justify-center flex-wrap">
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-xs text-muted-foreground font-semibold">
+            Circular Scroll
+          </span>
+          <CircularProgress
+            value={scrollPercent}
+            size={80}
+            strokeWidth={8}
+            showValue
+            indicatorVariant="gradient"
+            className="shadow-sm"
+          />
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-xs text-muted-foreground font-semibold">
+            Glass Scroll
+          </span>
+          <CircularProgress
+            value={scrollPercent}
+            size={80}
+            strokeWidth={8}
+            showValue
+            variant="glass"
+            indicatorVariant="glass"
+            className="shadow-sm"
+          />
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-xs text-muted-foreground font-semibold">
+            Retro Scroll
+          </span>
+          <CircularProgress
+            value={scrollPercent}
+            size={80}
+            strokeWidth={8}
+            showValue
+            variant="retro"
+            indicatorVariant="retro"
+            className="shadow-sm"
+          />
+        </div>
+      </div>
+      <div className="w-full flex flex-col gap-2">
+        <div className="flex justify-between text-xs font-semibold text-muted-foreground">
+          <span>Horizontal Scroll Indicator</span>
+          <span>{Math.round(scrollPercent)}%</span>
+        </div>
+        <Progress value={scrollPercent} indicatorVariant="success" />
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+

@@ -1,0 +1,16 @@
+{
+  "name": "alert",
+  "dependencies": [
+    "lucide-react",
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "alert.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport { tv, type VariantProps } from 'tailwind-variants'\nimport { cn } from '../lib/utils'\n\nconst alertVariants = tv({\n  base: 'relative w-full rounded-lg border p-4 [&>svg~div]:pl-7 [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg+div]:translate-y-[-1px] select-none flex gap-3 items-start transition-all duration-200',\n  variants: {\n    variant: {\n      default: 'bg-background text-foreground border-border',\n      destructive:\n        'border-destructive/30 text-destructive [&>svg]:text-destructive bg-destructive/5',\n      success:\n        'border-emerald-500/20 text-emerald-600 dark:text-emerald-400 dark:border-emerald-500/20 [&>svg]:text-emerald-600 dark:[&>svg]:text-emerald-400 bg-emerald-500/5',\n      warning:\n        'border-amber-500/20 text-amber-600 dark:text-amber-400 dark:border-amber-500/20 [&>svg]:text-amber-600 dark:[&>svg]:text-amber-400 bg-amber-500/5',\n      glass:\n        'bg-card/70 border border-border text-card-foreground backdrop-blur-md shadow-sm',\n      retro:\n        'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] rounded-none',\n      glow: 'border-primary bg-primary/5 text-primary shadow-[0_0_15px_rgba(0,0,0,0.05)] dark:shadow-[0_0_15px_rgba(255,255,255,0.1)]',\n      cyberpunk:\n        'border border-emerald-500/80 bg-card text-emerald-600 dark:text-emerald-400 font-mono rounded-none shadow-[0_0_15px_rgba(16,185,129,0.15)] [&>svg]:text-emerald-600 dark:[&>svg]:text-emerald-400',\n    },\n  },\n  defaultVariants: {\n    variant: 'default',\n  },\n})\n\nconst Alert = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>\n>(({ className, variant, ...props }, ref) => (\n  <div\n    ref={ref}\n    role=\"alert\"\n    data-slot=\"alert\"\n    className={cn(alertVariants({ variant }), className)}\n    {...props}\n  />\n))\nAlert.displayName = 'Alert'\n\nconst AlertTitle = React.forwardRef<\n  HTMLParagraphElement,\n  React.HTMLAttributes<HTMLHeadingElement>\n>(({ className, ...props }, ref) => (\n  <h5\n    ref={ref}\n    data-slot=\"alert-title\"\n    className={cn(\n      'font-semibold leading-none tracking-tight mb-1 text-sm',\n      className,\n    )}\n    {...props}\n  />\n))\nAlertTitle.displayName = 'AlertTitle'\n\nconst AlertDescription = React.forwardRef<\n  HTMLParagraphElement,\n  React.HTMLAttributes<HTMLParagraphElement>\n>(({ className, ...props }, ref) => (\n  <div\n    ref={ref}\n    data-slot=\"alert-description\"\n    className={cn(\n      'text-xs opacity-90 leading-relaxed [&_p]:leading-relaxed',\n      className,\n    )}\n    {...props}\n  />\n))\nAlertDescription.displayName = 'AlertDescription'\n\nexport { Alert, AlertTitle, AlertDescription }\n"
+    }
+  ]
+}

@@ -1,0 +1,539 @@
+# Theme Switcher
+
+A floating, interactive visual customizer widget that lets users switch active design themes (Glass, Retro, Cyberpunk, Glow) dynamically across Vibe UI components.
+
+## Preview
+
+<ComponentPreview>
+  <ThemeSwitcherDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { ThemeSwitcher } from '@/components/ui/theme-switcher'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+
+export default function ThemeSwitcherDemo() {
+  const [localTheme, setLocalTheme] = useState('default')
+
+  return (
+    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
+      <Card
+        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
+      >
+        <Badge
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          className="w-fit"
+        >
+          {localTheme.toUpperCase()}
+        </Badge>
+        <p className="text-xs text-muted-foreground">
+          Standard preset swapper located bottom-right.
+        </p>
+        <Button
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          size="sm"
+          className="w-full"
+        >
+          Action
+        </Button>
+      </Card>
+      <ThemeSwitcher
+        defaultTheme="default"
+        onThemeChange={(t) => setLocalTheme(t)}
+        className="absolute bottom-4 right-4 !fixed-none !z-10"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="theme-switcher">
+
+```tsx
+"use client"
+
+import * as React from "react"
+import { cn } from "@/lib/utils"
+import { Palette, Sparkles, Sliders, Check, Terminal, ShieldAlert } from "lucide-react"
+
+export type VibeTheme = "default" | "glass" | "retro" | "glow" | "cyberpunk"
+
+export interface ThemeSwitcherProps extends React.HTMLAttributes<HTMLDivElement> {
+  onThemeChange?: (theme: VibeTheme) => void
+  defaultTheme?: VibeTheme
+  variant?: VibeTheme
+}
+
+const THEME_OPTIONS: { value: VibeTheme; label: string; desc: string; icon: any; color: string }[] = [
+  {
+    value: "default",
+    label: "Default Minimal",
+    desc: "Clean & neutral corporate aesthetics",
+    icon: Sliders,
+    color: "bg-zinc-500",
+  },
+  {
+    value: "glass",
+    label: "Glassmorphism",
+    desc: "Frosted panels & elegant transparency",
+    icon: Sparkles,
+    color: "bg-sky-400",
+  },
+  {
+    value: "glow",
+    label: "Neon Glow",
+    desc: "Intense color accents & aura shadows",
+    icon: Palette,
+    color: "bg-purple-500",
+  },
+  {
+    value: "retro",
+    label: "Retro Brutalist",
+    desc: "Thick outlines & hard offset shadows",
+    icon: ShieldAlert,
+    color: "bg-amber-500",
+  },
+  {
+    value: "cyberpunk",
+    label: "Cyberpunk Matrix",
+    desc: "Glitch scanlines & terminal emeralds",
+    icon: Terminal,
+    color: "bg-emerald-500",
+  },
+]
+
+const ThemeSwitcher = React.forwardRef<HTMLDivElement, ThemeSwitcherProps>(
+  ({ className, onThemeChange, defaultTheme = "default", variant = "default", ...props }, ref) => {
+    const [isOpen, setIsOpen] = React.useState(false)
+    const [activeTheme, setActiveTheme] = React.useState<VibeTheme>(defaultTheme)
+
+    const handleThemeSelect = (theme: VibeTheme) => {
+      setActiveTheme(theme)
+      if (onThemeChange) {
+        onThemeChange(theme)
+      } else {
+        const root = document.documentElement
+        THEME_OPTIONS.forEach((t) => {
+          root.classList.remove(`theme-${t.value}`)
+        })
+        if (theme !== "default") {
+          root.classList.add(`theme-${theme}`)
+        }
+      }
+      setIsOpen(false)
+    }
+
+    return (
+      <div
+        ref={ref}
+        className={cn("fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3", className)}
+        {...props}
+      >
+        {isOpen && (
+          <div className={cn(
+            "w-[280px] p-4 shadow-2xl animate-in fade-in slide-in-from-bottom-5 duration-200 text-white z-50",
+            variant === "default" && "rounded-xl border border-white/10 bg-zinc-950/90 backdrop-blur-xl",
+            variant === "glass" && "rounded-xl border border-white/15 bg-white/5 backdrop-blur-xl",
+            variant === "glow" && "rounded-xl border border-primary/30 bg-zinc-950/95 shadow-[0_0_20px_rgba(168,85,247,0.15)]",
+            variant === "retro" && "rounded-none border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_rgba(255,255,255,1)]",
+            variant === "cyberpunk" && "rounded-none border border-emerald-500 bg-black text-emerald-500 font-mono shadow-[0_0_15px_rgba(16,185,129,0.25)]"
+          )}>
+            <h4 className={cn(
+              "text-xs font-bold uppercase tracking-widest mb-3 select-none",
+              variant === "retro" ? "text-foreground" : variant === "cyberpunk" ? "text-emerald-600" : "text-muted-foreground"
+            )}>
+              Visual Preset
+            </h4>
+            <div className="flex flex-col gap-2">
+              {THEME_OPTIONS.map((theme) => {
+                const Icon = theme.icon as any
+                return (
+                  <button
+                    key={theme.value}
+                    onClick={() => handleThemeSelect(theme.value)}
+                    className={cn(
+                      "flex items-center gap-3 w-full text-left p-2.5 rounded-lg border transition-all duration-200 cursor-pointer group",
+                      activeTheme === theme.value
+                        ? variant === "cyberpunk"
+                          ? "border-emerald-400 bg-emerald-500/10 text-emerald-400"
+                          : variant === "retro"
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-primary bg-primary/10 text-white"
+                        : variant === "cyberpunk"
+                          ? "border-emerald-950 bg-black text-emerald-600 hover:text-emerald-400 hover:bg-zinc-900/30"
+                          : variant === "retro"
+                            ? "border-border bg-background text-muted-foreground hover:text-foreground hover:bg-muted"
+                            : "border-white/5 bg-zinc-900/40 text-zinc-400 hover:text-white hover:bg-zinc-900",
+                      (variant === "retro" || variant === "cyberpunk") && "rounded-none"
+                    )}
+                  >
+                    <div className={cn("h-7 w-7 rounded-md flex items-center justify-center text-white font-bold shrink-0", theme.color, (variant === "retro" || variant === "cyberpunk") && "rounded-none")}>
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-semibold">{theme.label}</div>
+                      <div className="text-[10px] opacity-75 truncate">{theme.desc}</div>
+                    </div>
+                    {activeTheme === theme.value && (
+                      <Check className={cn("h-4 w-4 shrink-0", variant === "cyberpunk" ? "text-emerald-400" : variant === "retro" ? "text-background" : "text-primary")} />
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={cn(
+            "flex h-12 w-12 items-center justify-center rounded-full hover:scale-105 active:scale-95 transition-all cursor-pointer border relative overflow-hidden",
+            variant === "default" && "bg-primary text-primary-foreground border-white/20 shadow-[0_0_20px_rgba(168,85,247,0.3)]",
+            variant === "glass" && "bg-white/10 text-white border-white/25 backdrop-blur-md hover:bg-white/15 shadow-lg",
+            variant === "glow" && "bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_22px_rgba(168,85,247,0.5)]",
+            variant === "retro" && "border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_rgba(255,255,255,1)] rounded-none",
+            variant === "cyberpunk" && "border border-emerald-500 bg-black text-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] rounded-none",
+            isOpen && "rotate-45"
+          )}
+          title="Toggle Visual Theme"
+        >
+          <Palette className="h-5 w-5" />
+        </button>
+      </div>
+    )
+  }
+)
+ThemeSwitcher.displayName = "ThemeSwitcher"
+
+export { ThemeSwitcher }
+```
+
+</Installation>
+
+
+
+## Variations
+
+Explore the 6 visual styles and positioning layouts available for the floating ThemeSwitcher widget.
+
+### 1. Glassmorphism Styling
+
+A frosted backdrop with glowing borders that integrates smoothly into clean design screens.
+
+<ComponentPreview>
+  <ThemeSwitcherGlassDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { ThemeSwitcher } from '@/components/ui/theme-switcher'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+
+export default function GlassSwitcher() {
+  const [localTheme, setLocalTheme] = useState('glass')
+
+  return (
+    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
+      <Card
+        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
+      >
+        <Badge
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          className="w-fit"
+        >
+          {localTheme.toUpperCase()}
+        </Badge>
+        <p className="text-xs text-muted-foreground">
+          Glassmorphic style button and drop-down menu.
+        </p>
+        <Button
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          size="sm"
+          className="w-full"
+        >
+          Action
+        </Button>
+      </Card>
+      <ThemeSwitcher
+        defaultTheme="glass"
+        variant="glass"
+        onThemeChange={(t) => setLocalTheme(t)}
+        className="absolute bottom-4 right-4 !fixed-none !z-10"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 2. Neon Glow Styling
+
+An intense glow border highlight indicating active choices with ambient light drops.
+
+<ComponentPreview>
+  <ThemeSwitcherGlowDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { ThemeSwitcher } from '@/components/ui/theme-switcher'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+
+export default function GlowSwitcher() {
+  const [localTheme, setLocalTheme] = useState('glow')
+
+  return (
+    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
+      <Card
+        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
+      >
+        <Badge
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          className="w-fit"
+        >
+          {localTheme.toUpperCase()}
+        </Badge>
+        <p className="text-xs text-muted-foreground">
+          Neon glow borders and floating aura effects.
+        </p>
+        <Button
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          size="sm"
+          className="w-full"
+        >
+          Action
+        </Button>
+      </Card>
+      <ThemeSwitcher
+        defaultTheme="glow"
+        variant="glow"
+        onThemeChange={(t) => setLocalTheme(t)}
+        className="absolute bottom-4 right-4 !fixed-none !z-10"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 3. Retro Brutalist Styling
+
+Bold flat-outlines and a hard offset drop shadow that fits nostalgic neobrutalist aesthetics.
+
+<ComponentPreview>
+  <ThemeSwitcherRetroDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { ThemeSwitcher } from '@/components/ui/theme-switcher'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+
+export default function RetroSwitcher() {
+  const [localTheme, setLocalTheme] = useState('retro')
+
+  return (
+    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
+      <Card
+        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
+      >
+        <Badge
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          className="w-fit"
+        >
+          {localTheme.toUpperCase()}
+        </Badge>
+        <p className="text-xs text-muted-foreground font-mono">
+          Retro brutalist switcher with thick outlines.
+        </p>
+        <Button
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          size="sm"
+          className="w-full"
+        >
+          Action
+        </Button>
+      </Card>
+      <ThemeSwitcher
+        defaultTheme="retro"
+        variant="retro"
+        onThemeChange={(t) => setLocalTheme(t)}
+        className="absolute bottom-4 right-4 !fixed-none !z-10"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 4. Cyberpunk Matrix Styling
+
+Emerald scanline borders and custom monospaced elements styling.
+
+<ComponentPreview>
+  <ThemeSwitcherCyberpunkDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { ThemeSwitcher } from '@/components/ui/theme-switcher'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+
+export default function CyberpunkSwitcher() {
+  const [localTheme, setLocalTheme] = useState('cyberpunk')
+
+  return (
+    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
+      <Card
+        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
+      >
+        <Badge
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          className="w-fit"
+        >
+          {localTheme.toUpperCase()}
+        </Badge>
+        <p className="text-xs text-muted-foreground font-mono">
+          Cyberpunk interface styling with neon emerald lines.
+        </p>
+        <Button
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          size="sm"
+          className="w-full"
+        >
+          Action
+        </Button>
+      </Card>
+      <ThemeSwitcher
+        defaultTheme="cyberpunk"
+        variant="cyberpunk"
+        onThemeChange={(t) => setLocalTheme(t)}
+        className="absolute bottom-4 right-4 !fixed-none !z-10"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 5. Top Right Float Positioning
+
+Configure alternate absolute placement layouts inside container zones.
+
+<ComponentPreview>
+  <ThemeSwitcherTopRightDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { ThemeSwitcher } from '@/components/ui/theme-switcher'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+
+export default function TopRightSwitcher() {
+  const [localTheme, setLocalTheme] = useState('default')
+
+  return (
+    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
+      <Card
+        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
+      >
+        <Badge
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          className="w-fit"
+        >
+          {localTheme.toUpperCase()}
+        </Badge>
+        <p className="text-xs text-muted-foreground">
+          Positional offset variant floating in the top-right corner.
+        </p>
+        <Button
+          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+          size="sm"
+          className="w-full"
+        >
+          Action
+        </Button>
+      </Card>
+      <ThemeSwitcher
+        defaultTheme="default"
+        onThemeChange={(t) => setLocalTheme(t)}
+        className="absolute top-4 right-4 bottom-auto !fixed-none !z-10"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 6. Interactive State Callback
+
+Demonstrating parent callback hooks triggering reactive state layouts.
+
+<ComponentPreview>
+  <ThemeSwitcherCustomDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { ThemeSwitcher } from '@/components/ui/theme-switcher'
+import { Card } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+
+export default function CustomSwitcher() {
+  const [localTheme, setLocalTheme] = useState('default')
+
+  return (
+    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
+      <div className="flex flex-col gap-2 items-center text-center">
+        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+          Interactive Custom Event Log
+        </span>
+        <span className="text-xs font-mono font-bold text-emerald-400">
+          Triggered callback: onThemeChange("{localTheme}")
+        </span>
+      </div>
+      <Card
+        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
+        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
+      >
+        <div className="flex justify-between items-center">
+          <Badge variant={localTheme === 'default' ? 'default' : (localTheme as any)}>
+            {localTheme.toUpperCase()}
+          </Badge>
+          <Switch variant={localTheme === 'default' ? 'default' : (localTheme as any)} defaultChecked />
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Demonstrating target callbacks for custom application dashboards.
+        </p>
+      </Card>
+      <ThemeSwitcher
+        defaultTheme="default"
+        onThemeChange={(t) => setLocalTheme(t)}
+        className="absolute bottom-4 right-4 !fixed-none !z-10"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>

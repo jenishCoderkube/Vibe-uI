@@ -1,0 +1,229 @@
+# Video Text
+
+A premium layout component masking background video layers inside the typography outline.
+
+## Preview
+
+<ComponentPreview sandbox="video-text">
+  <VideoTextDemo />
+
+```tsx
+import { VideoText } from '@/components/ui/video-text'
+
+export default function VideoTextDemo() {
+  return (
+    <div className="relative h-[200px] w-full flex items-center justify-center text-center">
+      <VideoText src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+        VIBE UI
+      </VideoText>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="video-text">
+
+```tsx
+"use client"
+
+import React, {
+  useEffect,
+  useState,
+  type ElementType,
+  type ReactNode,
+} from "react"
+
+import { cn } from "@/lib/utils"
+
+export interface VideoTextProps {
+  src: string
+  className?: string
+  autoPlay?: boolean
+  muted?: boolean
+  loop?: boolean
+  preload?: "auto" | "metadata" | "none"
+  children: ReactNode
+  fontSize?: string | number
+  fontWeight?: string | number
+  textAnchor?: string
+  dominantBaseline?: string
+  fontFamily?: string
+  as?: ElementType
+}
+
+export function VideoText({
+  src,
+  children,
+  className = "",
+  autoPlay = true,
+  muted = true,
+  loop = true,
+  preload = "auto",
+  fontSize = 20,
+  fontWeight = "bold",
+  textAnchor = "middle",
+  dominantBaseline = "middle",
+  fontFamily = "sans-serif",
+  as: Component = "div",
+}: VideoTextProps) {
+  const [svgMask, setSvgMask] = useState("")
+  const content = React.Children.toArray(children).join("")
+
+  useEffect(() => {
+    const updateSvgMask = () => {
+      const responsiveFontSize =
+        typeof fontSize === "number" ? `${fontSize}vw` : fontSize
+      const newSvgMask = `<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><text x='50%' y='50%' font-size='${responsiveFontSize}' font-weight='${fontWeight}' text-anchor='${textAnchor}' dominant-baseline='${dominantBaseline}' font-family='${fontFamily}'>${content}</text></svg>`
+      setSvgMask(newSvgMask)
+    }
+
+    updateSvgMask()
+    window.addEventListener("resize", updateSvgMask)
+    return () => window.removeEventListener("resize", updateSvgMask)
+  }, [content, fontSize, fontWeight, textAnchor, dominantBaseline, fontFamily])
+
+  const dataUrlMask = `url("data:image/svg+xml,${encodeURIComponent(svgMask)}")`
+
+  return (
+    <Component className={cn(`relative size-full`, className)}>
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{
+          maskImage: dataUrlMask,
+          WebkitMaskImage: dataUrlMask,
+          maskSize: "contain",
+          WebkitMaskSize: "contain",
+          maskRepeat: "no-repeat",
+          WebkitMaskRepeat: "no-repeat",
+          maskPosition: "center",
+          WebkitMaskPosition: "center",
+        }}
+      >
+        <video
+          className="h-full w-full object-cover"
+          autoPlay={autoPlay}
+          muted={muted}
+          loop={loop}
+          preload={preload}
+          playsInline
+        >
+          <source src={src} />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <span className="sr-only">{content}</span>
+    </Component>
+  )
+}
+```
+
+</Installation>
+
+## Examples
+
+### Vertical Video Text
+
+<ComponentPreview>
+  <div className="relative h-[320px] md:h-[360px] w-full flex items-center justify-center py-4">
+    <VideoText src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" direction="vertical">
+      VIBE
+    </VideoText>
+  </div>
+
+```tsx
+import { VideoText } from '@/components/ui/video-text'
+
+export default function VideoTextVerticalDemo() {
+  return (
+    <div className="relative h-[320px] md:h-[360px] w-full flex items-center justify-center">
+      <VideoText src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" direction="vertical">
+        VIBE
+      </VideoText>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Usage
+
+```tsx
+import { VideoText } from "@/components/ui/video-text"
+```
+
+```tsx
+<VideoText src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+  VIBE
+</VideoText>
+```
+
+## Props
+
+<div className="my-6 w-full overflow-x-auto rounded-lg border border-border">
+  <table className="w-full text-sm text-left border-collapse table-fixed">
+    <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">
+      <tr>
+        <th className="w-[18%] px-4 py-3 whitespace-nowrap">Prop</th>
+        <th className="w-[34%] px-4 py-3">Type</th>
+        <th className="w-[16%] px-4 py-3 whitespace-nowrap">Default</th>
+        <th className="w-[32%] px-4 py-3">Description</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-border text-muted-foreground">
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">src</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">string</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Video URL to render inside typography mask</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">children</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">ReactNode</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Text content displayed as the video mask</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">direction</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground [word-break:break-word] break-all inline-block leading-relaxed max-w-full">"horizontal" | "vertical"</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">"horizontal"</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Controls text layout orientation and motion direction</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">fontSize</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">string | number</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">20</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Font size applied to text SVG mask</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">autoPlay</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">boolean</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">true</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Whether the video starts playing automatically</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">muted</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">boolean</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">true</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Mutes video audio for autoplay support</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">loop</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">boolean</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">true</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Loops video playback continuously</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">className</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">string?</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Additional classes for the container</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+This `VideoText` component masks background video layers inside typography outlines for high-impact visual headings.
+

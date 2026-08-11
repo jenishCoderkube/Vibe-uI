@@ -1,0 +1,16 @@
+{
+  "name": "hover-card",
+  "dependencies": [
+    "@radix-ui/react-hover-card",
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "hover-card.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport * as HoverCardPrimitive from '@radix-ui/react-hover-card'\nimport { tv, type VariantProps } from 'tailwind-variants'\nimport { cn } from '../lib/utils'\n\nconst hoverCardContentVariants = tv({\n  base: 'z-50 w-64 rounded-md border p-4 shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',\n  variants: {\n    variant: {\n      default: 'bg-popover text-popover-foreground border-border',\n      glass:\n        'bg-white/10 dark:bg-white/[0.03] backdrop-blur-md border border-white/20 dark:border-white/10 text-foreground',\n      retro:\n        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',\n      glow: 'bg-primary/5 border border-primary/30 shadow-[0_0_20px_rgba(168,85,247,0.15)] text-foreground',\n    },\n  },\n  defaultVariants: {\n    variant: 'default',\n  },\n})\n\nconst HoverCard = HoverCardPrimitive.Root\n\nconst HoverCardTrigger = HoverCardPrimitive.Trigger\n\nexport interface HoverCardContentProps\n  extends\n    React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content>,\n    VariantProps<typeof hoverCardContentVariants> {}\n\nconst HoverCardContent = React.forwardRef<\n  React.ElementRef<typeof HoverCardPrimitive.Content>,\n  HoverCardContentProps\n>(\n  (\n    {\n      className,\n      align = 'center',\n      sideOffset = 4,\n      variant = 'default',\n      ...props\n    },\n    ref,\n  ) => (\n    <HoverCardPrimitive.Portal data-slot=\"hover-card-portal\">\n      <HoverCardPrimitive.Content\n        ref={ref}\n        data-slot=\"hover-card-content\"\n        align={align}\n        sideOffset={sideOffset}\n        className={cn(hoverCardContentVariants({ variant }), className)}\n        {...props}\n      />\n    </HoverCardPrimitive.Portal>\n  ),\n)\nHoverCardContent.displayName = HoverCardPrimitive.Content.displayName\n\nexport { HoverCard, HoverCardTrigger, HoverCardContent }\n"
+    }
+  ]
+}

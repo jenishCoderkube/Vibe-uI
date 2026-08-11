@@ -1,0 +1,70 @@
+# CLI Reference
+
+Use the `vibe-ui-kit` CLI to quickly scaffold templates and add components directly into your project.
+
+<Callout type="info" title="Zero Configuration">
+  The CLI automatically detects whether your project uses TypeScript or JavaScript, pnpm, npm, yarn, or bun.
+</Callout>
+
+---
+
+## Commands
+
+### `init`
+
+Initialize Vibe UI configurations and tailwind theme setup in your project:
+
+```bash
+npx vibe-ui-kit@latest init
+```
+
+#### Flags
+
+- `-y, --yes`: Skip confirmation prompts and use default paths (`@/components/ui`).
+- `-c, --cwd <path>`: Specify the current working directory.
+
+---
+
+### `add`
+
+Add individual or multiple components to your project on demand:
+
+```bash
+npx vibe-ui-kit@latest add button card dialog
+```
+
+If run without component arguments, the CLI opens an **interactive multi-select menu**:
+
+```bash
+npx vibe-ui-kit@latest add
+```
+
+#### Flags
+
+- `-y, --yes`: Skip confirmation prompts and overwrite existing files without confirmation.
+- `-o, --overwrite`: Force overwrite existing component files.
+- `-c, --cwd <path>`: Working directory location.
+
+---
+
+## `vibe.json` Config Specification
+
+When `npx vibe-ui-kit init` runs, it creates a `vibe.json` configuration file in your project root:
+
+```json
+{
+  "$schema": "https://vibe-ui-kit.vercel.app/schema.json",
+  "style": "default",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "src/app/globals.css",
+    "baseColor": "slate"
+  },
+  "aliases": {
+    "components": "@/components/ui",
+    "utils": "@/lib/utils"
+  }
+}
+```

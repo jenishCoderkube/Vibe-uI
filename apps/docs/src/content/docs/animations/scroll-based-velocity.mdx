@@ -1,0 +1,446 @@
+# Scroll Based Velocity
+
+A responsive text marquee whose velocity and scroll-direction react to the user's scroll.
+
+## Preview
+
+<ComponentPreview sandbox="scroll-based-velocity">
+  <ScrollVelocityDemo />
+
+```tsx
+import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity'
+
+export default function ScrollVelocityDemo() {
+  return (
+    <div className="w-full space-y-4 py-4 overflow-hidden">
+      <ScrollVelocityContainer>
+        <ScrollVelocityRow baseVelocity={4} direction={1} className="text-5xl md:text-7xl font-extrabold tracking-tighter text-foreground leading-none">
+          <span className="mx-4">FAST INTEGRATION</span>
+          <span className="mx-4">★</span>
+          <span className="mx-4">LIGHTWEIGHT</span>
+          <span className="mx-4">★</span>
+          <span className="mx-4">ACCESSIBLE</span>
+          <span className="mx-4">★</span>
+        </ScrollVelocityRow>
+        <ScrollVelocityRow baseVelocity={4} direction={-1} className="text-5xl md:text-7xl font-extrabold tracking-tighter text-primary leading-none">
+          <span className="mx-4">FLEXIBLE STYLING</span>
+          <span className="mx-4">★</span>
+          <span className="mx-4">COMPATIBLE</span>
+          <span className="mx-4">★</span>
+          <span className="mx-4">MODERN INTERFACE</span>
+          <span className="mx-4">★</span>
+        </ScrollVelocityRow>
+      </ScrollVelocityContainer>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Installation
+
+<Installation name="scroll-based-velocity" npmDeps="motion">
+
+```tsx
+"use client"
+
+import React, { useContext, useEffect, useRef, useState } from "react"
+import {
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+  useVelocity,
+} from "motion/react"
+import type { MotionValue } from "motion/react"
+
+import { cn } from "@/lib/utils"
+
+export interface ScrollVelocityRowProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode
+  baseVelocity: number
+  direction?: 1 | -1
+  scrollReactivity?: boolean
+}
+
+const ScrollVelocityContext = React.createContext<{
+  scrollY: MotionValue<number>
+  scrollVelocity: MotionValue<number>
+  smoothVelocity: MotionValue<number>
+  velocityFactor: MotionValue<number>
+} | null>(null)
+
+export function ScrollVelocityContainer({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const { scrollY } = useScroll()
+  const scrollVelocity = useVelocity(scrollY)
+  const smoothVelocity = useSpring(scrollVelocity, {
+    damping: 50,
+    stiffness: 400,
+  })
+  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], {
+    clamp: false,
+  })
+
+  return (
+    <ScrollVelocityContext.Provider
+      value={{ scrollY, scrollVelocity, smoothVelocity, velocityFactor }}
+    >
+      <div {...props}>{children}</div>
+    </ScrollVelocityContext.Provider>
+  )
+}
+
+function wrap(min: number, max: number, v: number) {
+  const rangeSize = max - min
+  return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min
+}
+
+interface ScrollVelocityRowImplProps extends ScrollVelocityRowProps {
+  velocityFactor: MotionValue<number>
+}
+
+function ScrollVelocityRowImpl({
+  children,
+  baseVelocity = 5,
+  direction = 1,
+  scrollReactivity = true,
+  className,
+  ...props
+}: ScrollVelocityRowImplProps) {
+  const baseX = useMotionValue(0)
+  const { velocityFactor } = useContext(ScrollVelocityContext)!
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const blockRef = useRef<HTMLDivElement>(null)
+
+  const [unitWidth, setUnitWidth] = useState(0)
+  const [numCopies, setNumCopies] = useState(2)
+
+  const isPageVisibleRef = useRef(true)
+  const isInViewRef = useRef(true)
+  const prefersReducedMotionRef = useRef(false)
+
+  const baseDirectionRef = useRef(direction)
+  const currentDirectionRef = useRef(direction)
+
+  useEffect(() => {
+    const handleVisibility = () => {
+      isPageVisibleRef.current = document.visibilityState === "visible"
+    }
+
+    const updateSizes = () => {
+      if (!containerRef.current || !blockRef.current) return
+      const containerWidth = containerRef.current.offsetWidth
+      const blockWidth = blockRef.current.offsetWidth
+      if (blockWidth > 0) {
+        setUnitWidth(blockWidth)
+        const needed = Math.ceil(containerWidth / blockWidth) + 2
+        setNumCopies(needed)
+      }
+    }
+
+    const handlePRM = (e: MediaQueryListEvent | MediaQueryList) => {
+      prefersReducedMotionRef.current = e.matches
+    }
+
+    let ro: ResizeObserver | null = null
+    let io: IntersectionObserver | null = null
+    let mq: MediaQueryList | null = null
+
+    const container = containerRef.current
+    const block = blockRef.current
+
+    if (container && block) {
+      updateSizes()
+
+      ro = new ResizeObserver(updateSizes)
+      ro.observe(container)
+      ro.observe(block)
+
+      io = new IntersectionObserver(([entry]) => {
+        isInViewRef.current = entry.isIntersecting
+      })
+      io.observe(container)
+
+      document.addEventListener("visibilitychange", handleVisibility, {
+        passive: true,
+      })
+      handleVisibility()
+
+      mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+      mq.addEventListener("change", handlePRM)
+      handlePRM(mq)
+    }
+
+    return () => {
+      if (ro) ro.disconnect()
+      if (io) io.disconnect()
+      document.removeEventListener("visibilitychange", handleVisibility)
+      if (mq) mq.removeEventListener("change", handlePRM)
+    }
+  }, [])
+
+  const x = useTransform(baseX, (v) => `${-wrap(0, unitWidth, v)}px`)
+
+  useAnimationFrame((_, delta) => {
+    if (!isInViewRef.current || !isPageVisibleRef.current || unitWidth === 0)
+      return
+
+    const dt = delta / 1000
+    const vf = scrollReactivity ? velocityFactor.get() : 0
+    const absVf = Math.min(5, Math.abs(vf))
+    const speedMultiplier = prefersReducedMotionRef.current ? 1 : 1 + absVf
+
+    if (absVf > 0.1) {
+      currentDirectionRef.current = baseDirectionRef.current * (vf >= 0 ? 1 : -1)
+    }
+
+    const moveBy =
+      currentDirectionRef.current *
+      ((unitWidth * baseVelocity) / 100) *
+      speedMultiplier *
+      dt
+    baseX.set(baseX.get() + moveBy)
+  })
+
+  return (
+    <div
+      ref={containerRef}
+      className={cn("overflow-hidden whitespace-nowrap", className)}
+      {...props}
+    >
+      <motion.div
+        className="inline-flex transform-gpu items-center will-change-transform"
+        style={{ x }}
+      >
+        {Array.from({ length: numCopies }).map((_, i) => (
+          <div
+            key={i}
+            ref={i === 0 ? blockRef : null}
+            className="inline-flex items-center"
+          >
+            {children}
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  )
+}
+
+export function ScrollVelocityRow(props: ScrollVelocityRowProps) {
+  const context = useContext(ScrollVelocityContext)
+  if (context) {
+    return <ScrollVelocityRowImpl {...props} velocityFactor={context.velocityFactor} />
+  }
+
+  const { scrollY } = useScroll()
+  const scrollVelocity = useVelocity(scrollY)
+  const smoothVelocity = useSpring(scrollVelocity, {
+    damping: 50,
+    stiffness: 400,
+  })
+  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], {
+    clamp: false,
+  })
+
+  return <ScrollVelocityRowImpl {...props} velocityFactor={velocityFactor} />
+}
+```
+
+</Installation>
+
+## Velocity with Features
+
+<ComponentPreview>
+  <ScrollVelocityFeaturesDemo />
+
+```tsx
+import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity'
+import { Layers, Database, Cloud, Shield, Server, Code, Terminal, Cpu, HardDrive, Globe } from 'lucide-react'
+
+export default function ScrollVelocityFeaturesDemo() {
+  const row1Features = [
+    { name: 'Frontend', Icon: Layers },
+    { name: 'Database', Icon: Database },
+    { name: 'Cloud', Icon: Cloud },
+    { name: 'Security', Icon: Shield },
+    { name: 'Hosting', Icon: Server },
+  ]
+  const row2Features = [
+    { name: 'API Dev', Icon: Code },
+    { name: 'DevOps', Icon: Terminal },
+    { name: 'Hardware', Icon: Cpu },
+    { name: 'Storage', Icon: HardDrive },
+    { name: 'Network', Icon: Globe },
+  ]
+
+  return (
+    <div className="w-full space-y-4 py-4 overflow-hidden">
+      <ScrollVelocityContainer>
+        <ScrollVelocityRow baseVelocity={2.5} direction={1}>
+          <div className="flex gap-4 pr-4">
+            {row1Features.map((item, idx) => {
+              const Icon = item.Icon
+              return (
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 px-6 py-3 mx-2 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors duration-200 shadow-sm"
+                >
+                  <Icon className="h-5 w-5 text-muted-foreground" />
+                  <span className="font-semibold text-foreground text-sm tracking-tight">{item.name}</span>
+                </div>
+              )
+            })}
+          </div>
+        </ScrollVelocityRow>
+        <ScrollVelocityRow baseVelocity={2.5} direction={-1}>
+          <div className="flex gap-4 pr-4">
+            {row2Features.map((item, idx) => {
+              const Icon = item.Icon
+              return (
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 px-6 py-3 mx-2 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors duration-200 shadow-sm"
+                >
+                  <Icon className="h-5 w-5 text-muted-foreground" />
+                  <span className="font-semibold text-foreground text-sm tracking-tight">{item.name}</span>
+                </div>
+              )
+            })}
+          </div>
+        </ScrollVelocityRow>
+      </ScrollVelocityContainer>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Velocity with Images
+
+<ComponentPreview>
+  <ScrollVelocityImagesDemo />
+
+```tsx
+import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity'
+
+export default function ScrollVelocityImagesDemo() {
+  const row1Images = [
+    "https://picsum.photos/id/10/250/150",
+    "https://picsum.photos/id/15/250/150",
+    "https://picsum.photos/id/22/250/150",
+    "https://picsum.photos/id/25/250/150",
+    "https://picsum.photos/id/28/250/150",
+  ]
+  const row2Images = [
+    "https://picsum.photos/id/29/250/150",
+    "https://picsum.photos/id/37/250/150",
+    "https://picsum.photos/id/43/250/150",
+    "https://picsum.photos/id/48/250/150",
+    "https://picsum.photos/id/54/250/150",
+  ]
+
+  return (
+    <div className="w-full space-y-6 py-6 overflow-hidden">
+      <ScrollVelocityContainer>
+        <ScrollVelocityRow baseVelocity={3} direction={1}>
+          <div className="flex gap-4 pr-4">
+            {row1Images.map((src, idx) => (
+              <img
+                key={idx}
+                src={src}
+                alt={`Gallery ${idx}`}
+                className="w-[200px] h-[120px] sm:w-[250px] sm:h-[150px] object-cover rounded-xl shadow-md transition-transform hover:scale-105 duration-300"
+              />
+            ))}
+          </div>
+        </ScrollVelocityRow>
+        <ScrollVelocityRow baseVelocity={3} direction={-1}>
+          <div className="flex gap-4 pr-4">
+            {row2Images.map((src, idx) => (
+              <img
+                key={idx}
+                src={src}
+                alt={`Gallery ${idx + 5}`}
+                className="w-[200px] h-[120px] sm:w-[250px] sm:h-[150px] object-cover rounded-xl shadow-md transition-transform hover:scale-105 duration-300"
+              />
+            ))}
+          </div>
+        </ScrollVelocityRow>
+      </ScrollVelocityContainer>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Usage
+
+```tsx
+import { ScrollVelocityContainer, ScrollVelocityRow } from "@/components/ui/scroll-based-velocity"
+```
+
+```tsx
+<ScrollVelocityContainer>
+  <ScrollVelocityRow baseVelocity={5} direction={1}>
+    <span>SCROLL VELOCITY</span>
+  </ScrollVelocityRow>
+</ScrollVelocityContainer>
+```
+
+## Props
+
+<div className="my-6 w-full overflow-x-auto rounded-lg border border-border">
+  <table className="w-full text-sm text-left border-collapse table-fixed">
+    <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">
+      <tr>
+        <th className="w-[18%] px-4 py-3 whitespace-nowrap">Prop</th>
+        <th className="w-[34%] px-4 py-3">Type</th>
+        <th className="w-[16%] px-4 py-3 whitespace-nowrap">Default</th>
+        <th className="w-[32%] px-4 py-3">Description</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-border text-muted-foreground">
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">children</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap inline-block">ReactNode</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">The content elements to scroll inside the row</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">baseVelocity</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap inline-block">number</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">5</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Speed coefficient of the marquee scrolling marquee row</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">direction</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-all leading-relaxed max-w-full">1 | -1</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">1</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Initial scroll direction flow (positive values scroll left)</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">scrollReactivity</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap inline-block">boolean</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">true</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Increases animation velocity dynamically based on page scroll rate</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">className</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap inline-block">string?</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Additional classes for the row container</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+This `ScrollVelocity` component animates marquee-style rows of typography linked directly to user scrolling speeds.

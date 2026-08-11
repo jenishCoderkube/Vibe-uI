@@ -1,0 +1,230 @@
+# Line Shadow Text
+
+An animation wrapping text elements in a retro 3D shadow gradient overlay.
+
+## Preview
+
+<ComponentPreview sandbox="line-shadow-text">
+  <LineShadowTextDemo />
+
+```tsx
+import { LineShadowText } from '@/components/ui/line-shadow-text'
+
+export default function LineShadowTextDemo() {
+  return (
+    <div className="flex min-h-[160px] w-full items-center justify-center text-center overflow-hidden p-4">
+      <h1 className="text-6xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl leading-none">
+        <LineShadowText shadowColor="#3b82f6">Vibe UI</LineShadowText>
+      </h1>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="line-shadow-text" npmDeps="motion">
+
+```tsx
+"use client"
+
+import { type CSSProperties, type HTMLAttributes } from "react"
+import {
+  motion,
+  type DOMMotionComponents,
+  type MotionProps,
+} from "motion/react"
+
+import { cn } from "@/lib/utils"
+
+const motionElements = {
+  article: motion.article,
+  div: motion.div,
+  h1: motion.h1,
+  h2: motion.h2,
+  h3: motion.h3,
+  h4: motion.h4,
+  h5: motion.h5,
+  h6: motion.h6,
+  li: motion.li,
+  p: motion.p,
+  section: motion.section,
+  span: motion.span,
+} as const
+
+type MotionElementType = Extract<
+  keyof DOMMotionComponents,
+  keyof typeof motionElements
+>
+
+export interface LineShadowTextProps
+  extends Omit<HTMLAttributes<HTMLElement>, keyof MotionProps>, MotionProps {
+  children: string
+  shadowColor?: string
+  as?: MotionElementType
+}
+
+export function LineShadowText({
+  children,
+  shadowColor = "currentColor",
+  className,
+  as: Component = "span",
+  ...props
+}: LineShadowTextProps) {
+  const MotionComponent = motionElements[Component]
+
+  return (
+    <MotionComponent
+      style={{ "--shadow-color": shadowColor } as CSSProperties}
+      className={cn(
+        "relative z-0 inline-flex",
+        "after:absolute after:top-[0.04em] after:left-[0.04em] after:content-[attr(data-text)]",
+        "after:bg-[linear-gradient(45deg,transparent_45%,var(--shadow-color)_45%,var(--shadow-color)_55%,transparent_0)]",
+        "after:-z-10 after:bg-size-[0.06em_0.06em] after:bg-clip-text after:text-transparent",
+        "after:animate-line-shadow",
+        className
+      )}
+      data-text={children}
+      {...props}
+    >
+      {children}
+    </MotionComponent>
+  )
+}
+```
+
+</Installation>
+
+## Global Configuration (CSS Styles)
+
+Ensure the following CSS keyframes and animations are configured in your global theme file:
+
+```css
+@theme {
+  --animate-line-shadow: line-shadow 15s linear infinite;
+
+  @keyframes line-shadow {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% -100%;
+    }
+  }
+}
+```
+
+## Examples
+
+### Left Side Shadow
+
+You can orient the retro line shadow towards the left side of the characters by setting the `direction="left"` prop.
+
+<ComponentPreview>
+  <LineShadowTextLeftDemo />
+
+```tsx
+import { LineShadowText } from '@/components/ui/line-shadow-text'
+
+export default function LineShadowTextLeftDemo() {
+  return (
+    <div className="flex min-h-[160px] w-full items-center justify-center text-center overflow-hidden p-4">
+      <h1 className="text-6xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl leading-none">
+        <LineShadowText shadowColor="#ec4899" direction="left">Vibe UI</LineShadowText>
+      </h1>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Right to Left Animation Flow
+
+You can reverse the motion direction of the line shadow animation (flowing from right to left) by setting the `animateDirection="right-to-left"` prop.
+
+<ComponentPreview>
+  <LineShadowTextRightToLeftDemo />
+
+```tsx
+import { LineShadowText } from '@/components/ui/line-shadow-text'
+
+export default function LineShadowTextRightToLeftDemo() {
+  return (
+    <div className="flex min-h-[160px] w-full items-center justify-center text-center overflow-hidden p-4">
+      <h1 className="text-6xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl leading-none">
+        <LineShadowText shadowColor="#10b981" animateDirection="right-to-left">Vibe UI</LineShadowText>
+      </h1>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Usage
+
+```tsx
+import { LineShadowText } from "@/components/ui/line-shadow-text"
+```
+
+```tsx
+<h1 className="text-6xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl leading-none">
+  <LineShadowText shadowColor="#3b82f6">Vibe UI</LineShadowText>
+</h1>
+```
+
+## Props
+
+<div className="my-6 w-full overflow-x-auto rounded-lg border border-border">
+  <table className="w-full text-sm text-left border-collapse table-fixed">
+    <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">
+      <tr>
+        <th className="w-[18%] px-4 py-3 whitespace-nowrap">Prop</th>
+        <th className="w-[34%] px-4 py-3">Type</th>
+        <th className="w-[16%] px-4 py-3 whitespace-nowrap">Default</th>
+        <th className="w-[32%] px-4 py-3">Description</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-border text-muted-foreground">
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">children</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">string</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">The text content to render with shadow animation</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">shadowColor</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">string</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">"currentColor"</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Color of the retro line shadow overlay gradient</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">as</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-all leading-relaxed max-w-full">"article" | "div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "li" | "p" | "section" | "span"</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">"span"</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">The element type to render</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">direction</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-all leading-relaxed max-w-full">"left" | "right"</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">"right"</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Direction offset and pattern flow of the retro 3D shadow</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">animateDirection</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-all leading-relaxed max-w-full">"left-to-right" | "right-to-left"</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">"left-to-right"</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Flow direction of the shadow keyframe animation stripes</td>
+      </tr>
+      <tr className="hover:bg-muted/30 transition-colors">
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs font-semibold text-foreground whitespace-nowrap">className</code></td>
+        <td className="px-4 py-3 align-middle break-words"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-normal break-words inline-block leading-relaxed max-w-full">string?</code></td>
+        <td className="px-4 py-3 align-middle"><code className="bg-muted px-1.5 py-0.5 rounded border border-border/60 font-mono text-xs text-foreground whitespace-nowrap">""</code></td>
+        <td className="px-4 py-3 align-middle leading-normal">Additional classes for the element</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+This `LineShadowText` component creates a retro 3D striped shadow effect behind typography.

@@ -1,0 +1,326 @@
+# Empty State
+
+An empty state container used to present clear guidance, icons, and call-to-action buttons when content is absent.
+
+## Preview
+
+<ComponentPreview>
+  <EmptyDemo />
+
+```tsx
+import {
+  Empty,
+  EmptyIcon,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyActions,
+} from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { FolderOpen } from 'lucide-react'
+
+export default function EmptyDemo() {
+  return (
+    <Empty className="w-full max-w-sm">
+      <EmptyIcon>
+        <FolderOpen className="h-6 w-6" />
+      </EmptyIcon>
+      <EmptyTitle>No Projects Found</EmptyTitle>
+      <EmptyDescription>
+        You haven't created any workspace projects yet. Get started by creating your first project.
+      </EmptyDescription>
+      <EmptyActions>
+        <Button variant="default">Create Project</Button>
+      </EmptyActions>
+    </Empty>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="empty" vibeDeps="button">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const emptyVariants = tv({
+  base: 'flex flex-col items-center justify-center text-center p-8 rounded-2xl border transition-all duration-200',
+  variants: {
+    variant: {
+      default: 'bg-card border-border shadow-xs text-card-foreground',
+      glass:
+        'bg-white/5 dark:bg-black/30 border-white/10 dark:border-white/5 backdrop-blur-md shadow-md text-foreground',
+      retro:
+        'border-2 border-foreground bg-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none text-foreground',
+      glow: 'bg-card border-primary/20 shadow-[0_0_25px_rgba(168,85,247,0.08)] text-card-foreground',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+const emptyIconVariants = tv({
+  base: 'flex items-center justify-center rounded-2xl p-3.5 mb-4 text-muted-foreground transition-all duration-200',
+  variants: {
+    variant: {
+      default: 'bg-muted border border-border/60',
+      glass: 'bg-white/10 dark:bg-white/5 border border-white/15 backdrop-blur-md text-foreground',
+      retro:
+        'border-2 border-foreground bg-background shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none text-foreground',
+      glow: 'bg-primary/10 border border-primary/30 text-primary shadow-[0_0_15px_rgba(168,85,247,0.2)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface EmptyProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof emptyVariants> {}
+
+export function Empty({ className, variant = 'default', children, ...props }: EmptyProps) {
+  return (
+    <div className={cn(emptyVariants({ variant }), className)} {...props}>
+      {children}
+    </div>
+  )
+}
+
+export interface EmptyIconProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof emptyIconVariants> {}
+
+export function EmptyIcon({ className, variant = 'default', children, ...props }: EmptyIconProps) {
+  return (
+    <div className={cn(emptyIconVariants({ variant }), className)} {...props}>
+      {children}
+    </div>
+  )
+}
+
+export function EmptyTitle({ className, children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3 className={cn('text-base font-semibold tracking-tight text-foreground mb-1', className)} {...props}>
+      {children}
+    </h3>
+  )
+}
+
+export function EmptyDescription({ className, children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p className={cn('text-xs text-muted-foreground max-w-xs mb-6 leading-relaxed', className)} {...props}>
+      {children}
+    </p>
+  )
+}
+
+export function EmptyActions({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn('flex items-center justify-center gap-2.5', className)} {...props}>
+      {children}
+    </div>
+  )
+}
+```
+
+</Installation>
+
+## Variations
+
+### Search Filter Empty
+
+<ComponentPreview>
+  <EmptySearchDemo />
+
+```tsx
+import {
+  Empty,
+  EmptyIcon,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyActions,
+} from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { Search } from 'lucide-react'
+
+export default function EmptySearchDemo() {
+  return (
+    <Empty className="w-full max-w-sm">
+      <EmptyIcon variant="glow">
+        <Search className="h-6 w-6" />
+      </EmptyIcon>
+      <EmptyTitle>No Search Matches</EmptyTitle>
+      <EmptyDescription>
+        We couldn't find any results matching your search terms. Try checking for typos or using different keywords.
+      </EmptyDescription>
+      <EmptyActions>
+        <Button variant="outline">Clear Search Filter</Button>
+      </EmptyActions>
+    </Empty>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Glassmorphic Inbox
+
+<ComponentPreview>
+  <EmptyInboxDemo />
+
+```tsx
+import {
+  Empty,
+  EmptyIcon,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyActions,
+} from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { Inbox } from 'lucide-react'
+
+export default function EmptyInboxDemo() {
+  return (
+    <Empty variant="glass" className="w-full max-w-sm">
+      <EmptyIcon variant="glass">
+        <Inbox className="h-6 w-6" />
+      </EmptyIcon>
+      <EmptyTitle>Your Inbox is Empty</EmptyTitle>
+      <EmptyDescription>
+        All caught up! You have zero unread notifications or messages in your queue.
+      </EmptyDescription>
+      <EmptyActions>
+        <Button variant="glass">Refresh Feed</Button>
+      </EmptyActions>
+    </Empty>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Connection Error
+
+<ComponentPreview>
+  <EmptyErrorDemo />
+
+```tsx
+import {
+  Empty,
+  EmptyIcon,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyActions,
+} from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { AlertTriangle, RefreshCw } from 'lucide-react'
+
+export default function EmptyErrorDemo() {
+  return (
+    <Empty className="w-full max-w-sm">
+      <EmptyIcon className="bg-destructive/10 text-destructive border-destructive/20">
+        <AlertTriangle className="h-6 w-6" />
+      </EmptyIcon>
+      <EmptyTitle>Connection Timeout</EmptyTitle>
+      <EmptyDescription>
+        Unable to sync data with the server. Please verify your network connection and try again.
+      </EmptyDescription>
+      <EmptyActions>
+        <Button variant="destructive" className="gap-2">
+          <RefreshCw className="h-4 w-4" />
+          <span>Retry Connection</span>
+        </Button>
+      </EmptyActions>
+    </Empty>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Neubrutalism Retro
+
+<ComponentPreview>
+  <EmptyRetroDemo />
+
+```tsx
+import {
+  Empty,
+  EmptyIcon,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyActions,
+} from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { Layers } from 'lucide-react'
+
+export default function EmptyRetroDemo() {
+  return (
+    <Empty variant="retro" className="w-full max-w-sm">
+      <EmptyIcon variant="retro">
+        <Layers className="h-6 w-6" />
+      </EmptyIcon>
+      <EmptyTitle>NO DEPLOYMENTS FOUND</EmptyTitle>
+      <EmptyDescription>
+        Zero deployment instances registered in your cluster namespace. Initialize a container image to deploy.
+      </EmptyDescription>
+      <EmptyActions>
+        <Button variant="retro">INITIALIZE CONTAINER</Button>
+      </EmptyActions>
+    </Empty>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Compact Card Inline
+
+<ComponentPreview>
+  <EmptyCompactDemo />
+
+```tsx
+import { EmptyIcon } from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { Globe } from 'lucide-react'
+
+export default function EmptyCompactDemo() {
+  return (
+    <div className="rounded-xl border border-border p-6 text-center w-full max-w-sm bg-card/50">
+      <EmptyIcon className="mx-auto h-10 w-10 p-2 mb-3">
+        <Globe className="h-5 w-5" />
+      </EmptyIcon>
+      <h3 className="font-semibold text-sm">No Custom Domains</h3>
+      <p className="text-xs text-muted-foreground mt-1 mb-4">
+        Connect a custom domain name to customize your app URL.
+      </p>
+      <Button size="sm" variant="outline">
+        Connect Domain
+      </Button>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Empty State component provides a flexible, modular layout structure for displaying informative feedback, illustrative icons, and call-to-action buttons when workspace content or data streams are empty.
+
+### Modular Architecture
+
+Built using decoupled sub-primitives (`Empty`, `EmptyIcon`, `EmptyTitle`, `EmptyDescription`, and `EmptyActions`), allowing developers to customize layout hierarchies, icon wrappers, or action buttons freely.
+
+### Theme & Variant Styling
+
+- **Glassmorphic (`variant="glass"`)**: Uses frosted saturation with translucent backdrop blur for modern dark & light card interfaces.
+- **Retro Neobrutalism (`variant="retro"`)**: Features bold 2px border strokes and hard flat offset shadows for high-contrast cyberpunk themes.
+- **Neon Glow (`variant="glow"`)**: Employs a purple glow aura background behind the empty icon badge.
+

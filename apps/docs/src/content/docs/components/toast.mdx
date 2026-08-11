@@ -1,0 +1,706 @@
+# Toast
+
+Toast displays high-priority status notifications.
+
+## Preview
+
+<ComponentPreview>
+  <ToastDemoBasic />
+
+```tsx
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+
+export default function ToastDemo() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast variant="default" open={true}>
+          <div className="grid gap-1 text-left">
+            <ToastTitle>Database Backup Completed</ToastTitle>
+            <ToastDescription>
+              All workspace schemas saved successfully.
+            </ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="toast" vibeDeps="button">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import * as ToastPrimitives from '@radix-ui/react-toast'
+import { X } from 'lucide-react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const ToastProvider = ToastPrimitives.Provider
+
+const toastViewportVariants = tv({
+  base: 'flex max-h-screen w-full flex-col p-4 md:max-w-[420px] outline-none',
+  variants: {
+    position: {
+      'top-left': 'fixed z-[9999] top-14 md:top-16 left-0 flex-col',
+      'top-right': 'fixed z-[9999] top-14 md:top-16 right-0 flex-col',
+      'top-center': 'fixed z-[9999] top-14 md:top-16 left-1/2 -translate-x-1/2 flex-col items-center',
+      'bottom-left': 'fixed z-[9999] bottom-0 left-0 flex-col-reverse',
+      'bottom-right': 'fixed z-[9999] bottom-0 right-0 flex-col-reverse',
+      'bottom-center': 'fixed z-[9999] bottom-0 left-1/2 -translate-x-1/2 flex-col-reverse items-center',
+      'inline': 'relative z-0 flex-col',
+    },
+  },
+  defaultVariants: {
+    position: 'bottom-right',
+  },
+})
+
+export interface ToastViewportProps
+  extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport>,
+    VariantProps<typeof toastViewportVariants> {}
+
+const ToastViewport = React.forwardRef<
+  React.ElementRef<typeof ToastPrimitives.Viewport>,
+  ToastViewportProps
+>(({ className, position = 'bottom-right', ...props }, ref) => (
+  <ToastPrimitives.Viewport
+    ref={ref}
+    className={cn(toastViewportVariants({ position }), className)}
+    {...props}
+  />
+))
+ToastViewport.displayName = ToastPrimitives.Viewport.displayName
+
+const toastVariants = tv({
+  base: 'group pointer-events-auto relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md border p-4 pr-6 shadow-lg data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80',
+  variants: {
+    variant: {
+      default: 'border bg-background text-foreground border-border',
+      destructive:
+        'destructive group border-destructive bg-destructive text-destructive-foreground',
+      glass:
+        'bg-background/95 dark:bg-zinc-900/95 backdrop-blur-md border border-border text-foreground',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-background dark:bg-zinc-950 border border-primary/40 shadow-[0_0_20px_rgba(168,85,247,0.2)] text-foreground',
+    },
+    position: {
+      'top-left':
+        'data-[state=open]:animate-slide-in-from-top data-[state=closed]:animate-slide-out-to-left',
+      'top-right':
+        'data-[state=open]:animate-slide-in-from-top data-[state=closed]:animate-slide-out-to-right',
+      'top-center':
+        'data-[state=open]:animate-slide-in-from-top data-[state=closed]:animate-slide-out-to-top',
+      'bottom-left':
+        'data-[state=open]:animate-slide-in-from-bottom data-[state=closed]:animate-slide-out-to-left',
+      'bottom-right':
+        'data-[state=open]:animate-slide-in-from-bottom data-[state=closed]:animate-slide-out-to-right',
+      'bottom-center':
+        'data-[state=open]:animate-slide-in-from-bottom data-[state=closed]:animate-slide-out-to-bottom',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    position: 'bottom-right',
+  },
+})
+
+const Toast = React.forwardRef<
+  React.ElementRef<typeof ToastPrimitives.Root>,
+  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
+    VariantProps<typeof toastVariants>
+>(({ className, variant, position, ...props }, ref) => {
+  return (
+    <ToastPrimitives.Root
+      ref={ref}
+      className={cn(toastVariants({ variant, position }), className)}
+      {...props}
+    />
+  )
+})
+Toast.displayName = ToastPrimitives.Root.displayName
+
+const ToastAction = React.forwardRef<
+  React.ElementRef<typeof ToastPrimitives.Action>,
+  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Action>
+>(({ className, ...props }, ref) => (
+  <ToastPrimitives.Action
+    ref={ref}
+    className={cn(
+      'inline-flex h-8 shrink-0 items-center justify-center rounded-md border border-border bg-transparent px-3 text-xs font-semibold ring-offset-background transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive cursor-pointer',
+      className
+    )}
+    {...props}
+  />
+))
+ToastAction.displayName = ToastPrimitives.Action.displayName
+
+const ToastClose = React.forwardRef<
+  React.ElementRef<typeof ToastPrimitives.Close>,
+  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Close>
+>(({ className, ...props }, ref) => (
+  <ToastPrimitives.Close
+    ref={ref}
+    className={cn(
+      'absolute right-1 top-1 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-1 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600 cursor-pointer',
+      className
+    )}
+    toast-close=""
+    {...props}
+  >
+    <X className="h-4 w-4" />
+  </ToastPrimitives.Close>
+))
+ToastClose.displayName = ToastPrimitives.Close.displayName
+
+const ToastTitle = React.forwardRef<
+  React.ElementRef<typeof ToastPrimitives.Title>,
+  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
+>(({ className, ...props }, ref) => (
+  <ToastPrimitives.Title
+    ref={ref}
+    className={cn('text-sm font-semibold [&+div]:text-xs', className)}
+    {...props}
+  />
+))
+ToastTitle.displayName = ToastPrimitives.Title.displayName
+
+const ToastDescription = React.forwardRef<
+  React.ElementRef<typeof ToastPrimitives.Description>,
+  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description>
+>(({ className, ...props }, ref) => (
+  <ToastPrimitives.Description
+    ref={ref}
+    className={cn('text-xs opacity-90', className)}
+    {...props}
+  />
+))
+ToastDescription.displayName = ToastPrimitives.Description.displayName
+
+type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>
+
+type ToastActionElement = React.ReactElement<typeof ToastAction>
+
+export {
+  type ToastProps,
+  type ToastActionElement,
+  ToastProvider,
+  ToastViewport,
+  Toast,
+  ToastTitle,
+  ToastDescription,
+  ToastClose,
+  ToastAction,
+}
+```
+
+</Installation>
+
+
+
+## Preset Variations
+
+### Glassmorphic
+
+<ComponentPreview>
+  <ToastDemoGlass />
+
+```tsx
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+
+export default function ToastDemoGlass() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast variant="glass" open={true}>
+          <div className="grid gap-1 text-left">
+            <ToastTitle>Glassmorphic Alert</ToastTitle>
+            <ToastDescription>
+              Backdrop blur filters applied successfully.
+            </ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Retro Neobrutalism
+
+<ComponentPreview>
+  <ToastDemoRetro />
+
+```tsx
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+
+export default function ToastDemoRetro() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast variant="retro" open={true}>
+          <div className="grid gap-1 text-left">
+            <ToastTitle>RETRO WIDGET</ToastTitle>
+            <ToastDescription>
+              SOLID FLAT BLACK BORDERS IN ACTION.
+            </ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Neon Glow
+
+<ComponentPreview>
+  <ToastDemoGlow />
+
+```tsx
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+
+export default function ToastDemoGlow() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast variant="glow" open={true}>
+          <div className="grid gap-1 text-left">
+            <ToastTitle>Neon Glow Active</ToastTitle>
+            <ToastDescription>
+              Ambient drop shadows lighting up.
+            </ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Premium Use Case Examples
+
+### 1. Interactive Trigger Toast controller
+
+<ComponentPreview>
+  <ToastDemoInteractiveTrigger />
+
+```tsx
+import React, { useState } from 'react'
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+import { Button } from '@/components/ui/button'
+
+export default function ToastDemoInteractiveTrigger() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="flex flex-col items-center gap-3 w-full">
+      <Button
+        onClick={() => {
+          setOpen(true)
+          setTimeout(() => setOpen(false), 3000)
+        }}
+      >
+        Trigger Interactive Toast
+      </Button>
+      <ToastProvider>
+        <Toast open={open} onOpenChange={setOpen} variant="glow">
+          <div className="grid gap-1 text-left">
+            <ToastTitle>Success!</ToastTitle>
+            <ToastDescription>
+              Interactive toast triggered successfully.
+            </ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 mt-3 flex flex-col gap-2" />
+      </ToastProvider>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 2. Action confirmation toast dialog
+
+<ComponentPreview>
+  <ToastDemoAction />
+
+```tsx
+import {
+  Toast,
+  ToastAction,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+
+export default function ToastDemoAction() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast open={true}>
+          <div className="grid gap-1 text-left">
+            <ToastTitle>Workspace file deleted</ToastTitle>
+            <ToastDescription>
+              file components.json was removed.
+            </ToastDescription>
+          </div>
+          <ToastAction altText="Undo action">Undo</ToastAction>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 3. Destructive warning critical error
+
+<ComponentPreview>
+  <ToastDemoDestructive />
+
+```tsx
+import {
+  Toast,
+  ToastAction,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+
+export default function ToastDemoDestructive() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast variant="destructive" open={true}>
+          <div className="grid gap-1 text-left">
+            <ToastTitle>Connection Failed</ToastTitle>
+            <ToastDescription>
+              Could not reach npmjs registry servers.
+            </ToastDescription>
+          </div>
+          <ToastAction altText="Retry connection">Retry</ToastAction>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 4. Background processing progress loader
+
+<ComponentPreview>
+  <ToastDemoLoading />
+
+```tsx
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+
+export default function ToastDemoLoading() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast open={true}>
+          <div className="flex items-center gap-3 text-left">
+            <span className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin shrink-0" />
+            <div>
+              <ToastTitle>Building registry map</ToastTitle>
+              <ToastDescription>
+                Compiling CLI components schema...
+              </ToastDescription>
+            </div>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 5. Sound audio volume status
+
+<ComponentPreview>
+  <ToastDemoVolume />
+
+```tsx
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+import { Volume2 } from 'lucide-react'
+
+export default function ToastDemoVolume() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast open={true} variant="glass">
+          <div className="flex items-center gap-2.5 text-left">
+            <Volume2 className="h-4.5 w-4.5 text-cyan-400 shrink-0" />
+            <div>
+              <ToastTitle>Volume Changed</ToastTitle>
+              <ToastDescription>Output level set to 85%.</ToastDescription>
+            </div>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 6. User Verification code validation
+
+<ComponentPreview>
+  <ToastDemoVerification />
+
+```tsx
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+import { CheckCircle2 } from 'lucide-react'
+
+export default function ToastDemoVerification() {
+  return (
+    <ToastProvider>
+      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
+        <Toast open={true} variant="glow">
+          <div className="flex items-center gap-2.5 text-left">
+            <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400 shrink-0" />
+            <div>
+              <ToastTitle>Profile Verified</ToastTitle>
+              <ToastDescription>
+                Token authenticated successfully.
+              </ToastDescription>
+            </div>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
+      </div>
+    </ToastProvider>
+  )
+}
+```
+
+</ComponentPreview>
+
+### 7. Interactive Viewport Positioning
+
+Toasts can be dispatched to specific screen coordinates using the `position` prop on `<ToastViewport>`. Supported options are `top-left`, `top-right`, `top-center`, `bottom-left`, `bottom-right`, and `bottom-center`.
+
+<ComponentPreview>
+  <ToastDemoPositions />
+
+```tsx
+import React from 'react'
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@/components/ui/toast'
+import { Button } from '@/components/ui/button'
+
+export default function ToastDemoPositions() {
+  interface ToastItem {
+    id: string
+    position:
+      | 'top-left'
+      | 'top-right'
+      | 'top-center'
+      | 'bottom-left'
+      | 'bottom-right'
+      | 'bottom-center'
+    title: string
+    description: string
+  }
+
+  const [toasts, setToasts] = React.useState<ToastItem[]>([])
+
+  const triggerToast = (pos: ToastItem['position']) => {
+    const id = Math.random().toString(36).substring(2, 9)
+    const newToast: ToastItem = {
+      id,
+      position: pos,
+      title: `Event Created (${pos.replace('-', ' ')})`,
+      description: `Notification code: ${id.toUpperCase()}`,
+    }
+    setToasts((prev) => [...prev.filter((t) => t.position === pos), newToast])
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id))
+    }, 4000)
+  }
+
+  const positions: ToastItem['position'][] = [
+    'top-left',
+    'top-center',
+    'top-right',
+    'bottom-left',
+    'bottom-center',
+    'bottom-right',
+  ]
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full max-w-md p-6 rounded-xl border border-border bg-card shadow-xs">
+      <div className="text-center space-y-1">
+        <h4 className="font-bold text-foreground">Interactive Viewports</h4>
+        <p className="text-xs text-muted-foreground">Select a position to dispatch a global notification.</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 w-full">
+        {positions.map((pos) => (
+          <Button
+            key={pos}
+            size="sm"
+            variant="outline"
+            className="text-xs capitalize"
+            onClick={() => triggerToast(pos)}
+          >
+            {pos.replace('-', ' ')}
+          </Button>
+        ))}
+      </div>
+
+      {positions.map((pos) => {
+        const positionToasts = toasts.filter((t) => t.position === pos)
+        return (
+          <ToastProvider key={pos}>
+            {positionToasts.map((toast, index) => {
+              const activeIndex = positionToasts.length - 1 - index
+              const isTop = pos.startsWith('top')
+              const translateY = isTop ? activeIndex * 10 : -activeIndex * 10
+              const scale = 1 - activeIndex * 0.05
+              const opacity = activeIndex > 2 ? 0 : 1
+
+              return (
+                <Toast
+                  key={toast.id}
+                  variant="glow"
+                  position={pos}
+                  className="absolute w-[calc(100%-2rem)] md:max-w-[380px] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] shadow-xl"
+                  style={{
+                    transform: `translateY(${translateY}px) scale(${scale})`,
+                    opacity,
+                    zIndex: 100 - activeIndex,
+                    pointerEvents: activeIndex === 0 ? 'auto' : 'none',
+                  }}
+                  onOpenChange={(open) => {
+                    if (!open) {
+                      setToasts((prev) => prev.filter((t) => t.id !== toast.id))
+                    }
+                  }}
+                >
+                  <div className="grid gap-1 text-left">
+                    <ToastTitle>{toast.title}</ToastTitle>
+                    <ToastDescription>{toast.description}</ToastDescription>
+                  </div>
+                  <ToastClose />
+                </Toast>
+              )
+            })}
+            <ToastViewport position={pos} />
+          </ToastProvider>
+        )
+      })}
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+

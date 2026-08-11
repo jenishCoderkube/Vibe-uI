@@ -1,0 +1,377 @@
+# Switch
+
+A control that allows the user to toggle between checked and unchecked states.
+
+## Preview
+
+<ComponentPreview sandbox="switch">
+  <div className="flex items-center space-x-2 text-left">
+    <Switch id="airplane-mode" />
+    <Label htmlFor="airplane-mode" className="pb-0 cursor-pointer">Airplane Mode</Label>
+  </div>
+
+```tsx
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+
+export default function SwitchDemo() {
+  return (
+    <div className="flex items-center space-x-2">
+      <Switch id="airplane-mode" />
+      <Label htmlFor="airplane-mode" className="pb-0">
+        Airplane Mode
+      </Label>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="switch" npmDeps="@radix-ui/react-switch lucide-react tailwind-variants" vibeDeps="label">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const switchVariants = tv({
+  base: 'peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
+  variants: {
+    variant: {
+      default: 'bg-input data-[state=checked]:bg-primary',
+      glass:
+        'bg-white/10 dark:bg-black/30 border-white/20 dark:border-white/10 data-[state=checked]:bg-white/25 dark:data-[state=checked]:bg-white/15 backdrop-blur-sm',
+      retro:
+        'border-2 border-foreground bg-background data-[state=checked]:bg-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]',
+      glow: 'bg-input data-[state=checked]:bg-primary hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+const thumbVariants = tv({
+  base: 'pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-all duration-200 data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0',
+  variants: {
+    variant: {
+      default: 'bg-background',
+      glass: 'bg-foreground/80 dark:bg-foreground',
+      retro:
+        'border border-foreground bg-background data-[state=checked]:bg-background',
+      glow: 'bg-background',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface SwitchProps
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof switchVariants> {
+  checked?: boolean
+  defaultChecked?: boolean
+  onCheckedChange?: (checked: boolean) => void
+}
+
+const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
+  (
+    { className, variant, checked, defaultChecked, onCheckedChange, ...props },
+    ref,
+  ) => {
+    const [localChecked, setLocalChecked] = React.useState(
+      defaultChecked || false,
+    )
+    const isChecked = checked !== undefined ? checked : localChecked
+
+    const handleToggle = () => {
+      if (props.disabled) return
+      if (checked === undefined) {
+        setLocalChecked(!localChecked)
+      }
+      onCheckedChange?.(!isChecked)
+    }
+
+    return (
+      <button
+        type="button"
+        role="switch"
+        aria-checked={isChecked}
+        data-state={isChecked ? 'checked' : 'unchecked'}
+        ref={ref}
+        onClick={handleToggle}
+        className={cn(switchVariants({ variant }), className)}
+        {...props}
+      >
+        <span
+          data-state={isChecked ? 'checked' : 'unchecked'}
+          className={cn(thumbVariants({ variant }))}
+        />
+      </button>
+    )
+  },
+)
+Switch.displayName = 'Switch'
+
+export { Switch }
+```
+
+</Installation>
+
+
+## All Variations
+
+Explore all preset variations and states of the Switch component.
+
+### Presets & Toggles
+
+<ComponentPreview>
+  <div className="flex flex-wrap items-center gap-8 text-left w-full justify-start">
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-default-var" variant="default" defaultChecked />
+      <Label htmlFor="switch-default-var" className="pb-0 cursor-pointer">Default</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-glass-var" variant="glass" defaultChecked />
+      <Label htmlFor="switch-glass-var" className="pb-0 cursor-pointer">Glass</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-retro-var" variant="retro" defaultChecked />
+      <Label htmlFor="switch-retro-var" className="pb-0 cursor-pointer">Retro</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-glow-var" variant="glow" defaultChecked />
+      <Label htmlFor="switch-glow-var" className="pb-0 cursor-pointer">Glow</Label>
+    </div>
+  </div>
+
+```tsx
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+
+export default function SwitchPresetsDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-8">
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-def" variant="default" defaultChecked />
+        <Label htmlFor="sw-def">Default</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-glass" variant="glass" defaultChecked />
+        <Label htmlFor="sw-glass">Glass</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-retro" variant="retro" defaultChecked />
+        <Label htmlFor="sw-retro">Retro</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-glow" variant="glow" defaultChecked />
+        <Label htmlFor="sw-glow">Glow</Label>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Interactive States
+
+<ComponentPreview>
+  <div className="flex flex-wrap items-center gap-8 text-left w-full justify-start">
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-disabled-un" disabled />
+      <Label htmlFor="switch-disabled-un" className="pb-0 cursor-pointer opacity-50">Disabled Off</Label>
+    </div>
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-disabled-ch" disabled defaultChecked />
+      <Label htmlFor="switch-disabled-ch" className="pb-0 cursor-pointer opacity-50">Disabled On</Label>
+    </div>
+  </div>
+
+```tsx
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+
+export default function SwitchStatesDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-8">
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-dis-off" disabled />
+        <Label htmlFor="sw-dis-off" className="opacity-50">
+          Disabled Off
+        </Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-dis-on" disabled defaultChecked />
+        <Label htmlFor="sw-dis-on" className="opacity-50">
+          Disabled On
+        </Label>
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+
+## Variants
+
+### Glassmorphic
+
+<ComponentPreview>
+  <div className="flex items-center space-x-2 text-left">
+    <Switch id="switch-glass" variant="glass" defaultChecked />
+    <Label htmlFor="switch-glass" className="pb-0 cursor-pointer">Glass style toggle</Label>
+  </div>
+
+```tsx
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+
+export default function SwitchGlass() {
+  return (
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-glass" variant="glass" defaultChecked />
+      <Label htmlFor="switch-glass" className="pb-0">
+        Glass style toggle
+      </Label>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Retro Neobrutalism
+
+<ComponentPreview>
+  <div className="flex items-center space-x-2 text-left">
+    <Switch id="switch-retro" variant="retro" defaultChecked />
+    <Label htmlFor="switch-retro" className="pb-0 cursor-pointer">Retro style toggle</Label>
+  </div>
+
+```tsx
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+
+export default function SwitchRetro() {
+  return (
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-retro" variant="retro" defaultChecked />
+      <Label htmlFor="switch-retro" className="pb-0">
+        Retro style toggle
+      </Label>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Glow Accent
+
+<ComponentPreview>
+  <div className="flex items-center space-x-2 text-left">
+    <Switch id="switch-glow" variant="glow" defaultChecked />
+    <Label htmlFor="switch-glow" className="pb-0 cursor-pointer">Glow style toggle</Label>
+  </div>
+
+```tsx
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+
+export default function SwitchGlow() {
+  return (
+    <div className="flex items-center space-x-2">
+      <Switch id="switch-glow" variant="glow" defaultChecked />
+      <Label htmlFor="switch-glow" className="pb-0">
+        Glow style toggle
+      </Label>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Examples
+
+### Settings Card
+
+<ComponentPreview>
+  <Card className="w-[380px]">
+    <CardHeader>
+      <CardTitle>Notifications</CardTitle>
+      <CardDescription>Choose what notifications you want to receive.</CardDescription>
+    </CardHeader>
+    <CardContent className="grid gap-4 text-left">
+      <div className="flex items-center justify-between rounded-lg border p-4">
+        <div className="space-y-0.5">
+          <Label className="text-base pb-0">Security emails</Label>
+          <p className="text-sm text-muted-foreground">Receive emails about security updates.</p>
+        </div>
+        <Switch defaultChecked />
+      </div>
+      <div className="flex items-center justify-between rounded-lg border p-4">
+        <div className="space-y-0.5">
+          <Label className="text-base pb-0">Marketing emails</Label>
+          <p className="text-sm text-muted-foreground">Receive emails about marketing promotions.</p>
+        </div>
+        <Switch />
+      </div>
+    </CardContent>
+  </Card>
+
+```tsx
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+
+export default function SettingsDemo() {
+  return (
+    <Card className="w-[380px]">
+      <CardHeader>
+        <CardTitle>Notifications</CardTitle>
+        <CardDescription>
+          Choose what notifications you want to receive.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="space-y-0.5">
+            <Label className="text-base">Security emails</Label>
+            <p className="text-sm text-muted-foreground">Receive emails about security updates.</p>
+          </div>
+          <Switch defaultChecked />
+        </div>
+        <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="space-y-0.5">
+            <Label className="text-base">Marketing emails</Label>
+            <p className="text-sm text-muted-foreground">Receive emails about promotions.</p>
+          </div>
+          <Switch />
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Switch component is an interactive toggle switch built on Radix UI `Switch` primitives. It captures boolean input values with smooth sliding toggle indicator animations.

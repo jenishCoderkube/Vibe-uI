@@ -1,0 +1,205 @@
+# Tooltip
+
+A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.
+
+## Preview
+
+<ComponentPreview>
+  <div className="py-4">
+    <Tooltip content="Add to library" delay={100}>
+      <Button variant="outline">Hover me</Button>
+    </Tooltip>
+  </div>
+
+```tsx
+import { Tooltip } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+
+export default function TooltipDemo() {
+  return (
+    <Tooltip content="Add to library">
+      <Button variant="outline">Hover me</Button>
+    </Tooltip>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="tooltip" npmDeps="@radix-ui/react-tooltip lucide-react tailwind-variants">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const tooltipVariants = tv({
+  base: 'absolute z-50 overflow-hidden rounded-md px-3 py-1.5 text-xs shadow-md pointer-events-none transition-all duration-150 whitespace-nowrap',
+  variants: {
+    variant: {
+      default: 'bg-card border border-border text-foreground',
+      glass:
+        'bg-white/10 dark:bg-black/30 backdrop-blur-md border border-white/20 dark:border-white/10 text-foreground',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-card border border-border shadow-[0_0_15px_rgba(0,0,0,0.15)] dark:shadow-[0_0_15px_rgba(255,255,255,0.15)]',
+    },
+    position: {
+      top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
+      bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
+      left: 'right-full top-1/2 -translate-y-1/2 mr-2',
+      right: 'left-full top-1/2 -translate-y-1/2 ml-2',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    position: 'top',
+  },
+})
+
+export interface TooltipProps
+  extends
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>,
+    VariantProps<typeof tooltipVariants> {
+  content: React.ReactNode
+  children: React.ReactNode
+  delay?: number
+}
+
+const Tooltip: React.FC<TooltipProps> = ({
+  children,
+  content,
+  variant,
+  position,
+  className,
+  delay = 200,
+  ...props
+}) => {
+  const [visible, setVisible] = React.useState(false)
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+
+  const showTooltip = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => {
+      setVisible(true)
+    }, delay)
+  }
+
+  const hideTooltip = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    setVisible(false)
+  }
+
+  React.useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [])
+
+  return (
+    <div
+      className="relative inline-block"
+      onMouseEnter={showTooltip}
+      onMouseLeave={hideTooltip}
+      onFocus={showTooltip}
+      onBlur={hideTooltip}
+    >
+      {children}
+      {visible && (
+        <div
+          className={cn(tooltipVariants({ variant, position }), className)}
+          {...props}
+        >
+          {content}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export { Tooltip }
+```
+
+</Installation>
+
+
+
+## Variants
+
+### Directions
+
+<ComponentPreview>
+  <div className="flex flex-wrap gap-2 justify-center py-4">
+    <Tooltip content="Tooltip top" position="top">
+      <Button variant="outline">Top</Button>
+    </Tooltip>
+    <Tooltip content="Tooltip bottom" position="bottom">
+      <Button variant="outline">Bottom</Button>
+    </Tooltip>
+    <Tooltip content="Tooltip left" position="left">
+      <Button variant="outline">Left</Button>
+    </Tooltip>
+    <Tooltip content="Tooltip right" position="right">
+      <Button variant="outline">Right</Button>
+    </Tooltip>
+  </div>
+
+```tsx
+import { Tooltip } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+
+export default function TooltipDirections() {
+  return (
+    <div className="flex flex-wrap gap-2 justify-center py-4">
+      <Tooltip content="Tooltip top" position="top">
+        <Button variant="outline">Top</Button>
+      </Tooltip>
+      <Tooltip content="Tooltip bottom" position="bottom">
+        <Button variant="outline">Bottom</Button>
+      </Tooltip>
+      <Tooltip content="Tooltip left" position="left">
+        <Button variant="outline">Left</Button>
+      </Tooltip>
+      <Tooltip content="Tooltip right" position="right">
+        <Button variant="outline">Right</Button>
+      </Tooltip>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Glassmorphic
+
+<ComponentPreview>
+  <div className="py-4">
+    <Tooltip content="Glass style description text" variant="glass" position="bottom">
+      <Button variant="secondary">Glass Tooltip</Button>
+    </Tooltip>
+  </div>
+
+```tsx
+import { Tooltip } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+
+export default function TooltipGlass() {
+  return (
+    <Tooltip
+      content="Glass style description text"
+      variant="glass"
+      position="bottom"
+    >
+      <Button variant="secondary">Glass Tooltip</Button>
+    </Tooltip>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Tooltip component displays helpful popover labels when hovering or focusing an element. It wraps Radix UI `Tooltip` primitives to manage delayed trigger toggles.

@@ -1,0 +1,608 @@
+# Card
+
+Displays a card container with header, content, and footer sections.
+
+## Preview
+
+<ComponentPreview name="card" vibeDeps="button, input, label">
+  <Card className="w-[380px]">
+    <CardHeader>
+      <CardTitle>Create project</CardTitle>
+      <CardDescription>Deploy your new project in one-click.</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <div className="grid w-full items-center gap-4 text-left">
+        <div className="flex flex-col space-y-1.5">
+          <Label htmlFor="name">Name</Label>
+          <Input id="name" placeholder="Name of your project" />
+        </div>
+      </div>
+    </CardContent>
+    <CardFooter className="flex justify-between">
+      <Button variant="outline">Cancel</Button>
+      <Button>Deploy</Button>
+    </CardFooter>
+  </Card>
+
+```tsx
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+
+export default function CardDemo() {
+  return (
+    <Card className="w-[380px]">
+      <CardHeader>
+        <CardTitle>Create project</CardTitle>
+        <CardDescription>Deploy your new project in one-click.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid w-full items-center gap-4">
+          <div className="flex flex-col space-y-1.5">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" placeholder="Name of your project" />
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <Button variant="outline">Cancel</Button>
+        <Button>Deploy</Button>
+      </CardFooter>
+    </Card>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="card" vibeDeps="button, input, label">
+
+```tsx
+// @/components/ui/card.tsx
+'use client'
+
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const cardVariants = tv({
+  base: 'rounded-xl border text-card-foreground shadow-sm transition-all duration-200',
+  variants: {
+    variant: {
+      default: 'bg-card border-border',
+      glass: 'bg-white/5 dark:bg-white/[0.02] backdrop-blur-md border border-white/15 dark:border-white/5 shadow-md shadow-black/5',
+      retro: 'border-2 border-foreground bg-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]',
+      glow: 'bg-primary/5 border border-primary/25 shadow-[0_0_20px_rgba(168,85,247,0.1)] hover:border-primary/45 hover:shadow-[0_0_30px_rgba(168,85,247,0.25)] relative overflow-hidden before:absolute before:inset-0 before:rounded-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:bg-[radial-gradient(350px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(168,85,247,0.12),transparent_80%)] before:z-0',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface CardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant, ...props }, ref) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      const card = e.currentTarget
+      const rect = card.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      card.style.setProperty('--mouse-x', `${x}px`)
+      card.style.setProperty('--mouse-y', `${y}px`)
+    }
+
+    return (
+      <div
+        ref={ref}
+        onMouseMove={variant === 'glow' ? handleMouseMove : undefined}
+        className={cn(cardVariants({ variant }), className)}
+        {...props}
+      />
+    )
+  },
+)
+Card.displayName = 'Card'
+
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('relative z-10 flex flex-col space-y-1.5 p-6', className)}
+    {...props}
+  />
+))
+CardHeader.displayName = 'CardHeader'
+
+const CardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn(
+      'text-2xl font-semibold leading-none tracking-tight text-foreground',
+      className,
+    )}
+    {...props}
+  />
+))
+CardTitle.displayName = 'CardTitle'
+
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn('text-sm text-muted-foreground', className)}
+    {...props}
+  />
+))
+CardDescription.displayName = 'CardDescription'
+
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn('relative z-10 p-6 pt-0', className)} {...props} />
+))
+CardContent.displayName = 'CardContent'
+
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('relative z-10 flex items-center p-6 pt-0', className)}
+    {...props}
+  />
+))
+CardFooter.displayName = 'CardFooter'
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+```
+
+</Installation>
+
+
+
+---
+
+### Presets
+
+Explore the core card variations, featuring Default Card, Glassmorphism, Retro Neobrutalism, and Neon Glow styling.
+
+<ComponentPreview name="card" vibeDeps="button, input, label">
+  <CardDemoPresets />
+
+```tsx
+import * as React from 'react'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+
+export default function CardPresetsDemo() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center w-full max-w-4xl">
+      {/* Default Card */}
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-lg">Create Project</CardTitle>
+          <CardDescription>Deploy your new application in one-click.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2 text-left">
+            <Label htmlFor="name">Project Name</Label>
+            <Input id="name" placeholder="my-awesome-app" />
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline" size="sm">Cancel</Button>
+          <Button size="sm">Deploy</Button>
+        </CardFooter>
+      </Card>
+
+      {/* Glassmorphic */}
+      <Card variant="glass" className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-lg">Glassmorphic UI</CardTitle>
+          <CardDescription>Frosted glass backdrop-blur effect.</CardDescription>
+        </CardHeader>
+        <CardContent className="text-left text-xs text-muted-foreground leading-relaxed">
+          Blends translucently over dark or graphical background layers with crisp border light outlines.
+        </CardContent>
+      </Card>
+
+      {/* Retro Neobrutalism */}
+      <Card variant="retro" className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-lg font-black">Neobrutalist Card</CardTitle>
+          <CardDescription className="text-foreground/80 font-medium">Solid offset shadows and bold outlines.</CardDescription>
+        </CardHeader>
+        <CardContent className="text-left text-xs text-foreground font-medium leading-relaxed">
+          High-contrast 90s aesthetic styling with heavy offset drop shadows.
+        </CardContent>
+      </Card>
+
+      {/* Neon Glow */}
+      <Card variant="glow" className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-lg">Neon Glow Accent</CardTitle>
+          <CardDescription>Dynamic hover glow light aura.</CardDescription>
+        </CardHeader>
+        <CardContent className="text-left text-xs text-muted-foreground leading-relaxed">
+          Subtle primary color aura expansion when hovering over the card boundary.
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Application Cards
+
+Production-ready integration layouts including Sign In forms, Developer Pro pricing cards, Analytics dashboards, and Security config panels.
+
+<ComponentPreview name="card" vibeDeps="button, input, label, badge, switch">
+  <CardDemoApplications />
+
+```tsx
+import * as React from 'react'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+
+export default function CardApplicationsDemo() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center w-full max-w-4xl">
+      {/* Sign In Form */}
+      <Card className="w-full max-w-sm text-left">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-xl">Sign In</CardTitle>
+          <CardDescription>Enter your credentials to access your account</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="space-y-1">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" placeholder="m@example.com" />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" placeholder="••••••••" />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full h-8 text-xs font-semibold">Sign In</Button>
+        </CardFooter>
+      </Card>
+
+      {/* Developer Pro Pricing */}
+      <Card variant="glass" className="w-full max-w-sm text-left relative overflow-hidden">
+        <CardHeader>
+          <Badge variant="glow" className="w-fit mb-1 text-[10px]">MOST POPULAR</Badge>
+          <CardTitle className="text-xl">Developer Pro</CardTitle>
+          <CardDescription>Everything needed to deploy at scale.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-baseline gap-1">
+            <span className="text-3xl font-extrabold text-foreground">$29</span>
+            <span className="text-xs text-muted-foreground">/month</span>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button variant="glow" className="w-full h-8 text-xs font-semibold">Upgrade to Pro</Button>
+        </CardFooter>
+      </Card>
+
+      {/* Analytics Metric Overview */}
+      <Card variant="glow" className="w-full max-w-sm text-left">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div className="space-y-1">
+            <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Revenue</CardTitle>
+            <div className="text-2xl font-bold tracking-tight text-foreground">$45,231.89</div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="text-xs text-emerald-500 font-semibold">+12.5% from last month</div>
+        </CardContent>
+      </Card>
+
+      {/* Security Config Panel */}
+      <Card variant="glass" className="w-full max-w-sm text-left">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Security Config</CardTitle>
+          <CardDescription>Configure application security toggles.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <div className="text-xs font-semibold text-foreground">Real-time Protection</div>
+              <div className="text-[10px] text-muted-foreground">Intercept threats immediately.</div>
+            </div>
+            <Switch defaultChecked />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Brand-Inspired Premium Layouts
+
+Ultra-premium layouts inspired by industry-leading developer tools, credit cards, issue trackers, and hardware specs.
+
+<ComponentPreview name="card" vibeDeps="badge, avatar, button">
+  <CardDemoBrandCards />
+
+```tsx
+import * as React from 'react'
+import { Card, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+
+export default function CardBrandDemos() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center w-full max-w-4xl">
+      {/* Stripe Metallic Card */}
+      <Card variant="glass" className="w-full max-w-sm h-[200px] bg-gradient-to-br from-zinc-900 via-neutral-900 to-zinc-950 border border-white/10 rounded-2xl p-5 shadow-2xl flex flex-col justify-between text-left">
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-black text-white tracking-wide">STRIPE BLACK</span>
+        </div>
+        <div className="text-lg font-bold font-mono text-white tracking-[0.2em]">••••  ••••  ••••  8824</div>
+      </Card>
+
+      {/* Linear Issue Tracker */}
+      <Card variant="glass" className="w-full max-w-sm bg-zinc-950/80 border border-zinc-800 p-4 space-y-3 text-left">
+        <div className="flex items-center justify-between">
+          <Badge variant="glow" className="bg-purple-950/40 text-purple-400 border-purple-500/20 text-[9px]">LIN-102</Badge>
+          <Avatar className="h-5 w-5"><AvatarFallback className="text-[8px]">AV</AvatarFallback></Avatar>
+        </div>
+        <div className="text-xs font-semibold text-foreground">Refactor component layout grid system</div>
+      </Card>
+
+      {/* Vercel Production Deployment */}
+      <Card variant="glow" className="w-full max-w-sm bg-zinc-950 border border-zinc-800 p-4 space-y-3 text-left">
+        <div className="flex items-center justify-between">
+          <div className="text-xs font-bold text-foreground">Production Deployment</div>
+          <Badge className="bg-emerald-950/50 text-emerald-400 border-emerald-500/20 text-[9px]">READY</Badge>
+        </div>
+      </Card>
+
+      {/* Apple Hardware Spec */}
+      <Card variant="glass" className="w-full max-w-sm bg-gradient-to-b from-neutral-800 to-neutral-950 border border-white/5 p-5 space-y-3 text-left">
+        <span className="text-[9px] font-black uppercase text-primary tracking-widest">M4 Chip</span>
+        <CardTitle className="text-xl font-extrabold text-white tracking-tight">MacBook Studio</CardTitle>
+      </Card>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Modern Developer Applications
+
+Ultra-modern developer portfolio profiles and media content cards utilizing the default card theme, cover image banners, tech stack tags, and responsive layout structures.
+
+<ComponentPreview name="card" vibeDeps="button, badge, avatar">
+  <CardDemoModernDeveloper />
+
+```tsx
+import * as React from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+
+export default function ModernDeveloperCardsDemo() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center w-full max-w-4xl">
+      {/* Developer Profile & Portfolio Card */}
+      <Card className="w-full max-w-sm sm:max-w-md overflow-hidden text-left shadow-sm border border-border bg-card">
+        {/* Banner Cover Image */}
+        <div className="h-28 w-full bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 relative p-4 flex justify-between items-start">
+          <Badge className="bg-black/30 backdrop-blur-md text-white border-white/20 text-[10px] font-semibold">AVAILABLE FOR HIRE</Badge>
+          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+        </div>
+
+        {/* Profile Info & Metrics */}
+        <div className="px-5 pb-5 pt-0 relative">
+          <div className="flex justify-between items-end -mt-10 mb-3">
+            <Avatar className="h-20 w-20 border-4 border-card rounded-full shadow-md">
+              <AvatarFallback className="bg-primary text-primary-foreground font-extrabold text-xl">SJ</AvatarFallback>
+            </Avatar>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="h-8 text-xs font-semibold">Message</Button>
+              <Button size="sm" className="h-8 text-xs font-semibold">Follow</Button>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h4 className="text-lg font-bold text-foreground">Sarah Jenkins</h4>
+              <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 text-[10px] py-0.5 px-2 flex items-center gap-1 font-semibold">
+                <CheckCircle2 className="h-3 w-3 text-blue-500 shrink-0" />
+                <span>Verified</span>
+              </Badge>
+            </div>
+            <p className="text-xs font-medium text-primary">Senior Staff Frontend Architect</p>
+            <p className="text-xs text-muted-foreground leading-relaxed pt-1">
+              Building next-generation design systems, micro-frontend architectures, and high-performance web apps.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 pt-3">
+            <span className="px-2 py-0.5 rounded-md bg-muted text-[10px] font-medium text-foreground">React 19</span>
+            <span className="px-2 py-0.5 rounded-md bg-muted text-[10px] font-medium text-foreground">TypeScript</span>
+            <span className="px-2 py-0.5 rounded-md bg-muted text-[10px] font-medium text-foreground">Next.js</span>
+          </div>
+        </div>
+      </Card>
+
+      {/* Article & Media Showcase Card */}
+      <Card className="w-full max-w-sm sm:max-w-md overflow-hidden text-left shadow-sm border border-border bg-card">
+        <div className="h-44 w-full bg-gradient-to-br from-slate-900 via-indigo-950 to-zinc-900 relative p-4 flex flex-col justify-between">
+          <div className="flex justify-between items-center">
+            <Badge className="bg-primary text-primary-foreground text-[10px] font-bold">ENGINEERING</Badge>
+            <span className="text-[10px] text-white/70 bg-black/40 px-2 py-0.5 rounded-full">5 min read</span>
+          </div>
+          <h3 className="text-base font-extrabold text-white leading-snug">
+            Architecting Micro-Frontends at Scale with React 19
+          </h3>
+        </div>
+
+        <div className="p-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-9 w-9 border border-border">
+              <AvatarFallback className="bg-indigo-600 text-white font-bold text-xs">AR</AvatarFallback>
+            </Avatar>
+          <div className="flex items-center justify-between pt-3 border-t border-border text-xs">
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <span className="flex items-center gap-1.5 font-semibold text-xs text-rose-500">
+                <Heart className="h-3.5 w-3.5 fill-current" />
+                <span>428</span>
+              </span>
+              <span className="flex items-center gap-1.5 font-semibold text-xs">
+                <MessageSquare className="h-3.5 w-3.5" />
+                <span>34</span>
+              </span>
+            </div>
+            <Button size="sm" className="h-8 text-xs font-semibold px-4">Read Article</Button>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Real-World Developer Workflows
+
+Production developer tools and showcase cards including SaaS App Boilerplate templates and Developer Video Masterclass course cards.
+
+<ComponentPreview name="card" vibeDeps="button, badge, avatar">
+  <CardDemoRealWorldDev />
+
+```tsx
+import * as React from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Play } from 'lucide-react'
+
+export default function RealWorldDeveloperCardsDemo() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center w-full max-w-4xl">
+      {/* SaaS Starter Kit & App Template */}
+      <Card className="w-full max-w-sm sm:max-w-md overflow-hidden text-left shadow-sm border border-border bg-card">
+        <div className="h-44 w-full bg-gradient-to-tr from-slate-950 via-indigo-950 to-violet-950 relative p-4 flex flex-col justify-between overflow-hidden border-b border-border">
+          <div className="flex items-center justify-between">
+            <Badge className="bg-primary text-primary-foreground text-[10px] font-bold">NEXT.JS 15</Badge>
+          </div>
+          <h3 className="text-base font-extrabold text-white leading-snug">
+            Vibe AI Studio - Enterprise Fullstack Kit
+          </h3>
+        </div>
+
+        <div className="p-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-9 w-9 border border-border">
+              <AvatarFallback className="bg-purple-600 text-white font-bold text-xs">DV</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-bold text-foreground">DevVibe Engineering</div>
+              <div className="text-[10px] text-muted-foreground">Updated 2 days ago • 1,280 Sales</div>
+            </div>
+            <div className="text-right">
+              <div className="text-lg font-black text-foreground">$49</div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-3 border-t border-border gap-2">
+            <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8">Live Preview</Button>
+            <Button size="sm" className="w-full text-xs font-semibold h-8">Get Starter Kit</Button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Developer Masterclass & Video Course */}
+      <Card className="w-full max-w-sm sm:max-w-md overflow-hidden text-left shadow-sm border border-border bg-card">
+        <div className="h-44 w-full bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 relative p-4 flex flex-col justify-between overflow-hidden border-b border-border">
+          <div className="flex justify-between items-center">
+            <Badge className="bg-blue-600 text-white text-[10px] font-bold">MASTERCLASS</Badge>
+            <span className="text-[10px] text-white/80 bg-black/50 px-2 py-0.5 rounded-full font-mono">8h 45m</span>
+          </div>
+          <h3 className="text-base font-extrabold text-white leading-snug">
+            Building Real-time Micro-Frontends
+          </h3>
+        </div>
+
+        <div className="p-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-9 w-9 border border-border">
+              <AvatarFallback className="bg-blue-600 text-white font-bold text-xs">MC</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-bold text-foreground">Marcus Chen</div>
+              <div className="text-[10px] text-muted-foreground">Staff Architect • 4.8k Enrolled</div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-3 border-t border-border gap-2">
+            <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8">View Syllabus</Button>
+            <Button size="sm" className="w-full text-xs font-semibold h-8 bg-blue-600 text-white">Enroll Now</Button>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+---
+
+## Props
+
+<PropsTable title="Card">
+  <PropRow
+    prop="variant"
+    type='"default" | "glass" | "retro" | "glow"'
+    default='"default"'
+    description="Visual style preset theme of the card container."
+  />
+  <PropRow
+    prop="className"
+    type="string"
+    default="-"
+    description="Additional Tailwind CSS classes applied to the root card container."
+  />
+</PropsTable>

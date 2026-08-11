@@ -1,0 +1,723 @@
+# Skeleton
+
+Displays a placeholder outline while content is loading.
+
+## Preview
+
+<ComponentPreview>
+  <div className="flex items-center space-x-4 text-left w-[300px]">
+    <Skeleton className="h-12 w-12 rounded-full" />
+    <div className="space-y-2 flex-1">
+      <Skeleton className="h-4 w-[150px] max-w-full" />
+      <Skeleton className="h-4 w-[100px] max-w-full" />
+    </div>
+  </div>
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton'
+
+export default function SkeletonDemo() {
+  return (
+    <div className="flex items-center space-x-4">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[150px]" />
+        <Skeleton className="h-4 w-[100px]" />
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="skeleton">
+
+```tsx
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const skeletonVariants = tv({
+  base: 'relative overflow-hidden rounded-md bg-muted/60 dark:bg-muted/40 transition-all duration-300',
+  variants: {
+    variant: {
+      pulse: 'animate-pulse',
+      shimmer: 'bg-muted/40 dark:bg-muted/30',
+      glow: 'shadow-[0_0_15px_rgba(168,85,247,0.15)] border border-primary/20 bg-primary/5 animate-pulse',
+      glass: 'bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 backdrop-blur-md animate-pulse',
+      retro: 'border-2 border-foreground bg-background rounded-none vibe-retro-flash-effect',
+    }
+  },
+  defaultVariants: {
+    variant: 'pulse'
+  }
+})
+
+const SkeletonStyles = () => (
+  <style dangerouslySetInnerHTML={{ __html: `
+    @keyframes vibe-shimmer {
+      100% { transform: translateX(100%); }
+    }
+    @keyframes vibe-retro-flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
+    .vibe-shimmer-effect::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background-image: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.08) 20%,
+        rgba(255, 255, 255, 0.15) 60%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      animation: vibe-shimmer 1.6s infinite;
+    }
+    .dark .vibe-shimmer-effect::after {
+      background-image: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.03) 20%,
+        rgba(255, 255, 255, 0.08) 60%,
+        rgba(255, 255, 255, 0) 100%
+      );
+    }
+    .vibe-retro-flash-effect {
+      animation: vibe-retro-flash 1s steps(2, end) infinite;
+    }
+  `}} />
+)
+
+export interface SkeletonProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof skeletonVariants> {}
+
+const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
+  ({ className, variant, ...props }, ref) => {
+    return (
+      <>
+        <SkeletonStyles />
+        <div
+          ref={ref}
+          className={cn(
+            skeletonVariants({ variant }),
+            variant === 'shimmer' && 'vibe-shimmer-effect',
+            className
+          )}
+          {...props}
+        />
+      </>
+    )
+  }
+)
+Skeleton.displayName = 'Skeleton'
+
+// Helper Layout Elements
+export const SkeletonCircle = React.forwardRef<
+  HTMLDivElement,
+  SkeletonProps & { size?: number | string }
+>(({ size = 48, className, ...props }, ref) => (
+  <Skeleton
+    ref={ref}
+    className={cn('rounded-full shrink-0', className)}
+    style={{ width: size, height: size, ...props.style }}
+    {...props}
+  />
+))
+SkeletonCircle.displayName = 'SkeletonCircle'
+
+export const SkeletonLine = React.forwardRef<
+  HTMLDivElement,
+  SkeletonProps & { height?: number | string }
+>(({ height = '1rem', className, ...props }, ref) => (
+  <Skeleton
+    ref={ref}
+    className={cn('w-full', className)}
+    style={{ height, ...props.style }}
+    {...props}
+  />
+))
+SkeletonLine.displayName = 'SkeletonLine'
+
+// Layout Preset 1: Standard Card
+export const SkeletonCard = React.forwardRef<HTMLDivElement, SkeletonProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        'border border-border rounded-xl p-4 bg-card space-y-4 shadow-sm w-full transition-all duration-300',
+        props.variant === 'retro' && 'border-2 border-foreground rounded-none bg-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]',
+        props.variant === 'glass' && 'bg-white/[0.03] border-white/10 backdrop-blur-md',
+        props.variant === 'glow' && 'border-primary/20 shadow-[0_0_20px_rgba(168,85,247,0.08)]',
+        className
+      )}
+    >
+      <Skeleton className="aspect-video w-full rounded-lg" {...props} />
+      <div className="space-y-2">
+        <SkeletonLine height="1.25rem" className="w-2/3" {...props} />
+        <SkeletonLine height="0.875rem" className="w-5/6" {...props} />
+        <SkeletonLine height="0.875rem" className="w-1/2" {...props} />
+      </div>
+      <div className="flex justify-between items-center pt-2">
+        <Skeleton className="h-8 w-20 rounded-md" {...props} />
+        <SkeletonCircle size={28} {...props} />
+      </div>
+    </div>
+  )
+)
+SkeletonCard.displayName = 'SkeletonCard'
+
+// Layout Preset 2: Profile Block
+export const SkeletonProfile = React.forwardRef<HTMLDivElement, SkeletonProps>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('flex items-center space-x-4 w-full p-2', className)}>
+      <SkeletonCircle size={48} {...props} />
+      <div className="space-y-2 flex-1">
+        <SkeletonLine height="1rem" className="w-1/3" {...props} />
+        <SkeletonLine height="0.75rem" className="w-1/2" {...props} />
+      </div>
+    </div>
+  )
+)
+SkeletonProfile.displayName = 'SkeletonProfile'
+
+// Layout Preset 3: Horizontal Bullet List
+export const SkeletonList = React.forwardRef<
+  HTMLDivElement,
+  SkeletonProps & { items?: number }
+>(({ items = 3, className, ...props }, ref) => (
+  <div ref={ref} className={cn('space-y-4 w-full', className)}>
+    {Array.from({ length: items }).map((_, i) => (
+      <div key={i} className="flex items-center space-x-3">
+        <SkeletonCircle size={24} {...props} />
+        <SkeletonLine height="0.875rem" className="flex-1" {...props} />
+      </div>
+    ))}
+  </div>
+))
+SkeletonList.displayName = 'SkeletonList'
+
+// Layout Preset 4: Mock Data Table
+export const SkeletonTable = React.forwardRef<
+  HTMLDivElement,
+  SkeletonProps & { rows?: number; cols?: number }
+>(({ rows = 3, cols = 4, className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      'w-full border border-border rounded-lg overflow-hidden bg-card shadow-sm',
+      props.variant === 'retro' && 'border-2 border-foreground rounded-none bg-background',
+      props.variant === 'glass' && 'bg-white/[0.03] border-white/10 backdrop-blur-md',
+      props.variant === 'glow' && 'border-primary/20 shadow-[0_0_20px_rgba(168,85,247,0.08)]',
+      className
+    )}
+  >
+    <div className="flex border-b border-border bg-muted/40 p-3 space-x-4">
+      {Array.from({ length: cols }).map((_, i) => (
+        <SkeletonLine key={i} height="0.875rem" className="flex-1" {...props} />
+      ))}
+    </div>
+    <div className="divide-y divide-border">
+      {Array.from({ length: rows }).map((_, r) => (
+        <div key={r} className="flex p-4 space-x-4">
+          {Array.from({ length: cols }).map((_, c) => (
+            <SkeletonLine key={c} height="0.75rem" className="flex-1" {...props} />
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+))
+SkeletonTable.displayName = 'SkeletonTable'
+
+// Layout Preset 5: Large Blog Post Card
+export const SkeletonPost = React.forwardRef<HTMLDivElement, SkeletonProps>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('space-y-4 w-full p-2', className)}>
+      <div className="flex items-center space-x-3">
+        <SkeletonCircle size={40} {...props} />
+        <div className="space-y-1.5 flex-1">
+          <SkeletonLine height="0.875rem" className="w-1/4" {...props} />
+          <SkeletonLine height="0.75rem" className="w-1/6" {...props} />
+        </div>
+      </div>
+      <Skeleton className="h-48 w-full rounded-lg" {...props} />
+      <div className="space-y-2">
+        <SkeletonLine height="1.25rem" className="w-3/4" {...props} />
+        <SkeletonLine height="0.875rem" className="w-full" {...props} />
+        <SkeletonLine height="0.875rem" className="w-5/6" {...props} />
+      </div>
+    </div>
+  )
+)
+SkeletonPost.displayName = 'SkeletonPost'
+
+// Layout Preset 6: Bar Chart mock
+export const SkeletonChart = React.forwardRef<
+  HTMLDivElement,
+  SkeletonProps & { bars?: number }
+>(({ bars = 6, className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      'border border-border rounded-xl p-4 bg-card h-48 flex items-end justify-around space-x-2 w-full',
+      props.variant === 'retro' && 'border-2 border-foreground rounded-none bg-background',
+      props.variant === 'glass' && 'bg-white/[0.03] border-white/10 backdrop-blur-md',
+      props.variant === 'glow' && 'border-primary/20 shadow-[0_0_20px_rgba(168,85,247,0.08)]',
+      className
+    )}
+  >
+    {Array.from({ length: bars }).map((_, i) => {
+      const heights = ['h-[30%]', 'h-[65%]', 'h-[45%]', 'h-[85%]', 'h-[25%]', 'h-[70%]']
+      const h = heights[i % heights.length]
+      return (
+        <Skeleton
+          key={i}
+          className={cn('w-full rounded-t-md max-w-[40px]', h)}
+          {...props}
+        />
+      )
+    })}
+  </div>
+))
+SkeletonChart.displayName = 'SkeletonChart'
+
+// Layout Preset 7: Structured Form layout
+export const SkeletonForm = React.forwardRef<
+  HTMLDivElement,
+  SkeletonProps & { fields?: number }
+>(({ fields = 3, className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      'space-y-4 w-full p-4 border border-border rounded-xl bg-card shadow-sm',
+      props.variant === 'retro' && 'border-2 border-foreground rounded-none bg-background',
+      props.variant === 'glass' && 'bg-white/[0.03] border-white/10 backdrop-blur-md',
+      props.variant === 'glow' && 'border-primary/20 shadow-[0_0_20px_rgba(168,85,247,0.08)]',
+      className
+    )}
+  >
+    {Array.from({ length: fields }).map((_, i) => (
+      <div key={i} className="space-y-2">
+        <SkeletonLine height="0.75rem" className="w-1/6" {...props} />
+        <Skeleton className="h-10 w-full rounded-md" {...props} />
+      </div>
+    ))}
+    <div className="flex justify-end pt-2">
+      <Skeleton className="h-10 w-24 rounded-md" {...props} />
+    </div>
+  </div>
+))
+SkeletonForm.displayName = 'SkeletonForm'
+
+// Layout Preset 8: Multi-Post Feed list
+export const SkeletonFeed = React.forwardRef<
+  HTMLDivElement,
+  SkeletonProps & { posts?: number }
+>(({ posts = 2, className, ...props }, ref) => (
+  <div ref={ref} className={cn('space-y-6 w-full', className)}>
+    {Array.from({ length: posts }).map((_, i) => (
+      <SkeletonPost
+        key={i}
+        className="border-b border-border pb-6 last:border-b-0 last:pb-0"
+        {...props}
+      />
+    ))}
+  </div>
+))
+SkeletonFeed.displayName = 'SkeletonFeed'
+
+export { Skeleton }
+```
+
+</Installation>
+
+
+
+## Style Variants
+
+Explore the 5 different animation and design system variants:
+
+### Pulse (Default)
+Standard utility pulse animation.
+<ComponentPreview>
+  <div className="w-[300px] max-w-full">
+    <Skeleton className="h-12 w-full" variant="pulse" />
+  </div>
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton'
+
+export default function SkeletonPulse() {
+  return <Skeleton className="h-12 w-full" variant="pulse" />
+}
+```
+</ComponentPreview>
+
+### Shimmer (Wave)
+Moving reflection gradient animation across components.
+<ComponentPreview>
+  <div className="w-[300px] max-w-full">
+    <Skeleton className="h-12 w-full" variant="shimmer" />
+  </div>
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton'
+
+export default function SkeletonShimmer() {
+  return <Skeleton className="h-12 w-full" variant="shimmer" />
+}
+```
+</ComponentPreview>
+
+### Glow
+Glow-ring outer shadows with theme colors.
+<ComponentPreview>
+  <div className="w-[300px] max-w-full">
+    <Skeleton className="h-12 w-full" variant="glow" />
+  </div>
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton'
+
+export default function SkeletonGlow() {
+  return <Skeleton className="h-12 w-full" variant="glow" />
+}
+```
+</ComponentPreview>
+
+### Glass
+Semi-transparent backing utilizing dynamic backdrop blur properties.
+<ComponentPreview>
+  <div className="w-[300px] max-w-full p-4 bg-zinc-950/20 rounded-lg border border-white/5">
+    <Skeleton className="h-12 w-full" variant="glass" />
+  </div>
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton'
+
+export default function SkeletonGlass() {
+  return <Skeleton className="h-12 w-full" variant="glass" />
+}
+```
+</ComponentPreview>
+
+### Retro
+Stark border frames coupled with custom blocky pixel opacity flashes.
+<ComponentPreview>
+  <div className="w-[300px] max-w-full">
+    <Skeleton className="h-12 w-full" variant="retro" />
+  </div>
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton'
+
+export default function SkeletonRetro() {
+  return <Skeleton className="h-12 w-full" variant="retro" />
+}
+```
+</ComponentPreview>
+
+---
+
+## Pre-Built Layout Presets
+
+Use these ready-to-use structural placeholders immediately.
+
+### 1. Profile Skeleton
+Circular user avatar adjacent to text labels.
+<ComponentPreview>
+  <div className="w-[300px] max-w-full">
+    <SkeletonProfile />
+  </div>
+
+```tsx
+import { SkeletonProfile } from '@/components/ui/skeleton'
+
+export default function SkeletonProfileDemo() {
+  return <SkeletonProfile />
+}
+```
+</ComponentPreview>
+
+### 2. Standard Card
+Mock card with cover image area, badge, text details, and action layouts.
+<ComponentPreview>
+  <div className="w-[300px] max-w-full">
+    <SkeletonCard />
+  </div>
+
+```tsx
+import { SkeletonCard } from '@/components/ui/skeleton'
+
+export default function SkeletonCardDemo() {
+  return <SkeletonCard />
+}
+```
+</ComponentPreview>
+
+### 3. Bullet List
+Multiple list rows containing item bullets.
+<ComponentPreview>
+  <div className="w-[300px] max-w-full">
+    <SkeletonList items={3} />
+  </div>
+
+```tsx
+import { SkeletonList } from '@/components/ui/skeleton'
+
+export default function SkeletonListDemo() {
+  return <SkeletonList items={3} />
+}
+```
+</ComponentPreview>
+
+### 4. Data Table
+Grid placeholder with column headers and cell rows.
+<ComponentPreview>
+  <div className="w-[500px] max-w-full">
+    <SkeletonTable rows={3} cols={4} />
+  </div>
+
+```tsx
+import { SkeletonTable } from '@/components/ui/skeleton'
+
+export default function SkeletonTableDemo() {
+  return <SkeletonTable rows={3} cols={4} />
+}
+```
+</ComponentPreview>
+
+### 5. Hero Blog Post
+Large hero banner with full post header and paragraphs.
+<ComponentPreview>
+  <div className="w-[350px] max-w-full">
+    <SkeletonPost />
+  </div>
+
+```tsx
+import { SkeletonPost } from '@/components/ui/skeleton'
+
+export default function SkeletonPostDemo() {
+  return <SkeletonPost />
+}
+```
+</ComponentPreview>
+
+### 6. Bar Chart
+Varying height bar blocks.
+<ComponentPreview>
+  <div className="w-[350px] max-w-full">
+    <SkeletonChart bars={6} />
+  </div>
+
+```tsx
+import { SkeletonChart } from '@/components/ui/skeleton'
+
+export default function SkeletonChartDemo() {
+  return <SkeletonChart bars={6} />
+}
+```
+</ComponentPreview>
+
+### 7. Form inputs
+Labels, inputs, and submission buttons.
+<ComponentPreview>
+  <div className="w-[350px] max-w-full">
+    <SkeletonForm fields={2} />
+  </div>
+
+```tsx
+import { SkeletonForm } from '@/components/ui/skeleton'
+
+export default function SkeletonFormDemo() {
+  return <SkeletonForm fields={2} />
+}
+```
+</ComponentPreview>
+
+### 8. Feed Scroll list
+Sequential loading list containing posts.
+<ComponentPreview>
+  <div className="w-[350px] max-w-full">
+    <SkeletonFeed posts={2} />
+  </div>
+
+```tsx
+import { SkeletonFeed } from '@/components/ui/skeleton'
+
+export default function SkeletonFeedDemo() {
+  return <SkeletonFeed posts={2} />
+}
+```
+</ComponentPreview>
+
+---
+
+## Premium Interactive Showcases
+
+These are 10 highly interactive, advanced layout structures representing typical product UI interfaces. You can configure their animation styles by passing the standard `variant` prop (`glass`, `retro`, `glow`, `shimmer`, `pulse`).
+
+### 1. Music Player
+Spotify-style playback dashboard with album art, track timeline, playback triggers, and volume bar.
+<ComponentPreview>
+  <div className="w-[350px] max-w-full">
+    <SkeletonMusicPlayer />
+  </div>
+
+```tsx
+import { SkeletonMusicPlayer } from '@/components/ui/skeleton'
+
+export default function MusicPlayerDemo() {
+  return <SkeletonMusicPlayer />
+}
+```
+</ComponentPreview>
+
+### 2. Full Admin Dashboard
+Multi-column screen containing sidebar nodes, metric charts, statistics cards, and details lists.
+<ComponentPreview>
+  <div className="w-[750px] max-w-full">
+    <SkeletonDashboard />
+  </div>
+
+```tsx
+import { SkeletonDashboard } from '@/components/ui/skeleton'
+
+export default function DashboardDemo() {
+  return <SkeletonDashboard />
+}
+```
+</ComponentPreview>
+
+### 3. E-Commerce Product Deck
+Product catalog listing block with thumbnail gallery, pricing details, rating reviews, and size selectors.
+<ComponentPreview>
+  <div className="w-[350px] max-w-full">
+    <SkeletonECommerce />
+  </div>
+
+```tsx
+import { SkeletonECommerce } from '@/components/ui/skeleton'
+
+export default function ECommerceDemo() {
+  return <SkeletonECommerce />
+}
+```
+</ComponentPreview>
+
+### 4. Interactive Chat Thread
+A complete messaging panel showing profile status header, incoming/outgoing bubbles, and input controls.
+<ComponentPreview>
+  <div className="w-[400px] max-w-full">
+    <SkeletonChat />
+  </div>
+
+```tsx
+import { SkeletonChat } from '@/components/ui/skeleton'
+
+export default function ChatDemo() {
+  return <SkeletonChat />
+}
+```
+</ComponentPreview>
+
+### 5. Video Player Interface
+Widescreen video deck containing player load spinner overlay, floating subtitle bars, and bottom controller timeline.
+<ComponentPreview>
+  <div className="w-[600px] max-w-full">
+    <SkeletonVideoPlayer />
+  </div>
+
+```tsx
+import { SkeletonVideoPlayer } from '@/components/ui/skeleton'
+
+export default function VideoPlayerDemo() {
+  return <SkeletonVideoPlayer />
+}
+```
+</ComponentPreview>
+
+### 6. File Explorer Panel
+Folder directory tree with folders grid and line items list display.
+<ComponentPreview>
+  <div className="w-[600px] max-w-full">
+    <SkeletonFileExplorer />
+  </div>
+
+```tsx
+import { SkeletonFileExplorer } from '@/components/ui/skeleton'
+
+export default function FileExplorerDemo() {
+  return <SkeletonFileExplorer />
+}
+```
+</ComponentPreview>
+
+### 7. Monthly Calendar Grid
+Grid cell organizer showing date headers, active events, and schedule summary list.
+<ComponentPreview>
+  <div className="w-[450px] max-w-full">
+    <SkeletonCalendar />
+  </div>
+
+```tsx
+import { SkeletonCalendar } from '@/components/ui/skeleton'
+
+export default function CalendarDemo() {
+  return <SkeletonCalendar />
+}
+```
+</ComponentPreview>
+
+### 8. Billing Invoice Receipt
+Detailed accounting statement with billing fields, line items calculation rows, and checkout action buttons.
+<ComponentPreview>
+  <div className="w-[400px] max-w-full">
+    <SkeletonInvoice />
+  </div>
+
+```tsx
+import { SkeletonInvoice } from '@/components/ui/skeleton'
+
+export default function InvoiceDemo() {
+  return <SkeletonInvoice />
+}
+```
+</ComponentPreview>
+
+### 9. Account Settings Screen
+User customization screen featuring profile details, inputs, toggle check boxes, and footer controls.
+<ComponentPreview>
+  <div className="w-[550px] max-w-full">
+    <SkeletonSettings />
+  </div>
+
+```tsx
+import { SkeletonSettings } from '@/components/ui/skeleton'
+
+export default function SettingsDemo() {
+  return <SkeletonSettings />
+}
+```
+</ComponentPreview>
+
+### 10. Notifications Drawer
+Alert notification stack containing alert list items with badges, system status indicators, and clear-all actions.
+<ComponentPreview>
+  <div className="w-[350px] max-w-full">
+    <SkeletonNotifications />
+  </div>
+
+```tsx
+import { SkeletonNotifications } from '@/components/ui/skeleton'
+
+export default function NotificationsDemo() {
+  return <SkeletonNotifications />
+}
+```
+</ComponentPreview>

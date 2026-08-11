@@ -1,0 +1,89 @@
+# Label
+
+An accessible label component that integrates with form input controls.
+
+## Preview
+
+<ComponentPreview>
+  <div className="flex items-center space-x-2 text-left">
+    <Checkbox id="terms" />
+    <Label htmlFor="terms" className="pb-0 cursor-pointer">Accept terms and conditions</Label>
+  </div>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+
+export default function LabelDemo() {
+  return (
+    <div className="flex items-center space-x-2">
+      <Checkbox id="terms" />
+      <Label htmlFor="terms" className="pb-0">
+        Accept terms and conditions
+      </Label>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="label" npmDeps="@radix-ui/react-label lucide-react tailwind-variants">
+
+```tsx
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const labelVariants = tv({
+  base: 'text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70 transition-all duration-150 select-none pb-1.5 inline-block',
+})
+
+export interface LabelProps
+  extends
+    React.LabelHTMLAttributes<HTMLLabelElement>,
+    VariantProps<typeof labelVariants> {}
+
+const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
+  ({ className, ...props }, ref) => (
+    <label ref={ref} className={cn(labelVariants(), className)} {...props} />
+  ),
+)
+Label.displayName = 'Label'
+
+export { Label }
+```
+
+</Installation>
+
+
+
+## Examples
+
+### With Input
+
+<ComponentPreview>
+  <div className="grid w-full max-w-sm items-center gap-1.5 text-left">
+    <Label htmlFor="email-demo">Email Address</Label>
+    <Input type="email" id="email-demo" placeholder="name@example.com" className="max-w-xs" />
+  </div>
+
+```tsx
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+
+export default function LabelWithInput() {
+  return (
+    <div className="grid w-full max-w-sm items-center gap-1.5">
+      <Label htmlFor="email-demo">Email Address</Label>
+      <Input type="email" id="email-demo" placeholder="name@example.com" />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's Label component wraps the Radix UI `Label` primitive. It provides accessible field labels that focus matching form elements when clicked.

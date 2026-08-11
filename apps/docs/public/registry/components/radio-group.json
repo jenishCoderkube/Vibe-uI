@@ -1,0 +1,17 @@
+{
+  "name": "radio-group",
+  "dependencies": [
+    "@radix-ui/react-radio-group",
+    "lucide-react",
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "radio-group.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport * as RadioGroupPrimitive from '@radix-ui/react-radio-group'\nimport { tv, type VariantProps } from 'tailwind-variants'\nimport { cn } from '../lib/utils'\n\nconst radioGroupRootVariants = tv({\n  base: 'grid gap-2.5',\n})\n\nconst radioItemVariants = tv({\n  base: 'aspect-square h-4 w-4 shrink-0 rounded-full border border-primary text-primary shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer inline-flex items-center justify-center transition-all duration-200 select-none my-auto',\n  variants: {\n    variant: {\n      default:\n        'border-input hover:border-primary data-[state=checked]:border-primary data-[state=checked]:bg-primary/5',\n      retro:\n        'border-2 border-foreground bg-background shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none h-4 w-4',\n      glass:\n        'bg-slate-200/50 dark:bg-black/30 border-black/20 dark:border-white/20 backdrop-blur-md hover:border-primary',\n    },\n  },\n  defaultVariants: {\n    variant: 'default',\n  },\n})\n\nconst RadioGroup = React.forwardRef<\n  React.ElementRef<typeof RadioGroupPrimitive.Root>,\n  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>\n>(({ className, ...props }, ref) => {\n  return (\n    <RadioGroupPrimitive.Root\n      data-slot=\"radio-group\"\n      className={cn(radioGroupRootVariants(), className)}\n      {...props}\n      ref={ref}\n    />\n  )\n})\nRadioGroup.displayName = RadioGroupPrimitive.Root.displayName\n\nexport interface RadioGroupItemProps\n  extends\n    React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>,\n    VariantProps<typeof radioItemVariants> {}\n\nconst RadioGroupItem = React.forwardRef<\n  React.ElementRef<typeof RadioGroupPrimitive.Item>,\n  RadioGroupItemProps\n>(({ className, variant = 'default', ...props }, ref) => {\n  return (\n    <RadioGroupPrimitive.Item\n      ref={ref}\n      data-slot=\"radio-group-item\"\n      className={cn(\n        radioItemVariants({ variant }),\n        'aria-invalid:border-destructive aria-invalid:text-destructive dark:aria-invalid:border-destructive',\n        className,\n      )}\n      {...props}\n    >\n      <RadioGroupPrimitive.Indicator\n        data-slot=\"radio-group-indicator\"\n        className=\"flex items-center justify-center h-full w-full\"\n      >\n        {variant === 'retro' ? (\n          <span className=\"h-1.5 w-1.5 bg-foreground rounded-none\" />\n        ) : (\n          <span className=\"h-2 w-2 rounded-full bg-primary\" />\n        )}\n      </RadioGroupPrimitive.Indicator>\n    </RadioGroupPrimitive.Item>\n  )\n})\nRadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName\n\nexport { RadioGroup, RadioGroupItem }\n"
+    }
+  ]
+}

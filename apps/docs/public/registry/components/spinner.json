@@ -1,0 +1,11 @@
+{
+  "name": "spinner",
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "name": "spinner.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\nimport { tv, type VariantProps } from 'tailwind-variants'\nimport { cn } from '../lib/utils'\n\nconst spinnerVariants = tv({\n  base: 'animate-spin shrink-0 select-none',\n  variants: {\n    variant: {\n      default: 'text-muted-foreground',\n      glass: 'text-zinc-300 drop-shadow-[0_2px_4px_rgba(255,255,255,0.1)]',\n      retro: 'text-foreground stroke-[3px]',\n      glow: 'text-primary drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]',\n      cyberpunk: 'text-emerald-500 drop-shadow-[0_0_6px_rgba(16,185,129,0.4)]',\n    },\n    size: {\n      sm: 'h-4 w-4',\n      md: 'h-6 w-6',\n      lg: 'h-10 w-10',\n    },\n  },\n  defaultVariants: {\n    variant: 'default',\n    size: 'md',\n  },\n})\n\nexport interface SpinnerProps\n  extends React.SVGProps<SVGSVGElement>, VariantProps<typeof spinnerVariants> {}\n\nconst Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(\n  ({ className, variant, size, ...props }, ref) => {\n    return (\n      <svg\n        ref={ref}\n        data-slot=\"spinner\"\n        xmlns=\"http://www.w3.org/2000/svg\"\n        fill=\"none\"\n        viewBox=\"0 0 24 24\"\n        className={cn(spinnerVariants({ variant, size }), className)}\n        {...props}\n      >\n        <circle\n          className=\"opacity-20\"\n          cx=\"12\"\n          cy=\"12\"\n          r=\"10\"\n          stroke=\"currentColor\"\n          strokeWidth=\"3\"\n        />\n        <path\n          className=\"opacity-80\"\n          fill=\"currentColor\"\n          d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"\n        />\n      </svg>\n    )\n  },\n)\n\nSpinner.displayName = 'Spinner'\n\nexport { Spinner, spinnerVariants }\n"
+    }
+  ]
+}

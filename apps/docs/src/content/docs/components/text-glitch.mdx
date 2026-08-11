@@ -1,0 +1,162 @@
+# Text Glitch
+
+A high-fidelity, CSS-animation-powered cyberpunk text glitch component featuring red/cyan chromatic aberrations and custom speed toggles.
+
+## Preview
+
+<ComponentPreview sandbox="text-glitch">
+  <TextGlitchBasicDemo />
+
+```tsx
+import { TextGlitch } from '@/components/ui/text-glitch'
+
+export default function TextGlitchDemo() {
+  return (
+    <div className="w-full flex items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 font-mono">
+      <TextGlitch
+        text="SYSTEM GLITCH"
+        className="text-3xl text-white uppercase tracking-widest"
+      />
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="text-glitch">
+
+```tsx
+"use client"
+
+import * as React from "react"
+import { cn } from "@/lib/utils"
+
+export interface TextGlitchProps extends React.HTMLAttributes<HTMLSpanElement> {
+  text: string
+  speed?: "slow" | "normal" | "fast"
+  active?: boolean
+}
+
+const TextGlitch = React.forwardRef<HTMLSpanElement, TextGlitchProps>(
+  ({ className, text, speed = "normal", active = true, ...props }, ref) => {
+    const duration = speed === "slow" ? "2.5s" : speed === "fast" ? "0.8s" : "1.5s"
+
+    return (
+      <span
+        ref={ref}
+        data-text={text}
+        style={{
+          "--glitch-duration": duration,
+        } as React.CSSProperties}
+        className={cn(
+          "relative inline-block font-extrabold tracking-wider select-none",
+          active && [
+            "animate-text-glitch",
+            // Chromatic red glitch offset
+            "before:content-[attr(data-text)] before:absolute before:left-[2px] before:top-0 before:w-full before:h-full before:text-rose-500 before:opacity-85 before:mix-blend-screen before:animate-text-glitch before:[animation-duration:1.1s] before:[animation-delay:-0.15s] before:[text-shadow:-1.5px_0_#ef4444]",
+            // Chromatic cyan glitch offset
+            "after:content-[attr(data-text)] after:absolute after:left-[-2px] after:top-0 after:w-full after:h-full after:text-cyan-400 after:opacity-85 after:mix-blend-screen after:animate-text-glitch after:[animation-duration:1.8s] after:[animation-delay:-0.35s] after:[text-shadow:1.5px_0_#22d3ee]"
+          ],
+          className
+        )}
+        {...props}
+      >
+        {text}
+      </span>
+    )
+  }
+)
+TextGlitch.displayName = "TextGlitch"
+
+export { TextGlitch }
+```
+
+</Installation>
+
+
+
+## Variations
+
+### Animation Speeds
+
+Choose between slow frequency, normal mode, or fast clock speeds for the glitching interval.
+
+<ComponentPreview>
+  <TextGlitchSpeedDemo />
+
+```tsx
+import { TextGlitch } from '@/components/ui/text-glitch'
+
+export default function TextGlitchSpeeds() {
+  return (
+    <div className="w-full flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 font-mono">
+      <div className="flex flex-col gap-1 items-center">
+        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+          Slow
+        </span>
+        <TextGlitch text="SLOW FREQUENCY" speed="slow" className="text-lg text-rose-500" />
+      </div>
+      <div className="flex flex-col gap-1 items-center">
+        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+          Normal
+        </span>
+        <TextGlitch text="NORMAL MODE" speed="normal" className="text-lg text-cyan-400" />
+      </div>
+      <div className="flex flex-col gap-1 items-center">
+        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+          Fast
+        </span>
+        <TextGlitch text="OVERCLOCK FAST" speed="fast" className="text-lg text-emerald-400" />
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+### Trigger Control
+
+Animate the glitch continuously or trigger it dynamically via state actions.
+
+<ComponentPreview>
+  <TextGlitchHeaderDemo />
+
+```tsx
+import React, { useState } from 'react'
+import { TextGlitch } from '@/components/ui/text-glitch'
+
+export default function TextGlitchControl() {
+  const [active, setActive] = useState(true)
+
+  return (
+    <div className="w-full flex flex-col gap-4 items-center justify-center p-8 bg-zinc-950/40 rounded-xl border border-white/10 font-mono relative overflow-hidden">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.02)_50%,rgba(16,185,129,0)_50%)] bg-[length:100%_6px] pointer-events-none" />
+      <TextGlitch
+        text="DATABASE CORRUPTED"
+        active={active}
+        className="text-2xl text-emerald-400 border-b border-emerald-500/20 pb-2 mb-2 w-full text-center"
+      />
+      <button
+        onClick={() => setActive(!active)}
+        className="px-3 py-1.5 border border-emerald-500/40 bg-emerald-950/20 text-emerald-400 text-xs rounded hover:bg-emerald-500/20 transition-all cursor-pointer"
+      >
+        {active ? 'Disable Glitch' : 'Enable Glitch'}
+      </button>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Component Concept
+
+Vibe UI's TextGlitch component provides a pure-CSS chromatic distortion loop, avoiding heavy JS tracking packages. By copying text strings dynamically into pseudo-elements using HTML `data-text` selectors, it creates cyan/red outline channels that skew and split apart using randomized clipping bounds.
+
+### Key Attributes & Options
+
+- **`text`** (Required): `string` — The text label to render and duplicate.
+- **`speed`**: `'slow' | 'normal' | 'fast'` (default `'normal'`) — Controls keyframe interval loops.
+- **`active`**: `boolean` (default `true`) — Toggles the active CSS animation tracking.

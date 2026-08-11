@@ -1,0 +1,14 @@
+{
+  "name": "@vibe-ui/registry",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc && node dist/index.js",
+    "dev": "tsc --watch",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
