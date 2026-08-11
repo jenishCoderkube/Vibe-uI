@@ -29,7 +29,7 @@ function getOptionText(node: React.ReactNode): string {
 }
 
 const selectVariants = tv({
-  base: 'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 select-none cursor-pointer',
+  base: 'flex w-full items-center justify-between rounded-md border border-input bg-background transition-all duration-200 select-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
   variants: {
     variant: {
       default: 'border-border bg-background hover:bg-accent/50',
@@ -39,9 +39,14 @@ const selectVariants = tv({
         'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:active:shadow-[1px_1px_0px_0px_rgba(255,255,255,1)]',
       glow: 'bg-primary/10 border border-primary/45 text-primary shadow-[0_0_12px_rgba(168,85,247,0.15)] hover:shadow-[0_0_18px_rgba(168,85,247,0.3)]',
     },
+    size: {
+      default: 'h-10 px-3 py-2 text-sm',
+      sm: 'h-8 px-2.5 py-1.5 text-xs',
+    },
   },
   defaultVariants: {
     variant: 'default',
+    size: 'default',
   },
 })
 
@@ -69,15 +74,20 @@ const SelectGroup = SelectPrimitive.Group
 
 const SelectValue = SelectPrimitive.Value
 
+export interface SelectTriggerProps
+  extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> {
+  size?: 'default' | 'sm'
+}
+
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => {
+  SelectTriggerProps
+>(({ className, children, size = 'default', ...props }, ref) => {
   const { variant } = React.useContext(SelectVariantContext)
   return (
     <SelectPrimitive.Trigger
       ref={ref}
-      className={cn(selectVariants({ variant }), className)}
+      className={cn(selectVariants({ variant, size }), className)}
       {...props}
     >
       {children}

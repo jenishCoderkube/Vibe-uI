@@ -2,11 +2,9 @@
 
 A control that allows the user to toggle between checked and unchecked states.
 
-## Preview
-
 <ComponentPreview sandbox="checkbox">
   <div className="flex items-center space-x-2 text-left">
-    <Checkbox id="terms-checkbox" />
+    <Checkbox id="terms-checkbox" defaultChecked />
     <Label htmlFor="terms-checkbox" className="pb-0 cursor-pointer">Accept terms and conditions</Label>
   </div>
 
@@ -17,7 +15,7 @@ import { Label } from '@/components/ui/label'
 export default function CheckboxDemo() {
   return (
     <div className="flex items-center space-x-2">
-      <Checkbox id="terms-checkbox" />
+      <Checkbox id="terms-checkbox" defaultChecked />
       <Label htmlFor="terms-checkbox" className="pb-0">
         Accept terms and conditions
       </Label>
@@ -31,73 +29,45 @@ export default function CheckboxDemo() {
 <Installation name="checkbox" npmDeps="@radix-ui/react-checkbox lucide-react tailwind-variants" vibeDeps="label">
 
 ```tsx
+// @/components/ui/checkbox.tsx
 'use client'
 
 import * as React from 'react'
-import { cn } from '@/lib/utils'
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import { Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
-export interface CheckboxProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'type'
-> {
-  checked?: boolean
-  onCheckedChange?: (checked: boolean) => void
-}
-
-const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, checked, defaultChecked, onCheckedChange, ...props }, ref) => {
-    const [localChecked, setLocalChecked] = React.useState(
-      defaultChecked || false,
-    )
-    const isChecked = checked !== undefined ? checked : localChecked
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (checked === undefined) {
-        setLocalChecked(e.target.checked)
-      }
-      onCheckedChange?.(e.target.checked)
-    }
-
-    const CheckIcon = Check as any
-
-    return (
-      <div className="relative flex items-center justify-center">
-        <input
-          type="checkbox"
-          ref={ref}
-          checked={isChecked}
-          onChange={handleChange}
-          className="peer h-4 w-4 shrink-0 rounded border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 opacity-0 absolute cursor-pointer z-10"
-          {...props}
-        />
-        <div
-          className={cn(
-            'h-4 w-4 shrink-0 rounded border border-input transition-all duration-200 flex items-center justify-center bg-background peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-checked:bg-primary peer-checked:border-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-50 pointer-events-none',
-            className,
-          )}
-        >
-          {isChecked && (
-            <CheckIcon className="h-3 w-3 text-primary-foreground stroke-[3]" />
-          )}
-        </div>
-      </div>
-    )
-  },
-)
-Checkbox.displayName = 'Checkbox'
+const Checkbox = React.forwardRef<
+  React.ElementRef<typeof CheckboxPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <CheckboxPrimitive.Root
+    ref={ref}
+    data-slot="checkbox"
+    className={cn(
+      'peer h-4 w-4 shrink-0 rounded border border-input transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground bg-background',
+      className,
+    )}
+    {...props}
+  >
+    <CheckboxPrimitive.Indicator
+      data-slot="checkbox-indicator"
+      className={cn('flex items-center justify-center text-current')}
+    >
+      <Check className="h-3 w-3 text-primary-foreground stroke-[3]" />
+    </CheckboxPrimitive.Indicator>
+  </CheckboxPrimitive.Root>
+))
+Checkbox.displayName = CheckboxPrimitive.Root.displayName
 
 export { Checkbox }
 ```
 
 </Installation>
 
+## Variations
 
-## All Variations
-
-Explore all interactive states and combinations of the Checkbox component.
-
-### Interactive States
+Explore the standard interactive states of the Checkbox component.
 
 <ComponentPreview>
   <div className="flex flex-wrap items-center gap-8 text-left w-full justify-start">
@@ -136,15 +106,11 @@ export default function CheckboxStatesDemo() {
       </div>
       <div className="flex items-center space-x-2">
         <Checkbox id="cb-dis-off" disabled />
-        <Label htmlFor="cb-dis-off" className="opacity-50">
-          Disabled Off
-        </Label>
+        <Label htmlFor="cb-dis-off" className="opacity-50">Disabled Off</Label>
       </div>
       <div className="flex items-center space-x-2">
         <Checkbox id="cb-dis-on" disabled defaultChecked />
-        <Label htmlFor="cb-dis-on" className="opacity-50">
-          Disabled On
-        </Label>
+        <Label htmlFor="cb-dis-on" className="opacity-50">Disabled On</Label>
       </div>
     </div>
   )
@@ -153,28 +119,84 @@ export default function CheckboxStatesDemo() {
 
 </ComponentPreview>
 
-
 ## Examples
 
-### Disabled State
+### Form Checklist
+
+An interactive list group mapping checkboxes to multi-row selection inputs with support for descriptions.
 
 <ComponentPreview>
-  <div className="flex items-center space-x-2 text-left">
-    <Checkbox id="terms-disabled" disabled />
-    <Label htmlFor="terms-disabled" className="pb-0 cursor-pointer">Accept terms and conditions</Label>
-  </div>
+  <CheckboxFormDemo />
 
 ```tsx
+import React, { useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 
-export default function CheckboxDisabled() {
+export default function CheckboxFormDemo() {
+  const [newsletters, setNewsletters] = useState(true)
+  const [promotions, setPromotions] = useState(false)
+  const [security, setSecurity] = useState(true)
+
   return (
-    <div className="flex items-center space-x-2">
-      <Checkbox id="terms-disabled" disabled />
-      <Label htmlFor="terms-disabled" className="pb-0">
-        Accept terms and conditions
-      </Label>
+    <div className="w-full max-w-[420px] rounded-xl border border-border bg-card p-5 text-left">
+      <div className="mb-4">
+        <h4 className="text-sm font-semibold text-foreground">Notification Preferences</h4>
+        <p className="text-xs text-muted-foreground">Manage how you receive alerts and newsletters.</p>
+      </div>
+      
+      <div className="space-y-4">
+        <div 
+          onClick={() => setNewsletters(!newsletters)}
+          className="flex items-start gap-3 rounded-lg border border-border p-3 hover:bg-muted/40 transition-colors cursor-pointer select-none"
+        >
+          <Checkbox 
+            id="pref-newsletters" 
+            checked={newsletters} 
+            onCheckedChange={(checked) => setNewsletters(!!checked)} 
+            onClick={(e) => e.stopPropagation()} 
+            className="mt-1" 
+          />
+          <div className="space-y-1">
+            <Label htmlFor="pref-newsletters" className="text-xs font-semibold pb-0 cursor-pointer">Weekly Newsletters</Label>
+            <p className="text-[11px] text-muted-foreground leading-normal">Get a digest of new features, articles, and community updates every Tuesday.</p>
+          </div>
+        </div>
+
+        <div 
+          onClick={() => setPromotions(!promotions)}
+          className="flex items-start gap-3 rounded-lg border border-border p-3 hover:bg-muted/40 transition-colors cursor-pointer select-none"
+        >
+          <Checkbox 
+            id="pref-promotions" 
+            checked={promotions} 
+            onCheckedChange={(checked) => setPromotions(!!checked)} 
+            onClick={(e) => e.stopPropagation()} 
+            className="mt-1" 
+          />
+          <div className="space-y-1">
+            <Label htmlFor="pref-promotions" className="text-xs font-semibold pb-0 cursor-pointer">Promotional Emails</Label>
+            <p className="text-[11px] text-muted-foreground leading-normal">Receive updates on discounts, sales, and special offers from our partners.</p>
+          </div>
+        </div>
+
+        <div 
+          onClick={() => setSecurity(!security)}
+          className="flex items-start gap-3 rounded-lg border border-border p-3 hover:bg-muted/40 transition-colors cursor-pointer select-none"
+        >
+          <Checkbox 
+            id="pref-security" 
+            checked={security} 
+            onCheckedChange={(checked) => setSecurity(!!checked)} 
+            onClick={(e) => e.stopPropagation()} 
+            className="mt-1" 
+          />
+          <div className="space-y-1">
+            <Label htmlFor="pref-security" className="text-xs font-semibold pb-0 cursor-pointer">Security & Safety Alerts</Label>
+            <p className="text-[11px] text-muted-foreground leading-normal">Get instant alerts about login attempts, security patches, and critical updates.</p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -182,11 +204,120 @@ export default function CheckboxDisabled() {
 
 </ComponentPreview>
 
-## Component Concept
+### Card Selector
 
-Vibe UI's Checkbox component is built on top of Radix UI `Checkbox` primitives. It provides an accessible, fully interactive toggle element for selecting one or more items in lists and forms.
+A responsive grid selector where active items check their matching checkboxes and show a highlighted border.
 
-### Accessibility
+<ComponentPreview>
+  <CheckboxCardDemo />
 
-- **State Sync**: Built-in state indicators mapping to screen-readers automatically.
-- **Keyboard Controls**: Fully navigatable using `Tab` and toggled using `Space`.
+```tsx
+import React, { useState } from 'react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+
+export default function CheckboxCardDemo() {
+  const [plans, setPlans] = useState<string[]>(['hobby'])
+
+  const togglePlan = (id: string) => {
+    if (plans.includes(id)) {
+      setPlans(plans.filter((p) => p !== id))
+    } else {
+      setPlans([...plans, id])
+    }
+  }
+
+  return (
+    <div className="w-full max-w-[500px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-left">
+        
+        {/* Plan 1 */}
+        <div 
+          onClick={() => togglePlan('hobby')}
+          className={`flex flex-col justify-between rounded-xl border p-4 cursor-pointer select-none transition-all h-[130px] ${
+            plans.includes('hobby') 
+              ? "border-primary bg-primary/[0.02] shadow-[0_0_10px_rgba(168,85,247,0.05)]" 
+              : "border-border bg-card hover:bg-muted/40"
+          }`}
+        >
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-xs font-bold text-foreground">Hobby Plan</span>
+              <p className="text-[10px] text-muted-foreground mt-0.5">For personal projects</p>
+            </div>
+            <Checkbox 
+              id="plan-hobby" 
+              checked={plans.includes('hobby')} 
+              onCheckedChange={() => togglePlan('hobby')}
+              onClick={(e) => e.stopPropagation()} 
+            />
+          </div>
+          <div className="mt-auto">
+            <span className="text-sm font-bold text-foreground">$12</span>
+            <span className="text-[10px] text-muted-foreground"> / month</span>
+          </div>
+        </div>
+
+        {/* Plan 2 */}
+        <div 
+          onClick={() => togglePlan('pro')}
+          className={`flex flex-col justify-between rounded-xl border p-4 cursor-pointer select-none transition-all h-[130px] ${
+            plans.includes('pro') 
+              ? "border-primary bg-primary/[0.02] shadow-[0_0_10px_rgba(168,85,247,0.05)]" 
+              : "border-border bg-card hover:bg-muted/40"
+          }`}
+        >
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-xs font-bold text-foreground">Startup Pro</span>
+              <p className="text-[10px] text-muted-foreground mt-0.5">For small teams & scale</p>
+            </div>
+            <Checkbox 
+              id="plan-pro" 
+              checked={plans.includes('pro')} 
+              onCheckedChange={() => togglePlan('pro')}
+              onClick={(e) => e.stopPropagation()} 
+            />
+          </div>
+          <div className="mt-auto">
+            <span className="text-sm font-bold text-foreground">$49</span>
+            <span className="text-[10px] text-muted-foreground"> / month</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Props
+
+<PropsTable title="Checkbox">
+  <PropRow
+    prop="checked"
+    type="boolean | 'indeterminate'"
+    default="false"
+    description="The controlled checked state of the checkbox."
+  />
+  <PropRow
+    prop="defaultChecked"
+    type="boolean"
+    default="false"
+    description="The initial checked state when rendering uncontrolled."
+  />
+  <PropRow
+    prop="onCheckedChange"
+    type="(checked: boolean | 'indeterminate') => void"
+    default="-"
+    description="Event handler called when the checked state changes."
+  />
+  <PropRow
+    prop="disabled"
+    type="boolean"
+    default="false"
+    description="When true, prevents user interaction."
+  />
+</PropsTable>

@@ -1,8 +1,6 @@
 # Combobox
 
-Autocomplete input and select menu with real-time filtering, keyboard navigation, and custom search triggers.
-
-## Preview
+Autocomplete search filter and option selection dropdown.
 
 <ComponentPreview>
   <ComboboxDemo />
@@ -19,23 +17,29 @@ const frameworks = [
 ]
 
 export default function ComboboxDemo() {
-  return <Combobox options={frameworks} placeholder="Select framework..." />
+  return (
+    <Combobox 
+      options={frameworks} 
+      placeholder="Select framework..." 
+      defaultValue="next" 
+    />
+  )
 }
 ```
-
 </ComponentPreview>
 
-<Installation name="combobox" vibeDeps="popover, button">
+<Installation name="combobox" npmDeps="lucide-react tailwind-variants" vibeDeps="popover, button">
 
 ```tsx
+// @/components/ui/combobox.tsx
 'use client'
 
 import * as React from 'react'
 import { Check, ChevronsUpDown, Search } from 'lucide-react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
-import { Button } from './button'
-import { Popover, PopoverContent, PopoverTrigger } from './popover'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 const comboboxItemVariants = tv({
   base: 'relative flex cursor-pointer select-none items-center rounded-md px-2.5 py-1.5 text-xs outline-none transition-colors gap-2',
@@ -44,11 +48,10 @@ const comboboxItemVariants = tv({
       default:
         'hover:bg-accent hover:text-accent-foreground data-[selected=true]:bg-accent/60 data-[selected=true]:font-semibold',
       glass:
-        'hover:bg-white/15 dark:hover:bg-white/10 hover:text-foreground data-[selected=true]:bg-white/20 data-[selected=true]:font-semibold text-muted-foreground hover:text-foreground',
+        'hover:bg-black/5 dark:hover:bg-white/10 hover:text-foreground dark:hover:text-white data-[selected=true]:bg-black/10 dark:data-[selected=true]:bg-white/20 data-[selected=true]:font-semibold text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-white data-[selected=true]:text-foreground dark:data-[selected=true]:text-white',
       retro:
         'rounded-none hover:bg-foreground hover:text-background data-[selected=true]:font-bold data-[selected=true]:bg-foreground data-[selected=true]:text-background',
-      glow:
-        'hover:bg-primary/20 hover:text-primary-foreground data-[selected=true]:bg-primary/30 data-[selected=true]:font-semibold',
+      glow: 'hover:bg-purple-500/10 dark:hover:bg-purple-500/20 hover:text-purple-600 dark:hover:text-purple-300 data-[selected=true]:bg-purple-500/20 dark:data-[selected=true]:bg-purple-500/30 data-[selected=true]:font-semibold data-[selected=true]:text-purple-600 dark:data-[selected=true]:text-purple-300',
     },
   },
   defaultVariants: {
@@ -62,7 +65,7 @@ export interface ComboboxOption {
 }
 
 export interface ComboboxProps {
-  options: ComboboxOption[]
+  options?: ComboboxOption[]
   value?: string
   defaultValue?: string
   onValueChange?: (value: string) => void
@@ -71,10 +74,28 @@ export interface ComboboxProps {
   emptyText?: string
   className?: string
   variant?: 'default' | 'glass' | 'retro' | 'glow'
+  children?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
+export const ComboboxContext = React.createContext<{
+  value?: string
+  onValueChange?: (value: string) => void
+  open: boolean
+  setOpen: (open: boolean) => void
+  searchQuery: string
+  setSearchQuery: (query: string) => void
+  variant?: 'default' | 'glass' | 'retro' | 'glow'
+}>({
+  open: false,
+  setOpen: () => {},
+  searchQuery: '',
+  setSearchQuery: () => {},
+})
+
 export function Combobox({
-  options = [],
+  options,
   value,
   defaultValue = '',
   onValueChange,
@@ -83,20 +104,52 @@ export function Combobox({
   emptyText = 'No option found.',
   className,
   variant = 'default',
+  children,
+  open: controlledOpen,
+  onOpenChange,
 }: ComboboxProps) {
-  const [open, setOpen] = React.useState(false)
-  const [selectedValue, setSelectedValue] = React.useState(value || defaultValue)
+  const [localOpen, setLocalOpen] = React.useState(false)
+  const open = controlledOpen !== undefined ? controlledOpen : localOpen
+  const setOpen = onOpenChange !== undefined ? onOpenChange : setLocalOpen
+
+  const [localValue, setLocalValue] = React.useState(defaultValue)
+  const currentValue = value !== undefined ? value : localValue
+
   const [searchQuery, setSearchQuery] = React.useState('')
 
-  React.useEffect(() => {
-    if (value !== undefined) {
-      setSelectedValue(value)
+  const handleValueChange = (val: string) => {
+    if (value === undefined) {
+      setLocalValue(val)
     }
-  }, [value])
+    onValueChange?.(val)
+  }
 
-  const selectedOption = options.find((opt) => opt.value === selectedValue)
+  const contextValue = React.useMemo(
+    () => ({
+      value: currentValue,
+      onValueChange: handleValueChange,
+      open,
+      setOpen,
+      searchQuery,
+      setSearchQuery,
+      variant,
+    }),
+    [currentValue, open, searchQuery, variant],
+  )
 
+  if (children) {
+    return (
+      <ComboboxContext.Provider value={contextValue}>
+        <Popover open={open} onOpenChange={setOpen}>
+          {children}
+        </Popover>
+      </ComboboxContext.Provider>
+    )
+  }
+
+  const selectedOption = options?.find((opt) => opt.value === currentValue)
   const filteredOptions = React.useMemo(() => {
+    if (!options) return []
     if (!searchQuery) return options
     return options.filter((opt) =>
       opt.label.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -104,215 +157,317 @@ export function Combobox({
   }, [options, searchQuery])
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
+    <ComboboxContext.Provider value={contextValue}>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant={variant}
+            role="combobox"
+            data-slot="combobox"
+            aria-expanded={open}
+            className={cn(
+              'w-[220px] justify-between text-left font-normal',
+              className,
+            )}
+          >
+            <span className="truncate">
+              {selectedOption ? selectedOption.label : placeholder}
+            </span>
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
           variant={variant}
-          role="combobox"
-          aria-expanded={open}
-          className={cn('w-[220px] justify-between text-left font-normal', className)}
+          data-slot="combobox-content"
+          className="w-[220px] p-0 shadow-xl overflow-hidden"
+          align="start"
         >
-          <span className="truncate">
-            {selectedOption ? selectedOption.label : placeholder}
-          </span>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        variant={variant}
-        className="w-[220px] p-0 shadow-xl overflow-hidden"
-        align="start"
-      >
-        <div className="flex items-center border-b border-border/50 px-3 py-2 gap-2">
-          <Search className="h-4 w-4 opacity-50 shrink-0" />
-          <input
-            type="text"
-            placeholder={searchPlaceholder}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex h-8 w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground"
-          />
-        </div>
-        <div className="max-h-[220px] overflow-y-auto p-1 space-y-0.5">
-          {filteredOptions.length === 0 ? (
-            <div className="py-6 text-center text-xs text-muted-foreground">
-              {emptyText}
-            </div>
-          ) : (
-            filteredOptions.map((option) => {
-              const isSelected = selectedValue === option.value
-              return (
-                <div
-                  key={option.value}
-                  data-selected={isSelected}
-                  onClick={() => {
-                    const newValue = isSelected ? '' : option.value
-                    if (value === undefined) {
-                      setSelectedValue(newValue)
-                    }
-                    onValueChange?.(newValue)
-                    setOpen(false)
-                    setSearchQuery('')
-                  }}
-                  className={cn(comboboxItemVariants({ variant }))}
-                >
-                  <Check
+          <div className="flex items-center border-b border-border/50 px-3 py-2 gap-2">
+            <Search className="h-4 w-4 opacity-50 shrink-0" />
+            <input
+              type="text"
+              placeholder={searchPlaceholder}
+              value={searchQuery}
+              data-slot="combobox-search"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex h-8 w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground"
+            />
+          </div>
+          <div className="max-h-[220px] overflow-y-auto p-1 space-y-0.5">
+            {filteredOptions.length === 0 ? (
+              <div className="py-6 text-center text-xs text-muted-foreground">
+                {emptyText}
+              </div>
+            ) : (
+              filteredOptions.map((option) => {
+                const isSelected = selectedValue === option.value
+                return (
+                  <div
+                    key={option.value}
+                    data-selected={isSelected}
+                    onClick={() => {
+                      const newValue = isSelected ? '' : option.value
+                      handleValueChange(newValue)
+                      setOpen(false)
+                      setSearchQuery('')
+                    }}
                     className={cn(
-                      'h-3.5 w-3.5 shrink-0',
-                      isSelected ? 'opacity-100' : 'opacity-0',
+                      'flex w-full items-center justify-between',
+                      comboboxItemVariants({ variant }),
                     )}
-                  />
-                  <span>{option.label}</span>
-                </div>
-              )
-            })
-          )}
-        </div>
-      </PopoverContent>
-    </Popover>
+                    data-slot="combobox-item"
+                  >
+                    <span className="truncate">{option.label}</span>
+                    <Check
+                      className={cn(
+                        'h-3.5 w-3.5 shrink-0 ml-2',
+                        isSelected ? 'opacity-100' : 'opacity-0',
+                      )}
+                    />
+                  </div>
+                )
+              })
+            )}
+          </div>
+        </PopoverContent>
+      </Popover>
+    </ComboboxContext.Provider>
   )
+}
+
+export const ComboboxTrigger = React.forwardRef<
+  React.ElementRef<typeof PopoverTrigger>,
+  React.ComponentPropsWithoutRef<typeof PopoverTrigger>
+>((props, ref) => <PopoverTrigger ref={ref} {...props} />)
+ComboboxTrigger.displayName = 'ComboboxTrigger'
+
+export const ComboboxContent = React.forwardRef<
+  React.ElementRef<typeof PopoverContent>,
+  React.ComponentPropsWithoutRef<typeof PopoverContent>
+>(({ className, children, ...props }, ref) => {
+  const { variant } = React.useContext(ComboboxContext)
+  return (
+    <PopoverContent
+      ref={ref}
+      variant={variant}
+      className={cn('w-[220px] p-0 shadow-xl overflow-hidden', className)}
+      align="start"
+      {...props}
+    >\n      {children}\n    </PopoverContent>\n  )\n})\nComboboxContent.displayName = 'ComboboxContent'\n\nexport const ComboboxInput = React.forwardRef<\n  HTMLInputElement,\n  React.InputHTMLAttributes<HTMLInputElement>\n>(({ className, placeholder = 'Search...', ...props }, ref) => {\n  const { searchQuery, setSearchQuery } = React.useContext(ComboboxContext)\n  return (\n    <div className=\"flex items-center border-b border-border/50 px-3 py-2 gap-2\">\n      <Search className=\"h-4 w-4 shrink-0 opacity-50\" />\n      <input\n        ref={ref}\n        type=\"text\"\n        placeholder={placeholder}\n        value={searchQuery}\n        data-slot=\"combobox-search\"\n        onChange={(e) => setSearchQuery(e.target.value)}\n        className={cn(\n          'flex h-8 w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground',\n          className,\n        )}\n        {...props}\n      />\n    </div>\n  )\n})\nComboboxInput.displayName = 'ComboboxInput'\n\nexport const ComboboxList = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, children, ...props }, ref) => (\n  <div\n    ref={ref}\n    data-slot=\"combobox-list\"\n    className={cn('max-h-[220px] overflow-y-auto p-1 space-y-0.5', className)}\n    {...props}\n  >\n    {children}\n  </div>\n))\nComboboxList.displayName = 'ComboboxList'\n\nexport interface ComboboxItemProps\n  extends React.HTMLAttributes<HTMLDivElement> {\n  value: string\n}\n\nexport const ComboboxItem = React.forwardRef<\n  HTMLDivElement,\n  ComboboxItemProps\n>((({ className, value: itemValue, children, ...props }, ref) => {\n  const {\n    value: selectedValue,\n    onValueChange,\n    setOpen,\n    setSearchQuery,\n    variant,\n  } = React.useContext(ComboboxContext)\n  const isSelected = selectedValue === itemValue\n  return (\n    <div\n      ref={ref}\n      data-selected={isSelected}\n      onClick={() => {\n        const newValue = isSelected ? '' : itemValue\n        onValueChange?.(newValue)\n        setOpen(false)\n        setSearchQuery('')\n      }}\n      className={cn(\n        'flex w-full items-center justify-between',\n        comboboxItemVariants({ variant }),\n        className,\n      )}\n      data-slot=\"combobox-item\"\n      {...props}\n    >\n      <div className=\"flex items-center gap-2 flex-1 min-w-0\">\n        {children}\n      </div>\n      <Check\n        className={cn(\n          'h-3.5 w-3.5 shrink-0 ml-2',\n          isSelected ? 'opacity-100' : 'opacity-0',\n        )}\n      />\n    </div>\n  )\n}))\nComboboxItem.displayName = 'ComboboxItem'\n\nexport const ComboboxEmpty = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, children, ...props }, ref) => {\n  const { searchQuery } = React.useContext(ComboboxContext)\n  return (\n    <div\n      ref={ref}\n      className={cn(\n        'py-6 text-center text-xs text-muted-foreground',\n        className,\n      )}\n      {...props}\n    >\n      {children}\n    </div>\n  )\n})\nComboboxEmpty.displayName = 'ComboboxEmpty'\n\nexport const ComboboxGroup = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, children, ...props }, ref) => (\n  <div ref={ref} className={cn('space-y-0.5', className)} {...props}>\n    {children}\n  </div>\n))\nComboboxGroup.displayName = 'ComboboxGroup'\n\nexport const ComboboxLabel = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, children, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn(\n      'px-2.5 py-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider',\n      className,\n    )}\n    {...props}\n  >\n    {children}\n  </div>\n))\nComboboxLabel.displayName = 'ComboboxLabel'\n\nexport const ComboboxSeparator = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn('-mx-1 my-1 h-px bg-border/50', className)}\n    {...props}\n  />\n))\nComboboxSeparator.displayName = 'ComboboxSeparator'\n"
+    }
+  ]
 }
 ```
 
 </Installation>
 
-## Variations
+## Themes
 
-### Style Presets
+Explore design variant presets for the Combobox.
 
 <ComponentPreview>
-  <ComboboxPresetsDemo />
+  <ComboboxDemoThemes />
 
 ```tsx
 import { Combobox } from '@/components/ui/combobox'
 
-const frameworks = [
-  { value: 'next', label: 'Next.js' },
-  { value: 'vite', label: 'Vite' },
-  { value: 'astro', label: 'Astro' },
-]
-
-export default function ComboboxPresetsDemo() {
+export default function ComboboxThemes() {
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-center">
-      <Combobox options={frameworks} placeholder="Default Combobox" variant="default" />
-      <Combobox options={frameworks} placeholder="Glass Combobox" variant="glass" />
-      <Combobox options={frameworks} placeholder="Retro Combobox" variant="retro" />
+    <div className="flex gap-4 flex-wrap">
+      <Combobox options={frameworks} variant="default" placeholder="Default Preset" />
+      <Combobox options={frameworks} variant="glass" placeholder="Glass Preset" />
+      <Combobox options={frameworks} variant="retro" placeholder="Retro Preset" />
+      <Combobox options={frameworks} variant="glow" placeholder="Glow Preset" />
     </div>
   )
 }
 ```
-
 </ComponentPreview>
 
-### Team Roles Selector
+## Composed Example
+
+Create bespoke dropdown layouts by utilizing the composed sub-components directly.
 
 <ComponentPreview>
-  <ComboboxIconsDemo />
+  <ComboboxDemoComposed />
 
 ```tsx
-import { Combobox } from '@/components/ui/combobox'
+import * as React from 'react'
+import {
+  Combobox,
+  ComboboxTrigger,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxLabel,
+  ComboboxSeparator,
+  Button,
+  Label,
+  ComboboxContext
+} from '@/components/ui'
+import { Check, ChevronsUpDown } from 'lucide-react'
 
-const roles = [
-  { value: 'admin', label: 'System Admin' },
-  { value: 'developer', label: 'Lead Developer' },
-  { value: 'designer', label: 'UI/UX Designer' },
-  { value: 'viewer', label: 'Read-only Viewer' },
+const members = [
+  { id: 'alice', name: 'Alice Vance', role: 'System Admin', status: 'active', avatar: 'AV', group: 'Active Members' },
+  { id: 'bob', name: 'Bob Smith', role: 'Lead Developer', status: 'active', avatar: 'BS', group: 'Active Members' },
+  { id: 'charlie', name: 'Charlie Day', role: 'UI/UX Designer', status: 'away', avatar: 'CD', group: 'Active Members' },
+  { id: 'eva', name: 'Eva Long', role: 'External Auditor', status: 'offline', avatar: 'EL', group: 'Invited' },
 ]
 
-export default function ComboboxIconsDemo() {
-  return <Combobox options={roles} placeholder="Select team role..." variant="default" />
-}
-```
+function AssigneeList() {
+  const { searchQuery } = React.useContext(ComboboxContext)
+  
+  const filtered = React.useMemo(() => {
+    return members.filter(m => 
+      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.role.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [searchQuery])
 
-</ComponentPreview>
+  if (filtered.length === 0) {
+    return <ComboboxEmpty>No members found.</ComboboxEmpty>
+  }
 
-### Custom Search & Empty Text
+  const activeGroup = filtered.filter(m => m.group === 'Active Members')
+  const invitedGroup = filtered.filter(m => m.group === 'Invited')
 
-<ComponentPreview>
-  <ComboboxSearchDemo />
-
-```tsx
-import { Combobox } from '@/components/ui/combobox'
-
-const frameworks = [
-  { value: 'next', label: 'Next.js' },
-  { value: 'vite', label: 'Vite' },
-]
-
-export default function ComboboxSearchDemo() {
   return (
-    <Combobox
-      options={frameworks}
-      placeholder="Search technology..."
-      searchPlaceholder="Type to filter options..."
-      emptyText="No matching framework in list."
-    />
+    <ComboboxList>
+      {activeGroup.length > 0 && (
+        <ComboboxGroup>
+          <ComboboxLabel>Active Members</ComboboxLabel>
+          {activeGroup.map(member => (
+            <ComboboxItem key={member.id} value={member.id}>
+              <div className="relative shrink-0">
+                <div className="h-6 w-6 rounded-full bg-primary/10 text-primary text-[10px] font-semibold flex items-center justify-center border border-primary/20">
+                  {member.avatar}
+                </div>
+                <span className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-background ${
+                  member.status === 'active' ? 'bg-emerald-500' :
+                  member.status === 'away' ? 'bg-amber-500' : 'bg-rose-500'
+                }`} />
+              </div>
+              <div className="flex flex-col text-left min-w-0">
+                <span className="font-medium text-foreground text-xs leading-none truncate">{member.name}</span>
+                <span className="text-[10px] text-muted-foreground leading-none mt-0.5 truncate">{member.role}</span>
+              </div>
+            </ComboboxItem>
+          ))}
+        </ComboboxGroup>
+      )}
+
+      {activeGroup.length > 0 && invitedGroup.length > 0 && <ComboboxSeparator />}
+
+      {invitedGroup.length > 0 && (
+        <ComboboxGroup>
+          <ComboboxLabel>Invited</ComboboxLabel>
+          {invitedGroup.map(member => (
+            <ComboboxItem key={member.id} value={member.id} className="opacity-60">
+              <div className="relative shrink-0">
+                <div className="h-6 w-6 rounded-full bg-muted text-muted-foreground text-[10px] font-semibold flex items-center justify-center border border-border">
+                  {member.avatar}
+                </div>
+              </div>
+              <div className="flex flex-col text-left min-w-0">
+                <span className="font-medium text-foreground text-xs leading-none truncate">{member.name}</span>
+                <span className="text-[10px] text-muted-foreground leading-none mt-0.5 truncate">{member.role}</span>
+              </div>
+            </ComboboxItem>
+          ))}
+        </ComboboxGroup>
+      )}
+    </ComboboxList>
   )
 }
-```
 
-</ComponentPreview>
+export default function ComboboxComposedDemo() {
+  const [selectedId, setSelectedId] = React.useState('alice')
+  const selectedMember = members.find(m => m.id === selectedId)
 
-### Labeled Form Field
-
-<ComponentPreview>
-  <ComboboxFormDemo />
-
-```tsx
-import { Combobox } from '@/components/ui/combobox'
-import { Label } from '@/components/ui/label'
-
-const frameworks = [
-  { value: 'next', label: 'Next.js' },
-  { value: 'vite', label: 'Vite' },
-]
-
-export default function ComboboxFormDemo() {
   return (
-    <div className="flex flex-col gap-2 w-[220px]">
-      <Label className="text-xs font-medium text-foreground">Project Framework</Label>
-      <Combobox options={frameworks} placeholder="Choose framework" />
+    <div className="flex flex-col gap-2 w-[240px]">
+      <Label className="text-xs font-semibold text-foreground/80">Project Assignee</Label>
+      <Combobox value={selectedId} onValueChange={setSelectedId}>
+        <ComboboxTrigger asChild>
+          <Button variant="outline" className="w-[240px] justify-between font-normal" role="combobox">
+            {selectedMember ? (
+              <div className="flex items-center gap-2">
+                <div className="h-5 w-5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold flex items-center justify-center border border-primary/20">
+                  {selectedMember.avatar}
+                </div>
+                <span className="text-xs font-medium text-foreground">{selectedMember.name}</span>
+              </div>
+            ) : (
+              <span className="text-xs text-muted-foreground">Select assignee...</span>
+            )}
+            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-2" />
+          </Button>
+        </ComboboxTrigger>
+        <ComboboxContent className="w-[240px] p-0 shadow-2xl">
+          <ComboboxInput placeholder="Search team members..." />
+          <AssigneeList />
+        </ComboboxContent>
+      </Combobox>
     </div>
   )
 }
 ```
-
 </ComponentPreview>
 
-### Glassmorphic Backdrop
+## Props
 
-<ComponentPreview>
-  <ComboboxGlassDemo />
+### Combobox
 
-```tsx
-import { Combobox } from '@/components/ui/combobox'
-
-const frameworks = [
-  { value: 'next', label: 'Next.js' },
-  { value: 'vite', label: 'Vite' },
-]
-
-export default function ComboboxGlassDemo() {
-  return (
-    <div className="p-6 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/10">
-      <Combobox options={frameworks} placeholder="Select glass option..." variant="glass" />
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-## Component Concept
-
-Vibe UI's Combobox component combines popover panels, text input search filters, and custom select menus into a single unified autocomplete control.
-
-### Popover Theme Synchronization
-
-The opened popover menu automatically inherits the component's `variant` (`default`, `glass`, `retro`, `glow`), matching the trigger button's theme aesthetics (such as frosted backdrop blur or neobrutalism borders).
-
-### Real-Time Filtering & State Management
-
-Internal option filtering evaluates search queries dynamically with memoized fuzzy keyword matching (`useMemo`), updating option lists and empty state text instantly as users type.
-
+<PropsTable title="Combobox">
+  <PropRow
+    prop="options"
+    type="ComboboxOption[]"
+    default="[]"
+    description="The array of predefined option items. Each item must contain a value and label."
+  />
+  <PropRow
+    prop="value"
+    type="string"
+    default="-"
+    description="The controlled value of the selected item."
+  />
+  <PropRow
+    prop="defaultValue"
+    type="string"
+    default="''"
+    description="The initial value of the selected item."
+  />
+  <PropRow
+    prop="onValueChange"
+    type="(value: string) => void"
+    default="-"
+    description="Callback fired when a new item value is selected."
+  />
+  <PropRow
+    prop="placeholder"
+    type="string"
+    default="'Select option...'"
+    description="Trigger button label display when no value is chosen."
+  />
+  <PropRow
+    prop="searchPlaceholder"
+    type="string"
+    default="'Search...'"
+    description="The placeholder text inside the input search field."
+  />
+  <PropRow
+    prop="emptyText"
+    type="string"
+    default="'No option found.'"
+    description="Label displayed when searching matches no predefined items."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    default="'default'"
+    description="The design system theme to apply to the trigger and content frame."
+  />
+</PropsTable>

@@ -2,7 +2,15 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Combobox } from '../combobox'
+import {
+  Combobox,
+  ComboboxTrigger,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from '../combobox'
 
 describe('Combobox Component', () => {
   const options = [
@@ -120,5 +128,38 @@ describe('Combobox Component', () => {
     const trigger = screen.getByRole('combobox')
     expect(trigger).toHaveClass('border-2')
     expect(trigger).toHaveClass('border-foreground')
+  })
+
+  it('supports composed subcomponents API', async () => {
+    const user = userEvent.setup()
+    const handleValueChange = vi.fn()
+
+    render(
+      <Combobox onValueChange={handleValueChange}>
+        <ComboboxTrigger asChild>
+          <button data-testid="custom-trigger">Select custom...</button>
+        </ComboboxTrigger>
+        <ComboboxContent>
+          <ComboboxInput placeholder="Filter list..." />
+          <ComboboxList>
+            <ComboboxItem value="item-1">Item 1</ComboboxItem>
+            <ComboboxItem value="item-2">Item 2</ComboboxItem>
+            <ComboboxEmpty>Empty content</ComboboxEmpty>
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>,
+    )
+
+    const trigger = screen.getByTestId('custom-trigger')
+    expect(trigger).toBeInTheDocument()
+
+    // Open popover
+    await user.click(trigger)
+    expect(screen.getByPlaceholderText('Filter list...')).toBeInTheDocument()
+    expect(screen.getByText('Item 1')).toBeInTheDocument()
+
+    // Select Item 2
+    await user.click(screen.getByText('Item 2'))
+    expect(handleValueChange).toHaveBeenCalledWith('item-2')
   })
 })

@@ -1,86 +1,68 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { InputOTP } from '../input-otp'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator,
+} from '../input-otp'
 
 describe('InputOTP Component', () => {
-  it('renders correct number of slots', () => {
-    render(<InputOTP length={4} />)
-    const inputs = screen.getAllByRole('textbox')
-    expect(inputs).toHaveLength(4)
+  it('renders simple API layout correctly', () => {
+    render(<InputOTP length={4} value="123" />)
+    const input = screen.getByRole('textbox')
+    expect(input).toBeInTheDocument()
+    expect(input).toHaveValue('123')
+
+    // Slots show characters
+    expect(screen.getByText('1')).toBeInTheDocument()
+    expect(screen.getByText('2')).toBeInTheDocument()
+    expect(screen.getByText('3')).toBeInTheDocument()
   })
 
-  it('calls onChange when typing in slots', () => {
+  it('calls onChange when typing', async () => {
     const handleChange = vi.fn()
-    render(<InputOTP length={3} value="" onChange={handleChange} />)
-    const inputs = screen.getAllByRole('textbox')
-
-    inputs[0].focus()
-    fireEvent.change(inputs[0], { target: { value: '1' } })
-
-    expect(handleChange).toHaveBeenCalledWith('1')
-  })
-
-  it('handles backspace correctly when input has value', () => {
-    const handleChange = vi.fn()
-    render(<InputOTP length={3} value="12" onChange={handleChange} />)
-    const inputs = screen.getAllByRole('textbox')
-
-    inputs[1].focus()
-    fireEvent.keyDown(inputs[1], { key: 'Backspace' })
-
-    expect(handleChange).toHaveBeenCalledWith('1')
-  })
-
-  it('handles arrow keys navigation', () => {
-    render(<InputOTP length={3} />)
-    const inputs = screen.getAllByRole('textbox')
-
-    inputs[1].focus()
-    expect(document.activeElement).toBe(inputs[1])
-
-    fireEvent.keyDown(inputs[1], { key: 'ArrowLeft' })
-    expect(document.activeElement).toBe(inputs[0])
-
-    fireEvent.keyDown(inputs[0], { key: 'ArrowRight' })
-    expect(document.activeElement).toBe(inputs[1])
-  })
-
-  it('handles paste events correctly', () => {
-    const handleChange = vi.fn()
+    const user = userEvent.setup()
     render(<InputOTP length={4} onChange={handleChange} />)
-    const inputs = screen.getAllByRole('textbox')
+    const input = screen.getByRole('textbox')
 
-    const pasteData = {
-      getData: () => '9876',
-    }
-
-    fireEvent.paste(inputs[0], {
-      clipboardData: pasteData,
-    })
-    expect(handleChange).toHaveBeenCalledWith('9876')
-  })
-
-  it('cleans formatted and non-alphanumeric characters on paste', () => {
-    const handleChange = vi.fn()
-    render(<InputOTP length={6} onChange={handleChange} />)
-    const inputs = screen.getAllByRole('textbox')
-
-    const pasteData = {
-      getData: () => '12-34 56',
-    }
-
-    fireEvent.paste(inputs[0], {
-      clipboardData: pasteData,
-    })
-    expect(handleChange).toHaveBeenCalledWith('123456')
+    await user.type(input, '1')
+    expect(handleChange).toHaveBeenCalledWith('1')
   })
 
   it('supports disabled state', () => {
-    render(<InputOTP length={3} disabled />)
-    const inputs = screen.getAllByRole('textbox')
-    inputs.forEach((input) => {
-      expect(input).toBeDisabled()
-    })
+    render(<InputOTP length={4} disabled />)
+    const input = screen.getByRole('textbox')
+    expect(input).toBeDisabled()
+  })
+
+  it('supports composed subcomponents API', async () => {
+    const handleChange = vi.fn()
+    const user = userEvent.setup()
+
+    const { container } = render(
+      <InputOTP maxLength={4} onChange={handleChange}>
+        <InputOTPGroup>
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+        </InputOTPGroup>
+        <InputOTPSeparator />
+        <InputOTPGroup>
+          <InputOTPSlot index={2} />
+          <InputOTPSlot index={3} />
+        </InputOTPGroup>
+      </InputOTP>,
+    )
+
+    const input = screen.getByRole('textbox')
+    expect(input).toBeInTheDocument()
+
+    // Verify separator is present
+    expect(container.querySelector('[data-slot="input-otp-separator"]')).toBeInTheDocument()
+
+    await user.type(input, '9')
+    expect(handleChange).toHaveBeenCalledWith('9')
   })
 })

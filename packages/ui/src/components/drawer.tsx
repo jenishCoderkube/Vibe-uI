@@ -7,10 +7,12 @@ import { cn } from '../lib/utils'
 
 const Drawer = ({
   shouldScaleBackground = true,
+  direction = 'right',
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
     shouldScaleBackground={shouldScaleBackground}
+    direction={direction}
     {...props}
   />
 )
@@ -56,23 +58,45 @@ const drawerContentVariants = tv({
   base: 'fixed z-50 flex flex-col bg-background shadow-lg transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
   variants: {
     side: {
-      top: 'inset-x-0 top-0 border-b max-h-[80vh] rounded-b-2xl',
-      bottom: 'inset-x-0 bottom-0 border-t max-h-[80vh] rounded-t-2xl',
-      left: 'inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm rounded-r-2xl',
-      right:
-        'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm rounded-l-2xl',
+      top: 'inset-x-0 top-0 mb-24 max-h-[80vh]',
+      bottom: 'inset-x-0 bottom-0 mt-24 max-h-[80vh]',
+      left: 'inset-y-0 left-0 h-full w-3/4 sm:max-w-sm',
+      right: 'inset-y-0 right-0 h-full w-3/4 sm:max-w-sm',
     },
     variant: {
-      default: 'border-border',
+      default: 'bg-background border-border text-foreground',
       glass:
-        'bg-card/90 backdrop-blur-md border-border shadow-xl text-card-foreground',
+        'bg-background/80 dark:bg-zinc-900/40 backdrop-blur-md border-black/10 dark:border-white/10 text-foreground shadow-[0_8px_32px_0_rgba(0,0,0,0.08)]',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
-      glow: 'border-primary/40 shadow-[0_0_25px_rgba(168,85,247,0.15)] bg-card/95 text-card-foreground',
+      glow:
+        'border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.15)] dark:shadow-[0_0_30px_rgba(168,85,247,0.25)] bg-card/95 dark:bg-zinc-950/95 text-foreground',
     },
   },
+  compoundVariants: [
+    {
+      side: 'bottom',
+      variant: ['default', 'glass', 'glow'],
+      class: 'border-t rounded-t-2xl',
+    },
+    {
+      side: 'top',
+      variant: ['default', 'glass', 'glow'],
+      class: 'border-b rounded-b-2xl',
+    },
+    {
+      side: 'left',
+      variant: ['default', 'glass', 'glow'],
+      class: 'border-r rounded-r-2xl',
+    },
+    {
+      side: 'right',
+      variant: ['default', 'glass', 'glow'],
+      class: 'border-l rounded-l-2xl',
+    },
+  ],
   defaultVariants: {
-    side: 'bottom',
+    side: 'right',
     variant: 'default',
   },
 })
@@ -87,7 +111,7 @@ const DrawerContent = React.forwardRef<
   DrawerContentProps
 >(
   (
-    { className, side = 'bottom', variant = 'default', children, ...props },
+    { className, side = 'right', variant = 'default', children, ...props },
     ref,
   ) => (
     <DrawerPortal data-slot="drawer-portal">
@@ -97,14 +121,6 @@ const DrawerContent = React.forwardRef<
         data-slot="drawer-content"
         className={cn(
           drawerContentVariants({ side, variant }),
-          side === 'bottom' &&
-            'inset-x-0 bottom-0 mt-24 max-h-[80vh] rounded-t-[10px] border-t',
-          side === 'top' &&
-            'inset-x-0 top-0 mb-24 max-h-[80vh] rounded-b-[10px] border-b',
-          side === 'right' &&
-            'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',
-          side === 'left' &&
-            'inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm',
           className,
         )}
         {...props}

@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { cn } from '../lib/utils'
 import {
   Table,
   TableHeader,
@@ -52,6 +53,7 @@ import {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
   Button,
   Badge,
   Avatar,
@@ -62,6 +64,16 @@ import {
   Checkbox,
   Switch,
   Combobox,
+  ComboboxTrigger,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxLabel,
+  ComboboxSeparator,
+  ComboboxContext,
   DatePicker,
   DateRangePicker,
   Empty,
@@ -95,12 +107,29 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
 } from 'vibe-ui'
 import {
   Home,
   User,
   Settings,
   ChevronRight,
+  ChevronsUpDown,
   MoreHorizontal,
   Mail,
   Plus,
@@ -3901,307 +3930,187 @@ export function CalendarDemoBooking() {
 }
 
 // ==========================================
-// 9. CAROUSEL DEMOS (10 Examples)
+// 9. CAROUSEL DEMOS
 // ==========================================
 
-export function CarouselDemoBasic() {
+export function CarouselDemo() {
   return (
-    <div className="px-10 w-full max-w-[280px]">
+    <div className="px-12 w-full max-w-[400px]">
       <Carousel className="w-full">
         <CarouselContent>
           {[1, 2, 3].map((i) => (
             <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
+              <div className="flex h-48 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
                 Slide {i}
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
       </Carousel>
     </div>
   )
 }
 
-export function CarouselDemoGlass() {
+
+export function CarouselDemoVertical() {
   return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="glass" className="w-full">
-        <CarouselContent>
+    <div className="py-12 w-full max-w-[280px]">
+      <Carousel orientation="vertical" className="w-full">
+        <CarouselContent className="h-64">
           {[1, 2, 3].map((i) => (
             <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur rounded-xl text-xs font-semibold text-foreground">
-                Glass Slide {i}
+              <div className="flex h-48 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
+                Slide {i}
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
       </Carousel>
     </div>
   )
 }
 
-export function CarouselDemoRetro() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="retro" className="w-full">
-        <CarouselContent>
-          {[1, 2, 3].map((i) => (
-            <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border-2 border-foreground bg-background text-xs font-bold text-foreground">
-                RETRO SLIDE {i}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
 
-export function CarouselDemoGlow() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="glow" className="w-full">
-        <CarouselContent>
-          {[1, 2, 3].map((i) => (
-            <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border border-primary/30 bg-primary/5 rounded-xl text-xs font-semibold text-primary">
-                Glow Slide {i}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
+export function CarouselDemoPremium() {
+  const [isInfinite, setIsInfinite] = React.useState(false)
 
-export function CarouselDemoImages() {
   const images = [
     {
-      title: 'Cyberpunk City',
-      tag: 'Neon',
-      bg: 'from-fuchsia-600 to-pink-600',
+      title: 'Mountain Retreat',
+      location: 'Swiss Alps',
+      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
     },
     {
-      title: 'Glass Office',
-      tag: 'Minimal',
-      bg: 'from-cyan-500 to-indigo-500',
+      title: 'Neon Streets',
+      location: 'Tokyo, Japan',
+      image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80',
     },
     {
-      title: 'Brutalist Grid',
-      tag: 'Bold',
-      bg: 'from-yellow-500 to-orange-500',
+      title: 'Ocean Breeze',
+      location: 'Maldives',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      title: 'Desert Dunes',
+      location: 'Sahara Desert',
+      image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      title: 'Forest Pathways',
+      location: 'Redwood National Park',
+      image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=600&q=80',
     },
   ]
 
   return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel className="w-full">
+    <div className="px-12 w-full max-w-5xl space-y-4">
+      <div className="flex items-center justify-end gap-2 pb-2">
+        <Switch
+          id="premium-infinite-switch"
+          checked={isInfinite}
+          onCheckedChange={setIsInfinite}
+        />
+        <Label htmlFor="premium-infinite-switch" className="text-xs font-semibold cursor-pointer select-none">
+          Infinite Loop
+        </Label>
+      </div>
+
+      <Carousel key={isInfinite ? 'infinite' : 'standard'} className="w-full" loop={isInfinite} opts={{ align: 'start' }}>
         <CarouselContent>
-          {images.map((img, i) => (
-            <CarouselItem key={i}>
-              <div
-                className={
-                  'relative flex h-36 w-full flex-col justify-end p-3 rounded-xl bg-gradient-to-br ' +
-                  img.bg +
-                  ' overflow-hidden shadow'
-                }
-              >
-                <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                <div className="relative z-10 text-left">
-                  <Badge className="bg-white/10 text-white backdrop-blur mb-1.5">
-                    {img.tag}
-                  </Badge>
-                  <h4 className="font-bold text-xs text-white">{img.title}</h4>
+          {images.map((item, index) => (
+            <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3">
+              <div className="relative overflow-hidden rounded-2xl border border-border bg-card aspect-[4/3] group shadow-sm hover:shadow-md transition-all duration-300">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4 text-left">
+                  <span className="text-[10px] uppercase tracking-wider text-white/70 font-semibold mb-1">
+                    {item.location}
+                  </span>
+                  <h4 className="font-bold text-sm text-white">{item.title}</h4>
                 </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
       </Carousel>
     </div>
   )
 }
 
-export function CarouselDemoCards() {
+
+
+export function CarouselDemoTestimonials() {
+  const reviews = [
+    {
+      name: 'Sarah Jenkins',
+      role: 'Lead Designer at Vibe',
+      avatar: 'S',
+      rating: 5,
+      text: 'Vibe UI has completely transformed our workflow. The pre-built configurations are robust and save us days of custom code writing.',
+    },
+    {
+      name: 'David Chen',
+      role: 'Software Architect',
+      avatar: 'D',
+      rating: 5,
+      text: 'The Tailwind integration is extremely clean. It makes customizing standard components trivial while keeping performance top tier.',
+    },
+    {
+      name: 'Elena Rostova',
+      role: 'Product Manager',
+      avatar: 'E',
+      rating: 5,
+      text: 'Accessibility and touch gestures are flawless. Embla engine is integrated beautifully under a simple shorthand API interface.',
+    },
+  ]
+
   return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="glass" className="w-full">
+    <div className="px-12 w-full max-w-2xl">
+      <Carousel className="w-full" autoplay autoplayInterval={5000}>
         <CarouselContent>
-          {[
-            {
-              name: 'Sarah V.',
-              text: 'Vibe UI has saved us hours of styling boilerplate files!',
-            },
-            {
-              name: 'Alex M.',
-              text: 'The multi-preset visual layouts are incredibly fun.',
-            },
-            {
-              name: 'David K.',
-              text: 'Radix primitives accessibility out of the box is huge.',
-            },
-          ].map((item, i) => (
-            <CarouselItem key={i}>
-              <div className="flex flex-col justify-between h-36 border border-black/10 dark:border-white/15 bg-black/5 dark:bg-white/[0.02] p-3 rounded-xl text-left">
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  "{item.text}"
+          {reviews.map((review, index) => (
+            <CarouselItem key={index}>
+              <div className="border border-border bg-card rounded-2xl p-6 text-left shadow-sm flex flex-col justify-between min-h-[180px]">
+                <p className="text-sm text-muted-foreground italic leading-relaxed">
+                  "{review.text}"
                 </p>
-                <div className="flex items-center gap-2 mt-2">
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="bg-primary text-[8px] text-white font-bold">
-                      {item.name[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-[10px] font-bold text-foreground">
-                    {item.name}
-                  </span>
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary">
+                      {review.avatar}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-foreground">{review.name}</h4>
+                      <p className="text-xs text-muted-foreground">{review.role}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-0.5 text-yellow-500">
+                    {Array.from({ length: review.rating }).map((_, i) => (
+                      <svg key={i} className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
                 </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
-
-export function CarouselDemoProducts() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel className="w-full">
-        <CarouselContent>
-          {[
-            {
-              name: 'CLI Package License',
-              desc: 'Single developer',
-              price: '$29',
-            },
-            {
-              name: 'UI Figma Toolkit',
-              desc: 'Design kit bundle',
-              price: '$49',
-            },
-            {
-              name: 'Infinite Team License',
-              desc: 'Unlimited developers',
-              price: '$199',
-            },
-          ].map((prod, i) => (
-            <CarouselItem key={i}>
-              <div className="flex flex-col justify-between h-36 border border-border bg-card p-3 rounded-xl text-left">
-                <div>
-                  <h4 className="font-bold text-xs text-foreground">
-                    {prod.name}
-                  </h4>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
-                    {prod.desc}
-                  </p>
-                </div>
-                <div className="flex justify-between items-center pt-2">
-                  <span className="font-bold text-sm text-primary">
-                    {prod.price}
-                  </span>
-                  <Button size="sm" className="h-7 text-[10px]">
-                    Buy
-                  </Button>
-                </div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
-
-export function CarouselDemoVertical() {
-  return (
-    <div className="py-10 w-full max-w-[200px] flex justify-center">
-      <Carousel orientation="vertical" className="w-full h-36 max-w-[150px]">
-        <CarouselContent className="h-36">
-          {[1, 2, 3].map((i) => (
-            <CarouselItem key={i} className="h-36">
-              <div className="flex h-36 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
-                Vertical Slide {i}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-top-8 left-1/2 -translate-x-1/2" />
-        <CarouselNext className="-bottom-8 left-1/2 -translate-x-1/2" />
-      </Carousel>
-    </div>
-  )
-}
-
-export function CarouselDemoLoop() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel opts={{ loop: true }} className="w-full">
-        <CarouselContent>
-          {[1, 2, 3].map((i) => (
-            <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
-                Loop Slide {i}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
-
-export function CarouselDemoRetroCards() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="retro" className="w-full">
-        <CarouselContent>
-          {[
-            { title: 'RETRO COMPONENT', desc: 'Pure box layout' },
-            { title: 'SOLID FRAMEWORKS', desc: 'Vite & React 19' },
-            { title: 'CLI PACKAGES', desc: 'No dependencies' },
-          ].map((item, i) => (
-            <CarouselItem key={i}>
-              <div className="flex flex-col justify-between h-36 border-2 border-foreground bg-background p-3 rounded-none text-left">
-                <div>
-                  <h4 className="font-bold text-xs text-foreground uppercase">
-                    {item.title}
-                  </h4>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
-                    {item.desc}
-                  </p>
-                </div>
-                <Button
-                  variant="retro"
-                  className="w-full h-8 text-[11px] rounded-none"
-                >
-                  DOWNLOAD
-                </Button>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
       </Carousel>
     </div>
   )
@@ -4745,133 +4654,155 @@ const roles = [
   { value: 'viewer', label: 'Read-only Viewer' },
 ]
 
+// Member details for composed assignee selector
+const members = [
+  { id: 'alice', name: 'Alice Vance', role: 'System Admin', status: 'active', avatar: 'AV', group: 'Active Members' },
+  { id: 'bob', name: 'Bob Smith', role: 'Lead Developer', status: 'active', avatar: 'BS', group: 'Active Members' },
+  { id: 'charlie', name: 'Charlie Day', role: 'UI/UX Designer', status: 'away', avatar: 'CD', group: 'Active Members' },
+  { id: 'diana', name: 'Diana Prince', role: 'Security Analyst', status: 'dnd', avatar: 'DP', group: 'Active Members' },
+  { id: 'eva', name: 'Eva Long', role: 'External Auditor', status: 'offline', avatar: 'EL', group: 'Invited' },
+]
+
+// Internal helper component to consume context and filter composed members list
+function AssigneeList() {
+  const { searchQuery } = React.useContext(ComboboxContext)
+  
+  const filtered = React.useMemo(() => {
+    return members.filter(m => 
+      m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.role.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [searchQuery])
+
+  const activeGroup = filtered.filter(m => m.group === 'Active Members')
+  const invitedGroup = filtered.filter(m => m.group === 'Invited')
+
+  if (filtered.length === 0) {
+    return <ComboboxEmpty>No members found.</ComboboxEmpty>
+  }
+
+  return (
+    <ComboboxList>
+      {activeGroup.length > 0 && (
+        <ComboboxGroup>
+          <ComboboxLabel>Active Members</ComboboxLabel>
+          {activeGroup.map(member => (
+            <ComboboxItem key={member.id} value={member.id}>
+              <div className="relative shrink-0">
+                <div className="h-6 w-6 rounded-full bg-primary/10 text-primary text-[10px] font-semibold flex items-center justify-center border border-primary/20">
+                  {member.avatar}
+                </div>
+                <span className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-background ${
+                  member.status === 'active' ? 'bg-emerald-500' :
+                  member.status === 'away' ? 'bg-amber-500' :
+                  'bg-rose-500'
+                }`} />
+              </div>
+              <div className="flex flex-col text-left min-w-0">
+                <span className="font-medium text-foreground text-xs leading-none truncate">{member.name}</span>
+                <span className="text-[10px] text-muted-foreground leading-none mt-0.5 truncate">{member.role}</span>
+              </div>
+            </ComboboxItem>
+          ))}
+        </ComboboxGroup>
+      )}
+
+      {activeGroup.length > 0 && invitedGroup.length > 0 && <ComboboxSeparator />}
+
+      {invitedGroup.length > 0 && (
+        <ComboboxGroup>
+          <ComboboxLabel>Invited</ComboboxLabel>
+          {invitedGroup.map(member => (
+            <ComboboxItem key={member.id} value={member.id} className="opacity-60">
+              <div className="relative shrink-0">
+                <div className="h-6 w-6 rounded-full bg-muted text-muted-foreground text-[10px] font-semibold flex items-center justify-center border border-border">
+                  {member.avatar}
+                </div>
+              </div>
+              <div className="flex flex-col text-left min-w-0">
+                <span className="font-medium text-foreground text-xs leading-none truncate">{member.name}</span>
+                <span className="text-[10px] text-muted-foreground leading-none mt-0.5 truncate">{member.role}</span>
+              </div>
+            </ComboboxItem>
+          ))}
+        </ComboboxGroup>
+      )}
+    </ComboboxList>
+  )
+}
+
 export function ComboboxDemo() {
-  return <Combobox options={frameworks} placeholder="Select framework..." />
-}
-
-export function ComboboxPresetsDemo() {
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-center">
-      <Combobox
-        options={frameworks}
-        placeholder="Default Combobox"
-        variant="default"
-      />
-      <Combobox
-        options={frameworks}
-        placeholder="Glass Combobox"
-        variant="glass"
-      />
-      <Combobox
-        options={frameworks}
-        placeholder="Retro Combobox"
-        variant="retro"
-      />
+    <div className="py-2 select-none">
+      <Combobox options={frameworks} placeholder="Select framework..." defaultValue="next" />
     </div>
   )
 }
 
-export function ComboboxIconsDemo() {
+export function ComboboxDemoThemes() {
   return (
-    <Combobox
-      options={roles}
-      placeholder="Select team role..."
-      variant="default"
-    />
-  )
-}
-
-export function ComboboxSearchDemo() {
-  return (
-    <Combobox
-      options={frameworks}
-      placeholder="Search technology..."
-      searchPlaceholder="Type to filter options..."
-      emptyText="No matching framework in list."
-    />
-  )
-}
-
-export function ComboboxFormDemo() {
-  return (
-    <div className="flex flex-col gap-2 w-[220px]">
-      <Label className="text-xs font-medium text-foreground">
-        Project Framework
-      </Label>
-      <Combobox options={frameworks} placeholder="Choose framework" />
+    <div className="flex flex-wrap gap-4 items-center justify-center py-2 select-none">
+      <Combobox options={frameworks} placeholder="Default Presets" variant="default" />
+      <Combobox options={frameworks} placeholder="Glass Presets" variant="glass" />
+      <Combobox options={frameworks} placeholder="Retro Presets" variant="retro" />
+      <Combobox options={frameworks} placeholder="Glow Presets" variant="glow" />
     </div>
   )
 }
 
-export function ComboboxGlassDemo() {
+export function ComboboxDemoComposed() {
+  const [selectedId, setSelectedId] = React.useState('alice')
+  const selectedMember = members.find(m => m.id === selectedId)
+
   return (
-    <div className="p-6 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/10">
-      <Combobox
-        options={frameworks}
-        placeholder="Select glass option..."
-        variant="glass"
-      />
+    <div className="flex flex-col gap-2 w-[240px] text-left select-none py-4">
+      <Label className="text-xs font-semibold text-foreground/80">Project Assignee</Label>
+      <Combobox value={selectedId} onValueChange={setSelectedId}>
+        <ComboboxTrigger asChild>
+          <Button variant="outline" className="w-[240px] justify-between font-normal" role="combobox">
+            {selectedMember ? (
+              <div className="flex items-center gap-2">
+                <div className="h-5 w-5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold flex items-center justify-center border border-primary/20">
+                  {selectedMember.avatar}
+                </div>
+                <span className="text-xs font-medium text-foreground">{selectedMember.name}</span>
+              </div>
+            ) : (
+              <span className="text-xs text-muted-foreground">Select assignee...</span>
+            )}
+            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-2" />
+          </Button>
+        </ComboboxTrigger>
+        <ComboboxContent className="w-[240px] p-0 shadow-2xl">
+          <ComboboxInput placeholder="Search team members..." />
+          <AssigneeList />
+        </ComboboxContent>
+      </Combobox>
     </div>
   )
 }
 
 // ==========================================
-// 14. DATE PICKER DEMOS (6 Demos)
+// 14. DATE PICKER DEMOS (3 Demos)
 // ==========================================
 
 export function DatePickerDemo() {
   return <DatePicker placeholder="Pick a date" />
 }
 
-export function DatePickerPresetsDemo() {
+export function DatePickerDemoThemes() {
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-center">
-      <DatePicker placeholder="Default Picker" variant="default" />
-      <DatePicker placeholder="Glass Picker" variant="glass" />
-      <DatePicker placeholder="Retro Picker" variant="retro" />
+    <div className="flex flex-wrap gap-4 items-center justify-center py-2 select-none">
+      <DatePicker placeholder="Default Preset" variant="default" />
+      <DatePicker placeholder="Glass Preset" variant="glass" />
+      <DatePicker placeholder="Retro Preset" variant="retro" />
+      <DatePicker placeholder="Glow Preset" variant="glow" />
     </div>
   )
-}
-
-export function DatePickerFormDemo() {
-  return (
-    <div className="flex flex-col gap-2 w-[240px]">
-      <Label className="text-xs font-medium text-foreground">
-        Event Schedule Date
-      </Label>
-      <DatePicker placeholder="Select schedule date" />
-    </div>
-  )
-}
-
-export function DatePickerGlassDemo() {
-  return (
-    <div className="p-6 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/10">
-      <DatePicker placeholder="Glass calendar date" variant="glass" />
-    </div>
-  )
-}
-
-export function DatePickerRetroDemo() {
-  return <DatePicker placeholder="SELECT DATE" variant="retro" />
-}
-
-export function DatePickerGlowDemo() {
-  return <DatePicker placeholder="Neon date picker" variant="glow" />
 }
 
 export function DateRangePickerDemo() {
   return <DateRangePicker placeholder="Pick a date range" />
-}
-
-export function DateRangePickerPresetsDemo() {
-  return (
-    <div className="flex flex-col gap-4 items-center">
-      <DateRangePicker placeholder="Default Range Picker" variant="default" />
-      <DateRangePicker placeholder="Glass Range Picker" variant="glass" />
-      <DateRangePicker placeholder="Retro Range Picker" variant="retro" />
-    </div>
-  )
 }
 
 // ==========================================
@@ -5241,6 +5172,451 @@ export function Dashboard02Demo() {
   return (
     <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
       <DashboardBlock02 />
+    </div>
+  )
+}
+
+export function CheckboxFormDemo() {
+  const [newsletters, setNewsletters] = React.useState(true)
+  const [promotions, setPromotions] = React.useState(false)
+  const [security, setSecurity] = React.useState(true)
+
+  return (
+    <div className="w-full max-w-[420px] rounded-xl border border-border bg-card p-5 text-left text-foreground">
+      <div className="mb-4">
+        <h4 className="text-sm font-semibold text-foreground">Notification Preferences</h4>
+        <p className="text-xs text-muted-foreground">Manage how you receive alerts and newsletters.</p>
+      </div>
+      
+      <div className="space-y-4">
+        <div className="flex items-start gap-3 rounded-lg border border-border p-3 hover:bg-muted/40 transition-colors cursor-pointer select-none" onClick={() => setNewsletters(!newsletters)}>
+          <Checkbox id="pref-newsletters" checked={newsletters} onCheckedChange={(checked) => setNewsletters(!!checked)} onClick={(e: any) => e.stopPropagation()} className="mt-1" />
+          <div className="space-y-1">
+            <Label htmlFor="pref-newsletters" className="text-xs font-semibold pb-0 cursor-pointer">Weekly Newsletters</Label>
+            <p className="text-[11px] text-muted-foreground leading-normal">Get a digest of new features, articles, and community updates every Tuesday.</p>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-3 rounded-lg border border-border p-3 hover:bg-muted/40 transition-colors cursor-pointer select-none" onClick={() => setPromotions(!promotions)}>
+          <Checkbox id="pref-promotions" checked={promotions} onCheckedChange={(checked) => setPromotions(!!checked)} onClick={(e: any) => e.stopPropagation()} className="mt-1" />
+          <div className="space-y-1">
+            <Label htmlFor="pref-promotions" className="text-xs font-semibold pb-0 cursor-pointer">Promotional Emails</Label>
+            <p className="text-[11px] text-muted-foreground leading-normal">Receive updates on discounts, sales, and special offers from our partners.</p>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-3 rounded-lg border border-border p-3 hover:bg-muted/40 transition-colors cursor-pointer select-none" onClick={() => setSecurity(!security)}>
+          <Checkbox id="pref-security" checked={security} onCheckedChange={(checked) => setSecurity(!!checked)} onClick={(e: any) => e.stopPropagation()} className="mt-1" />
+          <div className="space-y-1">
+            <Label htmlFor="pref-security" className="text-xs font-semibold pb-0 cursor-pointer">Security & Safety Alerts</Label>
+            <p className="text-[11px] text-muted-foreground leading-normal">Get instant alerts about login attempts, security patches, and critical updates.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function CheckboxCardDemo() {
+  const [plans, setPlans] = React.useState<string[]>(['hobby'])
+
+  const togglePlan = (id: string) => {
+    if (plans.includes(id)) {
+      setPlans(plans.filter((p) => p !== id))
+    } else {
+      setPlans([...plans, id])
+    }
+  }
+
+  return (
+    <div className="w-full max-w-[500px] py-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-left">
+        
+        {/* Plan 1 */}
+        <div 
+          onClick={() => togglePlan('hobby')}
+          className={`flex flex-col justify-between rounded-xl border p-4 cursor-pointer select-none transition-all h-[130px] ${
+            plans.includes('hobby') 
+              ? "border-primary bg-primary/[0.02] shadow-[0_0_10px_rgba(168,85,247,0.05)]" 
+              : "border-border bg-card hover:bg-muted/40"
+          }`}
+        >
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-xs font-bold text-foreground">Hobby Plan</span>
+              <p className="text-[10px] text-muted-foreground mt-0.5">For personal projects</p>
+            </div>
+            <Checkbox 
+              id="plan-hobby" 
+              checked={plans.includes('hobby')} 
+              onCheckedChange={() => togglePlan('hobby')}
+              onClick={(e: any) => e.stopPropagation()} 
+            />
+          </div>
+          <div className="mt-auto">
+            <span className="text-sm font-bold text-foreground">$12</span>
+            <span className="text-[10px] text-muted-foreground"> / month</span>
+          </div>
+        </div>
+
+        {/* Plan 2 */}
+        <div 
+          onClick={() => togglePlan('pro')}
+          className={`flex flex-col justify-between rounded-xl border p-4 cursor-pointer select-none transition-all h-[130px] ${
+            plans.includes('pro') 
+              ? "border-primary bg-primary/[0.02] shadow-[0_0_10px_rgba(168,85,247,0.05)]" 
+              : "border-border bg-card hover:bg-muted/40"
+          }`}
+        >
+          <div className="flex justify-between items-start">
+            <div>
+              <span className="text-xs font-bold text-foreground">Startup Pro</span>
+              <p className="text-[10px] text-muted-foreground mt-0.5">For small teams & scale</p>
+            </div>
+            <Checkbox 
+              id="plan-pro" 
+              checked={plans.includes('pro')} 
+              onCheckedChange={() => togglePlan('pro')}
+              onClick={(e: any) => e.stopPropagation()} 
+            />
+          </div>
+          <div className="mt-auto">
+            <span className="text-sm font-bold text-foreground">$49</span>
+            <span className="text-[10px] text-muted-foreground"> / month</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
+// ==========================================
+// 41. DIALOG DEMOS
+// ==========================================
+
+export function DialogDemo() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Open Modal</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogDescription>Make changes to your profile details here. Click save when you're done.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4 text-left">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="modal-name" className="text-right pb-0">Name</Label>
+            <Input id="modal-name" defaultValue="Evil Rabbit" className="col-span-3" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export function DialogDemoThemes() {
+  return (
+    <div className="flex flex-wrap gap-4 items-center justify-center py-2 select-none">
+      {/* 1. Default */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="default">Default Preset</Button>
+        </DialogTrigger>
+        <DialogContent variant="default">
+          <DialogHeader>
+            <DialogTitle>Default Dialog</DialogTitle>
+            <DialogDescription>Standard dialog style with clean neutral borders.</DialogDescription>
+          </DialogHeader>
+          <div className="py-4 text-left">
+            <p className="text-sm text-muted-foreground">This is the default system variant modal view.</p>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 2. Glass */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="glass">Glass Preset</Button>
+        </DialogTrigger>
+        <DialogContent variant="glass">
+          <DialogHeader>
+            <DialogTitle>Glassmorphic Dialog</DialogTitle>
+            <DialogDescription>Semi-transparent overlay with a glass backdrop effect.</DialogDescription>
+          </DialogHeader>
+          <div className="py-4 text-left">
+            <p className="text-sm text-muted-foreground">Fits over visual grids, overlays, and color patterns.</p>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 3. Retro */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="retro">Retro Preset</Button>
+        </DialogTrigger>
+        <DialogContent variant="retro">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Neobrutalist Dialog</DialogTitle>
+            <DialogDescription className="text-foreground/80">Retro black borders and hard shadow offsets.</DialogDescription>
+          </DialogHeader>
+          <div className="py-4 text-left text-foreground">
+            <p className="text-sm">Retro 90s aesthetic styling layout with mono typography.</p>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="retro">OK</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 4. Glow */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="glow">Glow Preset</Button>
+        </DialogTrigger>
+        <DialogContent variant="glow">
+          <DialogHeader>
+            <DialogTitle>Neon Glow Dialog</DialogTitle>
+            <DialogDescription>Premium dialog with a glowing purple shadow backdrop.</DialogDescription>
+          </DialogHeader>
+          <div className="py-4 text-left">
+            <p className="text-sm text-muted-foreground">Perfect for glowing accents, highlights, and primary modals.</p>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="default">Dismiss</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+
+// ==========================================
+// 42. DRAWER DEMOS
+// ==========================================
+
+export function DrawerDemo() {
+  return (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="outline">Open Drawer (Right)</Button>
+      </DrawerTrigger>
+      <DrawerContent side="right">
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Basic Drawer</DrawerTitle>
+          <DrawerDescription>
+            This is a standard right-aligned sliding side panel.
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="py-4 text-sm text-left px-4">
+          This panel slides in from the right edge. Use it for forms, filters,
+          or additional details.
+        </div>
+        <DrawerFooter className="mt-auto">
+          <DrawerClose asChild>
+            <Button className="w-full">Close Drawer</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
+export function DrawerDemoThemes() {
+  return (
+    <div className="flex flex-wrap gap-4 items-center justify-center py-2 select-none">
+      {/* 1. Default */}
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="default">Default Preset</Button>
+        </DrawerTrigger>
+        <DrawerContent variant="default">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Default Drawer</DrawerTitle>
+            <DrawerDescription>Standard sliding drawer panel with default borders.</DrawerDescription>
+          </DrawerHeader>
+          <div className="py-6 px-4 text-sm text-left">
+            <p className="text-muted-foreground">This is the default system variant drawer panel.</p>
+          </div>
+          <DrawerFooter className="mt-auto">
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* 2. Glass */}
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="glass">Glass Preset</Button>
+        </DrawerTrigger>
+        <DrawerContent variant="glass">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Glassmorphic Drawer</DrawerTitle>
+            <DrawerDescription>Translucent frosted glass layout with backdrop blur.</DrawerDescription>
+          </DrawerHeader>
+          <div className="py-6 px-4 text-sm text-left">
+            <p className="text-muted-foreground">Fits beautifully over rich graphical overlays and grids.</p>
+          </div>
+          <DrawerFooter className="mt-auto">
+            <DrawerClose asChild>
+              <Button variant="glass" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* 3. Retro */}
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="retro">Retro Preset</Button>
+        </DrawerTrigger>
+        <DrawerContent variant="retro">
+          <DrawerHeader className="text-left">
+            <DrawerTitle className="text-foreground">Neobrutalist Drawer</DrawerTitle>
+            <DrawerDescription className="text-foreground/80">Retro black borders and hard shadow offsets.</DrawerDescription>
+          </DrawerHeader>
+          <div className="py-6 px-4 text-sm text-left text-foreground">
+            <p>Retro 90s aesthetic styling layout with monospaced design tokens.</p>
+          </div>
+          <DrawerFooter className="mt-auto">
+            <DrawerClose asChild>
+              <Button variant="retro" className="w-full">Dismiss</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* 4. Glow */}
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="glow">Glow Preset</Button>
+        </DrawerTrigger>
+        <DrawerContent variant="glow">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Neon Glow Drawer</DrawerTitle>
+            <DrawerDescription>Premium sliding drawer panel with a glowing purple shadow backdrop.</DrawerDescription>
+          </DrawerHeader>
+          <div className="py-6 px-4 text-sm text-left">
+            <p className="text-muted-foreground">Perfect for accent highlights and interactive dashboards.</p>
+          </div>
+          <DrawerFooter className="mt-auto">
+            <DrawerClose asChild>
+              <Button variant="glow" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </div>
+  )
+}
+
+export function DrawerDemoSides() {
+  return (
+    <div className="flex flex-wrap gap-4 items-center justify-center py-2 select-none">
+      {/* 1. Top */}
+      <Drawer direction="top">
+        <DrawerTrigger asChild>
+          <Button variant="outline">Top Drawer</Button>
+        </DrawerTrigger>
+        <DrawerContent side="top">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Top Drawer</DrawerTitle>
+            <DrawerDescription>This panel slides in from the top edge.</DrawerDescription>
+          </DrawerHeader>
+          <div className="py-6 px-4 text-sm text-left">
+            <p className="text-muted-foreground">Useful for banner notifications, quick search, or full-width actions.</p>
+          </div>
+          <DrawerFooter className="mt-auto">
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* 2. Bottom */}
+      <Drawer direction="bottom">
+        <DrawerTrigger asChild>
+          <Button variant="outline">Bottom Drawer</Button>
+        </DrawerTrigger>
+        <DrawerContent side="bottom">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Bottom Drawer</DrawerTitle>
+            <DrawerDescription>This panel slides in from the bottom edge.</DrawerDescription>
+          </DrawerHeader>
+          <div className="py-6 px-4 text-sm text-left">
+            <p className="text-muted-foreground">Standard mobile-friendly overlay layout.</p>
+          </div>
+          <DrawerFooter className="mt-auto">
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* 3. Left */}
+      <Drawer direction="left">
+        <DrawerTrigger asChild>
+          <Button variant="outline">Left Drawer</Button>
+        </DrawerTrigger>
+        <DrawerContent side="left">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Left Drawer</DrawerTitle>
+            <DrawerDescription>This panel slides in from the left edge.</DrawerDescription>
+          </DrawerHeader>
+          <div className="py-6 px-4 text-sm text-left">
+            <p className="text-muted-foreground">Perfect for navigation menus and sidebars.</p>
+          </div>
+          <DrawerFooter className="mt-auto">
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* 4. Right */}
+      <Drawer direction="right">
+        <DrawerTrigger asChild>
+          <Button variant="outline">Right Drawer</Button>
+        </DrawerTrigger>
+        <DrawerContent side="right">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Right Drawer</DrawerTitle>
+            <DrawerDescription>This panel slides in from the right edge.</DrawerDescription>
+          </DrawerHeader>
+          <div className="py-6 px-4 text-sm text-left">
+            <p className="text-muted-foreground">Great for detail views and settings panels.</p>
+          </div>
+          <DrawerFooter className="mt-auto">
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   )
 }

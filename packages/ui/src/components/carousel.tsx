@@ -17,6 +17,7 @@ const carouselVariants = tv({
       glass: '',
       retro: '',
       glow: '',
+      cyberpunk: '',
     },
   },
   defaultVariants: {
@@ -35,6 +36,12 @@ interface CarouselProps
   plugins?: any
   orientation?: 'horizontal' | 'vertical'
   setApi?: (api: CarouselApi) => void
+  loop?: boolean
+  dragFree?: boolean
+  align?: 'start' | 'center' | 'end'
+  startIndex?: number
+  autoplay?: boolean
+  autoplayInterval?: number
 }
 
 type CarouselContextProps = {
@@ -44,7 +51,10 @@ type CarouselContextProps = {
   scrollNext: () => void
   canScrollPrev: boolean
   canScrollNext: boolean
-  variant?: 'default' | 'glass' | 'retro' | 'glow'
+  variant?: 'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
+  selectedIndex: number
+  scrollSnaps: number[]
+  scrollTo: (index: number) => void
 } & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
@@ -68,6 +78,12 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       plugins,
       className,
       variant,
+      loop,
+      dragFree,
+      align,
+      startIndex,
+      autoplay = false,
+      autoplayInterval = 4000,
       children,
       ...props
     },
@@ -77,17 +93,25 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       {
         ...opts,
         axis: orientation === 'horizontal' ? 'x' : 'y',
+        ...(loop !== undefined && { loop }),
+        ...(dragFree !== undefined && { dragFree }),
+        ...(align !== undefined && { align }),
+        ...(startIndex !== undefined && { startIndex }),
       },
       plugins,
     )
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
+    const [selectedIndex, setSelectedIndex] = React.useState(0)
+    const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([])
+    const [isHovered, setIsHovered] = React.useState(false)
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
         return
       }
 
+      setSelectedIndex(api.selectedScrollSnap())
       setCanScrollPrev(api.canScrollPrev())
       setCanScrollNext(api.canScrollNext())
     }, [])
@@ -99,6 +123,13 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
     const scrollNext = React.useCallback(() => {
       api?.scrollNext()
     }, [api])
+
+    const scrollTo = React.useCallback(
+      (index: number) => {
+        api?.scrollTo(index)
+      },
+      [api],
+    )
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -127,13 +158,38 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       }
 
       onSelect(api)
-      api.on('reInit', onSelect)
-      api.on('select', onSelect)
+      setScrollSnaps(api.scrollSnapList())
+
+      const handleSelect = () => onSelect(api)
+      const handleReInit = () => {
+        onSelect(api)
+        setScrollSnaps(api.scrollSnapList())
+      }
+
+      api.on('reInit', handleReInit)
+      api.on('select', handleSelect)
 
       return () => {
-        api.off('select', onSelect)
+        api.off('reInit', handleReInit)
+        api.off('select', handleSelect)
       }
     }, [api, onSelect])
+
+    React.useEffect(() => {
+      if (!autoplay || !api || isHovered) {
+        return
+      }
+
+      const intervalId = setInterval(() => {
+        if (api.canScrollNext()) {
+          api.scrollNext()
+        } else {
+          api.scrollTo(0)
+        }
+      }, autoplayInterval)
+
+      return () => clearInterval(intervalId)
+    }, [api, autoplay, autoplayInterval, isHovered])
 
     return (
       <CarouselContext.Provider
@@ -147,13 +203,18 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           canScrollPrev,
           canScrollNext,
           variant,
+          selectedIndex,
+          scrollSnaps,
+          scrollTo,
         }}
       >
         <div
           ref={ref}
           onKeyDown={handleKeyDown}
+          onMouseEnter={autoplay ? () => setIsHovered(true) : undefined}
+          onMouseLeave={autoplay ? () => setIsHovered(false) : undefined}
           data-slot="carousel"
-          className={cn('relative', className)}
+          className={cn(carouselVariants({ variant }), className)}
           role="region"
           aria-roledescription="carousel"
           {...props}
@@ -216,32 +277,19 @@ const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
-  const {
-    orientation,
-    scrollPrev,
-    canScrollPrev,
-    variant: carouselVar,
-  } = useCarousel()
+  const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   return (
     <Button
       ref={ref}
       data-slot="carousel-previous"
-      variant={
-        carouselVar === 'retro'
-          ? 'retro'
-          : carouselVar === 'glass'
-            ? 'glass'
-            : carouselVar === 'glow'
-              ? 'glow'
-              : variant
-      }
+      variant={variant}
       size={size}
       className={cn(
-        'absolute h-8 w-8 rounded-full z-10',
+        'absolute size-8 rounded-full z-10 transition-none',
         orientation === 'horizontal'
-          ? 'left-2 sm:-left-12 top-1/2 -translate-y-1/2'
-          : '-top-12 left-1/2 -translate-y-1/2 rotate-90',
+          ? 'top-1/2 left-2 sm:-left-12 -translate-y-1/2 hover:-translate-y-1/2 active:-translate-y-1/2 active:scale-100'
+          : '-top-12 left-1/2 -translate-x-1/2 rotate-90 hover:-translate-x-1/2 hover:rotate-90 active:-translate-x-1/2 active:rotate-90 active:scale-100',
         className,
       )}
       disabled={!canScrollPrev}
@@ -259,32 +307,19 @@ const CarouselNext = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
-  const {
-    orientation,
-    scrollNext,
-    canScrollNext,
-    variant: carouselVar,
-  } = useCarousel()
+  const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   return (
     <Button
       ref={ref}
       data-slot="carousel-next"
-      variant={
-        carouselVar === 'retro'
-          ? 'retro'
-          : carouselVar === 'glass'
-            ? 'glass'
-            : carouselVar === 'glow'
-              ? 'glow'
-              : variant
-      }
+      variant={variant}
       size={size}
       className={cn(
-        'absolute h-8 w-8 rounded-full z-10',
+        'absolute size-8 rounded-full z-10 transition-none',
         orientation === 'horizontal'
-          ? 'right-2 sm:-right-12 top-1/2 -translate-y-1/2'
-          : '-bottom-12 left-1/2 -translate-y-1/2 rotate-90',
+          ? 'top-1/2 right-2 sm:-right-12 -translate-y-1/2 hover:-translate-y-1/2 active:-translate-y-1/2 active:scale-100'
+          : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90 hover:-translate-x-1/2 hover:rotate-90 active:-translate-x-1/2 active:rotate-90 active:scale-100',
         className,
       )}
       disabled={!canScrollNext}
@@ -298,6 +333,62 @@ const CarouselNext = React.forwardRef<
 })
 CarouselNext.displayName = 'CarouselNext'
 
+const CarouselDots = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const { scrollSnaps, selectedIndex, scrollTo, variant: carouselVar } = useCarousel()
+
+  if (scrollSnaps.length <= 1) {
+    return null
+  }
+
+  return (
+    <div
+      ref={ref}
+      data-slot="carousel-dots"
+      className={cn(
+        'flex items-center justify-center gap-2 mt-4',
+        className,
+      )}
+      {...props}
+    >
+      {scrollSnaps.map((_, index) => (
+        <button
+          key={index}
+          type="button"
+          onClick={() => scrollTo(index)}
+          className={cn(
+            'h-2 w-2 rounded-full transition-all duration-200 cursor-pointer border-0 p-0',
+            carouselVar === 'retro'
+              ? 'border border-foreground rounded-none bg-transparent hover:bg-foreground/10'
+              : carouselVar === 'cyberpunk'
+                ? 'border border-emerald-500 rounded-none bg-transparent hover:bg-emerald-500/10'
+                : '',
+            index === selectedIndex
+              ? carouselVar === 'retro'
+                ? '!bg-foreground w-4'
+                : carouselVar === 'glass'
+                  ? 'bg-foreground w-4'
+                  : carouselVar === 'glow'
+                    ? 'bg-primary w-4 shadow-[0_0_8px_rgba(168,85,247,0.6)]'
+                    : carouselVar === 'cyberpunk'
+                      ? 'bg-emerald-500 w-4 shadow-[0_0_8px_rgba(16,185,129,0.6)]'
+                      : 'bg-primary w-4'
+              : carouselVar === 'retro'
+                ? 'border-foreground'
+                : carouselVar === 'cyberpunk'
+                  ? 'border-emerald-500'
+                  : 'bg-neutral-300 dark:bg-neutral-700 hover:bg-neutral-400 dark:hover:bg-neutral-600'
+          )}
+          aria-label={`Go to slide ${index + 1}`}
+        />
+      ))}
+    </div>
+  )
+})
+CarouselDots.displayName = 'CarouselDots'
+
 export {
   type CarouselApi,
   Carousel,
@@ -305,4 +396,5 @@ export {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
 }

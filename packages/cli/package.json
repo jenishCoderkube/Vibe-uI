@@ -16,7 +16,7 @@
     "ui-library",
     "component-library",
     "glassmorphism",
-    "shadcn-alternative",
+    "components-cli",
     "dark-mode",
     "typescript",
     "accessible",

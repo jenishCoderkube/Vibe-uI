@@ -5,420 +5,307 @@ import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-  Button,
-  Card,
-  Switch,
-  Slider,
 } from 'vibe-ui'
 import {
   ChevronsUpDown,
+  Settings,
+  ChevronRight,
   Folder,
   FolderOpen,
-  Code,
-  Settings,
-  Filter,
+  FileCode2,
   FileText,
-  User,
-  HelpCircle,
-  Terminal,
-  HelpCircle as HelpIcon,
 } from 'lucide-react'
 
-// Helper Wrapper
-function CollapsibleCard({
-  title,
-  icon: Icon,
-  children,
-}: {
-  title: string
-  icon: any
-  children: React.ReactNode
-}) {
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <Icon className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">{title}</h4>
-      </div>
-      {children}
-    </div>
-  )
+// Styling configurations
+const containerStyles = {
+  default: 'w-full border border-border bg-card text-card-foreground rounded-xl p-4 shadow-sm transition-all duration-300',
+  glass: 'w-full border border-black/10 dark:border-white/10 bg-black/[0.01] dark:bg-white/[0.03] backdrop-blur-md text-foreground dark:text-white rounded-xl p-4 shadow-md transition-all duration-300',
+  retro: 'w-full border-2 border-foreground bg-background text-foreground rounded-none p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transition-all duration-300',
+  glow: 'w-full border border-purple-500/30 bg-purple-500/[0.01] dark:bg-purple-500/[0.02] text-foreground rounded-xl p-4 shadow-[0_0_15px_rgba(168,85,247,0.1)] dark:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all duration-300',
 }
 
-// 1. CollapsibleBasic
-export function CollapsibleBasic() {
-  const [open, setOpen] = useState(false)
-  const Chevrons = ChevronsUpDown as any
+const triggerButtonStyles = {
+  default: 'h-7 w-7 p-0 flex items-center justify-center rounded-lg border border-border bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer',
+  glass: 'h-7 w-7 p-0 flex items-center justify-center rounded-lg border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-black/10 hover:dark:bg-white/15 text-foreground dark:text-white transition-colors cursor-pointer',
+  retro: 'h-7 w-7 p-0 flex items-center justify-center rounded-none border-2 border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-colors cursor-pointer font-bold',
+  glow: 'h-7 w-7 p-0 flex items-center justify-center rounded-lg border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/25 text-purple-600 dark:text-purple-400 transition-colors cursor-pointer shadow-[0_0_8px_rgba(168,85,247,0.2)]',
+}
 
+const panelStyles = {
+  default: 'rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground transition-all',
+  glass: 'rounded-lg border border-black/5 dark:border-white/5 bg-black/[0.01] dark:bg-white/[0.01] px-3.5 py-2.5 text-xs text-muted-foreground dark:text-white/70 transition-all',
+  retro: 'border-2 border-foreground bg-background px-3.5 py-2.5 text-xs font-mono rounded-none transition-all',
+  glow: 'rounded-lg border border-purple-500/10 bg-purple-500/[0.01] px-3.5 py-2.5 text-xs text-purple-600/90 dark:text-purple-400/90 transition-all',
+}
+
+const Chevrons = ChevronsUpDown as any
+
+// Helper Single Themed Card
+function CollapsibleThemedCard({
+  theme,
+  isOpen,
+  setIsOpen,
+  title,
+}: {
+  theme: 'default' | 'glass' | 'retro' | 'glow'
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+  title: string
+}) {
   return (
-    <CollapsibleCard title="Simple Expand" icon={HelpIcon}>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold">Togglable Panel Content</span>
+    <div className={containerStyles[theme]}>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-3">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Settings className={`h-4 w-4 ${theme === 'glow' ? 'text-purple-400' : theme === 'retro' ? 'text-foreground' : 'text-primary'}`} />
+            <span className="text-xs font-bold uppercase tracking-wider">
+              {title}
+            </span>
+          </div>
           <CollapsibleTrigger asChild>
-            <Button
-              variant="glass"
-              className="h-7 w-7 p-0 flex items-center justify-center rounded-lg"
-            >
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
+            <button className={triggerButtonStyles[theme]}>
+              <Chevrons className="h-4 w-4" />
+            </button>
           </CollapsibleTrigger>
         </div>
-        <div className="rounded-lg border border-white/5 bg-zinc-900/60 px-4 py-2.5 text-xs">
-          This content is always visible.
+
+        <div className={panelStyles[theme]}>
+          This panel content is always visible.
         </div>
+
         <CollapsibleContent className="space-y-2">
-          <div className="rounded-lg border border-white/5 bg-zinc-900/60 px-4 py-2.5 text-xs text-muted-foreground">
+          <div className={panelStyles[theme]}>
             This sub-content slides open when triggered.
           </div>
         </CollapsibleContent>
       </Collapsible>
-    </CollapsibleCard>
+    </div>
   )
 }
 
-// 2. FAQ
-export function CollapsibleFAQ() {
-  const [open, setOpen] = useState(false)
-  const Help = HelpCircle as any
-  const Chevrons = ChevronsUpDown as any
+// 1. CollapsibleBasic (Simple Default Theme Card)
+export function CollapsibleBasic() {
+  const [open, setOpen] = useState(true)
 
   return (
-    <CollapsibleCard title="FAQ Toggle" icon={Help}>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between gap-4">
-          <span className="text-xs font-bold leading-tight">
-            What payment methods are supported?
-          </span>
-          <CollapsibleTrigger asChild>
-            <Button variant="glow" className="h-7 w-7 p-0 shrink-0">
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-2 p-2.5 border border-primary/20 bg-primary/[0.02] rounded-lg">
-            We support all major credit cards, Stripe, PayPal, Apple Pay, and
-            cryptocurrency presets.
-          </p>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
+    <div className="w-full max-w-[360px] py-4 select-none">
+      <CollapsibleThemedCard
+        theme="default"
+        isOpen={open}
+        setIsOpen={setOpen}
+        title="System Preferences"
+      />
+    </div>
   )
 }
 
-// 3. CollapsibleCode
+// 2. CollapsibleThemes (2x2 Grid of 4 Themes)
+export function CollapsibleThemes() {
+  const [openDefault, setOpenDefault] = useState(true)
+  const [openGlass, setOpenGlass] = useState(true)
+  const [openRetro, setOpenRetro] = useState(true)
+  const [openGlow, setOpenGlow] = useState(true)
+
+  return (
+    <div className="w-full max-w-[760px] py-4 select-none">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+        <CollapsibleThemedCard
+          theme="default"
+          isOpen={openDefault}
+          setIsOpen={setOpenDefault}
+          title="Default Theme"
+        />
+        <CollapsibleThemedCard
+          theme="glass"
+          isOpen={openGlass}
+          setIsOpen={setOpenGlass}
+          title="Glass Theme"
+        />
+        <CollapsibleThemedCard
+          theme="retro"
+          isOpen={openRetro}
+          setIsOpen={setOpenRetro}
+          title="Retro Theme"
+        />
+        <CollapsibleThemedCard
+          theme="glow"
+          isOpen={openGlow}
+          setIsOpen={setOpenGlow}
+          title="Glow Theme"
+        />
+      </div>
+    </div>
+  )
+}
+
+// Dummy exports to prevent import errors in apps/docs/src/app/docs/[[...slug]]/page.tsx
+export function CollapsibleFAQ() { return null }
+// 3. CollapsibleCode (Workspace Directory Tree)
 export function CollapsibleCode() {
-  const [open, setOpen] = useState(false)
-  const CodeIcon = Code as any
-  const Chevrons = ChevronsUpDown as any
+  const [appsOpen, setAppsOpen] = useState(true)
+  const [docsOpen, setDocsOpen] = useState(true)
+  const [packagesOpen, setPackagesOpen] = useState(true)
+  const [uiOpen, setUiOpen] = useState(true)
+  const [srcOpen, setSrcOpen] = useState(true)
+  const [componentsOpen, setComponentsOpen] = useState(true)
 
-  return (
-    <CollapsibleCard title="Code Expander" icon={CodeIcon}>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-mono text-emerald-400">
-            package.json
-          </span>
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="cyberpunk"
-              className="h-7 w-7 p-0 flex items-center justify-center"
-            >
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <pre className="rounded border border-emerald-950 bg-black p-3 font-mono text-[10px] text-emerald-600">
-          {`{ "name": "vibe-ui", "version": "0.1.0" }`}
-        </pre>
-        <CollapsibleContent>
-          <pre className="rounded border border-emerald-950 bg-black p-3 font-mono text-[10px] text-emerald-600 mt-2">
-            {`"dependencies": {\n  "react": "^19.0.0",\n  "clsx": "^2.1.1"\n}`}
-          </pre>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
-  )
-}
-
-// 4. Folder
-export function CollapsibleFolder() {
-  const [open, setOpen] = useState(false)
+  const Chevron = ChevronRight as any
   const FolderIcon = Folder as any
   const FolderOpenIcon = FolderOpen as any
-  const Chevrons = ChevronsUpDown as any
-
-  return (
-    <CollapsibleCard
-      title="Directory Tree"
-      icon={open ? FolderOpenIcon : FolderIcon}
-    >
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold flex items-center gap-2">
-            {open ? (
-              <FolderOpenIcon className="h-3.5 w-3.5" />
-            ) : (
-              <FolderIcon className="h-3.5 w-3.5" />
-            )}
-            src/components
-          </span>
-          <CollapsibleTrigger asChild>
-            <Button variant="glass" className="h-7 w-7 p-0">
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="pl-4 space-y-1 mt-2 border-l border-white/10">
-          <div className="text-xs text-muted-foreground p-1 hover:text-white cursor-pointer">
-            button.tsx
-          </div>
-          <div className="text-xs text-muted-foreground p-1 hover:text-white cursor-pointer">
-            card.tsx
-          </div>
-          <div className="text-xs text-muted-foreground p-1 hover:text-white cursor-pointer">
-            switch.tsx
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
-  )
-}
-
-// 5. Filters
-export function CollapsibleFilters() {
-  const [open, setOpen] = useState(false)
-  const FilterIcon = Filter as any
-  const Chevrons = ChevronsUpDown as any
-
-  return (
-    <CollapsibleCard title="Sidebar Filters" icon={FilterIcon}>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold">Filter Controls</span>
-          <CollapsibleTrigger asChild>
-            <Button variant="default" className="h-7 w-7 p-0">
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="space-y-3 pt-2">
-          <div className="space-y-1">
-            <label className="text-[10px] text-muted-foreground uppercase font-bold">
-              Category
-            </label>
-            <select className="w-full text-xs bg-zinc-900 border border-white/10 rounded px-2.5 py-1.5 outline-none text-white">
-              <option>Engineering</option>
-              <option>Design</option>
-              <option>Marketing</option>
-            </select>
-          </div>
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-xs">Include Archive</span>
-            <Switch variant="glow" defaultChecked />
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
-  )
-}
-
-// 6. Invoice
-export function CollapsibleInvoice() {
-  const [open, setOpen] = useState(false)
-  const InvoiceIcon = FileText as any
-  const Chevrons = ChevronsUpDown as any
-
-  return (
-    <CollapsibleCard title="Brutalist Billing" icon={InvoiceIcon}>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-mono font-bold">INV-09871</span>
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="retro"
-              className="h-7 w-7 p-0 flex items-center justify-center"
-            >
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <div className="rounded border-2 border-foreground bg-background p-3 text-xs text-foreground font-mono font-bold flex justify-between shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-          <span>Total Balance</span>
-          <span>$1,420.00</span>
-        </div>
-        <CollapsibleContent className="space-y-2 mt-2">
-          <div className="p-3 border-2 border-foreground bg-background text-[11px] font-mono text-muted-foreground space-y-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-            <div className="flex justify-between">
-              <span>Subtotal:</span>
-              <span>$1,300.00</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Tax (10%):</span>
-              <span>$120.00</span>
-            </div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
-  )
-}
-
-// 7. Profile
-export function CollapsibleProfile() {
-  const [open, setOpen] = useState(false)
-  const UserIcon = User as any
-  const Chevrons = ChevronsUpDown as any
-
-  return (
-    <CollapsibleCard title="Profile Drawer" icon={UserIcon}>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-xs">
-            JS
-          </div>
-          <div className="flex-1 text-xs">
-            <div className="font-bold">Jenish Sabhadiya</div>
-            <div className="text-[10px] text-muted-foreground">
-              Admin Access
-            </div>
-          </div>
-          <CollapsibleTrigger asChild>
-            <Button variant="glass" className="h-7 w-7 p-0">
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="space-y-2 pt-2">
-          <input
-            type="text"
-            placeholder="Edit Title..."
-            className="w-full text-xs bg-zinc-900 border border-white/5 rounded px-2.5 py-1.5 text-white outline-none"
-          />
-          <Button variant="glass" className="w-full py-1 text-[11px] h-8">
-            Save Changes
-          </Button>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
-  )
-}
-
-// 8. Comments
-export function CollapsibleComments() {
-  const [open, setOpen] = useState(false)
-  const Chevrons = ChevronsUpDown as any
-
-  return (
-    <CollapsibleCard title="Comments Thread" icon={FileText}>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="text-xs">
-          <p className="font-semibold text-primary">Alex Mercer</p>
-          <p className="text-muted-foreground mt-0.5">
-            Will this package build cleanly on Node 18?
-          </p>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] text-zinc-500">2 replies received</span>
-          <CollapsibleTrigger asChild>
-            <Button variant="default" className="text-[10px] h-6 px-2">
-              Replies
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="pl-4 border-l-2 border-primary/20 space-y-2 mt-2">
-          <div className="text-[11px] bg-zinc-900/40 p-2.5 rounded">
-            <p className="font-semibold">Jenish Sabhadiya</p>
-            <p className="text-muted-foreground mt-0.5">
-              Yes! It compiled successfully on both Node 18 and 20.
-            </p>
-          </div>
-          <div className="text-[11px] bg-zinc-900/40 p-2.5 rounded">
-            <p className="font-semibold">Developer B</p>
-            <p className="text-muted-foreground mt-0.5">
-              Confirmed, tested inside Next.js 15 environments.
-            </p>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
-  )
-}
-
-// 9. Logs
-export function CollapsibleLogs() {
-  const [open, setOpen] = useState(false)
-  const LogIcon = Terminal as any
-  const Chevrons = ChevronsUpDown as any
-
-  return (
-    <CollapsibleCard title="Terminal Output" icon={LogIcon}>
-      <Collapsible
-        open={open}
-        onOpenChange={setOpen}
-        className="space-y-2 font-mono"
-      >
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-emerald-400 flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            turbo run build
-          </span>
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="cyberpunk"
-              className="h-7 w-7 p-0 flex items-center justify-center"
-            >
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <div className="rounded border border-emerald-950 bg-black p-2.5 text-[10px] text-emerald-500/80">
-          • turbo 2.10.5 running ...
-        </div>
-        <CollapsibleContent className="space-y-1">
-          <div className="rounded border border-emerald-950 bg-black p-2.5 text-[10px] text-emerald-600 space-y-1">
-            <div>vibe-ui-kit:build: cache hit</div>
-            <div>@custom-ui/docs:build: cache hit</div>
-            <div className="text-emerald-400">Tasks: 3 successful, 3 total</div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
-  )
-}
-
-// 10. GlassSettings
-export function CollapsibleGlassSettings() {
-  const [open, setOpen] = useState(false)
+  const FileCodeIcon = FileCode2 as any
+  const FileTextIcon = FileText as any
   const SettingsIcon = Settings as any
-  const Chevrons = ChevronsUpDown as any
 
   return (
-    <CollapsibleCard title="Glass Presets" icon={SettingsIcon}>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold">Visual Controls</span>
-          <CollapsibleTrigger asChild>
-            <Button variant="glass" className="h-7 w-7 p-0">
-              <Chevrons className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <div className="text-[11px] text-muted-foreground p-1 select-none">
-          Click button above to slider adjust HSL.
-        </div>
-        <CollapsibleContent className="space-y-3 pt-2">
-          <div className="space-y-1">
-            <span className="text-[10px] text-zinc-400">Blur Radius</span>
-            <Slider max={20} min={0} step={2} defaultValue={[8]} />
+    <div className="w-full max-w-[360px] py-4 select-none">
+      <div className="w-full border border-border bg-card text-foreground rounded-xl p-4 shadow-sm">
+        {/* Title bar */}
+        <div className="flex items-center justify-between border-b border-border/60 pb-3 mb-3">
+          <div className="flex items-center gap-2">
+            <SettingsIcon className="h-4 w-4 text-primary" />
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Workspace Tree</span>
           </div>
-          <div className="space-y-1">
-            <span className="text-[10px] text-zinc-400">Opacity Alpha</span>
-            <Slider max={100} min={10} step={10} defaultValue={[20]} />
+          <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">vibe-ui</span>
+        </div>
+
+        {/* Tree Root */}
+        <div className="space-y-1 font-mono text-xs text-left">
+          
+          {/* apps/ folder */}
+          <Collapsible open={appsOpen} onOpenChange={setAppsOpen}>
+            <div className="flex items-center justify-between py-1 hover:bg-muted/60 rounded px-1.5 cursor-pointer">
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center gap-2 flex-1">
+                  <Chevron className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${appsOpen ? 'rotate-90' : ''}`} />
+                  {appsOpen ? <FolderOpenIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" /> : <FolderIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
+                  <span className="text-foreground">apps</span>
+                </div>
+              </CollapsibleTrigger>
+            </div>
+            
+            <CollapsibleContent className="pl-3 ml-2.5 border-l border-border/60 space-y-1 mt-0.5">
+              
+              {/* docs/ folder */}
+              <Collapsible open={docsOpen} onOpenChange={setDocsOpen}>
+                <div className="flex items-center justify-between py-1 hover:bg-muted/60 rounded px-1.5 cursor-pointer">
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center gap-2 flex-1">
+                      <Chevron className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${docsOpen ? 'rotate-90' : ''}`} />
+                      {docsOpen ? <FolderOpenIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" /> : <FolderIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
+                      <span className="text-foreground">docs</span>
+                    </div>
+                  </CollapsibleTrigger>
+                </div>
+                
+                <CollapsibleContent className="pl-3 ml-2.5 border-l border-border/60 space-y-1 mt-0.5">
+                  <div className="flex items-center gap-2 py-1 px-1.5 text-muted-foreground hover:text-foreground cursor-pointer rounded hover:bg-muted/60">
+                    <FileCodeIcon className="h-3.5 w-3.5 text-amber-600 dark:text-amber-500" />
+                    <span>next.config.js</span>
+                  </div>
+                  <div className="flex items-center gap-2 py-1 px-1.5 text-muted-foreground hover:text-foreground cursor-pointer rounded hover:bg-muted/60">
+                    <FileTextIcon className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500" />
+                    <span>package.json</span>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+              
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* packages/ folder */}
+          <Collapsible open={packagesOpen} onOpenChange={setPackagesOpen}>
+            <div className="flex items-center justify-between py-1 hover:bg-muted/60 rounded px-1.5 cursor-pointer">
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center gap-2 flex-1">
+                  <Chevron className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${packagesOpen ? 'rotate-90' : ''}`} />
+                  {packagesOpen ? <FolderOpenIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" /> : <FolderIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
+                  <span className="text-foreground">packages</span>
+                </div>
+              </CollapsibleTrigger>
+            </div>
+            
+            <CollapsibleContent className="pl-3 ml-2.5 border-l border-border/60 space-y-1 mt-0.5">
+              
+              {/* ui/ folder */}
+              <Collapsible open={uiOpen} onOpenChange={setUiOpen}>
+                <div className="flex items-center justify-between py-1 hover:bg-muted/60 rounded px-1.5 cursor-pointer">
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center gap-2 flex-1">
+                      <Chevron className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${uiOpen ? 'rotate-90' : ''}`} />
+                      {uiOpen ? <FolderOpenIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" /> : <FolderIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
+                      <span className="text-foreground">ui</span>
+                    </div>
+                  </CollapsibleTrigger>
+                </div>
+                
+                <CollapsibleContent className="pl-3 ml-2.5 border-l border-border/60 space-y-1 mt-0.5">
+                  
+                  {/* src/ folder */}
+                  <Collapsible open={srcOpen} onOpenChange={setSrcOpen}>
+                    <div className="flex items-center justify-between py-1 hover:bg-muted/60 rounded px-1.5 cursor-pointer">
+                      <CollapsibleTrigger asChild>
+                        <div className="flex items-center gap-2 flex-1">
+                          <Chevron className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${srcOpen ? 'rotate-90' : ''}`} />
+                          {srcOpen ? <FolderOpenIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" /> : <FolderIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
+                          <span className="text-foreground">src</span>
+                        </div>
+                      </CollapsibleTrigger>
+                    </div>
+                    
+                    <CollapsibleContent className="pl-3 ml-2.5 border-l border-border/60 space-y-1 mt-0.5">
+                      
+                      {/* components/ folder */}
+                      <Collapsible open={componentsOpen} onOpenChange={setComponentsOpen}>
+                        <div className="flex items-center justify-between py-1 hover:bg-muted/60 rounded px-1.5 cursor-pointer">
+                          <CollapsibleTrigger asChild>
+                            <div className="flex items-center gap-2 flex-1">
+                              <Chevron className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${componentsOpen ? 'rotate-90' : ''}`} />
+                              {componentsOpen ? <FolderOpenIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" /> : <FolderIcon className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
+                              <span className="text-foreground">components</span>
+                            </div>
+                          </CollapsibleTrigger>
+                        </div>
+                        
+                        <CollapsibleContent className="pl-3 ml-2.5 border-l border-border/60 space-y-1 mt-0.5">
+                          <div className="flex items-center gap-2 py-1 px-1.5 text-muted-foreground hover:text-foreground cursor-pointer rounded hover:bg-muted/60">
+                            <FileCodeIcon className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-500" />
+                            <span>button.tsx</span>
+                          </div>
+                          <div className="flex items-center gap-2 py-1 px-1.5 text-muted-foreground hover:text-foreground cursor-pointer rounded hover:bg-muted/60">
+                            <FileCodeIcon className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-500" />
+                            <span>collapsible.tsx</span>
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+                      
+                    </CollapsibleContent>
+                  </Collapsible>
+                  
+                </CollapsibleContent>
+              </Collapsible>
+              
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Root config files */}
+          <div className="flex items-center gap-2 py-1 px-1.5 text-muted-foreground hover:text-foreground cursor-pointer rounded hover:bg-muted/60 pl-7">
+            <FileCodeIcon className="h-3.5 w-3.5 text-purple-600 dark:text-purple-500" />
+            <span>turbo.json</span>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </CollapsibleCard>
+          <div className="flex items-center gap-2 py-1 px-1.5 text-muted-foreground hover:text-foreground cursor-pointer rounded hover:bg-muted/60 pl-7">
+            <FileTextIcon className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500" />
+            <span>pnpm-workspace.yaml</span>
+          </div>
+          
+        </div>
+      </div>
+    </div>
   )
 }
+export function CollapsibleFolder() { return null }
+export function CollapsibleFilters() { return null }
+export function CollapsibleInvoice() { return null }
+export function CollapsibleProfile() { return null }
+export function CollapsibleComments() { return null }
+export function CollapsibleLogs() { return null }
+export function CollapsibleGlassSettings() { return null }

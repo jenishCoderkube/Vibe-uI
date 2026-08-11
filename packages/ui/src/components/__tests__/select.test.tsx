@@ -142,4 +142,34 @@ describe('Select Component', () => {
     expect(content).toHaveClass('border-foreground')
     expect(content).toHaveClass('rounded-none')
   })
+
+  it('supports trigger size variants', () => {
+    const { rerender } = render(
+      <Select>
+        <SelectTrigger size="sm">
+          <SelectValue placeholder="Small select" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="item1">Item 1</SelectItem>
+        </SelectContent>
+      </Select>,
+    )
+    const triggerSm = screen.getByRole('combobox')
+    expect(triggerSm).toHaveClass('h-8')
+    expect(triggerSm).toHaveClass('text-xs')
+
+    rerender(
+      <Select>
+        <SelectTrigger size="default">
+          <SelectValue placeholder="Default select" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="item1">Item 1</SelectItem>
+        </SelectContent>
+      </Select>,
+    )
+    const triggerDefault = screen.getByRole('combobox')
+    expect(triggerDefault).toHaveClass('h-10')
+    expect(triggerDefault).toHaveClass('text-sm')
+  })
 })

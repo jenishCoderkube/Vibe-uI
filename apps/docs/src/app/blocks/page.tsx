@@ -10,14 +10,14 @@ import {
   Sidebar03Block,
   Login03Block,
   Login04Block,
-} from '../../components/shadcn-blocks'
+} from '../../components/vibe-blocks'
 import {
   dashboard01Code,
   sidebar07Code,
   sidebar03Code,
   login03Code,
   login04Code,
-} from '../../components/shadcn-blocks-code'
+} from '../../components/vibe-blocks-code'
 import { Sparkles, Layout } from 'lucide-react'
 
 export default function BlocksPage() {

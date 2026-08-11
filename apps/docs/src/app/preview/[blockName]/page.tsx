@@ -9,7 +9,7 @@ import {
   Sidebar03Block,
   Login03Block,
   Login04Block,
-} from '../../../components/shadcn-blocks'
+} from '../../../components/vibe-blocks'
 import { DashboardBlock02 } from 'vibe-ui'
 
 export default function PreviewPage() {

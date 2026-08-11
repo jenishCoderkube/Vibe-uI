@@ -40,7 +40,6 @@ export function DatePicker({
           data-slot="date-picker"
           className={cn(
             'w-[240px] justify-start text-left font-normal',
-            !selectedDate && 'text-muted-foreground',
             className,
           )}
         >
@@ -48,7 +47,15 @@ export function DatePicker({
           {selectedDate ? (
             format(selectedDate, 'PPP')
           ) : (
-            <span>{placeholder}</span>
+            <span
+              className={cn(
+                variant === 'default'
+                  ? 'text-zinc-400 dark:text-zinc-600'
+                  : 'text-muted-foreground',
+              )}
+            >
+              {placeholder}
+            </span>
           )}
         </Button>
       </PopoverTrigger>
@@ -58,12 +65,14 @@ export function DatePicker({
         align="start"
       >
         <Calendar
+          variant={variant}
           mode="single"
           selected={selectedDate}
           onSelect={(d) => {
             setSelectedDate(d)
             onDateChange?.(d)
           }}
+          className="border-0 bg-transparent shadow-none"
           initialFocus
         />
       </PopoverContent>
@@ -116,12 +125,21 @@ export function DateRangePicker({
           data-slot="date-range-picker"
           className={cn(
             'w-[300px] justify-start text-left font-normal',
-            !selectedRange?.from && 'text-muted-foreground',
             className,
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-          <span className="truncate">{formatText()}</span>
+          <span
+            className={cn(
+              'truncate',
+              !selectedRange?.from &&
+                (variant === 'default'
+                  ? 'text-zinc-400 dark:text-zinc-600'
+                  : 'text-muted-foreground'),
+            )}
+          >
+            {formatText()}
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -130,6 +148,7 @@ export function DateRangePicker({
         align="start"
       >
         <Calendar
+          variant={variant}
           initialFocus
           mode="range"
           defaultMonth={selectedRange?.from}
@@ -139,6 +158,7 @@ export function DateRangePicker({
             onDateChange?.(range)
           }}
           numberOfMonths={numberOfMonths}
+          className="border-0 bg-transparent shadow-none"
         />
       </PopoverContent>
     </Popover>

@@ -163,7 +163,11 @@ export function ComponentHeader({
       {/* Header Title, Description & Action Button side-by-side */}
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div className="space-y-2 flex-1">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+          <h1
+            onClick={() => window.dispatchEvent(new CustomEvent('vibe-sidebar-center'))}
+            className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground cursor-pointer hover:opacity-80 transition-opacity select-none"
+            title="Click to center in sidebar"
+          >
             {displayTitle}
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">

@@ -1,5 +1,5 @@
 /*
- * Generated shadcn-style blocks code strings.
+ * Generated Vibe UI blocks code strings.
  */
 
 export const dashboard01Code = {

@@ -1,13 +1,9 @@
 # Drawer
 
-A highly interactive panel that slides in from any edge of the screen (top, bottom, left, right), supporting glassmorphism, neobrutalism, and glowing themes.
-
-## Preview
+A highly interactive panel that slides in from any edge of the screen, supporting glassmorphism, neobrutalism, and glowing themes.
 
 <ComponentPreview>
-  <div className="flex gap-4 flex-wrap justify-center">
-    <DrawerDemoBasic />
-  </div>
+  <DrawerDemo />
 
 ```tsx
 import {
@@ -35,7 +31,7 @@ export default function DrawerDemo() {
             This is a standard right-aligned sliding side panel.
           </DrawerDescription>
         </DrawerHeader>
-        <div className="py-4 text-sm text-left">
+        <div className="py-4 text-sm text-left px-4">
           This panel slides in from the right edge. Use it for forms, filters,
           or additional details.
         </div>
@@ -49,25 +45,37 @@ export default function DrawerDemo() {
   )
 }
 ```
-
 </ComponentPreview>
 
-<Installation name="drawer" npmDeps="@radix-ui/react-dialog lucide-react tailwind-variants">
+<Installation name="drawer" vibeDeps="button" npmDeps="vaul lucide-react tailwind-variants">
 
 ```tsx
 // @/components/ui/drawer.tsx
 'use client'
 
 import * as React from 'react'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { X } from 'lucide-react'
+import { Drawer as DrawerPrimitive } from 'vaul'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
 
-const Drawer = DialogPrimitive.Root
-const DrawerTrigger = DialogPrimitive.Trigger
-const DrawerPortal = DialogPrimitive.Portal
-const DrawerClose = DialogPrimitive.Close
+const Drawer = ({
+  shouldScaleBackground = true,
+  direction = 'right',
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
+  <DrawerPrimitive.Root
+    shouldScaleBackground={shouldScaleBackground}
+    direction={direction}
+    {...props}
+  />
+)
+Drawer.displayName = 'Drawer'
+
+const DrawerTrigger = DrawerPrimitive.Trigger
+
+const DrawerPortal = DrawerPrimitive.Portal
+
+const DrawerClose = DrawerPrimitive.Close
 
 const drawerOverlayVariants = tv({
   base: 'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out',
@@ -77,86 +85,116 @@ const drawerOverlayVariants = tv({
       glass: 'backdrop-blur-md bg-black/40',
       retro: '',
       glow: 'backdrop-blur-sm bg-black/60',
-    }
+    },
   },
   defaultVariants: {
     variant: 'default',
-  }
+  },
 })
 
 const DrawerOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & { variant?: 'default' | 'glass' | 'retro' | 'glow' }
+  React.ElementRef<typeof DrawerPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay> & {
+    variant?: 'default' | 'glass' | 'retro' | 'glow'
+  }
 >(({ className, variant, ...props }, ref) => (
-  <DialogPrimitive.Overlay
+  <DrawerPrimitive.Overlay
+    ref={ref}
+    data-slot="drawer-overlay"
     className={cn(drawerOverlayVariants({ variant }), className)}
     {...props}
-    ref={ref}
   />
 ))
-DrawerOverlay.displayName = DialogPrimitive.Overlay.displayName
+DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
 
 const drawerContentVariants = tv({
-  base: 'fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out',
+  base: 'fixed z-50 flex flex-col bg-background shadow-lg transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
   variants: {
     side: {
-      top: 'inset-x-0 top-0 border-b data-[state=closed]:animate-slide-out-to-top data-[state=open]:animate-slide-in-from-top',
-      bottom: 'inset-x-0 bottom-0 border-t data-[state=closed]:animate-slide-out-to-bottom data-[state=open]:animate-slide-in-from-bottom rounded-t-2xl',
-      left: 'inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:animate-slide-out-to-left data-[state=open]:animate-slide-in-from-left sm:max-w-sm rounded-r-2xl',
-      right: 'inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:animate-slide-out-to-right data-[state=open]:animate-slide-in-from-right sm:max-w-sm rounded-l-2xl',
+      top: 'inset-x-0 top-0 mb-24 max-h-[80vh]',
+      bottom: 'inset-x-0 bottom-0 mt-24 max-h-[80vh]',
+      left: 'inset-y-0 left-0 h-full w-3/4 sm:max-w-sm',
+      right: 'inset-y-0 right-0 h-full w-3/4 sm:max-w-sm',
     },
     variant: {
-      default: 'border-border',
-      glass: 'bg-white/10 dark:bg-black/40 backdrop-blur-md border-white/20 dark:border-white/10 shadow-xl',
-      retro: 'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
-      glow: 'border-primary/40 shadow-[0_0_25px_rgba(168,85,247,0.15)] bg-zinc-950/90',
-    }
+      default: 'bg-background border-border text-foreground',
+      glass:
+        'bg-background/80 dark:bg-zinc-900/40 backdrop-blur-md border-black/10 dark:border-white/10 text-foreground shadow-[0_8px_32px_0_rgba(0,0,0,0.08)]',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow:
+        'border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.15)] dark:shadow-[0_0_30px_rgba(168,85,247,0.25)] bg-card/95 dark:bg-zinc-950/95 text-foreground',
+    },
   },
+  compoundVariants: [
+    {
+      side: 'bottom',
+      variant: ['default', 'glass', 'glow'],
+      class: 'border-t rounded-t-2xl',
+    },
+    {
+      side: 'top',
+      variant: ['default', 'glass', 'glow'],
+      class: 'border-b rounded-b-2xl',
+    },
+    {
+      side: 'left',
+      variant: ['default', 'glass', 'glow'],
+      class: 'border-r rounded-r-2xl',
+    },
+    {
+      side: 'right',
+      variant: ['default', 'glass', 'glow'],
+      class: 'border-l rounded-l-2xl',
+    },
+  ],
   defaultVariants: {
     side: 'right',
     variant: 'default',
-  }
+  },
 })
 
 export interface DrawerContentProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof drawerContentVariants> {
-  children?: React.ReactNode
-}
+  extends
+    React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>,
+    VariantProps<typeof drawerContentVariants> {}
 
 const DrawerContent = React.forwardRef<
-  HTMLDivElement,
+  React.ElementRef<typeof DrawerPrimitive.Content>,
   DrawerContentProps
->(({ className, side = 'right', variant = 'default', children, ...props }, ref) => {
-  const CloseIcon = X as any
-  return (
-    <DrawerPortal>
+>(
+  (
+    { className, side = 'right', variant = 'default', children, ...props },
+    ref,
+  ) => (
+    <DrawerPortal data-slot="drawer-portal">
       <DrawerOverlay variant={variant} />
-      <DialogPrimitive.Content
+      <DrawerPrimitive.Content
         ref={ref}
-        className={cn(drawerContentVariants({ side, variant }), className)}
+        data-slot="drawer-content"
+        className={cn(
+          drawerContentVariants({ side, variant }),
+          className,
+        )}
         {...props}
       >
+        {side === 'bottom' && (
+          <div className="mx-auto mt-4 h-2 w-[100px] shrink-0 rounded-full bg-muted" />
+        )}
         {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary cursor-pointer">
-          <CloseIcon className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
-      </DialogPrimitive.Content>
+      </DrawerPrimitive.Content>
     </DrawerPortal>
-  )
-})
-DrawerContent.displayName = DialogPrimitive.Content.displayName
+  ),
+)
+DrawerContent.displayName = 'DrawerContent'
 
 const DrawerHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn(
-      'flex flex-col space-y-2 text-center sm:text-left',
-      className
-    )}
+    data-slot="drawer-header"
+    className={cn('grid gap-1.5 p-4 text-center sm:text-left', className)}
     {...props}
   />
 )
@@ -167,68 +205,64 @@ const DrawerFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0',
-      className
-    )}
+    data-slot="drawer-footer"
+    className={cn('mt-auto flex flex-col gap-2 p-4', className)}
     {...props}
   />
 )
 DrawerFooter.displayName = 'DrawerFooter'
 
 const DrawerTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+  React.ElementRef<typeof DrawerPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
+  <DrawerPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold text-foreground', className)}
+    data-slot="drawer-title"
+    className={cn(
+      'text-lg font-semibold leading-none tracking-tight text-foreground',
+      className,
+    )}
     {...props}
   />
 ))
-DrawerTitle.displayName = DialogPrimitive.Title.displayName
+DrawerTitle.displayName = DrawerPrimitive.Title.displayName
 
 const DrawerDescription = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  React.ElementRef<typeof DrawerPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
-    asChild
-  >
-    <div
-      ref={ref}
-      className={cn('text-sm text-muted-foreground', className)}
-      {...props}
-    />
-  </DialogPrimitive.Description>
+  <DrawerPrimitive.Description
+    ref={ref}
+    data-slot="drawer-description"
+    className={cn('text-sm text-muted-foreground', className)}
+    {...props}
+  />
 ))
-DrawerDescription.displayName = DialogPrimitive.Description.displayName
+DrawerDescription.displayName = DrawerPrimitive.Description.displayName
 
 export {
   Drawer,
+  DrawerPortal,
+  DrawerOverlay,
   DrawerTrigger,
+  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,
-  DrawerClose,
 }
 ```
 
 </Installation>
 
+## Themes
 
-
-## Premium Use Case Examples
-
-Here is our exhaustive collection of 15+ pre-styled premium layouts following standard document flow:
-
-### 1. Developer Terminal logs Console (Bottom slide glow)
-A code compiler panel sliding up from the bottom with glowing outputs.
+Explore all style variants side-by-side.
 
 <ComponentPreview>
-  <DrawerDemoGlowTerminal />
+  <DrawerDemoThemes />
 
 ```tsx
 import {
@@ -243,125 +277,92 @@ import {
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 
-export default function GlowTerminalDrawer() {
+export default function DrawerThemes() {
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="glow">Open Terminal (Glow Bottom)</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="bottom"
-        variant="glow"
-        className="h-[350px] flex flex-col justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-primary/20 pb-3">
-            <DrawerTitle className="text-primary font-mono text-base flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-              Vibe CLI Log Stream
-            </DrawerTitle>
-            <DrawerDescription className="text-primary/60 font-mono text-xs">
-              Real-time compilation logs.
-            </DrawerDescription>
+    <div className="flex gap-4 flex-wrap">
+      {/* Default Drawer */}
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="default">Default Preset</Button>
+        </DrawerTrigger>
+        <DrawerContent variant="default">
+          <DrawerHeader>
+            <DrawerTitle>Default Drawer</DrawerTitle>
+            <DrawerDescription>Standard sliding drawer panel with default borders.</DrawerDescription>
           </DrawerHeader>
-          <div className="py-4 font-mono text-xs text-left text-primary/80 space-y-1.5 overflow-y-auto max-h-[160px]">
-            <div>[system] Starting builder in E:\Custom-Liebary...</div>
-            <div>[system] Building component registry maps...</div>
-            <div className="text-emerald-400">
-              [success] Built registry/components/drawer.json successfully!
-            </div>
-            <div>[system] Spawning next-router page listener...</div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-primary/20 pt-3 flex gap-2 mt-auto">
-          <Button variant="outline" className="text-xs">
-            Clear logs
-          </Button>
-          <DrawerClose asChild>
-            <Button variant="glow" className="text-xs">
-              Dismiss
-            </Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Glassmorphic Drawer */}
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="glass">Glass Preset</Button>
+        </DrawerTrigger>
+        <DrawerContent variant="glass">
+          <DrawerHeader>
+            <DrawerTitle>Glassmorphic Drawer</DrawerTitle>
+            <DrawerDescription>Translucent frosted glass layout with backdrop blur.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="glass" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Retro Drawer */}
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="retro">Retro Preset</Button>
+        </DrawerTrigger>
+        <DrawerContent variant="retro">
+          <DrawerHeader>
+            <DrawerTitle>Neobrutalist Drawer</DrawerTitle>
+            <DrawerDescription>Retro black borders and hard shadow offsets.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="retro" className="w-full">Dismiss</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Glow Drawer */}
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="glow">Glow Preset</Button>
+        </DrawerTrigger>
+        <DrawerContent variant="glow">
+          <DrawerHeader>
+            <DrawerTitle>Neon Glow Drawer</DrawerTitle>
+            <DrawerDescription>Premium sliding drawer panel with a glowing purple shadow backdrop.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="glow" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </div>
   )
 }
 ```
 </ComponentPreview>
 
----
+## Sides
 
-### 2. Glassmorphic Shopping Cart (Right side glass)
-Frosted transparent cart sidebar with blur overlays, item lists, and subtotal metrics.
-
-<ComponentPreview>
-  <DrawerDemoGlassCart />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-
-export default function GlassCartDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="glow">Open Cart (Glass)</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="right"
-        variant="glass"
-        className="w-[380px] text-white flex flex-col h-full justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-white/10 pb-4">
-            <DrawerTitle className="text-white">Shopping Cart</DrawerTitle>
-            <DrawerDescription className="text-white/60">
-              Verify your items before proceeding.
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="py-6 space-y-4 text-left">
-            <div className="flex justify-between items-center text-sm">
-              <span>1x Vibe Brutalist Keyboard</span>
-              <span className="font-bold">$149.99</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span>2x Glow Theme Badges</span>
-              <span className="font-bold">$19.98</span>
-            </div>
-            <div className="border-t border-white/10 pt-4 flex justify-between font-bold">
-              <span>Subtotal</span>
-              <span>$169.97</span>
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-white/10 pt-4 mt-auto">
-          <Button variant="glow" className="w-full">
-            Checkout
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 3. Retro Configuration Panel (Bottom slide retro)
-A neobrutalist settings layout with thick borders and hard shadow toggles.
+Explore drawers sliding from different screen edges using the default variant.
 
 <ComponentPreview>
-  <DrawerDemoRetroSettings />
+  <DrawerDemoSides />
 
 ```tsx
 import {
@@ -374,869 +375,103 @@ import {
   DrawerFooter,
   DrawerClose,
 } from '@/components/ui/drawer'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 
-export default function RetroSettingsDrawer() {
+export default function DrawerSidesDemo() {
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="retro">Open Settings (Retro Bottom)</Button>
-      </DrawerTrigger>
-      <DrawerContent side="bottom" variant="retro" className="max-h-[300px]">
-        <DrawerHeader className="text-left pb-2">
-          <DrawerTitle className="font-black text-xl uppercase">
-            System Settings
-          </DrawerTitle>
-          <DrawerDescription className="text-foreground/80 font-medium">
-            Configure retro terminal layouts.
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="py-4 space-y-4 text-left">
-          <div className="flex items-center justify-between">
-            <Label className="font-black uppercase text-xs">
-              High Contrast Mode
-            </Label>
-            <Switch defaultChecked />
-          </div>
-          <div className="flex items-center justify-between">
-            <Label className="font-black uppercase text-xs">
-              Solid Box Shadows
-            </Label>
-            <Switch defaultChecked />
-          </div>
-        </div>
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="retro" className="font-black uppercase text-sm">
-              Save & Close
-            </Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 4. Interactive Quick Search (Top slide)
-Sliding overlay containing search input decks and keyboard shortcut guides.
-
-<ComponentPreview>
-  <DrawerDemoTopSearch />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-import { Kbd } from '@/components/ui/kbd'
-
-export default function QuickSearchDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Search Files (Top)</Button>
-      </DrawerTrigger>
-      <DrawerContent side="top" className="h-[260px] p-6">
-        <div className="max-w-xl mx-auto space-y-4">
-          <div className="flex items-center gap-3 border border-border rounded-lg px-3 py-2 bg-muted/20">
-            <input
-              className="bg-transparent outline-none text-sm w-full text-foreground"
-              placeholder="Search components, documentation, or code..."
-            />
-          </div>
-          <div className="text-left text-xs text-muted-foreground space-y-2">
-            <div className="font-semibold uppercase tracking-wider text-[10px] pb-1 border-b border-border">
-              Recent Searches
-            </div>
-            <div className="hover:text-primary cursor-pointer flex justify-between">
-              <span>components/drawer.tsx</span>
-              <Kbd>Enter</Kbd>
-            </div>
-            <div className="hover:text-primary cursor-pointer flex justify-between">
-              <span>docs/components/multi-select.mdx</span>
-              <Kbd>Enter</Kbd>
-            </div>
-          </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 5. Task Detail Manager Panel (Right side)
-Project planning card detailing deadlines, checkmarks, priority stars, and descriptions.
-
-<ComponentPreview>
-  <DrawerDemoTaskPlanner />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Button } from '@/components/ui/button'
-
-export default function TaskPlannerDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Task Planner</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="right"
-        className="w-[450px] flex flex-col justify-between h-full"
-      >
-        <div>
-          <DrawerHeader className="text-left">
-            <Badge variant="glow" className="w-fit text-[10px] py-0 px-2">
-              FEATURE TASK
-            </Badge>
-            <DrawerTitle className="text-xl font-bold mt-2">
-              Implement active tabs background pill sliding
-            </DrawerTitle>
-            <DrawerDescription>
-              Resolve component animation transitions and offsets calculation.
-            </DrawerDescription>
+    <div className="flex gap-4">
+      {/* Top Drawer */}
+      <Drawer direction="top">
+        <DrawerTrigger asChild>
+          <Button variant="outline">Top Drawer</Button>
+        </DrawerTrigger>
+        <DrawerContent side="top">
+          <DrawerHeader>
+            <DrawerTitle>Top Drawer</DrawerTitle>
+            <DrawerDescription>This panel slides in from the top edge.</DrawerDescription>
           </DrawerHeader>
-          <div className="py-4 space-y-4 text-sm text-left px-4">
-            <div className="grid grid-cols-2 gap-4 py-3 border-y border-border">
-              <div>
-                <span className="text-[10px] text-muted-foreground uppercase block">
-                  Assignee
-                </span>
-                <span className="font-semibold text-foreground">
-                  AV (Antigravity)
-                </span>
-              </div>
-              <div>
-                <span className="text-[10px] text-muted-foreground uppercase block">
-                  Due Date
-                </span>
-                <span className="font-semibold text-foreground">
-                  Today, 6:00 PM
-                </span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <span className="text-[10px] text-muted-foreground uppercase font-bold">
-                Subtasks
-              </span>
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Checkbox id="task1" defaultChecked />
-                  <label htmlFor="task1" className="text-xs">
-                    Offset calculation triggers
-                  </label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox id="task2" defaultChecked />
-                  <label htmlFor="task2" className="text-xs">
-                    Declare use client context
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-border pt-4 mt-auto">
-          <Button className="w-full">Mark Complete</Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
----
-
-### 6. Mobile Navigation Hub (Left side)
-A sidebar menu containing app navigation links, logo accents, and quick actions.
-
-<ComponentPreview>
-  <DrawerDemoMobileNav />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-
-export default function MobileNavDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Mobile Menu</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="left"
-        className="w-[280px] flex flex-col justify-between h-full"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-border pb-4">
-            <DrawerTitle className="font-black text-lg">
-              VIBE UI KIT
-            </DrawerTitle>
-            <DrawerDescription>v0.1.4 Documentation Menu</DrawerDescription>
+      {/* Bottom Drawer */}
+      <Drawer direction="bottom">
+        <DrawerTrigger asChild>
+          <Button variant="outline">Bottom Drawer</Button>
+        </DrawerTrigger>
+        <DrawerContent side="bottom">
+          <DrawerHeader>
+            <DrawerTitle>Bottom Drawer</DrawerTitle>
+            <DrawerDescription>This panel slides in from the bottom edge.</DrawerDescription>
           </DrawerHeader>
-          <div className="py-4 space-y-2 text-left">
-            <Button variant="ghost" className="w-full justify-start text-sm">
-              Getting Started
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-sm font-semibold text-primary"
-            >
-              Components
-            </Button>
-            <div className="pl-4 space-y-1">
-              <div className="text-xs py-1 text-muted-foreground hover:text-foreground cursor-pointer">
-                Button
-              </div>
-              <div className="text-xs py-1 text-muted-foreground hover:text-foreground cursor-pointer">
-                Card
-              </div>
-              <div className="text-xs py-1 text-primary font-bold cursor-pointer">
-                Drawer
-              </div>
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-border pt-4 mt-auto">
-          <span className="text-[10px] text-muted-foreground text-center w-full">
-            Designed by Coderkube
-          </span>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
----
-
-### 7. Real-Time Resource Diagnostics (Top slide)
-Sliding panel reflecting live server telemetry, memory capacities, and CPU progress charts.
-
-<ComponentPreview>
-  <DrawerDemoDiagnostics />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-
-export default function DiagnosticsDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Telemetry</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="top"
-        className="h-[280px] bg-background text-foreground border-border"
-      >
-        <div className="max-w-3xl mx-auto space-y-6">
-          <DrawerHeader className="border-b border-zinc-800 pb-3 text-left">
-            <DrawerTitle className="text-white text-base">
-              System Telemetry Dashboard
-            </DrawerTitle>
-            <DrawerDescription className="text-zinc-400 text-xs">
-              Live resource metrics update.
-            </DrawerDescription>
+      {/* Left Drawer */}
+      <Drawer direction="left">
+        <DrawerTrigger asChild>
+          <Button variant="outline">Left Drawer</Button>
+        </DrawerTrigger>
+        <DrawerContent side="left">
+          <DrawerHeader>
+            <DrawerTitle>Left Drawer</DrawerTitle>
+            <DrawerDescription>This panel slides in from the left edge.</DrawerDescription>
           </DrawerHeader>
-          <div className="grid grid-cols-3 gap-6 text-left">
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-zinc-400">CPU Usage</span>
-                <span className="font-bold">42%</span>
-              </div>
-              <div className="h-1.5 w-full bg-zinc-800 rounded-full">
-                <div
-                  className="h-full bg-purple-500 rounded-full"
-                  style={{ width: '42%' }}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-zinc-400">Memory</span>
-                <span className="font-bold">64%</span>
-              </div>
-              <div className="h-1.5 w-full bg-zinc-800 rounded-full">
-                <div
-                  className="h-full bg-emerald-500 rounded-full"
-                  style={{ width: '64%' }}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-zinc-400">Disk I/O</span>
-                <span className="font-bold">12%</span>
-              </div>
-              <div className="h-1.5 w-full bg-zinc-800 rounded-full">
-                <div
-                  className="h-full bg-amber-500 rounded-full"
-                  style={{ width: '12%' }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
----
-
-### 8. Music Playback Queue (Bottom slide)
-Media listing panel demonstrating audio tracks, progress sliders, and song queues.
-
-<ComponentPreview>
-  <DrawerDemoMusicQueue />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-
-export default function MusicQueueDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Playlist Queue</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="bottom"
-        className="h-[380px] flex flex-col justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-border pb-3">
-            <DrawerTitle>Playback Playlist Queue</DrawerTitle>
-            <DrawerDescription>
-              Configure tracks and playback sequence.
-            </DrawerDescription>
+      {/* Right Drawer */}
+      <Drawer direction="right">
+        <DrawerTrigger asChild>
+          <Button variant="outline">Right Drawer</Button>
+        </DrawerTrigger>
+        <DrawerContent side="right">
+          <DrawerHeader>
+            <DrawerTitle>Right Drawer</DrawerTitle>
+            <DrawerDescription>This panel slides in from the right edge.</DrawerDescription>
           </DrawerHeader>
-          <div className="py-4 space-y-2 text-left max-h-[200px] overflow-y-auto">
-            <div className="flex justify-between items-center text-xs py-2 px-3 bg-muted/20 rounded border border-border">
-              <span className="font-semibold text-primary">
-                1. Retro Synths (Active)
-              </span>
-              <span className="text-muted-foreground">3:42</span>
-            </div>
-            <div className="flex justify-between items-center text-xs py-2 px-3 hover:bg-muted/10 cursor-pointer">
-              <span>2. Neon Glow Waves</span>
-              <span className="text-muted-foreground">4:15</span>
-            </div>
-            <div className="flex justify-between items-center text-xs py-2 px-3 hover:bg-muted/10 cursor-pointer">
-              <span>3. Glassmorphic Skies</span>
-              <span className="text-muted-foreground">2:58</span>
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-border pt-3 mt-auto">
-          <Button variant="outline" className="w-full text-xs">
-            Shuffle All Tracks
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="default" className="w-full">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </div>
   )
 }
 ```
 </ComponentPreview>
 
----
+## Props
 
-### 9. Account Settings Navigation (Left side glass)
-Glassmorphic sidebar detailing security tabs, profile links, API keys, and logout actions.
+### DrawerContent
 
-<ComponentPreview>
-  <DrawerDemoAccountNav />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-
-export default function AccountNavDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="glow">Open Admin Panel (Left Glass)</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="left"
-        variant="glass"
-        className="w-[300px] text-white flex flex-col h-full justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-white/10 pb-4">
-            <DrawerTitle className="text-white">Admin Console</DrawerTitle>
-            <DrawerDescription className="text-white/60">
-              Config key credentials.
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="py-4 space-y-1 text-left">
-            <div className="text-xs font-semibold py-2 px-3 rounded hover:bg-white/5 cursor-pointer text-white">
-              General Overview
-            </div>
-            <div className="text-xs font-semibold py-2 px-3 rounded bg-white/10 text-primary cursor-pointer">
-              Secret API Credentials
-            </div>
-            <div className="text-xs font-semibold py-2 px-3 rounded hover:bg-white/5 cursor-pointer text-white">
-              Security Auditing logs
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-white/10 pt-4 mt-auto">
-          <Button
-            variant="ghost"
-            className="text-white/80 w-full hover:text-white justify-start"
-          >
-            Log Out Session
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 10. Database Schema Entity Viewer (Right side)
-SQL schema column tables indicating field types, primary keys, and index metrics.
-
-<ComponentPreview>
-  <DrawerDemoDbSchema />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-
-export default function DbSchemaDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open DB Schema</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="right"
-        className="w-[450px] flex flex-col h-full justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-border pb-3">
-            <DrawerTitle className="font-mono text-base">
-              table: user_accounts
-            </DrawerTitle>
-            <DrawerDescription>
-              Entity relational schema mappings.
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="py-4 font-mono text-xs text-left space-y-3 px-4">
-            <div className="flex justify-between items-center py-1.5 border-b border-muted">
-              <span className="font-bold">id</span>
-              <span className="text-primary font-semibold">
-                uuid (PRIMARY KEY)
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-muted">
-              <span>email</span>
-              <span className="text-muted-foreground">varchar(255)</span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-muted">
-              <span>created_at</span>
-              <span className="text-muted-foreground">timestamp</span>
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-border pt-3 mt-auto">
-          <span className="text-[10px] text-muted-foreground text-left w-full">
-            Indexes: idx_user_accounts_email
-          </span>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 11. Real-time Notification Logs (Right side glow)
-A glowing side panel that pops open to show server errors, user logins, and warning feeds.
-
-<ComponentPreview>
-  <DrawerDemoEventLogs />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-
-export default function EventLogsDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="glow">Open Event Logs (Glow Right)</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="right"
-        variant="glow"
-        className="w-[380px] flex flex-col h-full justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-primary/20 pb-3">
-            <DrawerTitle className="text-primary">
-              System Events Log
-            </DrawerTitle>
-            <DrawerDescription className="text-primary/60">
-              Live production server logs.
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="py-4 font-mono text-xs text-left text-primary/80 space-y-3 px-4 max-h-[250px] overflow-y-auto">
-            <div className="text-emerald-400">
-              [info] DB connection established
-            </div>
-            <div className="text-amber-400">
-              [warn] High response time detected in API router
-            </div>
-            <div className="text-red-400">
-              [error] Failed compilation in apps/docs cache
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-primary/20 pt-3 mt-auto">
-          <Button variant="glow" className="w-full text-xs">
-            Acknowledge All Warnings
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 12. Active Chat Discussion Thread (Right side)
-A customer chat support drawer layout complete with messaging logs and a quick response input field.
-
-<ComponentPreview>
-  <DrawerDemoChatTicket />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from '@/components/ui/drawer'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-
-export default function ChatTicketDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Support Ticket</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="right"
-        className="w-[420px] flex flex-col h-full justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-border pb-3">
-            <DrawerTitle>Chat Support Ticket #1204</DrawerTitle>
-            <DrawerDescription>Conversation history thread.</DrawerDescription>
-          </DrawerHeader>
-          <div className="py-4 space-y-3 text-xs text-left px-4 max-h-[300px] overflow-y-auto">
-            <div className="bg-muted p-2.5 rounded-lg w-3/4">
-              <span className="font-semibold block text-[10px] text-muted-foreground">
-                Support Agent
-              </span>
-              How can we assist you with Vibe UI registration today?
-            </div>
-            <div className="bg-primary/10 border border-primary/20 p-2.5 rounded-lg w-3/4 ml-auto text-right">
-              <span className="font-semibold block text-[10px] text-primary/60">
-                You
-              </span>
-              I got client-side hydration warning errors during compilation.
-            </div>
-          </div>
-        </div>
-        <div className="p-4 border-t border-border flex gap-2 mt-auto">
-          <Input className="text-xs" placeholder="Type reply message..." />
-          <Button className="text-xs">Send</Button>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 13. Billing Invoice Detail summary (Bottom slide glass)
-Payment drawer with invoice numbers, item costs breakdown, taxes calculations, and pay CTAs.
-
-<ComponentPreview>
-  <DrawerDemoInvoiceSummary />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
-
-export default function InvoiceSummaryDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Invoice Summary</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="bottom"
-        variant="glass"
-        className="max-h-[380px] text-white flex flex-col justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-white/10 pb-3">
-            <DrawerTitle className="text-white">
-              Receipt Summary Invoice
-            </DrawerTitle>
-            <DrawerDescription className="text-white/60">
-              Monthly transaction billing breakdown.
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="py-4 space-y-2 text-xs text-left px-4">
-            <div className="flex justify-between">
-              <span>Vibe UI Enterprise Premium License (Monthly)</span>
-              <span>$49.00</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Standard Workspace Storage Add-on</span>
-              <span>$10.00</span>
-            </div>
-            <div className="border-t border-white/10 pt-3 flex justify-between font-bold text-sm text-primary">
-              <span>Total Charge Amount</span>
-              <span>$59.00</span>
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-white/10 pt-3 mt-auto">
-          <Button variant="glow" className="w-full">
-            Download Invoice PDF
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 14. API Credentials Key Manager (Right side)
-Developer layout displaying masked API keys, warning badges, and copy buttons.
-
-<ComponentPreview>
-  <DrawerDemoApiKeys />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-
-export default function ApiKeysDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Keys Console</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="right"
-        className="w-[420px] flex flex-col h-full justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-border pb-3">
-            <DrawerTitle>Secret Credentials Console</DrawerTitle>
-            <DrawerDescription>Manage secure token headers.</DrawerDescription>
-          </DrawerHeader>
-          <div className="py-4 space-y-4 text-left px-4">
-            <div className="space-y-1">
-              <span className="text-[10px] text-muted-foreground uppercase font-bold block">
-                Production Secret Key
-              </span>
-              <div className="flex gap-2">
-                <Input
-                  value="sk_live_51qd9bn5ritqlbH2_"
-                  readOnly
-                  className="font-mono text-xs"
-                />
-                <Button variant="outline" size="sm">
-                  Copy
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <DrawerFooter className="border-t border-border pt-3 mt-auto">
-          <span className="text-[10px] text-muted-foreground w-full text-center">
-            Rotate your secret keys every 90 days.
-          </span>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
-
----
-
-### 15. MacBook Pro Spec Customizer (Left side)
-Left-aligned specifications configurator showing CPU, GPU, unified memory, and storage details.
-
-<ComponentPreview>
-  <DrawerDemoMacBookConfig />
-
-```tsx
-import {
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from '@/components/ui/drawer'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-
-export default function MacBookConfigDrawer() {
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Specifications (Left)</Button>
-      </DrawerTrigger>
-      <DrawerContent
-        side="left"
-        className="w-[360px] flex flex-col h-full justify-between"
-      >
-        <div>
-          <DrawerHeader className="text-left border-b border-border pb-3">
-            <DrawerTitle>MacBook Pro Configurator</DrawerTitle>
-            <DrawerDescription>
-              Select processor cores allocation.
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="py-4 space-y-4 text-left px-4 text-xs">
-            <div className="space-y-2">
-              <span className="font-semibold block">Processor Specs</span>
-              <RadioGroup defaultValue="m3pro">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="m3pro" id="r1" />
-                  <Label htmlFor="r1">Apple M3 Pro (11-Core CPU, 14-Core GPU)</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="m3max" id="r2" />
-                  <Label htmlFor="r2">Apple M3 Max (16-Core CPU, 40-Core GPU)</Label>
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-</ComponentPreview>
+<PropsTable>
+  <PropRow
+    prop="side"
+    type="'top' | 'bottom' | 'left' | 'right'"
+    default="'right'"
+    description="The edge of the screen the drawer slides in from."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    default="'default'"
+    description="The aesthetic variant styling theme to apply to the drawer content."
+  />
+</PropsTable>

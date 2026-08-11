@@ -2,8 +2,6 @@
 
 An interactive container component that toggles vertical visibility of content sections with smooth animations.
 
-## Preview: Basic Expansion
-
 <ComponentPreview>
   <CollapsibleBasic />
 
@@ -15,35 +13,35 @@ import {
   CollapsibleContent,
 } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
-import { ChevronsUpDown, HelpCircle } from 'lucide-react'
+import { ChevronsUpDown, Settings } from 'lucide-react'
 
 export default function CollapsibleDemo() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
 
   return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <HelpCircle className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">Simple Expand</h4>
-      </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold">Togglable Panel Content</span>
+    <div className="w-full max-w-[350px] rounded-xl border border-border bg-card p-4 shadow-sm text-card-foreground">
+      <Collapsible open={open} onOpenChange={setOpen} className="space-y-3">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Settings className="h-4 w-4 text-primary" />
+            <span className="text-xs font-bold uppercase tracking-wider">
+              System Preferences
+            </span>
+          </div>
           <CollapsibleTrigger asChild>
-            <Button
-              variant="glass"
-              className="h-7 w-7 p-0 flex items-center justify-center rounded-lg"
-            >
-              <ChevronsUpDown className="h-3.5 w-3.5" />
+            <Button variant="ghost" size="icon" className="h-7 w-7">
+              <ChevronsUpDown className="h-4 w-4" />
             </Button>
           </CollapsibleTrigger>
         </div>
-        <div className="rounded-lg border border-white/5 bg-zinc-900/60 px-4 py-2.5 text-xs">
-          This content is always visible.
+
+        <div className="rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
+          This setting section is permanently active on the machine.
         </div>
+
         <CollapsibleContent className="space-y-2">
-          <div className="rounded-lg border border-white/5 bg-zinc-900/60 px-4 py-2.5 text-xs text-muted-foreground">
-            This sub-content slides open when triggered.
+          <div className="rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
+            Advanced preferences and layout customization options slide open when toggled.
           </div>
         </CollapsibleContent>
       </Collapsible>
@@ -57,6 +55,7 @@ export default function CollapsibleDemo() {
 <Installation name="collapsible" npmDeps="@radix-ui/react-collapsible lucide-react tailwind-variants">
 
 ```tsx
+// @/components/ui/collapsible.tsx
 "use client"
 
 import * as React from "react"
@@ -169,14 +168,12 @@ export { Collapsible, CollapsibleTrigger, CollapsibleContent }
 
 </Installation>
 
+## Themes
 
-
-## Standard Variations
-
-### FAQ Accordion Card
+Customize and style the collapsible component with our pre-built premium design themes.
 
 <ComponentPreview>
-  <CollapsibleFAQ />
+  <CollapsibleThemes />
 
 ```tsx
 import React, { useState } from 'react'
@@ -186,35 +183,103 @@ import {
   CollapsibleContent,
 } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
-import { ChevronsUpDown, HelpCircle } from 'lucide-react'
+import { ChevronsUpDown, Settings } from 'lucide-react'
 
-export default function FAQDemo() {
-  const [open, setOpen] = useState(false)
+export default function CollapsibleThemesDemo() {
+  const [openDefault, setOpenDefault] = useState(true)
+  const [openGlass, setOpenGlass] = useState(true)
+  const [openRetro, setOpenRetro] = useState(true)
+  const [openGlow, setOpenGlow] = useState(true)
 
   return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <HelpCircle className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">FAQ Toggle</h4>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl">
+      {/* 1. Default Theme */}
+      <div className="border border-border bg-card text-card-foreground rounded-xl p-4 shadow-sm">
+        <Collapsible open={openDefault} onOpenChange={setOpenDefault} className="space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-xs font-bold uppercase tracking-wider">Default Theme</span>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-7 w-7">
+                <ChevronsUpDown className="h-4 w-4" />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <div className="rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
+            Always visible content.
+          </div>
+          <CollapsibleContent className="space-y-2">
+            <div className="rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
+              Expandable content.
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between gap-4">
-          <span className="text-xs font-bold leading-tight">
-            What payment methods are supported?
-          </span>
-          <CollapsibleTrigger asChild>
-            <Button variant="glow" className="h-7 w-7 p-0 shrink-0">
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent>
-          <p className="text-xs text-muted-foreground leading-relaxed mt-2 p-2.5 border border-primary/20 bg-primary/[0.02] rounded-lg">
-            We support all major credit cards, Stripe, PayPal, Apple Pay, and
-            cryptocurrency presets.
-          </p>
-        </CollapsibleContent>
-      </Collapsible>
+
+      {/* 2. Glass Theme */}
+      <div className="border border-white/10 bg-white/[0.03] backdrop-blur-md text-white rounded-xl p-4 shadow-xl">
+        <Collapsible open={openGlass} onOpenChange={setOpenGlass} className="space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-xs font-bold uppercase tracking-wider">Glass Theme</span>
+            <CollapsibleTrigger asChild>
+              <Button variant="glass" size="icon" className="h-7 w-7">
+                <ChevronsUpDown className="h-4 w-4" />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <div className="rounded-lg border border-white/5 bg-white/[0.01] px-3.5 py-2.5 text-xs text-white/70">
+            Always visible content.
+          </div>
+          <CollapsibleContent className="space-y-2">
+            <div className="rounded-lg border border-white/5 bg-white/[0.01] px-3.5 py-2.5 text-xs text-white/70">
+              Expandable content.
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+
+      {/* 3. Retro Theme */}
+      <div className="border-2 border-foreground bg-background text-foreground rounded-none p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+        <Collapsible open={openRetro} onOpenChange={setOpenRetro} className="space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-xs font-bold uppercase tracking-wider font-mono">RETRO_THEME</span>
+            <CollapsibleTrigger asChild>
+              <Button variant="retro" size="icon" className="h-7 w-7 rounded-none">
+                <ChevronsUpDown className="h-4 w-4" />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <div className="border-2 border-foreground bg-background px-3.5 py-2.5 text-xs font-mono rounded-none">
+            Always visible content.
+          </div>
+          <CollapsibleContent className="space-y-2">
+            <div className="border-2 border-foreground bg-background px-3.5 py-2.5 text-xs font-mono rounded-none">
+              Expandable content.
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+
+      {/* 4. Glow Theme */}
+      <div className="border border-purple-500/30 bg-purple-500/[0.02] text-foreground rounded-xl p-4 shadow-[0_0_20px_rgba(168,85,247,0.15)]">
+        <Collapsible open={openGlow} onOpenChange={setOpenGlow} className="space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-xs font-bold uppercase tracking-wider text-purple-400">Glow Theme</span>
+            <CollapsibleTrigger asChild>
+              <Button variant="glow" size="icon" className="h-7 w-7">
+                <ChevronsUpDown className="h-4 w-4" />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <div className="rounded-lg border border-purple-500/10 bg-purple-500/[0.01] px-3.5 py-2.5 text-xs text-purple-400/90">
+            Always visible content.
+          </div>
+          <CollapsibleContent className="space-y-2">
+            <div className="rounded-lg border border-purple-500/10 bg-purple-500/[0.01] px-3.5 py-2.5 text-xs text-purple-400/90">
+              Expandable content.
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
     </div>
   )
 }
@@ -222,7 +287,9 @@ export default function FAQDemo() {
 
 </ComponentPreview>
 
-### Code Segment Expander
+## Directory Tree
+
+An interactive directory structure representing a real-world IDE workspace tree using nested collapsibles.
 
 <ComponentPreview>
   <CollapsibleCode />
@@ -235,337 +302,138 @@ import {
   CollapsibleContent,
 } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
-import { Code, ChevronsUpDown } from 'lucide-react'
-
-export default function CodeDemo() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <Code className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">Code Expander</h4>
-      </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-mono text-emerald-400">package.json</span>
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="cyberpunk"
-              className="h-7 w-7 p-0 flex items-center justify-center"
-            >
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <pre className="rounded border border-emerald-950 bg-black p-3 font-mono text-[10px] text-emerald-600">
-          {'{ "name": "vibe-ui", "version": "0.1.0" }'}
-        </pre>
-        <CollapsibleContent>
-          <pre className="rounded border border-emerald-950 bg-black p-3 font-mono text-[10px] text-emerald-600 mt-2">
-            {'"dependencies": {\n  "react": "^19.0.0",\n  "clsx": "^2.1.1"\n}'}
-          </pre>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Directory Tree List
-
-<ComponentPreview>
-  <CollapsibleFolder />
-
-```tsx
-import React, { useState } from 'react'
 import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { Folder, FolderOpen, ChevronsUpDown } from 'lucide-react'
+  ChevronRight,
+  Folder,
+  FolderOpen,
+  FileCode2,
+  FileText,
+  Settings,
+} from 'lucide-react'
 
-export default function DirectoryDemo() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        {open ? (
-          <FolderOpen className="h-4 w-4 text-primary" />
-        ) : (
-          <Folder className="h-4 w-4 text-primary" />
-        )}
-        <h4 className="text-xs font-bold uppercase tracking-wider">Directory Tree</h4>
-      </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold flex items-center gap-2">
-            {open ? (
-              <FolderOpen className="h-3.5 w-3.5" />
-            ) : (
-              <Folder className="h-3.5 w-3.5" />
-            )}
-            src/components
-          </span>
-          <CollapsibleTrigger asChild>
-            <Button variant="glass" className="h-7 w-7 p-0">
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="pl-4 space-y-1 mt-2 border-l border-white/10">
-          <div className="text-xs text-muted-foreground p-1 hover:text-white cursor-pointer">
-            button.tsx
-          </div>
-          <div className="text-xs text-muted-foreground p-1 hover:text-white cursor-pointer">
-            card.tsx
-          </div>
-          <div className="text-xs text-muted-foreground p-1 hover:text-white cursor-pointer">
-            switch.tsx
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Filters Expand panel
-
-<ComponentPreview>
-  <CollapsibleFilters />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Filter, ChevronsUpDown } from 'lucide-react'
-
-export default function FilterDemo() {
-  const [open, setOpen] = useState(false)
+export default function WorkspaceTreeDemo() {
+  const [appsOpen, setAppsOpen] = useState(true)
+  const [docsOpen, setDocsOpen] = useState(true)
+  const [packagesOpen, setPackagesOpen] = useState(true)
+  const [uiOpen, setUiOpen] = useState(true)
+  const [srcOpen, setSrcOpen] = useState(true)
+  const [componentsOpen, setComponentsOpen] = useState(true)
 
   return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <Filter className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">Sidebar Filters</h4>
-      </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold">Filter Controls</span>
+    <div className="w-full max-w-[360px] border border-border/60 bg-zinc-950/45 text-white rounded-xl p-4 shadow-xl font-mono text-xs">
+      {/* apps/ folder */}
+      <Collapsible open={appsOpen} onOpenChange={setAppsOpen}>
+        <div className="flex items-center justify-between py-1 hover:bg-neutral-800/20 rounded px-1.5 cursor-pointer">
           <CollapsibleTrigger asChild>
-            <Button variant="default" className="h-7 w-7 p-0">
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="space-y-3 pt-2">
-          <div className="space-y-1">
-            <label className="text-[10px] text-muted-foreground uppercase font-bold">
-              Category
-            </label>
-            <select className="w-full text-xs bg-zinc-900 border border-white/10 rounded px-2.5 py-1.5 outline-none text-white">
-              <option>Engineering</option>
-              <option>Design</option>
-              <option>Marketing</option>
-            </select>
-          </div>
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-xs">Include Archive</span>
-            <Switch variant="glow" defaultChecked />
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Invoice breakdown details
-
-<ComponentPreview>
-  <CollapsibleInvoice />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { FileText, ChevronsUpDown } from 'lucide-react'
-
-export default function InvoiceDemo() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <FileText className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">Brutalist Billing</h4>
-      </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-mono font-bold">INV-09871</span>
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="retro"
-              className="h-7 w-7 p-0 flex items-center justify-center"
-            >
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <div className="rounded border-2 border-foreground bg-background p-3 text-xs text-foreground font-mono font-bold flex justify-between shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-          <span>Total Balance</span>
-          <span>$1,420.00</span>
-        </div>
-        <CollapsibleContent className="space-y-2 mt-2">
-          <div className="p-3 border-2 border-foreground bg-background text-[11px] font-mono text-muted-foreground space-y-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-            <div className="flex justify-between">
-              <span>Subtotal:</span>
-              <span>$1,300.00</span>
+            <div className="flex items-center gap-2 flex-1">
+              <ChevronRight className={`h-3 w-3 text-neutral-500 transition-transform duration-200 ${appsOpen ? 'rotate-90' : ''}`} />
+              {appsOpen ? <FolderOpen className="h-3.5 w-3.5 text-blue-400" /> : <Folder className="h-3.5 w-3.5 text-blue-400" />}
+              <span className="text-neutral-200">apps</span>
             </div>
-            <div className="flex justify-between">
-              <span>Tax (10%):</span>
-              <span>$120.00</span>
+          </CollapsibleTrigger>
+        </div>
+        
+        <CollapsibleContent className="pl-3 ml-2.5 border-l border-neutral-800 space-y-1 mt-0.5">
+          {/* docs/ folder */}
+          <Collapsible open={docsOpen} onOpenChange={setDocsOpen}>
+            <div className="flex items-center justify-between py-1 hover:bg-neutral-800/20 rounded px-1.5 cursor-pointer">
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center gap-2 flex-1">
+                  <ChevronRight className={`h-3 w-3 text-neutral-500 transition-transform duration-200 ${docsOpen ? 'rotate-90' : ''}`} />
+                  {docsOpen ? <FolderOpen className="h-3.5 w-3.5 text-blue-400" /> : <Folder className="h-3.5 w-3.5 text-blue-400" />}
+                  <span className="text-neutral-200">docs</span>
+                </div>
+              </CollapsibleTrigger>
             </div>
-          </div>
+            
+            <CollapsibleContent className="pl-3 ml-2.5 border-l border-neutral-800 space-y-1 mt-0.5">
+              <div className="flex items-center gap-2 py-1 px-1.5 text-neutral-400 hover:text-white cursor-pointer rounded hover:bg-neutral-800/20">
+                <FileCode2 className="h-3.5 w-3.5 text-amber-500" />
+                <span>next.config.js</span>
+              </div>
+              <div className="flex items-center gap-2 py-1 px-1.5 text-neutral-400 hover:text-white cursor-pointer rounded hover:bg-neutral-800/20">
+                <FileText className="h-3.5 w-3.5 text-neutral-500" />
+                <span>package.json</span>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </CollapsibleContent>
       </Collapsible>
-    </div>
-  )
-}
-```
 
-</ComponentPreview>
-
-### Profile settings editor
-
-<ComponentPreview>
-  <CollapsibleProfile />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { User, ChevronsUpDown } from 'lucide-react'
-
-export default function ProfileDemo() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <User className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">Profile Drawer</h4>
-      </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-xs">
-            JS
-          </div>
-          <div className="flex-1 text-xs">
-            <div className="font-bold">Jenish Sabhadiya</div>
-            <div className="text-[10px] text-muted-foreground">Admin Access</div>
-          </div>
+      {/* packages/ folder */}
+      <Collapsible open={packagesOpen} onOpenChange={setPackagesOpen}>
+        <div className="flex items-center justify-between py-1 hover:bg-neutral-800/20 rounded px-1.5 cursor-pointer">
           <CollapsibleTrigger asChild>
-            <Button variant="glass" className="h-7 w-7 p-0">
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            </Button>
+            <div className="flex items-center gap-2 flex-1">
+              <ChevronRight className={`h-3 w-3 text-neutral-500 transition-transform duration-200 ${packagesOpen ? 'rotate-90' : ''}`} />
+              {packagesOpen ? <FolderOpen className="h-3.5 w-3.5 text-blue-400" /> : <Folder className="h-3.5 w-3.5 text-blue-400" />}
+              <span className="text-neutral-200">packages</span>
+            </div>
           </CollapsibleTrigger>
         </div>
-        <CollapsibleContent className="space-y-2 pt-2">
-          <input
-            type="text"
-            placeholder="Edit Title..."
-            className="w-full text-xs bg-zinc-900 border border-white/5 rounded px-2.5 py-1.5 text-white outline-none"
-          />
-          <Button variant="glass" className="w-full py-1 text-[11px] h-8">
-            Save Changes
-          </Button>
+        
+        <CollapsibleContent className="pl-3 ml-2.5 border-l border-neutral-800 space-y-1 mt-0.5">
+          {/* ui/ folder */}
+          <Collapsible open={uiOpen} onOpenChange={setUiOpen}>
+            <div className="flex items-center justify-between py-1 hover:bg-neutral-800/20 rounded px-1.5 cursor-pointer">
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center gap-2 flex-1">
+                  <ChevronRight className={`h-3 w-3 text-neutral-500 transition-transform duration-200 ${uiOpen ? 'rotate-90' : ''}`} />
+                  {uiOpen ? <FolderOpen className="h-3.5 w-3.5 text-blue-400" /> : <Folder className="h-3.5 w-3.5 text-blue-400" />}
+                  <span className="text-neutral-200">ui</span>
+                </div>
+              </CollapsibleTrigger>
+            </div>
+            
+            <CollapsibleContent className="pl-3 ml-2.5 border-l border-neutral-800 space-y-1 mt-0.5">
+              {/* src/ folder */}
+              <Collapsible open={srcOpen} onOpenChange={setSrcOpen}>
+                <div className="flex items-center justify-between py-1 hover:bg-neutral-800/20 rounded px-1.5 cursor-pointer">
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center gap-2 flex-1">
+                      <ChevronRight className={`h-3 w-3 text-neutral-500 transition-transform duration-200 ${srcOpen ? 'rotate-90' : ''}`} />
+                      {srcOpen ? <FolderOpen className="h-3.5 w-3.5 text-blue-400" /> : <Folder className="h-3.5 w-3.5 text-blue-400" />}
+                      <span className="text-neutral-200">src</span>
+                    </div>
+                  </CollapsibleTrigger>
+                </div>
+                
+                <CollapsibleContent className="pl-3 ml-2.5 border-l border-neutral-800 space-y-1 mt-0.5">
+                  {/* components/ folder */}
+                  <Collapsible open={componentsOpen} onOpenChange={setComponentsOpen}>
+                    <div className="flex items-center justify-between py-1 hover:bg-neutral-800/20 rounded px-1.5 cursor-pointer">
+                      <CollapsibleTrigger asChild>
+                        <div className="flex items-center gap-2 flex-1">
+                          <ChevronRight className={`h-3 w-3 text-neutral-500 transition-transform duration-200 ${componentsOpen ? 'rotate-90' : ''}`} />
+                          {componentsOpen ? <FolderOpen className="h-3.5 w-3.5 text-blue-400" /> : <Folder className="h-3.5 w-3.5 text-blue-400" />}
+                          <span className="text-neutral-200">components</span>
+                        </div>
+                      </CollapsibleTrigger>
+                    </div>
+                    
+                    <CollapsibleContent className="pl-3 ml-2.5 border-l border-neutral-800 space-y-1 mt-0.5">
+                      <div className="flex items-center gap-2 py-1 px-1.5 text-neutral-400 hover:text-white cursor-pointer rounded hover:bg-neutral-800/20">
+                        <FileCode2 className="h-3.5 w-3.5 text-emerald-500" />
+                        <span>button.tsx</span>
+                      </div>
+                      <div className="flex items-center gap-2 py-1 px-1.5 text-neutral-400 hover:text-white cursor-pointer rounded hover:bg-neutral-800/20">
+                        <FileCode2 className="h-3.5 w-3.5 text-emerald-500" />
+                        <span>collapsible.tsx</span>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </CollapsibleContent>
+              </Collapsible>
+            </CollapsibleContent>
+          </Collapsible>
         </CollapsibleContent>
       </Collapsible>
-    </div>
-  )
-}
-```
 
-</ComponentPreview>
-
-### Interactive thread comments
-
-<ComponentPreview>
-  <CollapsibleComments />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { FileText } from 'lucide-react'
-
-export default function ThreadDemo() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <FileText className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">Comments Thread</h4>
+      {/* Root config files */}
+      <div className="flex items-center gap-2 py-1 px-1.5 text-neutral-400 hover:text-white cursor-pointer rounded hover:bg-neutral-800/20 pl-7">
+        <FileCode2 className="h-3.5 w-3.5 text-purple-500" />
+        <span>turbo.json</span>
       </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="text-xs">
-          <p className="font-semibold text-primary">Alex Mercer</p>
-          <p className="text-muted-foreground mt-0.5">
-            Will this package build cleanly on Node 18?
-          </p>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] text-zinc-500">2 replies received</span>
-          <CollapsibleTrigger asChild>
-            <Button variant="default" className="text-[10px] h-6 px-2">
-              Replies
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent className="pl-4 border-l-2 border-primary/20 space-y-2 mt-2">
-          <div className="text-[11px] bg-zinc-900/40 p-2.5 rounded">
-            <p className="font-semibold">Jenish Sabhadiya</p>
-            <p className="text-muted-foreground mt-0.5">
-              Yes! It compiled successfully on both Node 18 and 20.
-            </p>
-          </div>
-          <div className="text-[11px] bg-zinc-900/40 p-2.5 rounded">
-            <p className="font-semibold">Developer B</p>
-            <p className="text-muted-foreground mt-0.5">
-              Confirmed, tested inside Next.js 15 environments.
-            </p>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
     </div>
   )
 }
@@ -573,114 +441,25 @@ export default function ThreadDemo() {
 
 </ComponentPreview>
 
-### System debug logs
+## Props
 
-<ComponentPreview>
-  <CollapsibleLogs />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { Terminal, ChevronsUpDown } from 'lucide-react'
-
-export default function LogsDemo() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <Terminal className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">Terminal Output</h4>
-      </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2 font-mono">
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-emerald-400 flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            turbo run build
-          </span>
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="cyberpunk"
-              className="h-7 w-7 p-0 flex items-center justify-center"
-            >
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <div className="rounded border border-emerald-950 bg-black p-2.5 text-[10px] text-emerald-500/80">
-          • turbo 2.10.5 running ...
-        </div>
-        <CollapsibleContent className="space-y-1">
-          <div className="rounded border border-emerald-950 bg-black p-2.5 text-[10px] text-emerald-600 space-y-1">
-            <div>vibe-ui-kit:build: cache hit</div>
-            <div>@custom-ui/docs:build: cache hit</div>
-            <div className="text-emerald-400">Tasks: 3 successful, 3 total</div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Glass settings slider dock
-
-<ComponentPreview>
-  <CollapsibleGlassSettings />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { Slider } from '@/components/ui/slider'
-import { Settings, ChevronsUpDown } from 'lucide-react'
-
-export default function SettingsDemo() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white font-sans select-none">
-      <div className="flex items-center gap-2 mb-3 border-b border-white/5 pb-2">
-        <Settings className="h-4 w-4 text-primary" />
-        <h4 className="text-xs font-bold uppercase tracking-wider">Glass Presets</h4>
-      </div>
-      <Collapsible open={open} onOpenChange={setOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold">Visual Controls</span>
-          <CollapsibleTrigger asChild>
-            <Button variant="glass" className="h-7 w-7 p-0">
-              <ChevronsUpDown className="h-3.5 w-3.5" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <div className="text-[11px] text-muted-foreground p-1 select-none">
-          Click button above to slider adjust HSL.
-        </div>
-        <CollapsibleContent className="space-y-3 pt-2">
-          <div className="space-y-1">
-            <span className="text-[10px] text-zinc-400">Blur Radius</span>
-            <Slider max={20} min={0} step={2} defaultValue={[8]} />
-          </div>
-          <div className="space-y-1">
-            <span className="text-[10px] text-zinc-400">Opacity Alpha</span>
-            <Slider max={100} min={10} step={10} defaultValue={[20]} />
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
+<PropsTable title="Collapsible">
+  <PropRow
+    prop="open"
+    type="boolean"
+    default="false"
+    description="The controlled open state of the collapsible."
+  />
+  <PropRow
+    prop="defaultOpen"
+    type="boolean"
+    default="false"
+    description="The initial open state when rendering uncontrolled."
+  />
+  <PropRow
+    prop="onOpenChange"
+    type="(open: boolean) => void"
+    default="-"
+    description="Event handler called when the open state of the collapsible changes."
+  />
+</PropsTable>

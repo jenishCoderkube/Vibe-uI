@@ -17,6 +17,7 @@ interface ComponentPreviewProps {
   name?: string
   vibeDeps?: string
   npmDeps?: string
+  noBorder?: boolean
 }
 
 function getTextFromChildren(children: React.ReactNode): string {
@@ -44,6 +45,7 @@ export function ComponentPreview({
   name,
   vibeDeps,
   npmDeps,
+  noBorder = false,
 }: ComponentPreviewProps) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -241,14 +243,16 @@ export function ComponentPreview({
       </div>
       <div
         className={cn(
-          'relative rounded-lg border border-border bg-card shadow-sm',
-          tab === 'code' && 'overflow-hidden',
+          'relative rounded-lg',
+          !noBorder && 'border border-border bg-card shadow-sm',
+          tab === 'code' && 'overflow-hidden border border-border bg-zinc-950',
         )}
       >
         {tab === 'preview' && (
           <div
             className={cn(
-              'relative flex min-h-[350px] overflow-hidden w-full items-center justify-center p-4 sm:p-6 md:p-10 bg-background not-typeset not-prose',
+              'relative flex min-h-[350px] overflow-hidden w-full items-center justify-center p-4 sm:p-6 md:p-10 bg-background not-typeset not-prose rounded-lg',
+              noBorder && 'border-0 bg-transparent shadow-none p-0 min-h-0',
               className,
             )}
             data-not-typeset

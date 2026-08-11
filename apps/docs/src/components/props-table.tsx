@@ -69,9 +69,6 @@ export function PropsTable({
 
   return (
     <div className="space-y-3 my-6">
-      {title && (
-        <div className="text-sm font-bold text-foreground">{title}</div>
-      )}
       <div className="w-full overflow-x-auto rounded-lg border border-border custom-scrollbar bg-card shadow-xs">
         <table className="w-full min-w-[650px] text-sm text-left border-collapse">
           <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">

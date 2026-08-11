@@ -2,8 +2,6 @@
 
 Date selection component combining popover panels, interactive calendars, and formatted date displays.
 
-## Preview
-
 <ComponentPreview>
   <DatePickerDemo />
 
@@ -14,23 +12,22 @@ export default function DatePickerDemo() {
   return <DatePicker placeholder="Pick a date" />
 }
 ```
-
 </ComponentPreview>
 
 <Installation name="date-picker" vibeDeps="popover, calendar, button">
 
 ```tsx
+// @/components/ui/date-picker.tsx
 'use client'
 
 import * as React from 'react'
 import { format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import type { DateRange } from 'react-day-picker'
-import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
-import { Button } from './button'
-import { Calendar } from './calendar'
-import { Popover, PopoverContent, PopoverTrigger } from './popover'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 export interface DatePickerProps {
   date?: Date
@@ -60,14 +57,26 @@ export function DatePicker({
       <PopoverTrigger asChild>
         <Button
           variant={variant}
+          data-slot="date-picker"
           className={cn(
             'w-[240px] justify-start text-left font-normal',
-            !selectedDate && 'text-muted-foreground',
             className,
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-          {selectedDate ? format(selectedDate, 'PPP') : <span>{placeholder}</span>}
+          {selectedDate ? (
+            format(selectedDate, 'PPP')
+          ) : (
+            <span
+              className={cn(
+                variant === 'default'
+                  ? 'text-zinc-400 dark:text-zinc-600'
+                  : 'text-muted-foreground',
+              )}
+            >
+              {placeholder}
+            </span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -76,12 +85,14 @@ export function DatePicker({
         align="start"
       >
         <Calendar
+          variant={variant}
           mode="single"
           selected={selectedDate}
           onSelect={(d) => {
             setSelectedDate(d)
             onDateChange?.(d)
           }}
+          className="border-0 bg-transparent shadow-none"
           initialFocus
         />
       </PopoverContent>
@@ -106,7 +117,9 @@ export function DateRangePicker({
   variant = 'default',
   numberOfMonths = 2,
 }: DateRangePickerProps) {
-  const [selectedRange, setSelectedRange] = React.useState<DateRange | undefined>(date)
+  const [selectedRange, setSelectedRange] = React.useState<
+    DateRange | undefined
+  >(date)
 
   React.useEffect(() => {
     if (date !== undefined) {
@@ -129,14 +142,24 @@ export function DateRangePicker({
       <PopoverTrigger asChild>
         <Button
           variant={variant}
+          data-slot="date-range-picker"
           className={cn(
             'w-[300px] justify-start text-left font-normal',
-            !selectedRange?.from && 'text-muted-foreground',
             className,
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-          <span className="truncate">{formatText()}</span>
+          <span
+            className={cn(
+              'truncate',
+              !selectedRange?.from &&
+                (variant === 'default'
+                  ? 'text-zinc-400 dark:text-zinc-600'
+                  : 'text-muted-foreground'),
+            )}
+          >
+            {formatText()}
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -145,6 +168,7 @@ export function DateRangePicker({
         align="start"
       >
         <Calendar
+          variant={variant}
           initialFocus
           mode="range"
           defaultMonth={selectedRange?.from}
@@ -154,6 +178,7 @@ export function DateRangePicker({
             onDateChange?.(range)
           }}
           numberOfMonths={numberOfMonths}
+          className="border-0 bg-transparent shadow-none"
         />
       </PopoverContent>
     </Popover>
@@ -165,9 +190,32 @@ export { DateRangePicker as DatePickerWithRange }
 
 </Installation>
 
-## Variations
+## Themes
 
-### Date Range Picker
+Explore all style variants side-by-side.
+
+<ComponentPreview>
+  <DatePickerDemoThemes />
+
+```tsx
+import { DatePicker } from '@/components/ui/date-picker'
+
+export default function DatePickerThemes() {
+  return (
+    <div className="flex gap-4 flex-wrap">
+      <DatePicker placeholder="Default Picker" variant="default" />
+      <DatePicker placeholder="Glass Picker" variant="glass" />
+      <DatePicker placeholder="Retro Picker" variant="retro" />
+      <DatePicker placeholder="Glow Picker" variant="glow" />
+    </div>
+  )
+}
+```
+</ComponentPreview>
+
+## Date Range Picker
+
+Select a date interval with multiple month grid viewports.
 
 <ComponentPreview>
   <DateRangePickerDemo />
@@ -179,109 +227,70 @@ export default function DateRangePickerDemo() {
   return <DateRangePicker placeholder="Pick a date range" />
 }
 ```
-
 </ComponentPreview>
 
-### Style Presets
+## Props
 
-<ComponentPreview>
-  <DatePickerPresetsDemo />
+### DatePicker
 
-```tsx
-import { DatePicker } from '@/components/ui/date-picker'
+<PropsTable title="DatePicker">
+  <PropRow
+    prop="date"
+    type="Date"
+    default="-"
+    description="The currently selected date value."
+  />
+  <PropRow
+    prop="onDateChange"
+    type="(date?: Date) => void"
+    default="-"
+    description="Callback function fired when a new date is selected."
+  />
+  <PropRow
+    prop="placeholder"
+    type="string"
+    default="'Pick a date'"
+    description="Trigger button label text when no date has been selected."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    default="'default'"
+    description="The design variant styles applied to the trigger and calendar panel."
+  />
+</PropsTable>
 
-export default function DatePickerPresetsDemo() {
-  return (
-    <div className="flex flex-wrap gap-4 items-center justify-center">
-      <DatePicker placeholder="Default Picker" variant="default" />
-      <DatePicker placeholder="Glass Picker" variant="glass" />
-      <DatePicker placeholder="Retro Picker" variant="retro" />
-    </div>
-  )
-}
-```
+### DateRangePicker
 
-</ComponentPreview>
-
-### Form Field Integration
-
-<ComponentPreview>
-  <DatePickerFormDemo />
-
-```tsx
-import { DatePicker } from '@/components/ui/date-picker'
-import { Label } from '@/components/ui/label'
-
-export default function DatePickerFormDemo() {
-  return (
-    <div className="flex flex-col gap-2 w-[240px]">
-      <Label className="text-xs font-medium text-foreground">Event Schedule Date</Label>
-      <DatePicker placeholder="Select schedule date" />
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Glassmorphic Backdrop
-
-<ComponentPreview>
-  <DatePickerGlassDemo />
-
-```tsx
-import { DatePicker } from '@/components/ui/date-picker'
-
-export default function DatePickerGlassDemo() {
-  return (
-    <div className="p-6 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/10">
-      <DatePicker placeholder="Glass calendar date" variant="glass" />
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Neubrutalism Retro
-
-<ComponentPreview>
-  <DatePickerRetroDemo />
-
-```tsx
-import { DatePicker } from '@/components/ui/date-picker'
-
-export default function DatePickerRetroDemo() {
-  return <DatePicker placeholder="SELECT DATE" variant="retro" />
-}
-```
-
-</ComponentPreview>
-
-### Neon Glow Accent
-
-<ComponentPreview>
-  <DatePickerGlowDemo />
-
-```tsx
-import { DatePicker } from '@/components/ui/date-picker'
-
-export default function DatePickerGlowDemo() {
-  return <DatePicker placeholder="Neon date picker" variant="glow" />
-}
-```
-
-</ComponentPreview>
-
-## Component Concept
-
-Vibe UI's Date Picker component couples Radix Popover panels with React Day Picker calendars to deliver intuitive single-date and multi-month date range selections with formatted display strings.
-
-### Single & Range Picker Modes
-
-- **Single Date (`<DatePicker />`)**: Selects an individual date and formats it as human-readable string (e.g. `August 1st, 2026`).
-- **Date Range (`<DateRangePicker />`)**: Selects a date interval (`from` and `to`) across single or multi-month panels with automatic range highlighting.
-
-### Theme Synchronization
-
-The calendar popover pop-up menu automatically inherits the `variant` (`default`, `glass`, `retro`, `glow`), ensuring calendar grids match glassmorphic or retro themes seamlessly.
+<PropsTable title="DateRangePicker">
+  <PropRow
+    prop="date"
+    type="DateRange"
+    default="-"
+    description="The selected date interval range { from: Date; to?: Date }."
+  />
+  <PropRow
+    prop="onDateChange"
+    type="(date?: DateRange) => void"
+    default="-"
+    description="Callback function fired when the date range selection changes."
+  />
+  <PropRow
+    prop="placeholder"
+    type="string"
+    default="'Pick a date range'"
+    description="Trigger button label text when no range has been selected."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    default="'default'"
+    description="The design variant styles applied to the trigger and calendar panels."
+  />
+  <PropRow
+    prop="numberOfMonths"
+    type="number"
+    default="2"
+    description="The number of concurrent calendar month grids to display side-by-side."
+  />
+</PropsTable>

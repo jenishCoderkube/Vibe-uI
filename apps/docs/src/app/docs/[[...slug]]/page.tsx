@@ -176,6 +176,7 @@ import {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
   Uploader,
   LayoutShell,
   LayoutShellSidebar,
@@ -332,7 +333,7 @@ import {
 } from '../../../components/layout-shell-demos'
 import { SliderValueDemo } from '../../../components/slider-value-demo'
 import { ProgressInteractiveDemo } from '../../../components/progress-interactive-demo'
-import { CommandDialogTriggerDemo } from '../../../components/command-demo'
+import { CommandDemoBasic, CommandDemoThemes } from '../../../components/command-demo'
 import * as NewDemos from '../../../components/new-components-demos'
 import {
   TypingAnimationBasicDemo,
@@ -1888,7 +1889,8 @@ const mdxComponents = {
   MultiSelectNestedDemo,
   SliderValueDemo,
   ProgressInteractiveDemo,
-  CommandDialogTriggerDemo,
+  CommandDemoBasic,
+  CommandDemoThemes,
   Button,
   ChartContainer,
   ChartTooltip,
@@ -2117,6 +2119,7 @@ const mdxComponents = {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
   Uploader,
   LayoutShell,
   LayoutShellSidebar,
@@ -2150,7 +2153,7 @@ const mdxComponents = {
   AspectRatioProfileCover: AspectRatioDemos.AspectRatioProfileCover,
   CollapsibleDemo: CollapsibleDemos.CollapsibleBasic,
   CollapsibleBasic: CollapsibleDemos.CollapsibleBasic,
-  CollapsibleFAQ: CollapsibleDemos.CollapsibleFAQ,
+  CollapsibleThemes: CollapsibleDemos.CollapsibleThemes,
   CollapsibleCode: CollapsibleDemos.CollapsibleCode,
   CollapsibleFolder: CollapsibleDemos.CollapsibleFolder,
   CollapsibleFilters: CollapsibleDemos.CollapsibleFilters,

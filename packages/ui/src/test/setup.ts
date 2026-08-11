@@ -18,6 +18,11 @@ if (typeof window !== 'undefined') {
   window.Element.prototype.releasePointerCapture = () => {}
 }
 
+// Mock elementFromPoint for libraries like input-otp
+if (typeof document !== 'undefined') {
+  document.elementFromPoint = () => null
+}
+
 // Mock scrollIntoView for libraries like cmdk (Command component)
 window.HTMLElement.prototype.scrollIntoView = function () {}
 

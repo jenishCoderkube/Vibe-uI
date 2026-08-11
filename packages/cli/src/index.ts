@@ -191,7 +191,7 @@ program
         try {
           const config = fs.readJsonSync(configPath)
           if (config.aliases) {
-            // Standard shadcn/ui components.json structure
+            // Standard components.json configuration structure
             language = fs.existsSync(path.join(baseDir, 'tsconfig.json'))
               ? 'typescript'
               : 'javascript'

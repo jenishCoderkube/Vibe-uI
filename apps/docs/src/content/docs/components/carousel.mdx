@@ -1,11 +1,11 @@
 # Carousel
 
-A touch-friendly sliding content layout carousel.
+A touch-friendly sliding content layout carousel built on top of Embla Carousel.
 
 ## Preview
 
 <ComponentPreview>
-  <CarouselDemoBasic />
+  <CarouselDemo />
 
 ```tsx
 import {
@@ -14,23 +14,25 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselDots,
 } from '@/components/ui/carousel'
 
 export default function CarouselDemo() {
   return (
-    <div className="px-10 w-full max-w-[280px]">
+    <div className="px-12 w-full max-w-[400px]">
       <Carousel className="w-full">
         <CarouselContent>
           {[1, 2, 3].map((i) => (
             <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
+              <div className="flex h-48 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
                 Slide {i}
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
       </Carousel>
     </div>
   )
@@ -61,6 +63,7 @@ const carouselVariants = tv({
       glass: '',
       retro: '',
       glow: '',
+      cyberpunk: '',
     },
   },
   defaultVariants: {
@@ -72,12 +75,19 @@ type CarouselApi = UseEmblaCarouselType[1]
 type CarouselOptions = Parameters<typeof useEmblaCarousel>[0]
 
 interface CarouselProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof carouselVariants> {
   opts?: CarouselOptions
   plugins?: any
   orientation?: 'horizontal' | 'vertical'
   setApi?: (api: CarouselApi) => void
+  loop?: boolean
+  dragFree?: boolean
+  align?: 'start' | 'center' | 'end'
+  startIndex?: number
+  autoplay?: boolean
+  autoplayInterval?: number
 }
 
 type CarouselContextProps = {
@@ -87,7 +97,10 @@ type CarouselContextProps = {
   scrollNext: () => void
   canScrollPrev: boolean
   canScrollNext: boolean
-  variant?: 'default' | 'glass' | 'retro' | 'glow'
+  variant?: 'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
+  selectedIndex: number
+  scrollSnaps: number[]
+  scrollTo: (index: number) => void
 } & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
@@ -111,26 +124,40 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       plugins,
       className,
       variant,
+      loop,
+      dragFree,
+      align,
+      startIndex,
+      autoplay = false,
+      autoplayInterval = 4000,
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [carouselRef, api] = useEmblaCarousel(
       {
         ...opts,
         axis: orientation === 'horizontal' ? 'x' : 'y',
+        ...(loop !== undefined && { loop }),
+        ...(dragFree !== undefined && { dragFree }),
+        ...(align !== undefined && { align }),
+        ...(startIndex !== undefined && { startIndex }),
       },
-      plugins
+      plugins,
     )
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
+    const [selectedIndex, setSelectedIndex] = React.useState(0)
+    const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([])
+    const [isHovered, setIsHovered] = React.useState(false)
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
         return
       }
 
+      setSelectedIndex(api.selectedScrollSnap())
       setCanScrollPrev(api.canScrollPrev())
       setCanScrollNext(api.canScrollNext())
     }, [])
@@ -143,6 +170,13 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       api?.scrollNext()
     }, [api])
 
+    const scrollTo = React.useCallback(
+      (index: number) => {
+        api?.scrollTo(index)
+      },
+      [api],
+    )
+
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'ArrowLeft') {
@@ -153,7 +187,7 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           scrollNext()
         }
       },
-      [scrollPrev, scrollNext]
+      [scrollPrev, scrollNext],
     )
 
     React.useEffect(() => {
@@ -170,13 +204,38 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       }
 
       onSelect(api)
-      api.on('reInit', onSelect)
-      api.on('select', onSelect)
+      setScrollSnaps(api.scrollSnapList())
+
+      const handleSelect = () => onSelect(api)
+      const handleReInit = () => {
+        onSelect(api)
+        setScrollSnaps(api.scrollSnapList())
+      }
+
+      api.on('reInit', handleReInit)
+      api.on('select', handleSelect)
 
       return () => {
-        api.off('select', onSelect)
+        api.off('reInit', handleReInit)
+        api.off('select', handleSelect)
       }
     }, [api, onSelect])
+
+    React.useEffect(() => {
+      if (!autoplay || !api || isHovered) {
+        return
+      }
+
+      const intervalId = setInterval(() => {
+        if (api.canScrollNext()) {
+          api.scrollNext()
+        } else {
+          api.scrollTo(0)
+        }
+      }, autoplayInterval)
+
+      return () => clearInterval(intervalId)
+    }, [api, autoplay, autoplayInterval, isHovered])
 
     return (
       <CarouselContext.Provider
@@ -190,12 +249,18 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           canScrollPrev,
           canScrollNext,
           variant,
+          selectedIndex,
+          scrollSnaps,
+          scrollTo,
         }}
       >
         <div
           ref={ref}
           onKeyDown={handleKeyDown}
-          className={cn('relative', className)}
+          onMouseEnter={autoplay ? () => setIsHovered(true) : undefined}
+          onMouseLeave={autoplay ? () => setIsHovered(false) : undefined}
+          data-slot="carousel"
+          className={cn(carouselVariants({ variant }), className)}
           role="region"
           aria-roledescription="carousel"
           {...props}
@@ -204,7 +269,7 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
         </div>
       </CarouselContext.Provider>
     )
-  }
+  },
 )
 Carousel.displayName = 'Carousel'
 
@@ -218,10 +283,11 @@ const CarouselContent = React.forwardRef<
     <div ref={carouselRef} className="overflow-hidden">
       <div
         ref={ref}
+        data-slot="carousel-content"
         className={cn(
           'flex',
           orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
-          className
+          className,
         )}
         {...props}
       />
@@ -241,10 +307,11 @@ const CarouselItem = React.forwardRef<
       ref={ref}
       role="group"
       aria-roledescription="slide"
+      data-slot="carousel-item"
       className={cn(
         'min-w-0 shrink-0 grow-0 basis-full',
         orientation === 'horizontal' ? 'pl-4' : 'pt-4',
-        className
+        className,
       )}
       {...props}
     />
@@ -256,19 +323,20 @@ const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
-  const { orientation, scrollPrev, canScrollPrev, variant: carouselVar } = useCarousel()
+  const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   return (
     <Button
       ref={ref}
-      variant={carouselVar === 'retro' ? 'retro' : carouselVar === 'glass' ? 'glass' : carouselVar === 'glow' ? 'glow' : variant}
+      data-slot="carousel-previous"
+      variant={variant}
       size={size}
       className={cn(
-        'absolute h-8 w-8 rounded-full z-10',
+        'absolute size-8 rounded-full z-10 transition-none',
         orientation === 'horizontal'
-          ? '-left-12 top-1/2 -translate-y-1/2'
-          : '-top-12 left-1/2 -translate-y-1/2 rotate-90',
-        className
+          ? 'top-1/2 left-2 sm:-left-12 -translate-y-1/2 hover:-translate-y-1/2 active:-translate-y-1/2 active:scale-100'
+          : '-top-12 left-1/2 -translate-x-1/2 rotate-90 hover:-translate-x-1/2 hover:rotate-90 active:-translate-x-1/2 active:rotate-90 active:scale-100',
+        className,
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
@@ -285,19 +353,20 @@ const CarouselNext = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
-  const { orientation, scrollNext, canScrollNext, variant: carouselVar } = useCarousel()
+  const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   return (
     <Button
       ref={ref}
-      variant={carouselVar === 'retro' ? 'retro' : carouselVar === 'glass' ? 'glass' : carouselVar === 'glow' ? 'glow' : variant}
+      data-slot="carousel-next"
+      variant={variant}
       size={size}
       className={cn(
-        'absolute h-8 w-8 rounded-full z-10',
+        'absolute size-8 rounded-full z-10 transition-none',
         orientation === 'horizontal'
-          ? '-right-12 top-1/2 -translate-y-1/2'
-          : '-bottom-12 left-1/2 -translate-y-1/2 rotate-90',
-        className
+          ? 'top-1/2 right-2 sm:-right-12 -translate-y-1/2 hover:-translate-y-1/2 active:-translate-y-1/2 active:scale-100'
+          : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90 hover:-translate-x-1/2 hover:rotate-90 active:-translate-x-1/2 active:rotate-90 active:scale-100',
+        className,
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
@@ -310,6 +379,62 @@ const CarouselNext = React.forwardRef<
 })
 CarouselNext.displayName = 'CarouselNext'
 
+const CarouselDots = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const { scrollSnaps, selectedIndex, scrollTo, variant: carouselVar } = useCarousel()
+
+  if (scrollSnaps.length <= 1) {
+    return null
+  }
+
+  return (
+    <div
+      ref={ref}
+      data-slot="carousel-dots"
+      className={cn(
+        'flex items-center justify-center gap-2 mt-4',
+        className,
+      )}
+      {...props}
+    >
+      {scrollSnaps.map((_, index) => (
+        <button
+          key={index}
+          type="button"
+          onClick={() => scrollTo(index)}
+          className={cn(
+            'h-2 w-2 rounded-full transition-all duration-200 cursor-pointer border-0 p-0',
+            carouselVar === 'retro'
+              ? 'border border-foreground rounded-none bg-transparent hover:bg-foreground/10'
+              : carouselVar === 'cyberpunk'
+                ? 'border border-emerald-500 rounded-none bg-transparent hover:bg-emerald-500/10'
+                : '',
+            index === selectedIndex
+              ? carouselVar === 'retro'
+                ? '!bg-foreground w-4'
+                : carouselVar === 'glass'
+                  ? 'bg-foreground w-4'
+                  : carouselVar === 'glow'
+                    ? 'bg-primary w-4 shadow-[0_0_8px_rgba(168,85,247,0.6)]'
+                    : carouselVar === 'cyberpunk'
+                      ? 'bg-emerald-500 w-4 shadow-[0_0_8px_rgba(16,185,129,0.6)]'
+                      : 'bg-primary w-4'
+              : carouselVar === 'retro'
+                ? 'border-foreground'
+                : carouselVar === 'cyberpunk'
+                  ? 'border-emerald-500'
+                  : 'bg-neutral-300 dark:bg-neutral-700 hover:bg-neutral-400 dark:hover:bg-neutral-600'
+          )}
+          aria-label={`Go to slide ${index + 1}`}
+        />
+      ))}
+    </div>
+  )
+})
+CarouselDots.displayName = 'CarouselDots'
+
 export {
   type CarouselApi,
   Carousel,
@@ -317,190 +442,99 @@ export {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
 }
 ```
 
 </Installation>
 
+## Multi-Card
 
-
-## Preset Variations
-
-### Glassmorphic
+A responsive multi-card layout displaying 3 items simultaneously, with an interactive switch control to dynamically toggle infinite looping.
 
 <ComponentPreview>
-  <CarouselDemoGlass />
+  <CarouselDemoPremium />
 
 ```tsx
+import * as React from 'react'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselDots,
 } from '@/components/ui/carousel'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 
-export default function CarouselDemoGlass() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="glass" className="w-full">
-        <CarouselContent>
-          {[1, 2, 3].map((i) => (
-            <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur rounded-xl text-xs font-semibold text-foreground">
-                Glass Slide {i}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
-```
+export default function CarouselDemoPremium() {
+  const [isInfinite, setIsInfinite] = React.useState(false)
 
-</ComponentPreview>
-
-### Retro Neobrutalism
-
-<ComponentPreview>
-  <CarouselDemoRetro />
-
-```tsx
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
-
-export default function CarouselDemoRetro() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="retro" className="w-full">
-        <CarouselContent>
-          {[1, 2, 3].map((i) => (
-            <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border-2 border-foreground bg-background text-xs font-bold text-foreground">
-                RETRO SLIDE {i}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Neon Glow
-
-<ComponentPreview>
-  <CarouselDemoGlow />
-
-```tsx
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
-
-export default function CarouselDemoGlow() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="glow" className="w-full">
-        <CarouselContent>
-          {[1, 2, 3].map((i) => (
-            <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border border-primary/30 bg-primary/5 rounded-xl text-xs font-semibold text-primary">
-                Glow Slide {i}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
----
-
-## Premium Use Case Examples
-
-### 1. Visual Card Image Slider
-
-<ComponentPreview>
-  <CarouselDemoImages />
-
-```tsx
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
-import { Badge } from '@/components/ui/badge'
-
-export default function CarouselDemoImages() {
   const images = [
     {
-      title: 'Cyberpunk City',
-      tag: 'Neon',
-      bg: 'from-fuchsia-600 to-pink-600',
+      title: 'Mountain Retreat',
+      location: 'Swiss Alps',
+      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
     },
     {
-      title: 'Glass Office',
-      tag: 'Minimal',
-      bg: 'from-cyan-500 to-indigo-500',
+      title: 'Neon Streets',
+      location: 'Tokyo, Japan',
+      image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80',
     },
     {
-      title: 'Brutalist Grid',
-      tag: 'Bold',
-      bg: 'from-yellow-500 to-orange-500',
+      title: 'Ocean Breeze',
+      location: 'Maldives',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      title: 'Desert Dunes',
+      location: 'Sahara Desert',
+      image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      title: 'Forest Pathways',
+      location: 'Redwood National Park',
+      image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=600&q=80',
     },
   ]
 
   return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel className="w-full">
+    <div className="px-12 w-full max-w-5xl space-y-4">
+      <div className="flex items-center justify-end gap-2 pb-2">
+        <Switch
+          id="premium-infinite-switch"
+          checked={isInfinite}
+          onCheckedChange={setIsInfinite}
+        />
+        <Label htmlFor="premium-infinite-switch" className="text-xs font-semibold cursor-pointer select-none">
+          Infinite Loop
+        </Label>
+      </div>
+
+      <Carousel key={isInfinite ? 'infinite' : 'standard'} className="w-full" loop={isInfinite} opts={{ align: 'start' }}>
         <CarouselContent>
-          {images.map((img, i) => (
-            <CarouselItem key={i}>
-              <div
-                className={
-                  'relative flex h-36 w-full flex-col justify-end p-3 rounded-xl bg-gradient-to-br ' +
-                  img.bg +
-                  ' overflow-hidden shadow'
-                }
-              >
-                <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                <div className="relative z-10 text-left">
-                  <Badge className="bg-white/10 text-white backdrop-blur mb-1.5">
-                    {img.tag}
-                  </Badge>
-                  <h4 className="font-bold text-xs text-white">{img.title}</h4>
+          {images.map((item, index) => (
+            <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3">
+              <div className="relative overflow-hidden rounded-2xl border border-border bg-card aspect-[4/3] group shadow-sm hover:shadow-md transition-all duration-300">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4 text-left">
+                  <span className="text-[10px] uppercase tracking-wider text-white/70 font-semibold mb-1">
+                    {item.location}
+                  </span>
+                  <h4 className="font-bold text-sm text-white">{item.title}</h4>
                 </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
       </Carousel>
     </div>
   )
@@ -509,10 +543,12 @@ export default function CarouselDemoImages() {
 
 </ComponentPreview>
 
-### 2. Client Testimonials Scroller
+## Testimonials
+
+A customer feedback quote slider showcasing client review text, rating stars, and avatar profiles.
 
 <ComponentPreview>
-  <CarouselDemoCards />
+  <CarouselDemoTestimonials />
 
 ```tsx
 import {
@@ -521,49 +557,69 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselDots,
 } from '@/components/ui/carousel'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
-export default function CarouselDemoCards() {
+export default function CarouselDemoTestimonials() {
+  const reviews = [
+    {
+      name: 'Sarah Jenkins',
+      role: 'Lead Designer at Vibe',
+      avatar: 'S',
+      rating: 5,
+      text: 'Vibe UI has completely transformed our workflow. The pre-built configurations are robust and save us days of custom code writing.',
+    },
+    {
+      name: 'David Chen',
+      role: 'Software Architect',
+      avatar: 'D',
+      rating: 5,
+      text: 'The Tailwind integration is extremely clean. It makes customizing standard components trivial while keeping performance top tier.',
+    },
+    {
+      name: 'Elena Rostova',
+      role: 'Product Manager',
+      avatar: 'E',
+      rating: 5,
+      text: 'Accessibility and touch gestures are flawless. Embla engine is integrated beautifully under a simple shorthand API interface.',
+    },
+  ]
+
   return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="glass" className="w-full">
+    <div className="px-12 w-full max-w-2xl">
+      <Carousel className="w-full" autoplay autoplayInterval={5000}>
         <CarouselContent>
-          {[
-            {
-              name: 'Sarah V.',
-              text: 'Vibe UI has saved us hours of styling boilerplate files!',
-            },
-            {
-              name: 'Alex M.',
-              text: 'The multi-preset visual layouts are incredibly fun.',
-            },
-            {
-              name: 'David K.',
-              text: 'Radix primitives accessibility out of the box is huge.',
-            },
-          ].map((item, i) => (
-            <CarouselItem key={i}>
-              <div className="flex flex-col justify-between h-36 border border-black/10 dark:border-white/15 bg-black/5 dark:bg-white/[0.02] p-3 rounded-xl text-left">
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  "{item.text}"
+          {reviews.map((review, index) => (
+            <CarouselItem key={index}>
+              <div className="border border-border bg-card rounded-2xl p-6 text-left shadow-sm flex flex-col justify-between min-h-[180px]">
+                <p className="text-sm text-muted-foreground italic leading-relaxed">
+                  "{review.text}"
                 </p>
-                <div className="flex items-center gap-2 mt-2">
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="bg-primary text-[8px] text-white font-bold">
-                      {item.name[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-[10px] font-bold text-foreground">
-                    {item.name}
-                  </span>
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary">
+                      {review.avatar}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-foreground">{review.name}</h4>
+                      <p className="text-xs text-muted-foreground">{review.role}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-0.5 text-yellow-500">
+                    {Array.from({ length: review.rating }).map((_, i) => (
+                      <svg key={i} className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
                 </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
       </Carousel>
     </div>
   )
@@ -572,76 +628,9 @@ export default function CarouselDemoCards() {
 
 </ComponentPreview>
 
-### 3. Product Catalog Grid Slider
+## Vertical
 
-<ComponentPreview>
-  <CarouselDemoProducts />
-
-```tsx
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
-import { Button } from '@/components/ui/button'
-
-export default function CarouselDemoProducts() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel className="w-full">
-        <CarouselContent>
-          {[
-            {
-              name: 'CLI Package License',
-              desc: 'Single developer',
-              price: '$29',
-            },
-            {
-              name: 'UI Figma Toolkit',
-              desc: 'Design kit bundle',
-              price: '$49',
-            },
-            {
-              name: 'Infinite Team License',
-              desc: 'Unlimited developers',
-              price: '$199',
-            },
-          ].map((prod, i) => (
-            <CarouselItem key={i}>
-              <div className="flex flex-col justify-between h-36 border border-border bg-card p-3 rounded-xl text-left">
-                <div>
-                  <h4 className="font-bold text-xs text-foreground">
-                    {prod.name}
-                  </h4>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
-                    {prod.desc}
-                  </p>
-                </div>
-                <div className="flex justify-between items-center pt-2">
-                  <span className="font-bold text-sm text-primary">
-                    {prod.price}
-                  </span>
-                  <Button size="sm" className="h-7 text-[10px]">
-                    Buy
-                  </Button>
-                </div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 4. Vertical Carousel Orientation
+A vertical orientation carousel that slides items vertically instead of horizontally.
 
 <ComponentPreview>
   <CarouselDemoVertical />
@@ -653,60 +642,25 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselDots,
 } from '@/components/ui/carousel'
 
 export default function CarouselDemoVertical() {
   return (
-    <div className="py-10 w-full max-w-[200px] flex justify-center">
-      <Carousel orientation="vertical" className="w-full h-36 max-w-[150px]">
-        <CarouselContent className="h-36">
-          {[1, 2, 3].map((i) => (
-            <CarouselItem key={i} className="h-36">
-              <div className="flex h-36 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
-                Vertical Slide {i}
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-top-8 left-1/2 -translate-x-1/2" />
-        <CarouselNext className="-bottom-8 left-1/2 -translate-x-1/2" />
-      </Carousel>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 5. Loop Mode Continuous Carousel
-
-<ComponentPreview>
-  <CarouselDemoLoop />
-
-```tsx
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
-
-export default function CarouselDemoLoop() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel opts={{ loop: true }} className="w-full">
-        <CarouselContent>
+    <div className="py-12 w-full max-w-[280px]">
+      <Carousel orientation="vertical" className="w-full">
+        <CarouselContent className="h-64">
           {[1, 2, 3].map((i) => (
             <CarouselItem key={i}>
-              <div className="flex h-36 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
-                Loop Slide {i}
+              <div className="flex h-48 items-center justify-center border border-border bg-card rounded-xl text-xs font-semibold text-foreground">
+                Slide {i}
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
       </Carousel>
     </div>
   )
@@ -715,57 +669,49 @@ export default function CarouselDemoLoop() {
 
 </ComponentPreview>
 
-### 6. Retro Neobrutalist Product Cards Carousel
+## Props
 
-<ComponentPreview>
-  <CarouselDemoRetroCards />
-
-```tsx
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
-import { Button } from '@/components/ui/button'
-
-export default function CarouselDemoRetroCards() {
-  return (
-    <div className="px-10 w-full max-w-[280px]">
-      <Carousel variant="retro" className="w-full">
-        <CarouselContent>
-          {[
-            { title: 'RETRO COMPONENT', desc: 'Pure box layout' },
-            { title: 'SOLID FRAMEWORKS', desc: 'Vite & React 19' },
-            { title: 'CLI PACKAGES', desc: 'No dependencies' },
-          ].map((item, i) => (
-            <CarouselItem key={i}>
-              <div className="flex flex-col justify-between h-36 border-2 border-foreground bg-background p-3 rounded-none text-left">
-                <div>
-                  <h4 className="font-bold text-xs text-foreground uppercase">
-                    {item.title}
-                  </h4>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
-                    {item.desc}
-                  </p>
-                </div>
-                <Button
-                  variant="retro"
-                  className="w-full h-8 text-[11px] rounded-none"
-                >
-                  DOWNLOAD
-                </Button>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-10" />
-        <CarouselNext className="-right-10" />
-      </Carousel>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
+<PropsTable title="Carousel">
+  <PropRow
+    prop="orientation"
+    type='"horizontal" | "vertical"'
+    default='"horizontal"'
+    description="The scrolling orientation axis of the carousel slides."
+  />
+  <PropRow
+    prop="loop"
+    type="boolean"
+    default="false"
+    description="If true, wraps slides infinitely when reaching either end."
+  />
+  <PropRow
+    prop="dragFree"
+    type="boolean"
+    default="false"
+    description="Enables free momentum scrolling on slides drag."
+  />
+  <PropRow
+    prop="align"
+    type='"start" | "center" | "end"'
+    default='"center"'
+    description="Alignment position anchor of slides relative to the viewport container."
+  />
+  <PropRow
+    prop="startIndex"
+    type="number"
+    default="0"
+    description="Initial active slide index when component mounts."
+  />
+  <PropRow
+    prop="autoplay"
+    type="boolean"
+    default="false"
+    description="If true, auto-advances the slideshow loop periodically."
+  />
+  <PropRow
+    prop="autoplayInterval"
+    type="number"
+    default="4000"
+    description="Time interval in milliseconds between autoplay transitions."
+  />
+</PropsTable>

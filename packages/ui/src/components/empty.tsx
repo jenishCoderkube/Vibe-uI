@@ -78,6 +78,9 @@ const EmptyIcon = React.forwardRef<HTMLDivElement, EmptyIconProps>(
 )
 EmptyIcon.displayName = 'EmptyIcon'
 
+// Alias EmptyMedia to EmptyIcon for composed layout naming compatibility
+const EmptyMedia = EmptyIcon
+
 const EmptyTitle = React.forwardRef<
   HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
@@ -132,4 +135,49 @@ const EmptyActions = React.forwardRef<
 ))
 EmptyActions.displayName = 'EmptyActions'
 
-export { Empty, EmptyIcon, EmptyTitle, EmptyDescription, EmptyActions }
+const EmptyHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, children, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-slot="empty-header"
+    className={cn(
+      'flex max-w-sm flex-col items-center gap-2 text-center',
+      className,
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+))
+EmptyHeader.displayName = 'EmptyHeader'
+
+const EmptyContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, children, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-slot="empty-content"
+    className={cn(
+      'flex w-full max-w-sm min-w-0 flex-col items-center gap-4 text-sm text-balance',
+      className,
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+))
+EmptyContent.displayName = 'EmptyContent'
+
+export {
+  Empty,
+  EmptyIcon,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyActions,
+  EmptyHeader,
+  EmptyContent,
+}

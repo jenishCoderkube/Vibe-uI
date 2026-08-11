@@ -94,7 +94,9 @@ export function Installation({
   }, [])
 
   const depsList = vibeDeps ? vibeDeps.split(',').map((d) => d.trim()) : []
-  const commandSuffix = depsList.length > 0 ? ` ${depsList.join(' ')}` : ''
+  const commonComponents = new Set(['button', 'input', 'label'])
+  const filteredDeps = depsList.filter((d) => !commonComponents.has(d.toLowerCase()))
+  const commandSuffix = filteredDeps.length > 0 ? ` ${filteredDeps.join(' ')}` : ''
 
   const commands = {
     pnpm: `pnpm dlx vibe-ui-kit@latest add ${name}${commandSuffix}`,
@@ -227,143 +229,145 @@ export function Installation({
           </div>
         </div>
       ) : (
-        <div className="relative pl-9 space-y-8 before:absolute before:left-3.5 before:top-3.5 before:bottom-3.5 before:w-px before:bg-border">
-          {/* Step 1: Install Dependencies */}
-          <div className="relative space-y-3">
-            <div className="absolute -left-9 top-0 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-xs font-bold text-foreground shadow-xs">
-              1
-            </div>
-            <h3 className="text-sm font-semibold text-foreground pt-0.5">
-              Install the following dependencies:
-            </h3>
+        <div className="space-y-6">
+          <div className="relative pl-9 space-y-8 before:absolute before:left-3.5 before:top-3.5 before:bottom-3.5 before:w-px before:bg-border">
+            {/* Step 1: Install Dependencies */}
+            <div className="relative space-y-3">
+              <div className="absolute -left-9 top-0 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-xs font-bold text-foreground shadow-xs">
+                1
+              </div>
+              <h3 className="text-sm font-semibold text-foreground pt-0.5">
+                Install the following dependencies:
+              </h3>
 
-            {/* Package Manager Selector */}
-            <ButtonGroup
-              value={pkgManager}
-              onValueChange={(val) =>
-                handlePkgChange(val as 'pnpm' | 'npx' | 'yarn' | 'bun')
-              }
-              className="w-fit"
-            >
-              <Button value="pnpm">pnpm</Button>
-              <Button value="npx">npx</Button>
-              <Button value="yarn">yarn</Button>
-              <Button value="bun">bun</Button>
-            </ButtonGroup>
-
-            {/* Dependency Install Command */}
-            <div className="relative flex items-center justify-between rounded-lg border border-border p-4 font-mono text-xs shadow-sm bg-muted/30 text-foreground">
-              <span className="select-all">{currentNpmCommand}</span>
-              <button
-                onClick={() => copyToClipboard(currentNpmCommand, true)}
-                className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer ml-4 shadow-sm shrink-0"
-                title="Copy command"
+              {/* Package Manager Selector */}
+              <ButtonGroup
+                value={pkgManager}
+                onValueChange={(val) =>
+                  handlePkgChange(val as 'pnpm' | 'npx' | 'yarn' | 'bun')
+                }
+                className="w-fit"
               >
-                {copiedNpm ? (
-                  <Check className="h-4 w-4 text-emerald-500" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-              </button>
-            </div>
-          </div>
+                <Button value="pnpm">pnpm</Button>
+                <Button value="npx">npx</Button>
+                <Button value="yarn">yarn</Button>
+                <Button value="bun">bun</Button>
+              </ButtonGroup>
 
-          {/* Step 2: Copy Code */}
-          <div className="relative space-y-3">
-            <div className="absolute -left-9 top-0 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-xs font-bold text-foreground shadow-xs">
-              2
-            </div>
-            <h3 className="text-sm font-semibold text-foreground pt-0.5">
-              Copy and paste the following code into your project.
-            </h3>
-
-            {/* Manual Code Block Container */}
-            <div className="relative rounded-xl border border-border overflow-hidden shadow-sm bg-muted/10">
-              <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/40 text-xs text-muted-foreground font-mono">
-                <span className="font-semibold text-foreground">
-                  components/ui/{name}.{lang === 'ts' ? 'tsx' : 'jsx'}
-                </span>
+              {/* Dependency Install Command */}
+              <div className="relative flex items-center justify-between rounded-lg border border-border p-4 font-mono text-xs shadow-sm bg-muted/30 text-foreground">
+                <span className="select-all">{currentNpmCommand}</span>
                 <button
-                  onClick={() => copyToClipboard(activeCode)}
-                  className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer shadow-xs"
-                  title="Copy code"
+                  onClick={() => copyToClipboard(currentNpmCommand, true)}
+                  className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer ml-4 shadow-sm shrink-0"
+                  title="Copy command"
                 >
-                  {copied ? (
-                    <Check className="h-3.5 w-3.5 text-emerald-500" />
+                  {copiedNpm ? (
+                    <Check className="h-4 w-4 text-emerald-500" />
                   ) : (
-                    <Copy className="h-3.5 w-3.5" />
+                    <Copy className="h-4 w-4" />
                   )}
                 </button>
               </div>
-              <div className="relative">
-                <Highlight
-                  theme={isDark ? themes.vsDark : themes.vsLight}
-                  code={activeCode}
-                  language={lang === 'ts' ? 'tsx' : 'jsx'}
-                >
-                  {({
-                    className,
-                    style,
-                    tokens,
-                    getLineProps,
-                    getTokenProps,
-                  }) => (
-                    <pre
-                      className={cn(
-                        'overflow-x-auto p-5 text-sm font-mono leading-relaxed max-h-[400px]',
-                        className,
-                      )}
-                      style={{ ...style, backgroundColor: 'transparent' }}
-                    >
-                      {tokens.map((line, i) => (
-                        <div
-                          key={i}
-                          {...getLineProps({ line })}
-                          className="table-row"
-                        >
-                          <span className="table-cell select-none text-right pr-4 text-xs w-6 align-top pt-0.5 text-muted-foreground/60">
-                            {i + 1}
-                          </span>
-                          <span className="table-cell align-top whitespace-pre">
-                            {line.map((token, key) => (
-                              <span key={key} {...getTokenProps({ token })} />
-                            ))}
-                          </span>
-                        </div>
-                      ))}
-                    </pre>
-                  )}
-                </Highlight>
+            </div>
+
+            {/* Step 2: Copy Code */}
+            <div className="relative space-y-3">
+              <div className="absolute -left-9 top-0 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-xs font-bold text-foreground shadow-xs">
+                2
+              </div>
+              <h3 className="text-sm font-semibold text-foreground pt-0.5">
+                Copy and paste the following code into your project.
+              </h3>
+
+              {/* Manual Code Block Container */}
+              <div className="relative rounded-xl border border-border overflow-hidden shadow-sm bg-muted/10">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/40 text-xs text-muted-foreground font-mono">
+                  <span className="font-semibold text-foreground">
+                    components/ui/{name}.{lang === 'ts' ? 'tsx' : 'jsx'}
+                  </span>
+                  <button
+                    onClick={() => copyToClipboard(activeCode)}
+                    className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer shadow-xs"
+                    title="Copy code"
+                  >
+                    {copied ? (
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                </div>
+                <div className="relative">
+                  <Highlight
+                    theme={isDark ? themes.vsDark : themes.vsLight}
+                    code={activeCode}
+                    language={lang === 'ts' ? 'tsx' : 'jsx'}
+                  >
+                    {({
+                      className,
+                      style,
+                      tokens,
+                      getLineProps,
+                      getTokenProps,
+                    }) => (
+                      <pre
+                        className={cn(
+                          'overflow-x-auto p-5 text-sm font-mono leading-relaxed max-h-[400px]',
+                          className,
+                        )}
+                        style={{ ...style, backgroundColor: 'transparent' }}
+                      >
+                        {tokens.map((line, i) => (
+                          <div
+                            key={i}
+                            {...getLineProps({ line })}
+                            className="table-row"
+                          >
+                            <span className="table-cell select-none text-right pr-4 text-xs w-6 align-top pt-0.5 text-muted-foreground/60">
+                              {i + 1}
+                            </span>
+                            <span className="table-cell align-top whitespace-pre">
+                              {line.map((token, key) => (
+                                <span key={key} {...getTokenProps({ token })} />
+                              ))}
+                            </span>
+                          </div>
+                        ))}
+                      </pre>
+                    )}
+                  </Highlight>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Vibe UI Internal Dependencies Notification */}
-      {depsList.length > 0 && (
-        <div className="mt-6 p-4 rounded-xl border border-primary/20 bg-primary/5 text-xs text-muted-foreground flex flex-col gap-1.5 text-left backdrop-blur-md">
-          <span className="font-semibold text-foreground flex items-center gap-1.5 text-[13px]">
-            <span className="text-primary font-extrabold">
-              💡 Vibe UI Component Dependencies:
-            </span>{' '}
-            This component requires other components to work correctly
-          </span>
-          <span className="leading-relaxed">
-            Please make sure you also install these Vibe UI component
-            dependencies:{' '}
-            {depsList.map((dep, index) => (
-              <React.Fragment key={dep}>
-                <Link
-                  href={`/docs/components/${dep.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="text-primary hover:underline font-bold capitalize"
-                >
-                  {dep}
-                </Link>
-                {index < depsList.length - 1 ? ', ' : ''}
-              </React.Fragment>
-            ))}
-          </span>
+          {/* Vibe UI Internal Dependencies Notification */}
+          {depsList.length > 0 && (
+            <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 text-xs text-muted-foreground flex flex-col gap-1.5 text-left backdrop-blur-md">
+              <span className="font-semibold text-foreground flex items-center gap-1.5 text-[13px]">
+                <span className="text-primary font-extrabold">
+                  💡 Vibe UI Component Dependencies:
+                </span>{' '}
+                This component requires other components to work correctly
+              </span>
+              <span className="leading-relaxed">
+                Please make sure you also install these Vibe UI component
+                dependencies:{' '}
+                {depsList.map((dep, index) => (
+                  <React.Fragment key={dep}>
+                    <Link
+                      href={`/docs/components/${dep.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="text-primary hover:underline font-bold capitalize"
+                    >
+                      {dep}
+                    </Link>
+                    {index < depsList.length - 1 ? ', ' : ''}
+                  </React.Fragment>
+                ))}
+              </span>
+            </div>
+          )}
         </div>
       )}
     </div>
