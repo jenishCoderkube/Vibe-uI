@@ -61,6 +61,21 @@ describe('InputOTP Component', () => {
     expect(handleChange).toHaveBeenCalledWith('9876')
   })
 
+  it('cleans formatted and non-alphanumeric characters on paste', () => {
+    const handleChange = vi.fn()
+    render(<InputOTP length={6} onChange={handleChange} />)
+    const inputs = screen.getAllByRole('textbox')
+
+    const pasteData = {
+      getData: () => '12-34 56',
+    }
+
+    fireEvent.paste(inputs[0], {
+      clipboardData: pasteData,
+    })
+    expect(handleChange).toHaveBeenCalledWith('123456')
+  })
+
   it('supports disabled state', () => {
     render(<InputOTP length={3} disabled />)
     const inputs = screen.getAllByRole('textbox')

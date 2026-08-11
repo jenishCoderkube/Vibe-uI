@@ -239,7 +239,9 @@ const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
       e.preventDefault()
       if (disabled) return
-      const pasteData = e.clipboardData.getData('text').trim().slice(0, length)
+      const rawPaste = e.clipboardData.getData('text')
+      const cleanPaste = rawPaste.replace(/[^0-9a-zA-Z]/g, '')
+      const pasteData = cleanPaste.slice(0, length)
       if (pasteData) {
         onChange?.(pasteData)
         const focusIdx = Math.min(pasteData.length, length - 1)

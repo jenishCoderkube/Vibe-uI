@@ -1,3 +1,6 @@
+// Enable React act environment for testing
+globalThis.IS_REACT_ACT_ENVIRONMENT = true
+
 import '@testing-library/jest-dom'
 import React from 'react'
 
@@ -6,6 +9,13 @@ global.ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
   disconnect() {}
+}
+
+// Mock Pointer Capture methods for JSDOM which are missing and cause errors in Radix UI + userEvent tests
+if (typeof window !== 'undefined') {
+  window.Element.prototype.hasPointerCapture = () => false
+  window.Element.prototype.setPointerCapture = () => {}
+  window.Element.prototype.releasePointerCapture = () => {}
 }
 
 // Mock scrollIntoView for libraries like cmdk (Command component)
