@@ -18,6 +18,8 @@ vi.mock('embla-carousel-react', () => {
         off: vi.fn(),
         scrollPrev: vi.fn(),
         scrollNext: vi.fn(),
+        selectedScrollSnap: vi.fn().mockReturnValue(0),
+        scrollSnapList: vi.fn().mockReturnValue([0, 1]),
         canScrollPrev: vi.fn().mockReturnValue(true),
         canScrollNext: vi.fn().mockReturnValue(true),
       },

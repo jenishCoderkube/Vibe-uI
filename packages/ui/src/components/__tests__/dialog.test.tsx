@@ -103,8 +103,8 @@ describe('Dialog Component', () => {
     let content = screen
       .getByText('Glass Content')
       .closest('[data-slot="dialog-content"]')
-    expect(content).toHaveClass('backdrop-blur-lg')
-    expect(content).toHaveClass('bg-popover/90')
+    expect(content).toHaveClass('backdrop-blur-md')
+    expect(content).toHaveClass('bg-background/80')
 
     // Close
     await user.keyboard('{Escape}')
