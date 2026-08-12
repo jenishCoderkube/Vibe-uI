@@ -298,10 +298,10 @@ export function MessagePremiumChatApp() {
       hour: '2-digit',
       minute: '2-digit',
     })
-    const userMsg = {
+    const userMsg: ChatMessageItem = {
       id: Date.now(),
       sender: 'user',
-      align: 'end' as const,
+      align: 'end',
       text: inputVal.trim(),
       time: nowStr,
     }
@@ -312,10 +312,10 @@ export function MessagePremiumChatApp() {
 
     setTimeout(() => {
       setIsTyping(false)
-      const aiReply = {
+      const aiReply: ChatMessageItem = {
         id: Date.now() + 1,
         sender: 'ai',
-        align: 'start' as const,
+        align: 'start',
         text: 'Thanks for your message! Message components support default, glass, retro, glow, and cyberpunk variants.',
         time: new Date().toLocaleTimeString([], {
           hour: '2-digit',
