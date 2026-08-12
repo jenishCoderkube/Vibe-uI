@@ -8,8 +8,8 @@ const messageVariants = tv({
   base: 'group/message relative flex w-full min-w-0 gap-3 text-sm transition-all duration-200 select-none',
   variants: {
     align: {
-      start: 'flex-row text-left',
-      end: 'flex-row-reverse text-right',
+      start: 'flex-row text-left justify-start',
+      end: 'flex-row-reverse text-left justify-start',
     },
   },
   defaultVariants: {
@@ -18,18 +18,20 @@ const messageVariants = tv({
 })
 
 const bubbleVariants = tv({
-  base: 'relative flex flex-col gap-1 rounded-2xl px-4 py-2.5 max-w-[80%] border',
+  base: 'relative flex flex-col gap-1 rounded-2xl px-4 py-2.5 max-w-[80%] border w-fit text-left',
   variants: {
     variant: {
-      default: 'bg-zinc-900 border-zinc-800 text-zinc-200',
-      glass: 'bg-white/5 border-white/10 backdrop-blur-md text-white',
+      default: 'bg-muted border-border text-foreground',
+      glass:
+        'bg-black/5 dark:bg-white/10 border-black/10 dark:border-white/15 backdrop-blur-md text-foreground dark:text-white',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)]',
-      glow: 'border-primary/20 bg-primary/[0.02] text-primary shadow-[0_0_12px_rgba(168,85,247,0.1)]',
-      cyberpunk: 'border-emerald-950 bg-black text-emerald-500 font-mono',
+      glow: 'border-primary/20 bg-primary/10 text-primary shadow-[0_0_12px_rgba(168,85,247,0.15)]',
+      cyberpunk:
+        'border-emerald-500/30 bg-emerald-950/20 dark:bg-black text-emerald-600 dark:text-emerald-400 font-mono',
     },
     align: {
-      start: 'rounded-tl-none',
+      start: 'rounded-tl-none mr-auto',
       end: 'rounded-tr-none ml-auto',
     },
   },
@@ -97,7 +99,7 @@ const MessageAvatar = React.forwardRef<HTMLDivElement, MessageAvatarProps>(
         ref={ref}
         data-slot="message-avatar"
         className={cn(
-          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden border border-white/10 bg-zinc-900 text-xs font-semibold text-white select-none',
+          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden border border-border bg-muted text-xs font-semibold text-foreground select-none',
           align === 'start' ? 'self-start' : 'self-end',
           className,
         )}
@@ -135,7 +137,7 @@ const MessageHeader = React.forwardRef<HTMLDivElement, MessageHeaderProps>(
         ref={ref}
         data-slot="message-header"
         className={cn(
-          'text-[10px] text-zinc-500 font-mono tracking-wider mb-0.5 select-none',
+          'text-[10px] text-muted-foreground font-mono tracking-wider mb-0.5 select-none',
           align === 'end' && 'text-right ml-auto',
           className,
         )}
@@ -156,7 +158,7 @@ const MessageFooter = React.forwardRef<HTMLDivElement, MessageFooterProps>(
         ref={ref}
         data-slot="message-footer"
         className={cn(
-          'text-[9px] text-zinc-600 font-mono select-none mt-0.5',
+          'text-[9px] text-muted-foreground font-mono select-none mt-0.5',
           align === 'end' && 'text-right ml-auto',
           className,
         )}

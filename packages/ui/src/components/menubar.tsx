@@ -11,7 +11,8 @@ const menubarVariants = tv({
   variants: {
     variant: {
       default: 'border-border bg-background text-foreground',
-      glass: 'bg-white/5 border-white/10 backdrop-blur-md text-white',
+      glass:
+        'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md text-foreground',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)] rounded-none',
       glow: 'border-primary/20 bg-primary/[0.02] text-primary shadow-[0_0_15px_rgba(168,85,247,0.15)]',
@@ -29,12 +30,12 @@ const menubarContentVariants = tv({
     variant: {
       default: 'border-border bg-popover text-popover-foreground',
       glass:
-        'bg-black/60 border-white/10 backdrop-blur-md text-zinc-300 shadow-xl',
+        'bg-popover/90 dark:bg-black/80 border border-border dark:border-white/10 text-popover-foreground backdrop-blur-md shadow-lg',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_rgba(255,255,255,1)] rounded-none',
-      glow: 'border-primary/20 bg-black/90 text-primary shadow-[0_0_20px_rgba(168,85,247,0.25)]',
+      glow: 'border-primary/20 bg-popover dark:bg-black/90 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)] dark:shadow-[0_0_20px_rgba(168,85,247,0.25)]',
       cyberpunk:
-        'border-emerald-500 bg-black text-emerald-500 font-mono shadow-[0_0_12px_rgba(16,185,129,0.25)]',
+        'border-emerald-500/50 dark:border-emerald-500 bg-popover dark:bg-black text-emerald-600 dark:text-emerald-500 font-mono shadow-[0_0_12px_rgba(16,185,129,0.2)]',
     },
   },
   defaultVariants: {
@@ -43,14 +44,16 @@ const menubarContentVariants = tv({
 })
 
 const menubarItemVariants = tv({
-  base: 'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 cursor-pointer',
+  base: "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! cursor-pointer",
   variants: {
     variant: {
       default: '',
-      glass: 'focus:bg-white/10 focus:text-white',
+      glass:
+        'focus:bg-accent focus:text-accent-foreground dark:focus:bg-white/10 dark:focus:text-white',
       retro: 'rounded-none focus:bg-foreground focus:text-background',
-      glow: 'focus:bg-primary/20 focus:text-primary',
-      cyberpunk: 'focus:bg-emerald-500/10 focus:text-emerald-400 font-mono',
+      glow: 'focus:bg-primary/10 dark:focus:bg-primary/20 focus:text-primary',
+      cyberpunk:
+        'focus:bg-emerald-500/10 focus:text-emerald-600 dark:focus:text-emerald-400 font-mono',
     },
   },
   defaultVariants: {
@@ -179,9 +182,9 @@ const MenubarCheckboxItem = React.forwardRef<
       checked={checked}
       {...props}
     >
-      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <span className="pointer-events-none absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <MenubarPrimitive.ItemIndicator>
-          <Check className="h-4 w-4 text-emerald-500" />
+          <Check className="h-4 w-4" />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
@@ -202,9 +205,9 @@ const MenubarRadioItem = React.forwardRef<
       className={cn(menubarItemVariants({ variant }), 'pl-8', className)}
       {...props}
     >
-      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <span className="pointer-events-none absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <MenubarPrimitive.ItemIndicator>
-          <Circle className="h-2 w-2 fill-emerald-500 text-emerald-500" />
+          <Circle className="h-2 w-2 fill-current" />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
@@ -239,7 +242,7 @@ const MenubarSeparator = React.forwardRef<
   <MenubarPrimitive.Separator
     ref={ref}
     data-slot="menubar-separator"
-    className={cn('-mx-1 my-1 h-px bg-white/5', className)}
+    className={cn('-mx-1 my-1 h-px bg-border', className)}
     {...props}
   />
 ))
@@ -278,7 +281,7 @@ const MenubarSubTrigger = React.forwardRef<
       {...props}
     >
       {children}
-      <ChevronRight className="ml-auto h-4 w-4 text-zinc-500" />
+      <ChevronRight className="ml-auto h-4 w-4" />
     </MenubarPrimitive.SubTrigger>
   )
 })

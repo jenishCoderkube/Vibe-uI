@@ -2,13 +2,12 @@
   "name": "date-picker",
   "dependencies": [
     "date-fns",
-    "react-day-picker",
     "lucide-react",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": ["utils", "popover", "button", "calendar"],
+  "registryDependencies": ["utils", "popover", "calendar", "button"],
   "files": [
     {
       "name": "date-picker.tsx",

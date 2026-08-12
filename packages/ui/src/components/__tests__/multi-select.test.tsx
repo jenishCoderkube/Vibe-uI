@@ -25,7 +25,7 @@ describe('MultiSelect Component', () => {
       </MultiSelect>,
     )
 
-    const trigger = screen.getByRole('button', { name: /choose items/i })
+    const trigger = screen.getByRole('combobox')
     expect(trigger).toBeInTheDocument()
     expect(screen.queryByText('Item 1')).not.toBeInTheDocument()
 
@@ -64,12 +64,12 @@ describe('MultiSelect Component', () => {
       </MultiSelect>,
     )
 
-    await user.click(screen.getByRole('button', { name: /pick one/i }))
+    await user.click(screen.getByRole('combobox'))
     await user.click(screen.getByText('Item 1'))
     expect(handleValueChange).toHaveBeenCalledWith(['item-1'])
 
     // Renders as plain text, not a removable tag
-    const trigger = screen.getByRole('button')
+    const trigger = screen.getByRole('combobox')
     expect(trigger).toHaveTextContent('Item 1')
     expect(
       screen.queryByRole('img', { name: /remove/i }),
@@ -135,10 +135,10 @@ describe('MultiSelect Component', () => {
     expect(screen.getByText('+2 more')).toBeInTheDocument()
 
     // Open dropdown to register labels
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('combobox'))
 
     // Close dropdown to prevent duplicate text matching on option elements
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('combobox'))
 
     // Now trigger displays registered labels One and Two
     expect(screen.getByText('One')).toBeInTheDocument()
@@ -167,7 +167,7 @@ describe('MultiSelect Component', () => {
       </MultiSelect>,
     )
 
-    await user.click(screen.getByRole('button', { name: /choose/i }))
+    await user.click(screen.getByRole('combobox'))
 
     // Group checkbox exists in MultiSelectGroup header if values is provided
     const group = screen
@@ -180,14 +180,14 @@ describe('MultiSelect Component', () => {
     await user.click(groupCheckbox!)
 
     // Close dropdown to prevent duplicate text matching
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('combobox'))
 
     // Trigger should now render tags for 'One' and 'Two'
     expect(screen.getByText('One')).toBeInTheDocument()
     expect(screen.getByText('Two')).toBeInTheDocument()
 
     // Reopen dropdown
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('combobox'))
 
     // Toggle uncheck all (removes them from state)
     const newGroup = screen
@@ -197,7 +197,7 @@ describe('MultiSelect Component', () => {
     await user.click(newGroupCheckbox!)
 
     // Close dropdown
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('combobox'))
 
     expect(screen.queryByText('One')).not.toBeInTheDocument()
     expect(screen.queryByText('Two')).not.toBeInTheDocument()
@@ -216,7 +216,7 @@ describe('MultiSelect Component', () => {
       </MultiSelect>,
     )
 
-    await user.click(screen.getByRole('button', { name: /choose/i }))
+    await user.click(screen.getByRole('combobox'))
     const searchInput = screen.getByPlaceholderText(/search/i)
 
     await user.type(searchInput, 'Tw')
@@ -239,7 +239,7 @@ describe('MultiSelect Component', () => {
       </div>,
     )
 
-    await user.click(screen.getByRole('button', { name: /choose/i }))
+    await user.click(screen.getByRole('combobox'))
     expect(screen.getByText('One')).toBeInTheDocument()
 
     // Click outside

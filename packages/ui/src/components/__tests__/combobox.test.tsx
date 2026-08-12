@@ -10,6 +10,9 @@ import {
   ComboboxList,
   ComboboxItem,
   ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxLabel,
+  ComboboxSeparator,
 } from '../combobox'
 
 describe('Combobox Component', () => {
@@ -161,5 +164,130 @@ describe('Combobox Component', () => {
     // Select Item 2
     await user.click(screen.getByText('Item 2'))
     expect(handleValueChange).toHaveBeenCalledWith('item-2')
+  })
+
+  it('renders composed layout with ComboboxGroup, ComboboxLabel, and ComboboxSeparator', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <Combobox>
+        <ComboboxTrigger asChild>
+          <button data-testid="grouped-trigger">Grouped Menu</button>
+        </ComboboxTrigger>
+        <ComboboxContent>
+          <ComboboxList>
+            <ComboboxGroup>
+              <ComboboxLabel>Fruits</ComboboxLabel>
+              <ComboboxItem value="apple">Apple</ComboboxItem>
+            </ComboboxGroup>
+            <ComboboxSeparator />
+            <ComboboxGroup>
+              <ComboboxLabel>Vegetables</ComboboxLabel>
+              <ComboboxItem value="carrot">Carrot</ComboboxItem>
+            </ComboboxGroup>
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>,
+    )
+
+    await user.click(screen.getByTestId('grouped-trigger'))
+    expect(screen.getByText('Fruits')).toBeInTheDocument()
+    expect(screen.getByText('Vegetables')).toBeInTheDocument()
+    expect(screen.getByText('Carrot')).toBeInTheDocument()
+  })
+
+  it('handles deselecting item when clicking already selected item in composed layout', async () => {
+    const user = userEvent.setup()
+    const handleValueChange = vi.fn()
+
+    render(
+      <Combobox value="item-1" onValueChange={handleValueChange}>
+        <ComboboxTrigger asChild>
+          <button data-testid="deselect-trigger">Trigger</button>
+        </ComboboxTrigger>
+        <ComboboxContent>
+          <ComboboxList>
+            <ComboboxItem value="item-1">Item 1</ComboboxItem>
+            <ComboboxItem value="item-2">Item 2</ComboboxItem>
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>,
+    )
+
+    await user.click(screen.getByTestId('deselect-trigger'))
+    const item1 = screen.getByText('Item 1')
+    await user.click(item1)
+    expect(handleValueChange).toHaveBeenCalledWith('')
+  })
+
+  it('supports controlled open state and onOpenChange callback', async () => {
+    const user = userEvent.setup()
+    const handleOpenChange = vi.fn()
+
+    render(
+      <Combobox
+        options={options}
+        open={true}
+        onOpenChange={handleOpenChange}
+        placeholder="Pick fruit"
+      />,
+    )
+
+    expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument()
+    expect(screen.getByText('Apple')).toBeInTheDocument()
+
+    // Clicking trigger toggles
+    const trigger = screen.getByRole('combobox')
+    await user.click(trigger)
+    expect(handleOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it('handles real-life country selection in a billing checkout form', async () => {
+    const user = userEvent.setup()
+    const handleCountrySelect = vi.fn()
+
+    const countries = [
+      { value: 'us', label: 'United States' },
+      { value: 'uk', label: 'United Kingdom' },
+      { value: 'ca', label: 'Canada' },
+      { value: 'de', label: 'Germany' },
+      { value: 'jp', label: 'Japan' },
+    ]
+
+    render(
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+        }}
+      >
+        <label htmlFor="country-select" className="text-sm font-semibold">
+          Country / Region
+        </label>
+        <Combobox
+          options={countries}
+          placeholder="Select billing country"
+          searchPlaceholder="Search country name..."
+          onValueChange={handleCountrySelect}
+        />
+      </form>,
+    )
+
+    const trigger = screen.getByRole('combobox')
+    expect(screen.getByText('Select billing country')).toBeInTheDocument()
+
+    // Open combobox
+    await user.click(trigger)
+    const searchInput = screen.getByPlaceholderText('Search country name...')
+
+    // Search "United"
+    await user.type(searchInput, 'United')
+    expect(screen.getByText('United States')).toBeInTheDocument()
+    expect(screen.getByText('United Kingdom')).toBeInTheDocument()
+    expect(screen.queryByText('Canada')).not.toBeInTheDocument()
+
+    // Select United States
+    await user.click(screen.getByText('United States'))
+    expect(handleCountrySelect).toHaveBeenCalledWith('us')
+    expect(trigger).toHaveTextContent('United States')
   })
 })

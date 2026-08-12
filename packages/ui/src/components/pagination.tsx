@@ -93,7 +93,7 @@ const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
       asButton,
       href,
       size = 'icon',
-      variant,
+      variant = 'default',
       ...props
     },
     ref,
@@ -101,6 +101,18 @@ const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
     const Tag = (asButton || !href ? 'button' : 'a') as React.ElementType
     const extraProps =
       Tag === 'button' ? { type: 'button', disabled } : { href }
+
+    const isCustomTheme =
+      variant === 'glass' ||
+      variant === 'retro' ||
+      variant === 'glow' ||
+      variant === 'cyberpunk'
+
+    const baseVariant = isCustomTheme
+      ? (variant as any)
+      : isActive
+        ? 'outline'
+        : 'ghost'
 
     return (
       <Tag
@@ -111,15 +123,30 @@ const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
         aria-current={isActive ? 'page' : undefined}
         className={cn(
           buttonVariants({
-            variant: isActive
-              ? variant === 'retro'
-                ? 'retro'
-                : variant === 'glow'
-                  ? 'glow'
-                  : 'default'
-              : 'outline',
+            variant: baseVariant,
             size,
           }),
+          // Active state contrast for standard shadcn default theme
+          !isCustomTheme &&
+            isActive &&
+            'bg-accent text-accent-foreground border border-input font-bold shadow-xs',
+          // Custom Vibe UI theme variants overrides
+          variant === 'glass' &&
+            (isActive
+              ? 'bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground font-bold shadow-md'
+              : 'bg-white/80 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/20 text-foreground hover:bg-white dark:hover:bg-white/20'),
+          variant === 'retro' &&
+            (isActive
+              ? 'bg-foreground text-background dark:bg-white dark:text-black font-bold shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]'
+              : 'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] hover:-translate-x-0.5 hover:-translate-y-0.5'),
+          variant === 'glow' &&
+            (isActive
+              ? 'bg-primary text-primary-foreground font-bold shadow-[0_0_14px_rgba(168,85,247,0.5)] border-primary'
+              : 'bg-primary/10 border border-primary/40 text-primary shadow-[0_0_12px_rgba(168,85,247,0.2)] hover:border-primary/70 hover:bg-primary/20'),
+          variant === 'cyberpunk' &&
+            (isActive
+              ? 'bg-emerald-500 text-black dark:bg-emerald-400 dark:text-black border-emerald-400 font-bold shadow-[0_0_12px_rgba(16,185,129,0.6)]'
+              : 'border border-emerald-500/80 bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.2)] hover:bg-emerald-500/20'),
           className,
         )}
         {...props}
@@ -206,15 +233,16 @@ const PaginationDots = React.forwardRef<HTMLDivElement, PaginationDotsProps>(
         ref={ref}
         className={cn(
           'flex items-center justify-center gap-2 p-2 w-fit mx-auto rounded-full border',
-          variant === 'default' && 'bg-background border-border',
+          variant === 'default' &&
+            'bg-background border-border text-foreground',
           variant === 'glass' &&
-            'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md',
+            'bg-background/80 dark:bg-zinc-900/80 border-border backdrop-blur-md text-foreground shadow-sm',
           variant === 'retro' &&
-            'border-2 border-foreground bg-background rounded-none shadow-[2px_2px_0px_rgba(0,0,0,1)]',
+            'border-2 border-foreground bg-background text-foreground rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]',
           variant === 'glow' &&
-            'border-primary/20 bg-primary/[0.02] shadow-[0_0_12px_rgba(168,85,247,0.1)]',
+            'border-primary/40 bg-primary/10 text-primary shadow-[0_0_12px_rgba(168,85,247,0.2)]',
           variant === 'cyberpunk' &&
-            'border-emerald-950 bg-black rounded-none font-mono',
+            'border-emerald-950 bg-black rounded-none font-mono text-emerald-500',
           className,
         )}
         {...props}
@@ -283,12 +311,14 @@ const PaginationSlider = React.forwardRef<
         ref={ref}
         className={cn(
           'flex items-center gap-4 p-3 border rounded-xl w-full max-w-sm mx-auto',
-          variant === 'default' && 'bg-background border-border',
+          variant === 'default' &&
+            'bg-background border-border text-foreground',
           variant === 'glass' &&
-            'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md',
+            'bg-background/80 dark:bg-zinc-900/80 border-border backdrop-blur-md text-foreground shadow-sm',
           variant === 'retro' &&
-            'border-2 border-foreground bg-background rounded-none shadow-[3px_3px_0px_rgba(0,0,0,1)]',
-          variant === 'glow' && 'border-primary/20 bg-primary/[0.02]',
+            'border-2 border-foreground bg-background text-foreground rounded-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]',
+          variant === 'glow' &&
+            'border-primary/40 bg-primary/10 text-primary shadow-[0_0_12px_rgba(168,85,247,0.2)]',
           variant === 'cyberpunk' &&
             'border-emerald-950 bg-black rounded-none text-emerald-500 font-mono',
           className,
@@ -311,8 +341,7 @@ const PaginationSlider = React.forwardRef<
             variant === 'cyberpunk' &&
               'rounded-none border border-emerald-950 bg-black accent-emerald-500',
             variant === 'glow' && 'accent-primary bg-primary/10',
-            variant === 'glass' &&
-              'accent-foreground bg-black/10 dark:bg-white/10',
+            variant === 'glass' && 'accent-foreground bg-muted',
             variant === 'default' && 'accent-primary bg-secondary',
           )}
         />
@@ -350,13 +379,14 @@ const PaginationMini = React.forwardRef<HTMLDivElement, PaginationMiniProps>(
         ref={ref}
         className={cn(
           'flex items-center gap-3 p-1.5 border rounded-lg w-fit mx-auto',
-          variant === 'default' && 'bg-background border-border',
+          variant === 'default' &&
+            'bg-background border-border text-foreground',
           variant === 'glass' &&
-            'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md',
+            'bg-background/80 dark:bg-zinc-900/80 border-border backdrop-blur-md text-foreground shadow-sm',
           variant === 'retro' &&
-            'border-2 border-foreground bg-background text-foreground rounded-none shadow-[2px_2px_0px_rgba(0,0,0,1)]',
+            'border-2 border-foreground bg-background text-foreground rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]',
           variant === 'glow' &&
-            'border-primary/20 bg-primary/[0.02] text-primary',
+            'border-primary/40 bg-primary/10 text-primary shadow-[0_0_12px_rgba(168,85,247,0.2)]',
           variant === 'cyberpunk' &&
             'border-emerald-950 bg-black text-emerald-500 rounded-none font-mono',
           className,
@@ -545,13 +575,14 @@ const PaginationDropdown = React.forwardRef<
         ref={ref}
         className={cn(
           'flex items-center gap-2 p-1.5 border rounded-xl w-fit mx-auto',
-          variant === 'default' && 'bg-background border-border',
+          variant === 'default' &&
+            'bg-background border-border text-foreground',
           variant === 'glass' &&
-            'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md',
+            'bg-background/80 dark:bg-zinc-900/80 border-border backdrop-blur-md text-foreground shadow-sm',
           variant === 'retro' &&
-            'border-2 border-foreground bg-background text-foreground rounded-none shadow-[2px_2px_0px_rgba(0,0,0,1)]',
+            'border-2 border-foreground bg-background text-foreground rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]',
           variant === 'glow' &&
-            'border-primary/20 bg-primary/[0.02] text-primary',
+            'border-primary/40 bg-primary/10 text-primary shadow-[0_0_12px_rgba(168,85,247,0.2)]',
           variant === 'cyberpunk' &&
             'border-emerald-950 bg-black text-emerald-500 rounded-none font-mono',
           className,
@@ -575,7 +606,7 @@ const PaginationDropdown = React.forwardRef<
           value={currentPage}
           onChange={(e) => onPageChange(Number(e.target.value))}
           className={cn(
-            'text-xs font-semibold px-2 py-1 bg-transparent border-0 outline-none cursor-pointer focus:ring-0',
+            'text-xs font-semibold px-2 py-1 bg-transparent border-0 outline-none cursor-pointer focus:ring-0 text-foreground',
             variant === 'retro' && 'font-bold uppercase tracking-tight',
             variant === 'cyberpunk' &&
               'font-mono text-emerald-500 bg-black border border-emerald-950',
@@ -587,7 +618,7 @@ const PaginationDropdown = React.forwardRef<
               <option
                 key={page}
                 value={page}
-                className="bg-popover text-foreground"
+                className="bg-popover text-popover-foreground"
               >
                 Page {page} of {totalPages}
               </option>
@@ -643,12 +674,14 @@ const PaginationProgressLine = React.forwardRef<
         ref={ref}
         className={cn(
           'flex flex-col gap-2 p-3 border rounded-xl w-full max-w-xs mx-auto',
-          variant === 'default' && 'bg-background border-border',
+          variant === 'default' &&
+            'bg-background border-border text-foreground',
           variant === 'glass' &&
-            'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md',
+            'bg-background/80 dark:bg-zinc-900/80 border-border backdrop-blur-md text-foreground shadow-sm',
           variant === 'retro' &&
-            'border-2 border-foreground bg-background rounded-none shadow-[2px_2px_0px_rgba(0,0,0,1)]',
-          variant === 'glow' && 'border-primary/20 bg-primary/[0.02]',
+            'border-2 border-foreground bg-background text-foreground rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]',
+          variant === 'glow' &&
+            'border-primary/40 bg-primary/10 text-primary shadow-[0_0_12px_rgba(168,85,247,0.2)]',
           variant === 'cyberpunk' &&
             'border-emerald-950 bg-black rounded-none text-emerald-500 font-mono',
           className,

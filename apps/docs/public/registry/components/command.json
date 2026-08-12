@@ -1,7 +1,6 @@
 {
   "name": "command",
   "dependencies": [
-    "cmdk",
     "lucide-react",
     "tailwind-variants",
     "clsx",

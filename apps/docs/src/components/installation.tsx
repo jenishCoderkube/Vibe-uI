@@ -94,9 +94,7 @@ export function Installation({
   }, [])
 
   const depsList = vibeDeps ? vibeDeps.split(',').map((d) => d.trim()) : []
-  const commonComponents = new Set(['button', 'input', 'label'])
-  const filteredDeps = depsList.filter((d) => !commonComponents.has(d.toLowerCase()))
-  const commandSuffix = filteredDeps.length > 0 ? ` ${filteredDeps.join(' ')}` : ''
+  const commandSuffix = depsList.length > 0 ? ` ${depsList.join(' ')}` : ''
 
   const commands = {
     pnpm: `pnpm dlx vibe-ui-kit@latest add ${name}${commandSuffix}`,
@@ -341,33 +339,33 @@ export function Installation({
               </div>
             </div>
           </div>
+        </div>
+      )}
 
-          {/* Vibe UI Internal Dependencies Notification */}
-          {depsList.length > 0 && (
-            <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 text-xs text-muted-foreground flex flex-col gap-1.5 text-left backdrop-blur-md">
-              <span className="font-semibold text-foreground flex items-center gap-1.5 text-[13px]">
-                <span className="text-primary font-extrabold">
-                  💡 Vibe UI Component Dependencies:
-                </span>{' '}
-                This component requires other components to work correctly
-              </span>
-              <span className="leading-relaxed">
-                Please make sure you also install these Vibe UI component
-                dependencies:{' '}
-                {depsList.map((dep, index) => (
-                  <React.Fragment key={dep}>
-                    <Link
-                      href={`/docs/components/${dep.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="text-primary hover:underline font-bold capitalize"
-                    >
-                      {dep}
-                    </Link>
-                    {index < depsList.length - 1 ? ', ' : ''}
-                  </React.Fragment>
-                ))}
-              </span>
-            </div>
-          )}
+      {/* Vibe UI Internal Dependencies Notification */}
+      {depsList.length > 0 && (
+        <div className="mt-4 p-4 rounded-xl border border-primary/20 bg-primary/5 text-xs text-muted-foreground flex flex-col gap-1.5 text-left backdrop-blur-md">
+          <span className="font-semibold text-foreground flex items-center gap-1.5 text-[13px]">
+            <span className="text-primary font-extrabold">
+              💡 Vibe UI Component Dependencies:
+            </span>{' '}
+            This component requires other components to work correctly
+          </span>
+          <span className="leading-relaxed">
+            Please make sure you also install these Vibe UI component
+            dependencies:{' '}
+            {depsList.map((dep, index) => (
+              <React.Fragment key={dep}>
+                <Link
+                  href={`/docs/components/${dep.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="text-primary hover:underline font-bold capitalize"
+                >
+                  {dep}
+                </Link>
+                {index < depsList.length - 1 ? ', ' : ''}
+              </React.Fragment>
+            ))}
+          </span>
         </div>
       )}
     </div>

@@ -4,7 +4,7 @@ Displays a keyboard shortcut key indicator.
 
 ## Preview
 
-<ComponentPreview>
+<ComponentPreview name="kbd">
   <div className="flex items-center space-x-2 text-left">
     <span className="text-sm text-muted-foreground">Press</span>
     <Kbd>⌘</Kbd>
@@ -18,10 +18,10 @@ import { Kbd } from '@/components/ui/kbd'
 export default function KbdDemo() {
   return (
     <div className="flex items-center space-x-2">
-      <span>Press</span>
+      <span className="text-sm text-muted-foreground">Press</span>
       <Kbd>⌘</Kbd>
       <Kbd>K</Kbd>
-      <span>to open search.</span>
+      <span className="text-sm text-muted-foreground">to open search.</span>
     </div>
   )
 }
@@ -29,10 +29,13 @@ export default function KbdDemo() {
 
 </ComponentPreview>
 
-<Installation name="kbd">
+<Installation name="kbd" vibeDeps="" npmDeps="tailwind-variants @radix-ui/react-slot">
 
 ```tsx
+'use client'
+
 import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
 
@@ -42,7 +45,7 @@ const kbdVariants = tv({
     variant: {
       default: 'border-border',
       glass:
-        'bg-white/5 border-white/20 dark:border-white/10 text-foreground backdrop-blur-md',
+        'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 text-foreground backdrop-blur-md',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:shadow-[1px_1px_0px_0px_rgba(255,255,255,1)] rounded-none',
       glow: 'border-border shadow-[0_0_10px_rgba(0,0,0,0.05)]',
@@ -54,13 +57,17 @@ const kbdVariants = tv({
 })
 
 export interface KbdProps
-  extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof kbdVariants> {}
+  extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof kbdVariants> {
+  asChild?: boolean
+}
 
 const Kbd = React.forwardRef<HTMLElement, KbdProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, variant = 'default', asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'kbd'
     return (
-      <kbd
+      <Comp
         ref={ref}
+        data-slot="kbd"
         className={cn(kbdVariants({ variant }), className)}
         {...props}
       />
@@ -74,26 +81,73 @@ export { Kbd }
 
 </Installation>
 
+## Examples
 
+Explore layout variations and visual themes.
 
-## Variants
+<ComponentPreview name="kbd">
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-6 w-full max-w-xl mx-auto text-left">
+    
+    {/* Default */}
+    <div className="space-y-2">
+      <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Default</div>
+      <div className="flex items-center gap-1">
+        <Kbd variant="default">⌘</Kbd>
+        <Kbd variant="default">K</Kbd>
+      </div>
+    </div>
 
-### Glassmorphic
+    {/* Glassmorphic */}
+    <div className="space-y-2">
+      <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Glassmorphic</div>
+      <div className="flex items-center gap-1">
+        <Kbd variant="glass">⌘</Kbd>
+        <Kbd variant="glass">P</Kbd>
+      </div>
+    </div>
 
-<ComponentPreview>
-  <div className="flex items-center space-x-2 text-left">
-    <Kbd variant="glass">⌘</Kbd>
-    <Kbd variant="glass">P</Kbd>
+    {/* Retro Neobrutalism */}
+    <div className="space-y-2">
+      <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Retro</div>
+      <div className="flex items-center gap-1">
+        <Kbd variant="retro">⌘</Kbd>
+        <Kbd variant="retro">S</Kbd>
+      </div>
+    </div>
+
+    {/* Glow shadow */}
+    <div className="space-y-2">
+      <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Glow</div>
+      <div className="flex items-center gap-1">
+        <Kbd variant="glow">⌘</Kbd>
+        <Kbd variant="glow">H</Kbd>
+      </div>
+    </div>
+
   </div>
 
 ```tsx
 import { Kbd } from '@/components/ui/kbd'
 
-export default function KbdGlass() {
+export default function KbdVariants() {
   return (
-    <div className="flex items-center space-x-2">
-      <Kbd variant="glass">⌘</Kbd>
-      <Kbd variant="glass">P</Kbd>
+    <div className="flex items-center space-x-6">
+      <div className="flex items-center gap-1">
+        <Kbd variant="default">⌘</Kbd>
+        <Kbd variant="default">K</Kbd>
+      </div>
+      <div className="flex items-center gap-1">
+        <Kbd variant="glass">⌘</Kbd>
+        <Kbd variant="glass">P</Kbd>
+      </div>
+      <div className="flex items-center gap-1">
+        <Kbd variant="retro">⌘</Kbd>
+        <Kbd variant="retro">S</Kbd>
+      </div>
+      <div className="flex items-center gap-1">
+        <Kbd variant="glow">⌘</Kbd>
+        <Kbd variant="glow">H</Kbd>
+      </div>
     </div>
   )
 }
@@ -101,29 +155,19 @@ export default function KbdGlass() {
 
 </ComponentPreview>
 
-### Retro Neobrutalism
+## Props
 
-<ComponentPreview>
-  <div className="flex items-center space-x-2 text-left">
-    <Kbd variant="retro">⌘</Kbd>
-    <Kbd variant="retro">S</Kbd>
-  </div>
-
-```tsx
-import { Kbd } from '@/components/ui/kbd'
-
-export default function KbdRetro() {
-  return (
-    <div className="flex items-center space-x-2">
-      <Kbd variant="retro">⌘</Kbd>
-      <Kbd variant="retro">S</Kbd>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-## Component Concept
-
-Vibe UI's Kbd component displays keyboard shortcut inputs and hotkeys. It features sleek outline borders and compact dimensions matching standard system code fonts.
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    default="'default'"
+    description="The visual aesthetic theme of the keycaps."
+  />
+  <PropRow
+    prop="asChild"
+    type="boolean"
+    default="false"
+    description="Change the underlying rendered element to a Slot component for polymorphism."
+  />
+</PropsTable>

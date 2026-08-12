@@ -267,53 +267,49 @@ export const ComboboxList = React.forwardRef<
 ))
 ComboboxList.displayName = 'ComboboxList'
 
-export interface ComboboxItemProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface ComboboxItemProps extends React.HTMLAttributes<HTMLDivElement> {
   value: string
 }
 
-export const ComboboxItem = React.forwardRef<
-  HTMLDivElement,
-  ComboboxItemProps
->((({ className, value: itemValue, children, ...props }, ref) => {
-  const {
-    value: selectedValue,
-    onValueChange,
-    setOpen,
-    setSearchQuery,
-    variant,
-  } = React.useContext(ComboboxContext)
-  const isSelected = selectedValue === itemValue
-  return (
-    <div
-      ref={ref}
-      data-selected={isSelected}
-      onClick={() => {
-        const newValue = isSelected ? '' : itemValue
-        onValueChange?.(newValue)
-        setOpen(false)
-        setSearchQuery('')
-      }}
-      className={cn(
-        'flex w-full items-center justify-between',
-        comboboxItemVariants({ variant }),
-        className,
-      )}
-      data-slot="combobox-item"
-      {...props}
-    >
-      <div className="flex items-center gap-2 flex-1 min-w-0">
-        {children}
-      </div>
-      <Check
+export const ComboboxItem = React.forwardRef<HTMLDivElement, ComboboxItemProps>(
+  ({ className, value: itemValue, children, ...props }, ref) => {
+    const {
+      value: selectedValue,
+      onValueChange,
+      setOpen,
+      setSearchQuery,
+      variant,
+    } = React.useContext(ComboboxContext)
+    const isSelected = selectedValue === itemValue
+    return (
+      <div
+        ref={ref}
+        data-selected={isSelected}
+        onClick={() => {
+          const newValue = isSelected ? '' : itemValue
+          onValueChange?.(newValue)
+          setOpen(false)
+          setSearchQuery('')
+        }}
         className={cn(
-          'h-3.5 w-3.5 shrink-0 ml-2',
-          isSelected ? 'opacity-100' : 'opacity-0',
+          'flex w-full items-center justify-between',
+          comboboxItemVariants({ variant }),
+          className,
         )}
-      />
-    </div>
-  )
-}))
+        data-slot="combobox-item"
+        {...props}
+      >
+        <div className="flex items-center gap-2 flex-1 min-w-0">{children}</div>
+        <Check
+          className={cn(
+            'h-3.5 w-3.5 shrink-0 ml-2',
+            isSelected ? 'opacity-100' : 'opacity-0',
+          )}
+        />
+      </div>
+    )
+  },
+)
 ComboboxItem.displayName = 'ComboboxItem'
 
 export const ComboboxEmpty = React.forwardRef<

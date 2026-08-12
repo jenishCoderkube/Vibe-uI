@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { Check, ChevronRight, Circle } from 'lucide-react'
@@ -72,17 +74,44 @@ const DropdownMenuContent = React.forwardRef<
     sideOffset?: number
     variant?: 'default' | 'retro' | 'glass'
   }
->(({ className, sideOffset = 4, variant = 'default', ...props }, ref) => (
-  <DropdownMenuPrimitive.Portal>
-    <DropdownMenuPrimitive.Content
-      ref={ref}
-      data-slot="dropdown-menu-content"
-      sideOffset={sideOffset}
-      className={cn(dropdownContentVariants({ variant }), className)}
-      {...props}
-    />
-  </DropdownMenuPrimitive.Portal>
-))
+>(
+  (
+    {
+      className,
+      sideOffset = 4,
+      variant = 'default',
+      onCloseAutoFocus,
+      ...props
+    },
+    ref,
+  ) => (
+    <DropdownMenuPrimitive.Portal>
+      <DropdownMenuPrimitive.Content
+        ref={ref}
+        data-slot="dropdown-menu-content"
+        sideOffset={sideOffset}
+        className={cn(dropdownContentVariants({ variant }), className)}
+        onCloseAutoFocus={(event) => {
+          // Prevent restoring focus to the trigger button if closed via mouse/pointer
+          const originalEvent = (
+            event as CustomEvent<{ originalEvent?: Event }>
+          ).detail?.originalEvent
+          if (
+            originalEvent &&
+            (originalEvent.type === 'pointerdown' ||
+              originalEvent.type === 'mousedown')
+          ) {
+            if (originalEvent.cancelable) {
+              event.preventDefault()
+            }
+          }
+          if (onCloseAutoFocus) onCloseAutoFocus(event)
+        }}
+        {...props}
+      />
+    </DropdownMenuPrimitive.Portal>
+  ),
+)
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
 
 const DropdownMenuItem = React.forwardRef<

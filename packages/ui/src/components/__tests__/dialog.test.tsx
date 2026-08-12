@@ -6,8 +6,11 @@ import {
   Dialog,
   DialogTrigger,
   DialogContent,
+  DialogHeader,
+  DialogFooter,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from '../dialog'
 
 describe('Dialog Component', () => {
@@ -126,5 +129,123 @@ describe('Dialog Component', () => {
     expect(content).toHaveClass('border-2')
     expect(content).toHaveClass('border-foreground')
     expect(content).toHaveClass('rounded-none')
+  })
+
+  it('applies glow variant styling with purple border', async () => {
+    const user = userEvent.setup()
+    render(
+      <Dialog>
+        <DialogTrigger>Open Glow</DialogTrigger>
+        <DialogContent variant="glow">
+          <div>Glow Content</div>
+        </DialogContent>
+      </Dialog>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Open Glow' }))
+    const content = screen
+      .getByText('Glow Content')
+      .closest('[data-slot="dialog-content"]')
+    expect(content).toHaveClass('border-purple-500/30')
+  })
+
+  it('renders DialogHeader, DialogFooter, and DialogClose', async () => {
+    const user = userEvent.setup()
+    render(
+      <Dialog>
+        <DialogTrigger>Open Header Footer</DialogTrigger>
+        <DialogContent>
+          <DialogHeader data-testid="dlg-header">
+            <DialogTitle>Header Title</DialogTitle>
+            <DialogDescription>Header Description</DialogDescription>
+          </DialogHeader>
+          <div>Body Area</div>
+          <DialogFooter data-testid="dlg-footer">
+            <DialogClose data-testid="custom-close">Dismiss</DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Open Header Footer' }))
+    expect(screen.getByTestId('dlg-header')).toBeInTheDocument()
+    expect(screen.getByTestId('dlg-footer')).toBeInTheDocument()
+    expect(screen.getByText('Header Title')).toBeInTheDocument()
+    expect(screen.getByText('Header Description')).toBeInTheDocument()
+
+    const dismissBtn = screen.getByTestId('custom-close')
+    await user.click(dismissBtn)
+    expect(screen.queryByText('Body Area')).not.toBeInTheDocument()
+  })
+
+  it('supports controlled open state', () => {
+    const { rerender } = render(
+      <Dialog open={true}>
+        <DialogContent>
+          <div>Controlled Active</div>
+        </DialogContent>
+      </Dialog>,
+    )
+    expect(screen.getByText('Controlled Active')).toBeInTheDocument()
+
+    rerender(
+      <Dialog open={false}>
+        <DialogContent>
+          <div>Controlled Active</div>
+        </DialogContent>
+      </Dialog>,
+    )
+    expect(screen.queryByText('Controlled Active')).not.toBeInTheDocument()
+  })
+
+  it('handles a real-life destructive project deletion confirmation modal', async () => {
+    const user = userEvent.setup()
+    const handleDeleteProject = vi.fn()
+    const handleOpenChange = vi.fn()
+
+    render(
+      <Dialog onOpenChange={handleOpenChange}>
+        <DialogTrigger asChild>
+          <button className="bg-red-500 text-white">Delete Project</button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Project</DialogTitle>
+            <DialogDescription>
+              Are you sure? This action cannot be undone and will permanently
+              erase all data.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex justify-end gap-2">
+            <DialogClose asChild>
+              <button data-testid="cancel-btn">Cancel</button>
+            </DialogClose>
+            <DialogClose asChild>
+              <button
+                data-testid="confirm-delete-btn"
+                onClick={handleDeleteProject}
+                className="bg-destructive text-destructive-foreground"
+              >
+                Permanently Delete
+              </button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>,
+    )
+
+    // Open dialog
+    await user.click(screen.getByRole('button', { name: 'Delete Project' }))
+    expect(
+      screen.getByRole('heading', { name: 'Delete Project' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/are you sure\? this action cannot be undone/i),
+    ).toBeInTheDocument()
+
+    // Confirm deletion
+    await user.click(screen.getByTestId('confirm-delete-btn'))
+    expect(handleDeleteProject).toHaveBeenCalledTimes(1)
+    expect(handleOpenChange).toHaveBeenLastCalledWith(false)
   })
 })

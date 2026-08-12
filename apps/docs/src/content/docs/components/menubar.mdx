@@ -2,7 +2,7 @@
 
 A responsive navigation menu bar utilizing Radix UI primitives, custom styled for Vibe UI variants.
 
-## Preview: Default Minimal
+## Preview
 
 <ComponentPreview>
   <MenubarDefaultTheme />
@@ -70,8 +70,10 @@ const menubarVariants = tv({
   variants: {
     variant: {
       default: "border-border bg-background text-foreground",
-      glass: "bg-white/5 border-white/10 backdrop-blur-md text-white",
-      retro: "border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)] rounded-none",
+      glass:
+        "bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md text-foreground",
+      retro:
+        "border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)] rounded-none",
       glow: "border-primary/20 bg-primary/[0.02] text-primary shadow-[0_0_15px_rgba(168,85,247,0.15)]",
       cyberpunk: "border-emerald-950 bg-black text-emerald-500 font-mono",
     },
@@ -86,10 +88,13 @@ const menubarContentVariants = tv({
   variants: {
     variant: {
       default: "border-border bg-popover text-popover-foreground",
-      glass: "bg-black/60 border-white/10 backdrop-blur-md text-zinc-300 shadow-xl",
-      retro: "border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_rgba(255,255,255,1)] rounded-none",
-      glow: "border-primary/20 bg-black/90 text-primary shadow-[0_0_20px_rgba(168,85,247,0.25)]",
-      cyberpunk: "border-emerald-500 bg-black text-emerald-500 font-mono shadow-[0_0_12px_rgba(16,185,129,0.25)]",
+      glass:
+        "bg-popover/90 dark:bg-black/80 border border-border dark:border-white/10 text-popover-foreground backdrop-blur-md shadow-lg",
+      retro:
+        "border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_rgba(255,255,255,1)] rounded-none",
+      glow: "border-primary/20 bg-popover dark:bg-black/90 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)] dark:shadow-[0_0_20px_rgba(168,85,247,0.25)]",
+      cyberpunk:
+        "border-emerald-500/50 dark:border-emerald-500 bg-popover dark:bg-black text-emerald-600 dark:text-emerald-500 font-mono shadow-[0_0_12px_rgba(16,185,129,0.2)]",
     },
   },
   defaultVariants: {
@@ -98,14 +103,14 @@ const menubarContentVariants = tv({
 })
 
 const menubarItemVariants = tv({
-  base: "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 cursor-pointer",
+  base: "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! cursor-pointer",
   variants: {
     variant: {
       default: "",
-      glass: "focus:bg-white/10 focus:text-white",
+      glass: "focus:bg-accent focus:text-accent-foreground dark:focus:bg-white/10 dark:focus:text-white",
       retro: "rounded-none focus:bg-foreground focus:text-background",
-      glow: "focus:bg-primary/20 focus:text-primary",
-      cyberpunk: "focus:bg-emerald-500/10 focus:text-emerald-400 font-mono",
+      glow: "focus:bg-primary/10 dark:focus:bg-primary/20 focus:text-primary",
+      cyberpunk: "focus:bg-emerald-500/10 focus:text-emerald-600 dark:focus:text-emerald-400 font-mono",
     },
   },
   defaultVariants: {
@@ -113,25 +118,29 @@ const menubarItemVariants = tv({
   },
 })
 
-const MenubarVariantContext = React.createContext<"default" | "glass" | "retro" | "glow" | "cyberpunk">("default")
+const MenubarVariantContext = React.createContext<
+  "default" | "glass" | "retro" | "glow" | "cyberpunk"
+>("default")
 
 export interface MenubarProps
   extends React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>,
     VariantProps<typeof menubarVariants> {}
 
-const Menubar = React.forwardRef<React.ElementRef<typeof MenubarPrimitive.Root>, MenubarProps>(
-  ({ className, variant = "default", ...props }, ref) => {
-    return (
-      <MenubarVariantContext.Provider value={variant}>
-        <MenubarPrimitive.Root
-          ref={ref}
-          className={cn(menubarVariants({ variant }), className)}
-          {...props}
-        />
-      </MenubarVariantContext.Provider>
-    )
-  }
-)
+const Menubar = React.forwardRef<
+  React.ElementRef<typeof MenubarPrimitive.Root>,
+  MenubarProps
+>(({ className, variant = "default", ...props }, ref) => {
+  return (
+    <MenubarVariantContext.Provider value={variant}>
+      <MenubarPrimitive.Root
+        ref={ref}
+        data-slot="menubar"
+        className={cn(menubarVariants({ variant }), className)}
+        {...props}
+      />
+    </MenubarVariantContext.Provider>
+  )
+})
 Menubar.displayName = "Menubar"
 
 const MenubarMenu = MenubarPrimitive.Menu
@@ -148,10 +157,13 @@ const MenubarTrigger = React.forwardRef<
   return (
     <MenubarPrimitive.Trigger
       ref={ref}
+      data-slot="menubar-trigger"
       className={cn(
         "flex cursor-default select-none items-center rounded-sm px-3 py-1 text-sm font-medium outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground cursor-pointer transition-colors duration-150",
-        variant === "retro" && "rounded-none focus:bg-foreground focus:text-background data-[state=open]:bg-foreground data-[state=open]:text-background",
-        variant === "cyberpunk" && "font-mono focus:bg-emerald-500/10 focus:text-emerald-400 data-[state=open]:bg-emerald-500/10 data-[state=open]:text-emerald-400",
+        variant === "retro" &&
+          "rounded-none focus:bg-foreground focus:text-background data-[state=open]:bg-foreground data-[state=open]:text-background",
+        variant === "cyberpunk" &&
+          "font-mono focus:bg-emerald-500/10 focus:text-emerald-400 data-[state=open]:bg-emerald-500/10 data-[state=open]:text-emerald-400",
         className
       )}
       {...props}
@@ -163,34 +175,49 @@ MenubarTrigger.displayName = "MenubarTrigger"
 const MenubarContent = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Content>
->(({ className, align = "start", alignOffset = -4, sideOffset = 8, ...props }, ref) => {
-  const variant = React.useContext(MenubarVariantContext)
-  return (
-    <MenubarPortal>
-      <MenubarPrimitive.Content
-        ref={ref}
-        align={align}
-        alignOffset={alignOffset}
-        sideOffset={sideOffset}
-        className={cn(menubarContentVariants({ variant }), className)}
-        {...props}
-      />
-    </MenubarPortal>
-  )
-})
+>(
+  (
+    { className, align = "start", alignOffset = -4, sideOffset = 8, ...props },
+    ref
+  ) => {
+    const variant = React.useContext(MenubarVariantContext)
+    return (
+      <MenubarPortal data-slot="menubar-portal">
+        <MenubarPrimitive.Content
+          ref={ref}
+          data-slot="menubar-content"
+          align={align}
+          alignOffset={alignOffset}
+          sideOffset={sideOffset}
+          className={cn(menubarContentVariants({ variant }), className)}
+          {...props}
+        />
+      </MenubarPortal>
+    )
+  }
+)
 MenubarContent.displayName = "MenubarContent"
 
 const MenubarItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Item> & {
     inset?: boolean
+    variant?: "default" | "destructive"
   }
->(({ className, inset, ...props }, ref) => {
-  const variant = React.useContext(MenubarVariantContext)
+>(({ className, inset, variant = "default", ...props }, ref) => {
+  const parentVariant = React.useContext(MenubarVariantContext)
   return (
     <MenubarPrimitive.Item
       ref={ref}
-      className={cn(menubarItemVariants({ variant }), inset && "pl-8", className)}
+      data-slot="menubar-item"
+      data-inset={inset}
+      data-variant={variant}
+      className={cn(
+        menubarItemVariants({ variant: parentVariant }),
+        variant === "destructive" &&
+          "text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20",
+        className
+      )}
       {...props}
     />
   )
@@ -205,17 +232,14 @@ const MenubarCheckboxItem = React.forwardRef<
   return (
     <MenubarPrimitive.CheckboxItem
       ref={ref}
-      className={cn(
-        menubarItemVariants({ variant }),
-        "pl-8",
-        className
-      )}
+      data-slot="menubar-checkbox-item"
+      className={cn(menubarItemVariants({ variant }), "pl-8", className)}
       checked={checked}
       {...props}
     >
-      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <span className="pointer-events-none absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <MenubarPrimitive.ItemIndicator>
-          <Check className="h-4 w-4 text-emerald-500" />
+          <Check className="h-4 w-4" />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
@@ -232,16 +256,13 @@ const MenubarRadioItem = React.forwardRef<
   return (
     <MenubarPrimitive.RadioItem
       ref={ref}
-      className={cn(
-        menubarItemVariants({ variant }),
-        "pl-8",
-        className
-      )}
+      data-slot="menubar-radio-item"
+      className={cn(menubarItemVariants({ variant }), "pl-8", className)}
       {...props}
     >
-      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <span className="pointer-events-none absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <MenubarPrimitive.ItemIndicator>
-          <Circle className="h-2 w-2 fill-emerald-500 text-emerald-500" />
+          <Circle className="h-2 w-2 fill-current" />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
@@ -258,9 +279,10 @@ const MenubarLabel = React.forwardRef<
 >(({ className, inset, ...props }, ref) => (
   <MenubarPrimitive.Label
     ref={ref}
+    data-slot="menubar-label"
+    data-inset={inset}
     className={cn(
-      "px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider",
-      inset && "pl-8",
+      "px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider data-[inset]:pl-8",
       className
     )}
     {...props}
@@ -274,7 +296,8 @@ const MenubarSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Separator
     ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-white/5", className)}
+    data-slot="menubar-separator"
+    className={cn("-mx-1 my-1 h-px bg-border", className)}
     {...props}
   />
 ))
@@ -286,6 +309,7 @@ const MenubarShortcut = ({
 }: React.HTMLAttributes<HTMLSpanElement>) => {
   return (
     <span
+      data-slot="menubar-shortcut"
       className={cn(
         "ml-auto text-xs tracking-widest text-muted-foreground font-mono select-none pl-4",
         className
@@ -306,15 +330,13 @@ const MenubarSubTrigger = React.forwardRef<
   return (
     <MenubarPrimitive.SubTrigger
       ref={ref}
-      className={cn(
-        menubarItemVariants({ variant }),
-        inset && "pl-8",
-        className
-      )}
+      data-slot="menubar-sub-trigger"
+      data-inset={inset}
+      className={cn(menubarItemVariants({ variant }), className)}
       {...props}
     >
       {children}
-      <ChevronRight className="ml-auto h-4 w-4 text-zinc-500" />
+      <ChevronRight className="ml-auto h-4 w-4" />
     </MenubarPrimitive.SubTrigger>
   )
 })
@@ -328,10 +350,8 @@ const MenubarSubContent = React.forwardRef<
   return (
     <MenubarPrimitive.SubContent
       ref={ref}
-      className={cn(
-        menubarContentVariants({ variant }),
-        className
-      )}
+      data-slot="menubar-sub-content"
+      className={cn(menubarContentVariants({ variant }), className)}
       {...props}
     />
   )
@@ -360,109 +380,20 @@ export {
 
 </Installation>
 
+## Themes
 
-
-## Standard Variations
-
-### Glassmorphic Menubar
+Explore aesthetic design themes side-by-side.
 
 <ComponentPreview>
-  <MenubarGlassTheme />
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full py-4 px-2 items-center justify-items-center">
+    <MenubarGlassTheme />
+    <MenubarRetroTheme />
+    <MenubarGlowTheme />
+    <MenubarCyberTheme />
+  </div>
 
 ```tsx
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-  MenubarItem,
-} from '@/components/ui/menubar'
-
-export default function GlassDemo() {
-  return (
-    <Menubar variant="glass">
-      <MenubarMenu>
-        <MenubarTrigger>Workspace</MenubarTrigger>
-        <MenubarContent>
-          <MenubarItem>Status Details</MenubarItem>
-          <MenubarItem>Rebuild Cache</MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Retro Brutalist Menubar
-
-<ComponentPreview>
-  <MenubarRetroTheme />
-
-```tsx
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-  MenubarItem,
-} from '@/components/ui/menubar'
-
-export default function RetroDemo() {
-  return (
-    <Menubar variant="retro">
-      <MenubarMenu>
-        <MenubarTrigger>System</MenubarTrigger>
-        <MenubarContent>
-          <MenubarItem>Start Logs</MenubarItem>
-          <MenubarItem>Quit Process</MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Neon Glow Menubar
-
-<ComponentPreview>
-  <MenubarGlowTheme />
-
-```tsx
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-  MenubarItem,
-} from '@/components/ui/menubar'
-
-export default function GlowDemo() {
-  return (
-    <Menubar variant="glow">
-      <MenubarMenu>
-        <MenubarTrigger>Effects</MenubarTrigger>
-        <MenubarContent>
-          <MenubarItem>Glitch Mode</MenubarItem>
-          <MenubarItem>Aura Shadow</MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Cyberpunk Menubar
-
-<ComponentPreview>
-  <MenubarCyberTheme />
-
-```tsx
+import React from 'react'
 import {
   Menubar,
   MenubarMenu,
@@ -472,279 +403,338 @@ import {
   MenubarShortcut,
 } from '@/components/ui/menubar'
 
-export default function CyberDemo() {
+export default function ThemesDemo() {
   return (
-    <Menubar variant="cyberpunk">
-      <MenubarMenu>
-        <MenubarTrigger>CONSOLE</MenubarTrigger>
-        <MenubarContent>
-          <MenubarItem>
-            EXEC_SH <MenubarShortcut>CTRL+X</MenubarShortcut>
-          </MenubarItem>
-          <MenubarItem>
-            REBOOT_SYS <MenubarShortcut>CTRL+R</MenubarShortcut>
-          </MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full items-center justify-items-center">
+      {/* 1. Glassmorphic Theme */}
+      <Menubar variant="glass">
+        <MenubarMenu>
+          <MenubarTrigger>Glass</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>Status Details</MenubarItem>
+            <MenubarItem>Rebuild Cache</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 2. Retro Brutalist Theme */}
+      <Menubar variant="retro">
+        <MenubarMenu>
+          <MenubarTrigger>Retro</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>Start Logs</MenubarItem>
+            <MenubarItem>Quit Process</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 3. Neon Glow Theme */}
+      <Menubar variant="glow">
+        <MenubarMenu>
+          <MenubarTrigger>Glow</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>Glitch Mode</MenubarItem>
+            <MenubarItem>Aura Shadow</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 4. Cyberpunk Theme */}
+      <Menubar variant="cyberpunk">
+        <MenubarMenu>
+          <MenubarTrigger>CONSOLE</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              EXEC_SH <MenubarShortcut>CTRL+X</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>
+              REBOOT_SYS <MenubarShortcut>CTRL+R</MenubarShortcut>
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+    </div>
   )
 }
 ```
 
 </ComponentPreview>
 
-### Nested Submenus
+## Examples
+
+Interactive features including submenus, checkable items, radio selections, keyboard shortcuts, destructive alerts, disabled items, and settings groups.
 
 <ComponentPreview>
-  <MenubarSubmenus />
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full py-4 px-2 items-center justify-items-center">
+    <MenubarSubmenus />
+    <MenubarCheckboxes />
+    <MenubarRadios />
+    <MenubarShortcuts />
+    <MenubarDestructive />
+    <MenubarDisabled />
+    <MenubarDynamicTabs />
+  </div>
 
 ```tsx
+import React, { useState } from 'react'
 import {
   Menubar,
   MenubarMenu,
   MenubarTrigger,
   MenubarContent,
+  MenubarItem,
+  MenubarSeparator,
+  MenubarShortcut,
   MenubarSub,
   MenubarSubTrigger,
   MenubarSubContent,
-  MenubarItem,
-} from '@/components/ui/menubar'
-
-export default function SubmenuDemo() {
-  return (
-    <Menubar variant="default">
-      <MenubarMenu>
-        <MenubarTrigger>Share</MenubarTrigger>
-        <MenubarContent>
-          <MenubarSub>
-            <MenubarSubTrigger>Email Link</MenubarSubTrigger>
-            <MenubarSubContent>
-              <MenubarItem>Send via Outlook</MenubarItem>
-              <MenubarItem>Send via Gmail</MenubarItem>
-            </MenubarSubContent>
-          </MenubarSub>
-          <MenubarItem>Copy Share URL</MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Checkbox items list
-
-<ComponentPreview>
-  <MenubarCheckboxes />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
   MenubarCheckboxItem,
-} from '@/components/ui/menubar'
-
-export default function CheckboxDemo() {
-  const [checked1, setChecked1] = useState(true)
-  const [checked2, setChecked2] = useState(false)
-
-  return (
-    <Menubar variant="default">
-      <MenubarMenu>
-        <MenubarTrigger>View</MenubarTrigger>
-        <MenubarContent>
-          <MenubarCheckboxItem checked={checked1} onCheckedChange={setChecked1}>
-            Show Status Bar
-          </MenubarCheckboxItem>
-          <MenubarCheckboxItem checked={checked2} onCheckedChange={setChecked2}>
-            Glitch Overlay
-          </MenubarCheckboxItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Radio groups select
-
-<ComponentPreview>
-  <MenubarRadios />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
   MenubarRadioGroup,
   MenubarRadioItem,
+  MenubarGroup,
 } from '@/components/ui/menubar'
 
-export default function RadioDemo() {
+export default function ExamplesDemo() {
+  const [checked1, setChecked1] = useState(true)
+  const [checked2, setChecked2] = useState(false)
   const [theme, setTheme] = useState('dark')
 
   return (
-    <Menubar variant="default">
-      <MenubarMenu>
-        <MenubarTrigger>Theme</MenubarTrigger>
-        <MenubarContent>
-          <MenubarRadioGroup value={theme} onValueChange={setTheme}>
-            <MenubarRadioItem value="light">Light Mode</MenubarRadioItem>
-            <MenubarRadioItem value="dark">Dark Mode</MenubarRadioItem>
-            <MenubarRadioItem value="system">System Default</MenubarRadioItem>
-          </MenubarRadioGroup>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full items-center justify-items-center">
+      {/* 1. Submenus */}
+      <Menubar variant="default">
+        <MenubarMenu>
+          <MenubarTrigger>Share</MenubarTrigger>
+          <MenubarContent>
+            <MenubarSub>
+              <MenubarSubTrigger>Email Link</MenubarSubTrigger>
+              <MenubarSubContent>
+                <MenubarItem>Send via Outlook</MenubarItem>
+                <MenubarItem>Send via Gmail</MenubarItem>
+              </MenubarSubContent>
+            </MenubarSub>
+            <MenubarItem>Copy Share URL</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 2. Checkboxes */}
+      <Menubar variant="default">
+        <MenubarMenu>
+          <MenubarTrigger>View</MenubarTrigger>
+          <MenubarContent>
+            <MenubarCheckboxItem checked={checked1} onCheckedChange={setChecked1}>
+              Show Status Bar
+            </MenubarCheckboxItem>
+            <MenubarCheckboxItem checked={checked2} onCheckedChange={setChecked2}>
+              Glitch Overlay
+            </MenubarCheckboxItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 3. Radios */}
+      <Menubar variant="default">
+        <MenubarMenu>
+          <MenubarTrigger>Theme</MenubarTrigger>
+          <MenubarContent>
+            <MenubarRadioGroup value={theme} onValueChange={setTheme}>
+              <MenubarRadioItem value="light">Light Mode</MenubarRadioItem>
+              <MenubarRadioItem value="dark">Dark Mode</MenubarRadioItem>
+              <MenubarRadioItem value="system">System Default</MenubarRadioItem>
+            </MenubarRadioGroup>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 4. Keyboard Shortcuts */}
+      <Menubar variant="default">
+        <MenubarMenu>
+          <MenubarTrigger>Terminal</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              Clear Screen <MenubarShortcut>⌘K</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>
+              Interrupt Task <MenubarShortcut>CTRL+C</MenubarShortcut>
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 5. Destructive Item */}
+      <Menubar variant="default">
+        <MenubarMenu>
+          <MenubarTrigger>Database</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>Optimize Indexes</MenubarItem>
+            <MenubarSeparator />
+            <MenubarItem variant="destructive">Truncate Table</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 6. Disabled State */}
+      <Menubar variant="default">
+        <MenubarMenu>
+          <MenubarTrigger>Tools</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem disabled>Advanced debugger</MenubarItem>
+            <MenubarItem>Standard Linters</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/* 7. Settings Group */}
+      <Menubar variant="glow">
+        <MenubarMenu>
+          <MenubarTrigger>Settings</MenubarTrigger>
+          <MenubarContent>
+            <MenubarGroup>
+              <MenubarItem>Account Options</MenubarItem>
+              <MenubarItem>Security Keys</MenubarItem>
+            </MenubarGroup>
+            <MenubarSeparator />
+            <MenubarGroup>
+              <MenubarItem>Sign Out</MenubarItem>
+            </MenubarGroup>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+    </div>
   )
 }
 ```
 
 </ComponentPreview>
 
-### Keyboard Shortcuts
+## Props
 
-<ComponentPreview>
-  <MenubarShortcuts />
+### Menubar
 
-```tsx
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-  MenubarItem,
-  MenubarShortcut,
-} from '@/components/ui/menubar'
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual aesthetic theme to apply across the menubar and its child items."
+  />
+</PropsTable>
 
-export default function ShortcutDemo() {
-  return (
-    <Menubar variant="default">
-      <MenubarMenu>
-        <MenubarTrigger>Terminal</MenubarTrigger>
-        <MenubarContent>
-          <MenubarItem>
-            Clear Screen <MenubarShortcut>⌘K</MenubarShortcut>
-          </MenubarItem>
-          <MenubarItem>
-            Interrupt Task <MenubarShortcut>CTRL+C</MenubarShortcut>
-          </MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
+### MenubarContent
 
-</ComponentPreview>
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="Aesthetic theme variant styling to apply to popover menu content."
+  />
+  <PropRow
+    prop="align"
+    type="'start' | 'center' | 'end'"
+    default="'start'"
+    description="Alignment of the popover content relative to the trigger button."
+  />
+  <PropRow
+    prop="alignOffset"
+    type="number"
+    default="-4"
+    description="An offset in pixels from the start or end alignment edges."
+  />
+  <PropRow
+    prop="sideOffset"
+    type="number"
+    default="8"
+    description="Distance in pixels between the trigger and the popover menu content."
+  />
+</PropsTable>
 
-### Destructive Action Alerts
+### MenubarItem
 
-<ComponentPreview>
-  <MenubarDestructive />
+<PropsTable>
+  <PropRow
+    prop="inset"
+    type="boolean"
+    default="false"
+    description="Adds left padding to visually align items with checkbox or radio items."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'destructive'"
+    default="'default'"
+    description="Applies destructive danger styling for irreversible actions like resetting or deleting."
+  />
+  <PropRow
+    prop="disabled"
+    type="boolean"
+    default="false"
+    description="Prevents user interaction and applies dimmed opacity styling."
+  />
+</PropsTable>
 
-```tsx
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-  MenubarItem,
-  MenubarSeparator,
-} from '@/components/ui/menubar'
+### MenubarCheckboxItem
 
-export default function DestructiveDemo() {
-  return (
-    <Menubar variant="default">
-      <MenubarMenu>
-        <MenubarTrigger>Database</MenubarTrigger>
-        <MenubarContent>
-          <MenubarItem>Optimize Indexes</MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem variant="destructive">Truncate Table</MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
+<PropsTable>
+  <PropRow
+    prop="checked"
+    type="boolean | 'indeterminate'"
+    default="false"
+    description="The controlled checked state of the checkbox menu item."
+  />
+  <PropRow
+    prop="onCheckedChange"
+    type="(checked: boolean) => void"
+    description="Event handler called when the checked state changes."
+  />
+  <PropRow
+    prop="disabled"
+    type="boolean"
+    default="false"
+    description="Prevents user interaction and applies dimmed opacity styling."
+  />
+</PropsTable>
 
-</ComponentPreview>
+### MenubarRadioItem
 
-### Disabled Options Menu
+<PropsTable>
+  <PropRow
+    prop="value"
+    type="string"
+    description="The unique string value for this radio option."
+  />
+  <PropRow
+    prop="disabled"
+    type="boolean"
+    default="false"
+    description="Prevents user interaction and applies dimmed opacity styling."
+  />
+</PropsTable>
 
-<ComponentPreview>
-  <MenubarDisabled />
+### MenubarSubTrigger
 
-```tsx
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-  MenubarItem,
-} from '@/components/ui/menubar'
+<PropsTable>
+  <PropRow
+    prop="inset"
+    type="boolean"
+    default="false"
+    description="Adds left padding to align with items that have leading indicators."
+  />
+  <PropRow
+    prop="disabled"
+    type="boolean"
+    default="false"
+    description="Prevents expanding the submenu and applies dimmed opacity styling."
+  />
+</PropsTable>
 
-export default function DisabledDemo() {
-  return (
-    <Menubar variant="default">
-      <MenubarMenu>
-        <MenubarTrigger>Tools</MenubarTrigger>
-        <MenubarContent>
-          <MenubarItem disabled>Advanced debugger</MenubarItem>
-          <MenubarItem>Standard Liners</MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
+### MenubarSubContent
 
-</ComponentPreview>
-
-### Settings Toolbar Groups
-
-<ComponentPreview>
-  <MenubarDynamicTabs />
-
-```tsx
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-  MenubarGroup,
-  MenubarItem,
-  MenubarSeparator,
-} from '@/components/ui/menubar'
-
-export default function GroupDemo() {
-  return (
-    <Menubar variant="glow">
-      <MenubarMenu>
-        <MenubarTrigger>Settings</MenubarTrigger>
-        <MenubarContent>
-          <MenubarGroup>
-            <MenubarItem>Account Options</MenubarItem>
-            <MenubarItem>Security Keys</MenubarItem>
-          </MenubarGroup>
-          <MenubarSeparator />
-          <MenubarGroup>
-            <MenubarItem>Sign Out</MenubarItem>
-          </MenubarGroup>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  )
-}
-```
-
-</ComponentPreview>
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="Aesthetic theme variant styling to apply to nested submenu popover content."
+  />
+</PropsTable>

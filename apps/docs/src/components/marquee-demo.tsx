@@ -79,7 +79,7 @@ const IMAGES = [
   },
   {
     title: 'Neon Oasis',
-    url: 'https://images.unsplash.com/photo-1618005198143-e5283b519a7f?w=200&q=80',
+    url: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=200&q=80',
     tag: 'Cyberpunk',
   },
   {
@@ -92,7 +92,7 @@ const IMAGES = [
 // 1. Basic Horizontal (Left)
 export function MarqueeHorizontalDemo() {
   return (
-    <Marquee direction="left" speed={20} fade={false}>
+    <Marquee direction="left" speed={12} fade={false}>
       {[
         'Left-Scrolling Text Strip',
         'Custom Layouts',
@@ -113,7 +113,7 @@ export function MarqueeHorizontalDemo() {
 // 2. Basic Horizontal (Right)
 export function MarqueeHorizontalReverseDemo() {
   return (
-    <Marquee direction="right" speed={20} fade={false}>
+    <Marquee direction="right" speed={12} fade={false}>
       {[
         'Right-Scrolling Text Strip',
         'Reversed Motion',
@@ -134,7 +134,7 @@ export function MarqueeHorizontalReverseDemo() {
 // 3. Slow Grayscale Brand Ticker
 export function MarqueeLogosDemo() {
   return (
-    <Marquee direction="left" speed={45} gap="3rem" pauseOnHover={true}>
+    <Marquee direction="left" speed={12} gap="3rem" pauseOnHover={true}>
       {BRANDS.map((brand, idx) => {
         const IconComponent = brand.icon
         return (
@@ -157,7 +157,7 @@ export function MarqueeLogosDemo() {
 export function MarqueeAlertDemo() {
   return (
     <div className="w-full overflow-hidden rounded-xl bg-yellow-500 text-black py-2.5 font-bold tracking-widest text-[10px] shadow-lg shadow-yellow-500/5 select-none">
-      <Marquee direction="left" speed={10} fade={false} gap="2rem">
+      <Marquee direction="left" speed={12} fade={false} gap="2rem">
         {[
           'SYSTEM WARNING: INCOMING DEPLOYMENT SYNC',
           'SECURE GATEWAY LOCKED',
@@ -181,7 +181,7 @@ export function MarqueeAlertDemo() {
 export function MarqueeVerticalUpDemo() {
   return (
     <div className="h-[180px] w-full border border-white/10 rounded-xl bg-black/40 relative overflow-hidden flex items-center justify-center">
-      <Marquee direction="up" speed={15} gap="1rem" className="h-full">
+      <Marquee direction="up" speed={12} gap="1rem" className="h-full">
         {REVIEWS.map((review, idx) => (
           <div
             key={idx}
@@ -207,7 +207,7 @@ export function MarqueeVerticalUpDemo() {
 export function MarqueeVerticalDownDemo() {
   return (
     <div className="h-[180px] w-full border border-white/10 rounded-xl bg-black/40 relative overflow-hidden flex items-center justify-center">
-      <Marquee direction="down" speed={15} gap="1rem" className="h-full">
+      <Marquee direction="down" speed={12} gap="1rem" className="h-full">
         {['React.js', 'TypeScript', 'Next.js', 'Vite', 'Tailwind', 'Turbo'].map(
           (tech, idx) => (
             <div
@@ -226,7 +226,7 @@ export function MarqueeVerticalDownDemo() {
 // 7. Interactive Cards (Pause & Scale)
 export function MarqueeInteractiveDemo() {
   return (
-    <Marquee direction="left" speed={25} pauseOnHover={true} gap="1.5rem">
+    <Marquee direction="left" speed={12} pauseOnHover={true} gap="1.5rem">
       {IMAGES.map((img, idx) => (
         <div
           key={idx}
@@ -253,7 +253,7 @@ export function MarqueeInteractiveDemo() {
 export function MarqueeGlassmorphicDemo() {
   return (
     <div className="w-full border border-white/15 rounded-2xl bg-white/5 backdrop-blur-md p-4">
-      <Marquee direction="left" speed={25} pauseOnHover={true} gap="2rem">
+      <Marquee direction="left" speed={12} pauseOnHover={true} gap="2rem">
         {REVIEWS.map((review, idx) => (
           <div
             key={idx}
@@ -296,7 +296,7 @@ export function MarqueeGlassmorphicDemo() {
 export function MarqueeNeonDemo() {
   return (
     <div className="w-full border border-purple-500/20 rounded-xl bg-zinc-950 p-4 shadow-[inset_0_0_20px_rgba(168,85,247,0.05)]">
-      <Marquee direction="left" speed={30} gap="1.5rem">
+      <Marquee direction="left" speed={12} gap="1.5rem">
         {[
           {
             label: 'Neon Glow Presets',
@@ -339,7 +339,7 @@ export function MarqueeNeonDemo() {
 export function MarqueeBrutalistDemo() {
   return (
     <div className="w-full border-2 border-white bg-zinc-950 p-3 rounded-none">
-      <Marquee direction="left" speed={20} fade={false} gap="2rem">
+      <Marquee direction="left" speed={12} fade={false} gap="2rem">
         {[
           { text: 'TRENDING #1', bg: 'bg-yellow-400' },
           { text: 'BRUTAL DESIGN', bg: 'bg-orange-500' },
@@ -366,7 +366,7 @@ export function MarqueeBrutalistDemo() {
 export function MarqueeCyberpunkDemo() {
   return (
     <div className="w-full relative overflow-hidden border border-emerald-500/30 bg-black p-3.5 font-mono text-[11px] text-emerald-400 rounded-none after:content-[''] after:absolute after:inset-0 after:bg-[linear-gradient(rgba(16,185,129,0.03)_50%,rgba(16,185,129,0)_50%)] after:bg-[length:100%_4px]">
-      <Marquee direction="left" speed={25} gap="3rem" fade={false}>
+      <Marquee direction="left" speed={12} gap="3rem" fade={false}>
         {[
           'SYS_STREAM_ONLINE :: [OK]',
           'DECRYPT_KEYS_INIT :: 0x8F2F',
@@ -388,7 +388,7 @@ export function MarqueeCyberpunkDemo() {
 export function MarqueeDoubleDemo() {
   return (
     <div className="w-full space-y-3 border border-white/10 p-4 rounded-xl bg-black/40">
-      <Marquee direction="left" speed={24} fade={true}>
+      <Marquee direction="left" speed={12} fade={true}>
         {['TailwindCSS', 'TypeScript', 'React.js', 'Next.js', 'Vite'].map(
           (t, idx) => (
             <span
@@ -400,7 +400,7 @@ export function MarqueeDoubleDemo() {
           ),
         )}
       </Marquee>
-      <Marquee direction="right" speed={24} fade={true}>
+      <Marquee direction="right" speed={12} fade={true}>
         {['ESLint', 'Prettier', 'Turborepo', 'PostCSS', 'MDX'].map((t, idx) => (
           <span
             key={idx}
@@ -419,7 +419,7 @@ export function Marquee3DDemo() {
   return (
     <div className="w-full h-[200px] border border-white/10 rounded-2xl bg-zinc-950/50 flex items-center justify-center [perspective:800px] overflow-hidden">
       <div className="w-full rotate-x-[15deg] rotate-y-[-10deg] rotate-z-[2deg] scale-95 border-y border-purple-500/20 bg-purple-500/5 py-4 backdrop-blur shadow-[0_20px_50px_rgba(168,85,247,0.1)]">
-        <Marquee direction="left" speed={20} gap="2rem">
+        <Marquee direction="left" speed={12} gap="2rem">
           {[
             '3D PERSPECTIVE',
             'ROTATED VIEWPORTS',
@@ -443,7 +443,7 @@ export function Marquee3DDemo() {
 export function MarqueeFadeDemo() {
   return (
     <div className="w-full border border-white/10 rounded-xl bg-black/40 p-4">
-      <Marquee direction="left" speed={25} fade={true} gap="2rem">
+      <Marquee direction="left" speed={12} fade={true} gap="2rem">
         {IMAGES.map((img, idx) => (
           <div
             key={idx}
@@ -471,7 +471,7 @@ export function MarqueeFadeDemo() {
 export function MarqueeGridDemo() {
   return (
     <div className="w-full border border-white/10 rounded-xl bg-zinc-950/40 p-4 space-y-2">
-      <Marquee direction="left" speed={30} gap="1rem" fade={true}>
+      <Marquee direction="left" speed={12} gap="1rem" fade={true}>
         {['Design Systems', 'Web Components', 'Visual Quality'].map((t, i) => (
           <span
             key={i}
@@ -481,7 +481,7 @@ export function MarqueeGridDemo() {
           </span>
         ))}
       </Marquee>
-      <Marquee direction="left" speed={20} gap="1rem" fade={true}>
+      <Marquee direction="left" speed={12} gap="1rem" fade={true}>
         {['Radix Primitives', 'Tailwind CSS', 'Next.js App Router'].map(
           (t, i) => (
             <span
@@ -493,7 +493,7 @@ export function MarqueeGridDemo() {
           ),
         )}
       </Marquee>
-      <Marquee direction="left" speed={25} gap="1rem" fade={true}>
+      <Marquee direction="left" speed={12} gap="1rem" fade={true}>
         {['Production Ready', 'Fully Accessible', 'Premium Presets'].map(
           (t, i) => (
             <span
@@ -513,7 +513,7 @@ export function MarqueeGridDemo() {
 export function MarqueeCodeDemo() {
   return (
     <div className="w-full border border-white/10 rounded-xl bg-black p-4 font-mono text-[10px] text-zinc-400 select-all overflow-hidden">
-      <Marquee direction="left" speed={35} gap="4rem" fade={true}>
+      <Marquee direction="left" speed={12} gap="4rem" fade={true}>
         {[
           '{"component": "Marquee", "theme": "neon"}',
           'const marquee = <Marquee fade={true} />',

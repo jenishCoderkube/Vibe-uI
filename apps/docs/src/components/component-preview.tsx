@@ -206,14 +206,11 @@ export function ComponentPreview({
             <ButtonGroup
               value={lang}
               onValueChange={(val) => handleLangChange(val as 'ts' | 'js')}
-              className="mr-2"
+              radius="none"
+              className="mr-2 !h-[22px] !p-0.5 [&_button]:!h-[18px] [&_button]:!px-2 [&_button]:text-[9px] [&_button]:font-bold [&_button]:tracking-wider"
             >
-              <Button value="ts" className="!px-2.5 !h-7 text-xs font-semibold">
-                TS
-              </Button>
-              <Button value="js" className="!px-2.5 !h-7 text-xs font-semibold">
-                JS
-              </Button>
+              <Button value="ts">TS</Button>
+              <Button value="js">JS</Button>
             </ButtonGroup>
           )}
           {sandbox && tab === 'preview' && (
@@ -251,20 +248,23 @@ export function ComponentPreview({
         {tab === 'preview' && (
           <div
             className={cn(
-              'relative flex min-h-[350px] overflow-hidden w-full items-center justify-center p-4 sm:p-6 md:p-10 bg-background not-typeset not-prose rounded-lg',
+              'relative flex min-h-[350px] w-full items-center justify-center p-4 sm:p-6 md:p-10 bg-background not-typeset not-prose rounded-lg',
+              className?.includes('overflow-visible')
+                ? 'overflow-visible z-20'
+                : 'overflow-hidden',
               noBorder && 'border-0 bg-transparent shadow-none p-0 min-h-0',
               className,
             )}
             data-not-typeset
           >
             {/* Grid Pattern Background */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
+            <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none rounded-lg" />
             <div
               key={previewKey}
               className={cn(
-                'relative z-10 flex gap-4 flex-wrap w-full max-w-full not-typeset not-prose',
-                className?.includes('!overflow-visible')
-                  ? 'overflow-visible items-stretch justify-stretch'
+                'relative z-10 flex gap-4 flex-wrap w-full max-w-full not-typeset not-prose py-4 px-2',
+                className?.includes('overflow-visible')
+                  ? 'overflow-visible items-center justify-center z-20'
                   : 'items-center justify-center overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]',
               )}
               data-not-typeset
@@ -281,12 +281,11 @@ export function ComponentPreview({
             )}
           >
             {(() => {
-              const commonComponents = new Set(['button', 'input', 'label'])
               const vibeDepsList = vibeDeps
                 ? vibeDeps
                     .split(',')
                     .map((d) => d.trim())
-                    .filter((d) => d && !commonComponents.has(d.toLowerCase()))
+                    .filter((d) => d)
                     .join(' ')
                 : ''
               const npmDepsList = npmDeps

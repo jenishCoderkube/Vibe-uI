@@ -1,13 +1,13 @@
 <div align="center">
-  
-  # ⚡ Vibe UI
-  
-  ### *Beautiful, accessible React components with multi-aesthetic theme variants.*
-  
-  [![npm](https://img.shields.io/npm/v/vibe-ui.svg?style=flat-square&color=black)](https://www.npmjs.com/)
-  [![typescript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
-  [![tailwind](https://img.shields.io/badge/Tailwind-3.x%20%7C%204.x-38bdf8.svg?style=flat-square)](https://tailwindcss.com/)
-  [![license](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+
+# ⚡ Vibe UI
+
+### _Beautiful, accessible React components with multi-aesthetic theme variants._
+
+[![npm](https://img.shields.io/npm/v/vibe-ui.svg?style=flat-square&color=black)](https://www.npmjs.com/)
+[![typescript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
+[![tailwind](https://img.shields.io/badge/Tailwind-3.x%20%7C%204.x-38bdf8.svg?style=flat-square)](https://tailwindcss.com/)
+[![license](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
 </div>
 
@@ -40,6 +40,7 @@ npx vibe-ui-kit add combobox input-otp
 ## 🛠️ Usage Examples
 
 ### 1. Style Aesthetics
+
 ```tsx
 import { Button } from '@/components/ui/button'
 
@@ -59,6 +60,7 @@ export default function Demo() {
 ### 2. Hybrid API (Simple vs. Composed)
 
 #### Simple Layout (Prototype Fast)
+
 ```tsx
 import { InputOTP } from '@/components/ui/input-otp'
 
@@ -68,8 +70,14 @@ export default function Simple() {
 ```
 
 #### Composed Layout (Maximum Control)
+
 ```tsx
-import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp'
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator,
+} from '@/components/ui/input-otp'
 
 export default function Composed() {
   return (
@@ -102,4 +110,5 @@ pnpm build  # Compile and generate registries
 ---
 
 ## 📄 License
+
 MIT © [Vibe UI](LICENSE)

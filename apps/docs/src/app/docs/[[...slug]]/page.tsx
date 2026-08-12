@@ -333,7 +333,10 @@ import {
 } from '../../../components/layout-shell-demos'
 import { SliderValueDemo } from '../../../components/slider-value-demo'
 import { ProgressInteractiveDemo } from '../../../components/progress-interactive-demo'
-import { CommandDemoBasic, CommandDemoThemes } from '../../../components/command-demo'
+import {
+  CommandDemoBasic,
+  CommandDemoThemes,
+} from '../../../components/command-demo'
 import * as NewDemos from '../../../components/new-components-demos'
 import {
   TypingAnimationBasicDemo,
@@ -402,6 +405,11 @@ import {
   User,
   LogOut,
   FolderOpen,
+  CreditCard,
+  Keyboard,
+  Inbox,
+  RefreshCw,
+  Globe,
 } from 'lucide-react'
 
 interface PageProps {
@@ -2235,6 +2243,9 @@ const mdxComponents = {
   MessageWithHeader: MessageDemos.MessageWithHeader,
   MessageGroupFeed: MessageDemos.MessageGroupFeed,
   MessageStatusTick: MessageDemos.MessageStatusTick,
+  MessagePremiumChatApp: MessageDemos.MessagePremiumChatApp,
+  ScrollerDemo: MessageScrollerDemos.ScrollerDemo,
+  ScrollerStreaming: MessageScrollerDemos.ScrollerStreaming,
   ScrollerBasic: MessageScrollerDemos.ScrollerBasic,
   ScrollerAutoScroll: MessageScrollerDemos.ScrollerAutoScroll,
   ScrollerScrollToBottom: MessageScrollerDemos.ScrollerScrollToBottom,
@@ -2306,6 +2317,11 @@ const mdxComponents = {
   UserIcon: User,
   SettingsIcon: Settings,
   LogOutIcon: LogOut,
+  CreditCardIcon: CreditCard,
+  KeyboardIcon: Keyboard,
+  InboxIcon: Inbox,
+  RefreshCwIcon: RefreshCw,
+  GlobeIcon: Globe,
   FolderOpen,
   ButtonGroup,
   ButtonGroupItem,

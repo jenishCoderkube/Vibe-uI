@@ -6,7 +6,7 @@ A highly interactive cascading selector component. It allows users to browse hie
 
 ## Preview
 
-<ComponentPreview>
+<ComponentPreview className="!overflow-visible min-h-[440px]">
   <div className="w-[340px] max-w-full">
     <MultiSelect>
       <MultiSelectTrigger placeholder="Select technologies..." />
@@ -510,91 +510,161 @@ MultiSelectItem.displayName = 'MultiSelectItem'
 
 ---
 
-## Examples
+## Themes
 
-### Glassmorphism Variant
-Vibrant frosted glass borders and text highlights.
-<ComponentPreview>
-  <div className="w-[340px] max-w-full">
-    <MultiSelect variant="glass" defaultValue={["react", "docker"]}>
-      <MultiSelectTrigger placeholder="Select items..." />
-      <MultiSelectContent showSearch={true}>
-        <MultiSelectGroup heading="Frontend Frameworks" values={["react", "vue"]}>
-          <MultiSelectItem value="react">React.js</MultiSelectItem>
-          <MultiSelectItem value="vue">Vue.js</MultiSelectItem>
-        </MultiSelectGroup>
-        <MultiSelectGroup heading="DevOps Tools" values={["docker", "kubernetes"]}>
-          <MultiSelectItem value="docker">Docker</MultiSelectItem>
-          <MultiSelectItem value="kubernetes">Kubernetes</MultiSelectItem>
-        </MultiSelectGroup>
-      </MultiSelectContent>
-    </MultiSelect>
+Explore design variant presets for the Multi-Select component side-by-side.
+
+<ComponentPreview className="!overflow-visible min-h-[460px]">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl py-2">
+    {/* 1. Default Theme */}
+    <div className="space-y-1.5 w-full">
+      <span className="text-xs font-semibold text-muted-foreground">Default</span>
+      <MultiSelect variant="default" defaultValue={["react"]}>
+        <MultiSelectTrigger placeholder="Select items..." />
+        <MultiSelectContent showSearch={true}>
+          <MultiSelectGroup heading="Frontend Frameworks" values={["react", "vue"]}>
+            <MultiSelectItem value="react">React.js</MultiSelectItem>
+            <MultiSelectItem value="vue">Vue.js</MultiSelectItem>
+          </MultiSelectGroup>
+          <MultiSelectGroup heading="DevOps Tools" values={["docker", "kubernetes"]}>
+            <MultiSelectItem value="docker">Docker</MultiSelectItem>
+            <MultiSelectItem value="kubernetes">Kubernetes</MultiSelectItem>
+          </MultiSelectGroup>
+        </MultiSelectContent>
+      </MultiSelect>
+    </div>
+
+    {/* 2. Glassmorphism Theme */}
+    <div className="space-y-1.5 w-full">
+      <span className="text-xs font-semibold text-muted-foreground">Glassmorphism</span>
+      <MultiSelect variant="glass" defaultValue={["react", "docker"]}>
+        <MultiSelectTrigger placeholder="Select items..." />
+        <MultiSelectContent showSearch={true}>
+          <MultiSelectGroup heading="Frontend Frameworks" values={["react", "vue"]}>
+            <MultiSelectItem value="react">React.js</MultiSelectItem>
+            <MultiSelectItem value="vue">Vue.js</MultiSelectItem>
+          </MultiSelectGroup>
+          <MultiSelectGroup heading="DevOps Tools" values={["docker", "kubernetes"]}>
+            <MultiSelectItem value="docker">Docker</MultiSelectItem>
+            <MultiSelectItem value="kubernetes">Kubernetes</MultiSelectItem>
+          </MultiSelectGroup>
+        </MultiSelectContent>
+      </MultiSelect>
+    </div>
+
+    {/* 3. Brutalist Retro Theme */}
+    <div className="space-y-1.5 w-full">
+      <span className="text-xs font-semibold text-muted-foreground">Brutalist Retro</span>
+      <MultiSelect variant="retro" defaultValue={["node"]}>
+        <MultiSelectTrigger placeholder="Select items..." />
+        <MultiSelectContent showSearch={true}>
+          <MultiSelectGroup heading="Backend Tech" values={["node", "django"]}>
+            <MultiSelectItem value="node">Node.js</MultiSelectItem>
+            <MultiSelectItem value="django">Django</MultiSelectItem>
+          </MultiSelectGroup>
+        </MultiSelectContent>
+      </MultiSelect>
+    </div>
+
+    {/* 4. Glowing Theme */}
+    <div className="space-y-1.5 w-full">
+      <span className="text-xs font-semibold text-muted-foreground">Neon Glow</span>
+      <MultiSelect variant="glow" defaultValue={["aws"]}>
+        <MultiSelectTrigger placeholder="Select items..." />
+        <MultiSelectContent showSearch={true}>
+          <MultiSelectGroup heading="DevOps Tools" values={["docker", "kubernetes", "aws"]}>
+            <MultiSelectItem value="docker">Docker</MultiSelectItem>
+            <MultiSelectItem value="kubernetes">Kubernetes</MultiSelectItem>
+            <MultiSelectItem value="aws">Amazon Web Services</MultiSelectItem>
+          </MultiSelectGroup>
+        </MultiSelectContent>
+      </MultiSelect>
+    </div>
   </div>
 
 ```tsx
-<MultiSelect variant="glass" defaultValue={["react", "docker"]}>
-  <MultiSelectTrigger />
-  <MultiSelectContent showSearch={true}>
-    {/* Option lists */}
-  </MultiSelectContent>
-</MultiSelect>
-```
-</ComponentPreview>
+import React, { useState } from 'react'
+import {
+  MultiSelect,
+  MultiSelectTrigger,
+  MultiSelectContent,
+  MultiSelectGroup,
+  MultiSelectItem,
+} from '@/components/ui/multi-select'
 
-### Brutalist Retro Variant
-Thick solid black boundaries with offset shadows.
-<ComponentPreview>
-  <div className="w-[340px] max-w-full">
-    <MultiSelect variant="retro" defaultValue={["node"]}>
-      <MultiSelectTrigger placeholder="Select items..." />
-      <MultiSelectContent showSearch={true}>
-        <MultiSelectGroup heading="Backend Tech" values={["node", "django"]}>
-          <MultiSelectItem value="node">Node.js</MultiSelectItem>
-          <MultiSelectItem value="django">Django</MultiSelectItem>
-        </MultiSelectGroup>
-      </MultiSelectContent>
-    </MultiSelect>
-  </div>
+export default function MultiSelectThemesDemo(): React.ReactElement {
+  const [defaultVal, setDefaultVal] = useState<string[]>(['react'])
+  const [glassVal, setGlassVal] = useState<string[]>(['react', 'docker'])
+  const [retroVal, setRetroVal] = useState<string[]>(['node'])
+  const [glowVal, setGlowVal] = useState<string[]>(['aws'])
 
-```tsx
-<MultiSelect variant="retro" defaultValue={["node"]}>
-  <MultiSelectTrigger />
-  <MultiSelectContent showSearch={true}>
-    {/* Option lists */}
-  </MultiSelectContent>
-</MultiSelect>
-```
-</ComponentPreview>
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl">
+      {/* Default Theme */}
+      <div className="space-y-1.5 w-full">
+        <span className="text-xs font-semibold text-muted-foreground">Default</span>
+        <MultiSelect variant="default" value={defaultVal} onValueChange={setDefaultVal}>
+          <MultiSelectTrigger placeholder="Select items..." />
+          <MultiSelectContent showSearch>
+            <MultiSelectGroup heading="Frontend Frameworks" values={["react", "vue"]}>
+              <MultiSelectItem value="react">React.js</MultiSelectItem>
+              <MultiSelectItem value="vue">Vue.js</MultiSelectItem>
+            </MultiSelectGroup>
+          </MultiSelectContent>
+        </MultiSelect>
+      </div>
 
-### Glowing Theme
-Premium neon glowing borders on highlight focus.
-<ComponentPreview>
-  <div className="w-[340px] max-w-full">
-    <MultiSelect variant="glow" defaultValue={["aws"]}>
-      <MultiSelectTrigger placeholder="Select items..." />
-      <MultiSelectContent showSearch={true}>
-        <MultiSelectGroup heading="DevOps Tools" values={["docker", "kubernetes", "aws"]}>
-          <MultiSelectItem value="docker">Docker</MultiSelectItem>
-          <MultiSelectItem value="kubernetes">Kubernetes</MultiSelectItem>
-          <MultiSelectItem value="aws">Amazon Web Services</MultiSelectItem>
-        </MultiSelectGroup>
-      </MultiSelectContent>
-    </MultiSelect>
-  </div>
+      {/* Glassmorphism Theme */}
+      <div className="space-y-1.5 w-full">
+        <span className="text-xs font-semibold text-muted-foreground">Glassmorphism</span>
+        <MultiSelect variant="glass" value={glassVal} onValueChange={setGlassVal}>
+          <MultiSelectTrigger placeholder="Select items..." />
+          <MultiSelectContent showSearch>
+            <MultiSelectGroup heading="Frontend Frameworks" values={["react", "vue"]}>
+              <MultiSelectItem value="react">React.js</MultiSelectItem>
+              <MultiSelectItem value="vue">Vue.js</MultiSelectItem>
+            </MultiSelectGroup>
+          </MultiSelectContent>
+        </MultiSelect>
+      </div>
 
-```tsx
-<MultiSelect variant="glow" defaultValue={["aws"]}>
-  <MultiSelectTrigger />
-  <MultiSelectContent showSearch={true}>
-    {/* Option lists */}
-  </MultiSelectContent>
-</MultiSelect>
+      {/* Retro Neobrutalist Theme */}
+      <div className="space-y-1.5 w-full">
+        <span className="text-xs font-semibold text-muted-foreground">Brutalist Retro</span>
+        <MultiSelect variant="retro" value={retroVal} onValueChange={setRetroVal}>
+          <MultiSelectTrigger placeholder="Select items..." />
+          <MultiSelectContent showSearch>
+            <MultiSelectGroup heading="Backend Tech" values={["node", "django"]}>
+              <MultiSelectItem value="node">Node.js</MultiSelectItem>
+              <MultiSelectItem value="django">Django</MultiSelectItem>
+            </MultiSelectGroup>
+          </MultiSelectContent>
+        </MultiSelect>
+      </div>
+
+      {/* Neon Glow Theme */}
+      <div className="space-y-1.5 w-full">
+        <span className="text-xs font-semibold text-muted-foreground">Neon Glow</span>
+        <MultiSelect variant="glow" value={glowVal} onValueChange={setGlowVal}>
+          <MultiSelectTrigger placeholder="Select items..." />
+          <MultiSelectContent showSearch>
+            <MultiSelectGroup heading="DevOps Tools" values={["docker", "kubernetes", "aws"]}>
+              <MultiSelectItem value="docker">Docker</MultiSelectItem>
+              <MultiSelectItem value="kubernetes">Kubernetes</MultiSelectItem>
+              <MultiSelectItem value="aws">Amazon Web Services</MultiSelectItem>
+            </MultiSelectGroup>
+          </MultiSelectContent>
+        </MultiSelect>
+      </div>
+    </div>
+  )
+}
 ```
 </ComponentPreview>
 
 ### Single Selection Mode
 By passing `mode="single"`, the component automatically transforms into a single-select dropdown using radio selection buttons while keeping the cascading sub-category structure.
-<ComponentPreview>
+<ComponentPreview className="!overflow-visible min-h-[440px]">
   <div className="w-[340px] max-w-full">
     <MultiSelect mode="single" defaultValue={["react"]}>
       <MultiSelectTrigger placeholder="Select a single framework..." />
@@ -646,7 +716,7 @@ export default function SingleCascadingSelect() {
 
 ### Hierarchical Nested Options
 You can nest `MultiSelectGroup` components inside other groups to render a multi-level folder/tree hierarchy. The indentation padding adjusts automatically.
-<ComponentPreview>
+<ComponentPreview className="!overflow-visible min-h-[440px]">
   <div className="w-[340px] max-w-full">
     <MultiSelectNestedDemo />
   </div>
@@ -693,3 +763,104 @@ export default function NestedTechSelect() {
 }
 ```
 </ComponentPreview>
+
+## Props
+
+### MultiSelect
+
+<PropsTable>
+  <PropRow
+    prop="value"
+    type="string[]"
+    description="Controlled value array representing currently selected option identifiers."
+  />
+  <PropRow
+    prop="defaultValue"
+    type="string[]"
+    default="[]"
+    description="Initial selected option values when used uncontrolled."
+  />
+  <PropRow
+    prop="onValueChange"
+    type="(values: string[]) => void"
+    description="Event callback triggered when selections are added, removed, or cleared."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    default="'default'"
+    description="The visual design theme preset applied to the trigger and dropdown content."
+  />
+  <PropRow
+    prop="mode"
+    type="'multi' | 'single'"
+    default="'multi'"
+    description="Selection behavior mode (multi-select badges vs single-select radio)."
+  />
+</PropsTable>
+
+### MultiSelectTrigger
+
+<PropsTable>
+  <PropRow
+    prop="placeholder"
+    type="string"
+    default="'Select options...'"
+    description="Placeholder text rendered when no items are selected."
+  />
+  <PropRow
+    prop="maxVisibleTags"
+    type="number"
+    default="2"
+    description="Maximum number of selected item tag badges to display before collapsing into +N more label."
+  />
+</PropsTable>
+
+### MultiSelectContent
+
+<PropsTable>
+  <PropRow
+    prop="showSearch"
+    type="boolean"
+    default="false"
+    description="When true, renders a live search filter input at the top of the dropdown menu."
+  />
+</PropsTable>
+
+### MultiSelectGroup
+
+<PropsTable>
+  <PropRow
+    prop="heading"
+    type="string"
+    description="Header title string for the expandable category group."
+  />
+  <PropRow
+    prop="defaultExpanded"
+    type="boolean"
+    default="false"
+    description="Whether the category group should be expanded by default on mount."
+  />
+  <PropRow
+    prop="values"
+    type="string[]"
+    default="[]"
+    description="Array of item values belonging to this category for batch check/uncheck."
+  />
+</PropsTable>
+
+### MultiSelectItem
+
+<PropsTable>
+  <PropRow
+    prop="value"
+    type="string"
+    description="Unique value identifier for the option."
+  />
+  <PropRow
+    prop="keywords"
+    type="string[]"
+    description="Optional search keywords to match against search query filter."
+  />
+</PropsTable>
+

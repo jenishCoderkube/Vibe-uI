@@ -1,13 +1,13 @@
 # Label
 
-An accessible label component that integrates with form input controls.
+An accessible, polymorphic label component that integrates with form input controls.
 
 ## Preview
 
-<ComponentPreview>
+<ComponentPreview name="label" vibeDeps="checkbox">
   <div className="flex items-center space-x-2 text-left">
     <Checkbox id="terms" />
-    <Label htmlFor="terms" className="pb-0 cursor-pointer">Accept terms and conditions</Label>
+    <Label htmlFor="terms" className="cursor-pointer">Accept terms and conditions</Label>
   </div>
 
 ```tsx
@@ -18,7 +18,7 @@ export default function LabelDemo() {
   return (
     <div className="flex items-center space-x-2">
       <Checkbox id="terms" />
-      <Label htmlFor="terms" className="pb-0">
+      <Label htmlFor="terms">
         Accept terms and conditions
       </Label>
     </div>
@@ -28,55 +28,82 @@ export default function LabelDemo() {
 
 </ComponentPreview>
 
-<Installation name="label" npmDeps="@radix-ui/react-label lucide-react tailwind-variants">
+<Installation name="label" vibeDeps="" npmDeps="tailwind-variants @radix-ui/react-label">
 
 ```tsx
+'use client'
+
 import * as React from 'react'
+import * as LabelPrimitive from '@radix-ui/react-label'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
 
 const labelVariants = tv({
-  base: 'text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70 transition-all duration-150 select-none pb-1.5 inline-block',
+  base: 'text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70 transition-colors duration-150 select-none cursor-pointer',
 })
 
 export interface LabelProps
   extends
-    React.LabelHTMLAttributes<HTMLLabelElement>,
+    React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>,
     VariantProps<typeof labelVariants> {}
 
-const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
-  ({ className, ...props }, ref) => (
-    <label ref={ref} className={cn(labelVariants(), className)} {...props} />
-  ),
-)
-Label.displayName = 'Label'
+const Label = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  LabelProps
+>(({ className, ...props }, ref) => (
+  <LabelPrimitive.Root
+    ref={ref}
+    data-slot="label"
+    className={cn(labelVariants(), className)}
+    {...props}
+  />
+))
+Label.displayName = LabelPrimitive.Root.displayName
 
 export { Label }
 ```
 
 </Installation>
 
-
-
 ## Examples
 
-### With Input
+Explore form integrations and accessibility states.
 
-<ComponentPreview>
-  <div className="grid w-full max-w-sm items-center gap-1.5 text-left">
-    <Label htmlFor="email-demo">Email Address</Label>
-    <Input type="email" id="email-demo" placeholder="name@example.com" className="max-w-xs" />
+<ComponentPreview name="label" vibeDeps="input, checkbox">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4 w-full max-w-2xl mx-auto text-left">
+
+    {/* Label with input */}
+    <div className="grid w-full items-center gap-1.5">
+      <Label htmlFor="email-demo">Email Address</Label>
+      <Input type="email" id="email-demo" placeholder="name@example.com" className="max-w-xs" />
+    </div>
+
+    {/* Disabled state */}
+    <div className="grid w-full items-center gap-1.5 opacity-60">
+      <Label htmlFor="disabled-input">Disabled Field</Label>
+      <Input disabled type="text" id="disabled-input" placeholder="Cannot edit this" className="max-w-xs" />
+    </div>
+
   </div>
 
 ```tsx
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 
-export default function LabelWithInput() {
+export default function FormExamples() {
   return (
-    <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="email-demo">Email Address</Label>
-      <Input type="email" id="email-demo" placeholder="name@example.com" />
+    <div className="grid grid-cols-2 gap-8 w-full max-w-2xl">
+      {/* 1. Form Input Field */}
+      <div className="grid w-full items-center gap-1.5">
+        <Label htmlFor="email-demo">Email Address</Label>
+        <Input type="email" id="email-demo" placeholder="name@example.com" />
+      </div>
+
+      {/* 2. Disabled Input Peer */}
+      <div className="grid w-full items-center gap-1.5 opacity-60">
+        <Label htmlFor="disabled-input">Disabled Field</Label>
+        <Input disabled type="text" id="disabled-input" placeholder="Cannot edit this" />
+      </div>
     </div>
   )
 }
@@ -84,6 +111,18 @@ export default function LabelWithInput() {
 
 </ComponentPreview>
 
-## Component Concept
+## Props
 
-Vibe UI's Label component wraps the Radix UI `Label` primitive. It provides accessible field labels that focus matching form elements when clicked.
+<PropsTable>
+  <PropRow
+    prop="htmlFor"
+    type="string"
+    description="The ID of the input element that this label is associated with."
+  />
+  <PropRow
+    prop="asChild"
+    type="boolean"
+    default="false"
+    description="Change the underlying rendered element to a Slot component for polymorphism."
+  />
+</PropsTable>

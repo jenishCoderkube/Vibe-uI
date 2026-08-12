@@ -337,7 +337,12 @@ const CarouselDots = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { scrollSnaps, selectedIndex, scrollTo, variant: carouselVar } = useCarousel()
+  const {
+    scrollSnaps,
+    selectedIndex,
+    scrollTo,
+    variant: carouselVar,
+  } = useCarousel()
 
   if (scrollSnaps.length <= 1) {
     return null
@@ -347,10 +352,7 @@ const CarouselDots = React.forwardRef<
     <div
       ref={ref}
       data-slot="carousel-dots"
-      className={cn(
-        'flex items-center justify-center gap-2 mt-4',
-        className,
-      )}
+      className={cn('flex items-center justify-center gap-2 mt-4', className)}
       {...props}
     >
       {scrollSnaps.map((_, index) => (
@@ -379,7 +381,7 @@ const CarouselDots = React.forwardRef<
                 ? 'border-foreground'
                 : carouselVar === 'cyberpunk'
                   ? 'border-emerald-500'
-                  : 'bg-neutral-300 dark:bg-neutral-700 hover:bg-neutral-400 dark:hover:bg-neutral-600'
+                  : 'bg-neutral-300 dark:bg-neutral-700 hover:bg-neutral-400 dark:hover:bg-neutral-600',
           )}
           aria-label={`Go to slide ${index + 1}`}
         />

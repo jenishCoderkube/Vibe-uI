@@ -2,7 +2,7 @@
 
 A layout system for chatbot dialogue timelines, message bubble sequences, and status receipts.
 
-## Preview: Align Start Bubble
+## Preview
 
 <ComponentPreview>
   <MessageBasicStart />
@@ -13,7 +13,7 @@ import { Message, MessageContent } from '@/components/ui/message'
 export default function StartDemo() {
   return (
     <Message align="start" variant="default" className="max-w-[340px]">
-      <MessageContent className="bg-zinc-900 border-zinc-800 text-white rounded-2xl rounded-tl-none">
+      <MessageContent className="bg-muted border-border text-foreground rounded-2xl rounded-tl-none">
         Hello! How can I help you build Vibe UI library today?
       </MessageContent>
     </Message>
@@ -49,11 +49,11 @@ const bubbleVariants = tv({
   base: "relative flex flex-col gap-1 rounded-2xl px-4 py-2.5 max-w-[80%] border",
   variants: {
     variant: {
-      default: "bg-zinc-900 border-zinc-800 text-zinc-200",
-      glass: "bg-white/5 border-white/10 backdrop-blur-md text-white",
+      default: "bg-muted border-border text-foreground",
+      glass: "bg-black/5 dark:bg-white/10 border-black/10 dark:border-white/15 backdrop-blur-md text-foreground dark:text-white",
       retro: "border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)]",
-      glow: "border-primary/20 bg-primary/[0.02] text-primary shadow-[0_0_12px_rgba(168,85,247,0.1)]",
-      cyberpunk: "border-emerald-950 bg-black text-emerald-500 font-mono",
+      glow: "border-primary/20 bg-primary/10 text-primary shadow-[0_0_12px_rgba(168,85,247,0.15)]",
+      cyberpunk: "border-emerald-500/30 bg-emerald-950/20 dark:bg-black text-emerald-600 dark:text-emerald-400 font-mono",
     },
     align: {
       start: "rounded-tl-none",
@@ -66,7 +66,10 @@ const bubbleVariants = tv({
   },
 })
 
-const MessageContext = React.createContext<{ align: "start" | "end"; variant: "default" | "glass" | "retro" | "glow" | "cyberpunk" }>({ align: "start", variant: "default" })
+const MessageContext = React.createContext<{
+  align: "start" | "end"
+  variant: "default" | "glass" | "retro" | "glow" | "cyberpunk"
+}>({ align: "start", variant: "default" })
 
 export interface MessageProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -89,14 +92,18 @@ const Message = React.forwardRef<HTMLDivElement, MessageProps>(
 )
 Message.displayName = "Message"
 
-export interface MessageGroupProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageGroupProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const MessageGroup = React.forwardRef<HTMLDivElement, MessageGroupProps>(
   ({ className, ...props }, ref) => {
     return (
       <div
         ref={ref}
-        className={cn("flex flex-col gap-4 w-full max-w-xl mx-auto p-4", className)}
+        className={cn(
+          "flex flex-col gap-4 w-full max-w-xl mx-auto p-4",
+          className
+        )}
         {...props}
       />
     )
@@ -104,7 +111,8 @@ const MessageGroup = React.forwardRef<HTMLDivElement, MessageGroupProps>(
 )
 MessageGroup.displayName = "MessageGroup"
 
-export interface MessageAvatarProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageAvatarProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const MessageAvatar = React.forwardRef<HTMLDivElement, MessageAvatarProps>(
   ({ className, ...props }, ref) => {
@@ -113,7 +121,7 @@ const MessageAvatar = React.forwardRef<HTMLDivElement, MessageAvatarProps>(
       <div
         ref={ref}
         className={cn(
-          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden border border-white/10 bg-zinc-900 text-xs font-semibold text-white select-none",
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden border border-border bg-muted text-xs font-semibold text-foreground select-none",
           align === "start" ? "self-start" : "self-end",
           className
         )}
@@ -124,7 +132,8 @@ const MessageAvatar = React.forwardRef<HTMLDivElement, MessageAvatarProps>(
 )
 MessageAvatar.displayName = "MessageAvatar"
 
-export interface MessageContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageContentProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
   ({ className, ...props }, ref) => {
@@ -140,7 +149,8 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
 )
 MessageContent.displayName = "MessageContent"
 
-export interface MessageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageHeaderProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const MessageHeader = React.forwardRef<HTMLDivElement, MessageHeaderProps>(
   ({ className, ...props }, ref) => {
@@ -149,7 +159,7 @@ const MessageHeader = React.forwardRef<HTMLDivElement, MessageHeaderProps>(
       <div
         ref={ref}
         className={cn(
-          "text-[10px] text-zinc-500 font-mono tracking-wider mb-0.5 select-none",
+          "text-[10px] text-muted-foreground font-mono tracking-wider mb-0.5 select-none",
           align === "end" && "text-right ml-auto",
           className
         )}
@@ -160,7 +170,8 @@ const MessageHeader = React.forwardRef<HTMLDivElement, MessageHeaderProps>(
 )
 MessageHeader.displayName = "MessageHeader"
 
-export interface MessageFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MessageFooterProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 const MessageFooter = React.forwardRef<HTMLDivElement, MessageFooterProps>(
   ({ className, ...props }, ref) => {
@@ -169,7 +180,7 @@ const MessageFooter = React.forwardRef<HTMLDivElement, MessageFooterProps>(
       <div
         ref={ref}
         className={cn(
-          "text-[9px] text-zinc-600 font-mono select-none mt-0.5",
+          "text-[9px] text-muted-foreground font-mono select-none mt-0.5",
           align === "end" && "text-right ml-auto",
           className
         )}
@@ -192,374 +203,333 @@ export {
 
 </Installation>
 
+## Themes
 
-
-## Standard Variations
-
-### Align End Bubble
+Explore message bubble aesthetics and alignments side-by-side.
 
 <ComponentPreview>
-  <MessageBasicEnd />
-
-```tsx
-import { Message, MessageContent } from '@/components/ui/message'
-
-export default function EndDemo() {
-  return (
-    <Message align="end" variant="default" className="max-w-[340px]">
-      <MessageContent className="bg-blue-600 border-transparent text-white rounded-2xl rounded-tr-none">
-        I want to add some remaining Vibe UI components natively.
-      </MessageContent>
-    </Message>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Default Minimal Theme
-
-<ComponentPreview>
-  <MessageDefaultTheme />
-
-```tsx
-import { Message, MessageContent } from '@/components/ui/message'
-
-export default function DefaultDemo() {
-  return (
-    <Message align="start" variant="default" className="max-w-[340px]">
-      <MessageContent>Sure! Let's choose Input OTP and Menubar.</MessageContent>
-    </Message>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Glassmorphic Theme
-
-<ComponentPreview>
-  <MessageGlassTheme />
-
-```tsx
-import { Message, MessageContent } from '@/components/ui/message'
-
-export default function GlassDemo() {
-  return (
-    <Message align="start" variant="glass" className="max-w-[340px]">
-      <MessageContent>
-        Perfect. Added backdrop filters to support transparency preset themes.
-      </MessageContent>
-    </Message>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Retro Brutalist Theme
-
-<ComponentPreview>
-  <MessageRetroTheme />
-
-```tsx
-import { Message, MessageContent } from '@/components/ui/message'
-
-export default function RetroDemo() {
-  return (
-    <Message align="start" variant="retro" className="max-w-[340px]">
-      <MessageContent className="font-bold text-foreground">
-        YES! Neo brutalist borders look extremely clean.
-      </MessageContent>
-    </Message>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Neon Glow Theme
-
-<ComponentPreview>
-  <MessageGlowTheme />
-
-```tsx
-import { Message, MessageContent } from '@/components/ui/message'
-
-export default function GlowDemo() {
-  return (
-    <Message align="start" variant="glow" className="max-w-[340px]">
-      <MessageContent>
-        Neon aura glows can be enabled in settings dashboard panels.
-      </MessageContent>
-    </Message>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Cyberpunk Theme
-
-<ComponentPreview>
-  <MessageCyberTheme />
-
-```tsx
-import { Message, MessageContent } from '@/components/ui/message'
-
-export default function CyberDemo() {
-  return (
-    <Message align="start" variant="cyberpunk" className="max-w-[340px]">
-      <MessageContent>
-        SYS_LOG: Message packet resolved successfully inside monorepos.
-      </MessageContent>
-    </Message>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Bubbles with Avatars
-
-<ComponentPreview>
-  <MessageWithAvatar />
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full py-4 px-2 items-center justify-items-center">
+    <MessageBasicStart />
+    <MessageBasicEnd />
+    <MessageDefaultTheme />
+    <MessageGlassTheme />
+    <MessageRetroTheme />
+    <MessageGlowTheme />
+    <MessageCyberTheme />
+  </div>
 
 ```tsx
 import React from 'react'
 import { Message, MessageContent } from '@/components/ui/message'
 
-function AvatarPlaceholder({ text }: { text: string }) {
+export default function MessageThemesDemo() {
   return (
-    <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 text-xs font-bold text-white uppercase select-none">
-      {text}
-    </div>
-  )
-}
-
-export default function AvatarDemo() {
-  return (
-    <Message
-      align="start"
-      variant="default"
-      className="max-w-[340px] items-end"
-    >
-      <AvatarPlaceholder text="JS" />
-      <MessageContent>
-        The layout places avatars at the bottom of the group stack.
-      </MessageContent>
-    </Message>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Message with Header user labels
-
-<ComponentPreview>
-  <MessageWithHeader />
-
-```tsx
-import React from 'react'
-import { Message, MessageHeader, MessageContent } from '@/components/ui/message'
-
-function AvatarPlaceholder({ text }: { text: string }) {
-  return (
-    <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 text-xs font-bold text-white uppercase select-none">
-      {text}
-    </div>
-  )
-}
-
-export default function HeaderDemo() {
-  return (
-    <Message
-      align="start"
-      variant="default"
-      className="flex-col items-start gap-1 max-w-[340px]"
-    >
-      <MessageHeader className="pl-11">
-        Jenish Sabhadiya • 10:45 AM
-      </MessageHeader>
-      <div className="flex gap-3 w-full items-end">
-        <AvatarPlaceholder text="JS" />
-        <MessageContent>
-          Looks good! The username aligns with the content text box.
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full items-center justify-items-center">
+      {/* 1. Start Align Bubble */}
+      <Message align="start" variant="default" className="max-w-[340px]">
+        <MessageContent className="bg-zinc-900 border-zinc-800 text-white rounded-2xl rounded-tl-none">
+          Hello! How can I help you build Vibe UI library today?
         </MessageContent>
-      </div>
-    </Message>
-  )
-}
-```
+      </Message>
 
-</ComponentPreview>
+      {/* 2. End Align Bubble */}
+      <Message align="end" variant="default" className="max-w-[340px]">
+        <MessageContent className="bg-blue-600 border-transparent text-white rounded-2xl rounded-tr-none">
+          I want to add some remaining Vibe UI components natively.
+        </MessageContent>
+      </Message>
 
-### Message with Footer status receipts
+      {/* 3. Default Theme */}
+      <Message align="start" variant="default" className="max-w-[340px]">
+        <MessageContent>Sure! Let's choose Input OTP and Menubar.</MessageContent>
+      </Message>
 
-<ComponentPreview>
-  <MessageWithFooter />
+      {/* 4. Glassmorphic Theme */}
+      <Message align="start" variant="glass" className="max-w-[340px]">
+        <MessageContent>
+          Perfect. Added backdrop filters to support transparency preset themes.
+        </MessageContent>
+      </Message>
 
-```tsx
-import React from 'react'
-import { Message, MessageContent, MessageFooter } from '@/components/ui/message'
+      {/* 5. Retro Neobrutalism Theme */}
+      <Message align="start" variant="retro" className="max-w-[340px]">
+        <MessageContent className="font-bold text-foreground">
+          YES! Neo brutalist borders look extremely clean.
+        </MessageContent>
+      </Message>
 
-function AvatarPlaceholder({ text }: { text: string }) {
-  return (
-    <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 text-xs font-bold text-white uppercase select-none">
-      {text}
+      {/* 6. Neon Glow Theme */}
+      <Message align="start" variant="glow" className="max-w-[340px]">
+        <MessageContent>
+          Neon aura glows can be enabled in settings dashboard panels.
+        </MessageContent>
+      </Message>
+
+      {/* 7. Cyberpunk Theme */}
+      <Message align="start" variant="cyberpunk" className="max-w-[340px]">
+        <MessageContent>
+          SYS_LOG: Message packet resolved successfully inside monorepos.
+        </MessageContent>
+      </Message>
     </div>
   )
 }
-
-export default function FooterDemo() {
-  return (
-    <Message
-      align="start"
-      variant="default"
-      className="flex-col items-start gap-1 max-w-[340px]"
-    >
-      <div className="flex gap-3 w-full items-end">
-        <AvatarPlaceholder text="JS" />
-        <MessageContent>
-          We can add check ticks to display read receipt states.
-        </MessageContent>
-      </div>
-      <MessageFooter className="pl-11">Delivered</MessageFooter>
-    </Message>
-  )
-}
 ```
 
 </ComponentPreview>
 
-### Conversation feed stacked group
+## Examples
 
-<ComponentPreview>
-  <MessageGroupFeed />
+A full AI Chat Application layout built using Message, MessageHeader, MessageFooter, Marker, Input, and Button primitives.
+
+<ComponentPreview name="message" vibeDeps="marker, input, button">
+  <MessagePremiumChatApp />
 
 ```tsx
-import React from 'react'
-import { MessageGroup, Message, MessageContent, MessageFooter } from '@/components/ui/message'
+import React, { useState, useRef, useEffect } from 'react'
+import {
+  Message,
+  MessageContent,
+  MessageHeader,
+  MessageFooter,
+} from '@/components/ui/message'
 import { Marker, MarkerContent } from '@/components/ui/marker'
-
-function AvatarPlaceholder({ text }: { text: string }) {
-  return (
-    <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 text-xs font-bold text-white uppercase select-none">
-      {text}
-    </div>
-  )
-}
-
-export default function GroupDemo() {
-  return (
-    <MessageGroup className="p-0 gap-3 max-w-md w-full bg-zinc-950 p-6 rounded-2xl border border-zinc-900 relative">
-      {/* 1. Right align user message */}
-      <Message align="end" variant="default" className="items-end gap-2">
-        <AvatarPlaceholder text="ME" />
-        <MessageContent className="bg-blue-600 border-transparent text-white rounded-2xl rounded-tr-none text-xs leading-relaxed max-w-[70%]">
-          Deploying to prod real quick.
-        </MessageContent>
-      </Message>
-
-      {/* 2. Left align user reply */}
-      <Message align="start" variant="default" className="items-end gap-2">
-        <AvatarPlaceholder text="OL" />
-        <MessageContent className="bg-zinc-800 border-transparent text-white rounded-2xl rounded-tl-none text-xs leading-relaxed max-w-[70%]">
-          It's 4:55 PM. On a Friday.
-        </MessageContent>
-      </Message>
-
-      {/* 3. Right align user reply */}
-      <Message
-        align="end"
-        variant="default"
-        className="flex-col items-end gap-1"
-      >
-        <div className="flex items-end gap-2 w-full justify-end">
-          <MessageContent className="bg-blue-600 border-transparent text-white rounded-2xl rounded-tr-none text-xs leading-relaxed max-w-[70%]">
-            It's a one-line change.
-          </MessageContent>
-          <AvatarPlaceholder text="ME" />
-        </div>
-        <MessageFooter className="pr-10 text-[10px] text-zinc-500 font-medium">
-          Delivered
-        </MessageFooter>
-      </Message>
-
-      {/* 4. Left align reply */}
-      <Message align="start" variant="default" className="items-end gap-2">
-        <AvatarPlaceholder text="OL" />
-        <MessageContent className="bg-zinc-800 border-transparent text-white rounded-2xl rounded-tl-none text-xs leading-relaxed max-w-[70%]">
-          It's always a one-line change 😭.
-        </MessageContent>
-      </Message>
-
-      {/* 5. Left align reply with emoji reaction badge */}
-      <Message
-        align="start"
-        variant="default"
-        className="flex-col items-start gap-1"
-      >
-        <div className="flex items-end gap-2 w-full">
-          <AvatarPlaceholder text="OL" />
-          <div className="relative max-w-[70%] w-fit">
-            <MessageContent className="bg-zinc-800 border-transparent text-white rounded-2xl rounded-tl-none text-xs leading-relaxed">
-              Alright, let me take a look.
-            </MessageContent>
-            {/* Floating emoji reaction badge */}
-            <div className="absolute -bottom-2 right-6 h-5 w-7 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-750 text-[10px] shadow-md select-none cursor-pointer">
-              👍
-            </div>
-          </div>
-        </div>
-      </Message>
-
-      {/* Typing indicator using Marker component */}
-      <Marker className="pl-10 flex items-center gap-1 select-none">
-        <MarkerContent className="text-xs text-zinc-500 italic">
-          Oliver is typing
-        </MarkerContent>
-        <span className="flex gap-0.5 items-center justify-center pt-1.5">
-          <span className="h-1 w-1 bg-zinc-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
-          <span className="h-1 w-1 bg-zinc-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
-          <span className="h-1 w-1 bg-zinc-500 rounded-full animate-bounce" />
-        </span>
-      </Marker>
-    </MessageGroup>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Read receipts check ticks
-
-<ComponentPreview>
-  <MessageStatusTick />
-
-```tsx
-import React from 'react'
-import { Message, MessageContent, MessageFooter } from '@/components/ui/message'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { CheckCheck } from 'lucide-react'
 
-export default function StatusTickDemo() {
+function AvatarPlaceholder({ text }: { text: string }) {
   return (
-    <Message
-      align="end"
-      variant="glow"
-      className="flex-col items-end gap-1 max-w-[340px]"
-    >
-      <div className="flex gap-3 w-full justify-end items-end">
-        <MessageContent>Check status of packages compilation.</MessageContent>
+    <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 text-xs font-bold text-white uppercase select-none">
+      {text}
+    </div>
+  )
+}
+
+export default function InteractiveChatDemo() {
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      sender: 'user',
+      align: 'end' as const,
+      text: 'How do I use the Message component in Next.js?',
+      time: '10:45 AM',
+    },
+    {
+      id: 2,
+      sender: 'ai',
+      align: 'start' as const,
+      text: "Import Message and MessageContent from '@/components/ui/message', then set align to 'start' or 'end'.",
+      time: '10:46 AM',
+    },
+  ])
+  const [inputVal, setInputVal] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
+  }, [messages, isTyping])
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!inputVal.trim()) return
+
+    const nowStr = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        sender: 'user',
+        align: 'end',
+        text: inputVal.trim(),
+        time: nowStr,
+      },
+    ])
+    setInputVal('')
+    setIsTyping(true)
+
+    setTimeout(() => {
+      setIsTyping(false)
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          sender: 'ai',
+          align: 'start',
+          text: 'Thanks for your message! Message components support default, glass, retro, glow, and cyberpunk variants.',
+          time: new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        },
+      ])
+    }, 1000)
+  }
+
+  return (
+    <div className="w-full max-w-lg mx-auto rounded-xl border border-border bg-card text-card-foreground shadow-md overflow-hidden flex flex-col my-2">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/40 select-none">
+        <div className="flex items-center gap-2.5">
+          <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+          <h4 className="text-sm font-medium">Assistant Chat</h4>
+        </div>
+        <span className="text-xs text-muted-foreground font-mono">vibe-ui</span>
       </div>
-      <MessageFooter className="flex items-center gap-1 select-none">
-        <span>Read 10:46 AM</span>
-        <CheckCheck className="h-3 w-3 text-emerald-400" />
-      </MessageFooter>
-    </Message>
+
+      {/* Chat Feed */}
+      <div
+        ref={chatContainerRef}
+        className="p-4 space-y-4 max-h-[360px] min-h-[260px] overflow-y-auto bg-background/50"
+      >
+        {messages.map((msg) =>
+          msg.sender === 'user' ? (
+            <Message
+              key={msg.id}
+              align="end"
+              variant="default"
+              className="flex-col items-end gap-1"
+            >
+              <div className="flex items-end gap-2 w-full justify-end">
+                <MessageContent className="bg-primary text-primary-foreground border-transparent text-xs leading-relaxed max-w-[80%]">
+                  {msg.text}
+                </MessageContent>
+                <AvatarPlaceholder text="ME" />
+              </div>
+              <MessageFooter className="pr-10 text-[10px] text-muted-foreground flex items-center gap-1">
+                <span>{msg.time}</span>
+                <CheckCheck className="h-3 w-3 text-emerald-500" />
+              </MessageFooter>
+            </Message>
+          ) : (
+            <Message
+              key={msg.id}
+              align="start"
+              variant="default"
+              className="flex-col items-start gap-1"
+            >
+              <div className="flex items-start gap-2 w-full">
+                <AvatarPlaceholder text="AI" />
+                <div className="flex flex-col gap-1 max-w-[80%]">
+                  <MessageHeader className="pl-1">
+                    Assistant • {msg.time}
+                  </MessageHeader>
+                  <MessageContent className="text-xs leading-relaxed">
+                    {msg.text}
+                  </MessageContent>
+                </div>
+              </div>
+            </Message>
+          )
+        )}
+
+        {/* Typing Indicator */}
+        {isTyping && (
+          <div className="flex items-center gap-2 pl-1 py-1">
+            <AvatarPlaceholder text="AI" />
+            <Marker className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted border border-border/50 select-none">
+              <MarkerContent className="text-[11px] text-muted-foreground italic">
+                Assistant is typing
+              </MarkerContent>
+              <span className="flex gap-1 items-center justify-center pt-0.5">
+                <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce" />
+              </span>
+            </Marker>
+          </div>
+        )}
+      </div>
+
+      {/* Input Bar using Vibe UI Input & Button */}
+      <form onSubmit={handleSend} className="p-3 border-t border-border bg-card">
+        <div className="flex items-center gap-2">
+          <Input
+            type="text"
+            value={inputVal}
+            onChange={(e) => setInputVal(e.target.value)}
+            placeholder="Type a message..."
+            className="text-xs h-9"
+          />
+          <Button
+            type="submit"
+            size="sm"
+            disabled={!inputVal.trim()}
+            className="h-9 px-4 shrink-0"
+          >
+            Send
+          </Button>
+        </div>
+      </form>
+    </div>
   )
 }
 ```
 
 </ComponentPreview>
+
+## Props
+
+### Message
+
+<PropsTable>
+  <PropRow
+    prop="align"
+    type="'start' | 'end'"
+    default="'start'"
+    description="Alignment direction of the message bubble (start for incoming, end for outgoing)."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual aesthetic theme to apply to the message bubble container."
+  />
+</PropsTable>
+
+### MessageContent
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    description="Additional utility styles for background colors, rounded borders, or text sizing."
+  />
+</PropsTable>
+
+### MessageGroup
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    description="Container layout wrapper for stacking conversation dialogue timelines."
+  />
+</PropsTable>
+
+### MessageHeader
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    description="Top metadata label wrapper for sender names and timestamps."
+  />
+</PropsTable>
+
+### MessageFooter
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    description="Bottom metadata label wrapper for status indicators and read receipt ticks."
+  />
+</PropsTable>

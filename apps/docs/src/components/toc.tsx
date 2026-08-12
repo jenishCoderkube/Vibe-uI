@@ -148,7 +148,8 @@ export function TableOfContents() {
                   gridTemplateRows: isActive && hasChildren ? '1fr' : '0fr',
                   opacity: isActive && hasChildren ? 1 : 0,
                   visibility: isActive && hasChildren ? 'visible' : 'hidden',
-                  transition: 'grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms ease, visibility 300ms',
+                  transition:
+                    'grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms ease, visibility 300ms',
                 }}
               >
                 <div className="overflow-hidden">
@@ -162,7 +163,7 @@ export function TableOfContents() {
                             'block transition-all duration-200 hover:text-foreground no-underline py-0.5 text-[11px] leading-4 text-left border-l border-transparent -ml-[9px] pl-[8px]',
                             activeId === child.id
                               ? 'text-primary font-semibold border-primary'
-                              : 'text-muted-foreground/90'
+                              : 'text-muted-foreground/90',
                           )}
                         >
                           {child.text}

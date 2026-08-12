@@ -1,34 +1,234 @@
 # Message Scroller
 
-A scrollable container designed specifically for timeline message lists, server logs, or chatbots. It handles keeping viewports scrolled to the bottom on children additions and displays smooth "scroll to bottom" button shortcuts when the user scrolls up.
+A chat scroll container that anchors turns, opens saved transcripts, follows streamed responses, loads history without jumping, and jumps to any message.
 
-## Preview: Standard log listing
+## Preview
 
 <ComponentPreview>
-  <ScrollerBasic />
+  <ScrollerDemo />
 
 ```tsx
+import React, { useState, useRef } from 'react'
 import {
   MessageScroller,
   MessageScrollerViewport,
   MessageScrollerContent,
   MessageScrollerItem,
+  MessageScrollerButton,
 } from '@/components/ui/message-scroller'
+import { Message, MessageContent } from '@/components/ui/message'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+import { RotateCw, Send, Plus, Paperclip, Image, Globe, Search } from 'lucide-react'
 
-export default function ScrollerDemo() {
+function AvatarPlaceholder({ text }: { text: string }) {
   return (
-    <div className="h-40 border border-zinc-800 rounded-lg w-full max-w-[340px]">
-      <MessageScroller variant="default">
-        <MessageScrollerViewport>
-          <MessageScrollerContent>
-            {Array.from({ length: 10 }).map((_, idx) => (
-              <MessageScrollerItem key={idx} className="text-xs text-zinc-400">
-                Log line details item segment #{idx + 1}
-              </MessageScrollerItem>
-            ))}
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-      </MessageScroller>
+    <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-full bg-zinc-800 border border-zinc-700 text-xs font-bold text-white uppercase select-none">
+      {text}
+    </div>
+  )
+}
+
+export default function MessageScrollerDemo() {
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      sender: 'user',
+      text: "I'm building a chat app and the scroll behavior is jumping around when streaming responses.",
+      time: '10:45 AM',
+    },
+    {
+      id: 2,
+      sender: 'ai',
+      text: 'Wrap your message list in MessageScroller — the viewport pins to the bottom as new messages arrive.',
+      time: '10:46 AM',
+    },
+    {
+      id: 3,
+      sender: 'user',
+      text: 'Does auto-scroll pause if I scroll up to read earlier history?',
+      time: '10:47 AM',
+    },
+    {
+      id: 4,
+      sender: 'ai',
+      text: 'Yes! The moment you scroll up, auto-scroll pauses and MessageScrollerButton appears so you can return anytime.',
+      time: '10:48 AM',
+    },
+  ])
+  const [inputVal, setInputVal] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleReset = () => {
+    setMessages([
+      {
+        id: 1,
+        sender: 'user',
+        text: "I'm building a chat app and the scroll behavior is jumping around when streaming responses.",
+        time: '10:45 AM',
+      },
+      {
+        id: 2,
+        sender: 'ai',
+        text: 'Wrap your message list in MessageScroller — the viewport pins to the bottom as new messages arrive.',
+        time: '10:46 AM',
+      },
+    ])
+    setTimeout(() => inputRef.current?.focus(), 50)
+  }
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!inputVal.trim()) return
+
+    const userMsg = {
+      id: Date.now(),
+      sender: 'user' as const,
+      text: inputVal.trim(),
+      time: new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    }
+
+    setMessages((prev) => [...prev, userMsg])
+    setInputVal('')
+    inputRef.current?.focus()
+
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          sender: 'ai' as const,
+          text: 'Thanks for testing! MessageScroller automatically pins to the bottom when new content arrives.',
+          time: new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        },
+      ])
+    }, 800)
+  }
+
+  return (
+    <div className="w-full max-w-full flex flex-col gap-2 my-2 h-full">
+      <div className="rounded-xl border border-border bg-card text-card-foreground shadow-md overflow-hidden flex flex-col h-[520px] w-full">
+        {/* Card Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/40 select-none">
+          <div>
+            <h4 className="text-sm font-semibold leading-none">New Chat</h4>
+            <p className="text-[11px] text-muted-foreground mt-1">
+              How can I help you today?
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleReset}
+            className="h-8 w-8 p-0 cursor-pointer"
+            title="Reset conversation"
+          >
+            <RotateCw className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+
+        {/* MessageScroller Viewport */}
+        <div className="flex-1 min-h-0 overflow-hidden relative">
+          <MessageScroller variant="default" className="h-full border-none rounded-none bg-transparent">
+            <MessageScrollerViewport className="p-4">
+              <MessageScrollerContent className="gap-3">
+                {messages.map((msg) => (
+                  <MessageScrollerItem key={msg.id}>
+                    <Message
+                      align={msg.sender === 'user' ? 'end' : 'start'}
+                      variant="default"
+                      className="gap-2"
+                    >
+                      <AvatarPlaceholder text={msg.sender === 'user' ? 'ME' : 'AI'} />
+                      <MessageContent
+                        className={`text-xs leading-relaxed ${
+                          msg.sender === 'user'
+                            ? 'bg-primary text-primary-foreground border-transparent'
+                            : 'bg-muted text-foreground border-border'
+                        }`}
+                      >
+                        {msg.text}
+                      </MessageContent>
+                    </Message>
+                  </MessageScrollerItem>
+                ))}
+              </MessageScrollerContent>
+            </MessageScrollerViewport>
+            <MessageScrollerButton />
+          </MessageScroller>
+        </div>
+
+        {/* Form Footer */}
+        <form onSubmit={handleSend} className="p-3 border-t border-border bg-card">
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-9 w-9 p-0 shrink-0 cursor-pointer"
+                  title="Add files or actions"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" side="top" className="w-48">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Paperclip className="h-4 w-4 text-muted-foreground" />
+                  <span>Add Photos & Files</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Image className="h-4 w-4 text-muted-foreground" />
+                  <span>Create Image</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Globe className="h-4 w-4 text-muted-foreground" />
+                  <span>Web Search</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Search className="h-4 w-4 text-muted-foreground" />
+                  <span>Deep Research</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Input
+              autoFocus
+              type="text"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              placeholder="Type a message..."
+              className="text-xs h-9 flex-1"
+            />
+            <Button
+              type="submit"
+              size="sm"
+              disabled={!inputVal.trim()}
+              className="h-9 px-3 shrink-0 cursor-pointer"
+            >
+              <Send className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        </form>
+      </div>
+      <div className="text-center text-[11px] text-muted-foreground select-none">
+        Press send to test auto-scrolling behavior.
+      </div>
     </div>
   )
 }
@@ -36,7 +236,7 @@ export default function ScrollerDemo() {
 
 </ComponentPreview>
 
-<Installation name="message-scroller">
+<Installation name="message-scroller" vibeDeps="message, input, button, dropdown-menu">
 
 ```tsx
 "use client"
@@ -45,17 +245,17 @@ import * as React from "react"
 import { ArrowDown } from "lucide-react"
 import { tv, type VariantProps } from "tailwind-variants"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button, type ButtonProps } from "@/components/ui/button"
 
 const scrollerVariants = tv({
-  base: "relative flex flex-col w-full h-full overflow-hidden border bg-zinc-950/20",
+  base: "relative flex flex-col w-full h-full overflow-hidden border bg-background/50",
   variants: {
     variant: {
-      default: "border-zinc-800 rounded-xl",
-      glass: "border-white/10 bg-white/5 backdrop-blur-md rounded-xl",
-      retro: "border-2 border-foreground bg-background shadow-[3px_3px_0px_rgba(0,0,0,1)] rounded-none",
+      default: "border-border rounded-xl",
+      glass: "border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-md rounded-xl",
+      retro: "border-2 border-foreground bg-background shadow-[3px_3px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_rgba(255,255,255,1)] rounded-none",
       glow: "border-primary/20 shadow-[0_0_15px_rgba(168,85,247,0.15)] rounded-xl",
-      cyberpunk: "border-emerald-950 bg-black rounded-lg",
+      cyberpunk: "border-emerald-500/30 dark:border-emerald-950 bg-emerald-950/10 dark:bg-black rounded-lg",
     },
   },
   defaultVariants: {
@@ -82,22 +282,26 @@ const MessageScroller = React.forwardRef<HTMLDivElement, MessageScrollerProps>(
     const [showScrollButton, setShowScrollButton] = React.useState(false)
     const [autoScroll, setAutoScroll] = React.useState(true)
 
-    const handleScroll = () => {
-      const el = viewportRef.current
-      if (!el) return
-      const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < threshold
-      setShowScrollButton(!isNearBottom)
-      setAutoScroll(isNearBottom)
-    }
-
     const scrollToBottom = React.useCallback(() => {
       const el = viewportRef.current
       if (!el) return
       el.scrollTo({
         top: el.scrollHeight,
-        behavior: "smooth",
+        behavior: "auto",
       })
     }, [])
+
+    React.useEffect(() => {
+      const el = viewportRef.current
+      if (!el) return
+      const handleScroll = () => {
+        const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < threshold
+        setAutoScroll(isNearBottom)
+        setShowScrollButton(!isNearBottom)
+      }
+      el.addEventListener("scroll", handleScroll)
+      return () => el.removeEventListener("scroll", handleScroll)
+    }, [threshold])
 
     React.useLayoutEffect(() => {
       if (autoScroll) {
@@ -112,6 +316,7 @@ const MessageScroller = React.forwardRef<HTMLDivElement, MessageScrollerProps>(
       <ScrollerContext.Provider value={{ viewportRef, showScrollButton, scrollToBottom, variant }}>
         <div
           ref={ref}
+          data-slot="message-scroller"
           className={cn(scrollerVariants({ variant }), className)}
           {...props}
         >
@@ -134,26 +339,23 @@ const MessageScrollerViewport = React.forwardRef<HTMLDivElement, MessageScroller
       onScroll?.(e)
     }
 
-    React.useEffect(() => {
-      const el = context.viewportRef.current
-      if (!el) return
-      const onScrollUpdate = () => {
-        const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 150
-      }
-      el.addEventListener("scroll", onScrollUpdate)
-      return () => el.removeEventListener("scroll", onScrollUpdate)
-    }, [context])
+    const setRef = React.useCallback(
+      (el: HTMLDivElement | null) => {
+        ;(context.viewportRef as React.MutableRefObject<HTMLDivElement | null>).current = el
+        if (typeof ref === "function") {
+          ref(el)
+        } else if (ref) {
+          ;(ref as React.MutableRefObject<HTMLDivElement | null>).current = el
+        }
+      },
+      [context.viewportRef, ref]
+    )
 
     return (
       <div
-        ref={(el) => {
-          if (el) {
-            ;(context.viewportRef as any).current = el
-          }
-          if (typeof ref === "function") ref(el)
-          else if (ref) (ref as any).current = el
-        }}
+        ref={setRef}
         onScroll={handleScrollCombined}
+        data-slot="message-scroller-viewport"
         className={cn("w-full h-full overflow-y-auto scrollbar-thin scroll-smooth select-none p-4", className)}
         {...props}
       >
@@ -171,6 +373,7 @@ const MessageScrollerContent = React.forwardRef<HTMLDivElement, MessageScrollerC
     return (
       <div
         ref={ref}
+        data-slot="message-scroller-content"
         className={cn("flex flex-col gap-4 w-full h-fit", className)}
         {...props}
       />
@@ -186,6 +389,7 @@ const MessageScrollerItem = React.forwardRef<HTMLDivElement, MessageScrollerItem
     return (
       <div
         ref={ref}
+        data-slot="message-scroller-item"
         className={cn("w-full shrink-0", className)}
         {...props}
       />
@@ -194,7 +398,7 @@ const MessageScrollerItem = React.forwardRef<HTMLDivElement, MessageScrollerItem
 )
 MessageScrollerItem.displayName = "MessageScrollerItem"
 
-export interface MessageScrollerButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export interface MessageScrollerButtonProps extends ButtonProps {}
 
 const MessageScrollerButton = React.forwardRef<HTMLButtonElement, MessageScrollerButtonProps>(
   ({ className, children, ...props }, ref) => {
@@ -222,9 +426,12 @@ const MessageScrollerButton = React.forwardRef<HTMLButtonElement, MessageScrolle
       <Button
         ref={ref}
         type="button"
+        data-slot="message-scroller-button"
         variant={context.variant === "retro" ? "retro" : "glass"}
         className={cn(
           "absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full shadow-lg h-9 w-9 p-0 flex items-center justify-center border animate-bounce z-20 cursor-pointer",
+          context.variant === "glow" && "border-primary/30 text-primary hover:bg-primary/20 hover:text-primary",
+          context.variant === "cyberpunk" && "border-emerald-500 bg-black text-emerald-500 hover:bg-emerald-500/10 font-mono",
           className
         )}
         onClick={() => {
@@ -250,422 +457,17 @@ export {
 
 </Installation>
 
+---
 
+## Streaming
 
-## Standard Variations
-
-### Auto Scroll to Bottom
-
-<ComponentPreview>
-  <ScrollerAutoScroll />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-} from '@/components/ui/message-scroller'
-import { Button } from '@/components/ui/button'
-
-export default function AutoScrollDemo() {
-  const [messages, setMessages] = useState<string[]>([
-    'Initial node setup complete.',
-    'Database cluster status: OK',
-  ])
-
-  const appendLog = () => {
-    setMessages((prev) => [
-      ...prev,
-      `New log line resolved at ${new Date().toLocaleTimeString()}`,
-    ])
-  }
-
-  return (
-    <div className="space-y-3 w-full max-w-[340px]">
-      <div className="h-40 border border-zinc-800 rounded-lg">
-        <MessageScroller variant="default">
-          <MessageScrollerViewport>
-            <MessageScrollerContent>
-              {messages.map((msg, idx) => (
-                <MessageScrollerItem
-                  key={idx}
-                  className="text-xs font-mono text-emerald-400"
-                >
-                  &gt; {msg}
-                </MessageScrollerItem>
-              ))}
-            </MessageScrollerContent>
-          </MessageScrollerViewport>
-        </MessageScroller>
-      </div>
-      <Button
-        variant="glass"
-        size="sm"
-        onClick={appendLog}
-        className="w-full h-8 text-xs"
-      >
-        Append Log Details
-      </Button>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Back to Bottom Button
+Simulates real-time AI response token streaming (word-by-word text assembly). `MessageScroller` continuously keeps the viewport pinned to the live edge as text expands.
 
 <ComponentPreview>
-  <ScrollerScrollToBottom />
+  <ScrollerStreaming />
 
 ```tsx
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-  MessageScrollerButton,
-} from '@/components/ui/message-scroller'
-
-export default function ButtonDemo() {
-  return (
-    <div className="h-40 border border-zinc-800 rounded-lg w-full max-w-[340px]">
-      <MessageScroller variant="default">
-        <MessageScrollerViewport>
-          <MessageScrollerContent>
-            {Array.from({ length: 15 }).map((_, idx) => (
-              <MessageScrollerItem key={idx} className="text-xs text-zinc-400">
-                Message dialog line slot #{idx + 1}
-              </MessageScrollerItem>
-            ))}
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-        <MessageScrollerButton />
-      </MessageScroller>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Default Minimal Theme
-
-<ComponentPreview>
-  <ScrollerDefaultTheme />
-
-```tsx
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-} from '@/components/ui/message-scroller'
-
-export default function DefaultDemo() {
-  return (
-    <div className="h-32 w-full max-w-[340px]">
-      <MessageScroller variant="default">
-        <MessageScrollerViewport>
-          <MessageScrollerContent>
-            <MessageScrollerItem className="text-xs">
-              Scroll content blocks ...
-            </MessageScrollerItem>
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-      </MessageScroller>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Glassmorphic Theme
-
-<ComponentPreview>
-  <ScrollerGlassTheme />
-
-```tsx
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-} from '@/components/ui/message-scroller'
-
-export default function GlassDemo() {
-  return (
-    <div className="h-32 w-full max-w-[340px]">
-      <MessageScroller variant="glass">
-        <MessageScrollerViewport>
-          <MessageScrollerContent>
-            <MessageScrollerItem className="text-xs text-white">
-              Translucent window items ...
-            </MessageScrollerItem>
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-      </MessageScroller>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Retro Brutalist Theme
-
-<ComponentPreview>
-  <ScrollerRetroTheme />
-
-```tsx
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-  MessageScrollerButton,
-} from '@/components/ui/message-scroller'
-
-export default function RetroDemo() {
-  return (
-    <div className="h-32 w-full max-w-[340px]">
-      <MessageScroller variant="retro">
-        <MessageScrollerViewport>
-          <MessageScrollerContent>
-            <MessageScrollerItem className="text-xs font-mono text-foreground">
-              Retro terminal scroll ...
-            </MessageScrollerItem>
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-        <MessageScrollerButton />
-      </MessageScroller>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Neon Glow Theme
-
-<ComponentPreview>
-  <ScrollerGlowTheme />
-
-```tsx
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-} from '@/components/ui/message-scroller'
-
-export default function GlowDemo() {
-  return (
-    <div className="h-32 w-full max-w-[340px]">
-      <MessageScroller variant="glow">
-        <MessageScrollerViewport>
-          <MessageScrollerContent>
-            <MessageScrollerItem className="text-xs text-primary">
-              Purple highlights ...
-            </MessageScrollerItem>
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-      </MessageScroller>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Cyberpunk Theme
-
-<ComponentPreview>
-  <ScrollerCyberTheme />
-
-```tsx
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-  MessageScrollerButton,
-} from '@/components/ui/message-scroller'
-
-export default function CyberDemo() {
-  return (
-    <div className="h-32 w-full max-w-[340px]">
-      <MessageScroller variant="cyberpunk">
-        <MessageScrollerViewport>
-          <MessageScrollerContent>
-            <MessageScrollerItem className="text-xs font-mono text-emerald-500">
-              SYS_CONSOLE_LOADED ...
-            </MessageScrollerItem>
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-        <MessageScrollerButton />
-      </MessageScroller>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Scroll Load History
-
-<ComponentPreview>
-  <ScrollerLoadMore />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-} from '@/components/ui/message-scroller'
-import { Button } from '@/components/ui/button'
-import { RefreshCw } from 'lucide-react'
-
-export default function LoadMoreDemo() {
-  const [items, setItems] = useState<string[]>(['Item 3', 'Item 4', 'Item 5'])
-  const [loading, setLoading] = useState(false)
-
-  const loadPrevious = () => {
-    setLoading(true)
-    setTimeout(() => {
-      setItems((prev) => ['Loaded Item 1', 'Loaded Item 2', ...prev])
-      setLoading(false)
-    }, 1500)
-  }
-
-  return (
-    <div className="space-y-3 w-full max-w-[340px]">
-      <div className="h-40 border border-zinc-800 rounded-lg">
-        <MessageScroller variant="default">
-          <MessageScrollerViewport>
-            <MessageScrollerContent>
-              <MessageScrollerItem className="text-center py-2">
-                <Button
-                  variant="glass"
-                  size="sm"
-                  onClick={loadPrevious}
-                  disabled={loading}
-                  className="h-7 text-[10px]"
-                >
-                  {loading ? (
-                    <RefreshCw className="h-3 w-3 animate-spin mr-1.5" />
-                  ) : null}
-                  Fetch Historical Logs
-                </Button>
-              </MessageScrollerItem>
-              {items.map((it, idx) => (
-                <MessageScrollerItem
-                  key={idx}
-                  className="text-xs text-zinc-400 pl-2"
-                >
-                  {it}
-                </MessageScrollerItem>
-              ))}
-            </MessageScrollerContent>
-          </MessageScrollerViewport>
-        </MessageScroller>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Compact Scroller Box
-
-<ComponentPreview>
-  <ScrollerMaxHeight />
-
-```tsx
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-} from '@/components/ui/message-scroller'
-
-export default function CompactDemo() {
-  return (
-    <div className="h-24 border border-zinc-850 rounded-lg w-full max-w-[340px]">
-      <MessageScroller variant="default">
-        <MessageScrollerViewport className="p-2">
-          <MessageScrollerContent className="gap-2">
-            <MessageScrollerItem className="text-[11px] text-zinc-400">
-              Micro row slot A
-            </MessageScrollerItem>
-            <MessageScrollerItem className="text-[11px] text-zinc-400">
-              Micro row slot B
-            </MessageScrollerItem>
-            <MessageScrollerItem className="text-[11px] text-zinc-400">
-              Micro row slot C
-            </MessageScrollerItem>
-            <MessageScrollerItem className="text-[11px] text-zinc-400">
-              Micro row slot D
-            </MessageScrollerItem>
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-      </MessageScroller>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Arrows Overlay
-
-<ComponentPreview>
-  <ScrollerScrollArrows />
-
-```tsx
-import {
-  MessageScroller,
-  MessageScrollerViewport,
-  MessageScrollerContent,
-  MessageScrollerItem,
-  MessageScrollerButton,
-} from '@/components/ui/message-scroller'
-
-export default function ArrowsDemo() {
-  return (
-    <div className="h-36 border border-zinc-800 rounded-lg relative w-full max-w-[340px]">
-      <MessageScroller variant="default">
-        <MessageScrollerViewport>
-          <MessageScrollerContent>
-            {Array.from({ length: 8 }).map((_, idx) => (
-              <MessageScrollerItem key={idx} className="text-xs text-zinc-400">
-                Item listings line #{idx + 1}
-              </MessageScrollerItem>
-            ))}
-          </MessageScrollerContent>
-        </MessageScrollerViewport>
-        <MessageScrollerButton />
-      </MessageScroller>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Interactive Chat Interface
-
-<ComponentPreview>
-  <ScrollerChatInterface />
-
-```tsx
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
   MessageScroller,
   MessageScrollerViewport,
@@ -674,8 +476,16 @@ import {
   MessageScrollerButton,
 } from '@/components/ui/message-scroller'
 import { Message, MessageContent } from '@/components/ui/message'
+import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Send } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+import { RotateCw, Send, Plus, Paperclip, Image, Globe, Search } from 'lucide-react'
 
 function AvatarPlaceholder({ text }: { text: string }) {
   return (
@@ -685,71 +495,208 @@ function AvatarPlaceholder({ text }: { text: string }) {
   )
 }
 
-export default function ChatDemo() {
-  const [messages, setMessages] = useState<string[]>([
-    'Deploying to prod real quick.',
-    "It's 4:55 PM. On a Friday.",
-    "It's a one-line change.",
+export default function ScrollerStreamingDemo() {
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      sender: 'user',
+      text: 'How does MessageScroller handle live streaming AI text?',
+    },
+    {
+      id: 2,
+      sender: 'ai',
+      text: 'MessageScroller detects new content as tokens land in the viewport. When autoScroll is active, it automatically keeps the newest text in view without jarring page shifts.',
+    },
   ])
-  const [text, setText] = useState('')
+  const [isStreaming, setIsStreaming] = useState(false)
+  const [inputVal, setInputVal] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const send = () => {
-    if (!text.trim()) return
-    setMessages((prev) => [...prev, text])
-    setText('')
+  useEffect(() => {
+    if (!isStreaming) {
+      inputRef.current?.focus()
+    }
+  }, [isStreaming])
+
+  const fullAiResponse =
+    "That's the classic streaming scroll solution! As AI model tokens arrive character-by-character or word-by-word, MessageScroller automatically pins to the bottom of the thread so you watch the live answer assemble seamlessly."
+
+  const triggerStream = (userText: string) => {
+    if (isStreaming) return
+    const userMsgId = Date.now()
+    const aiMsgId = Date.now() + 1
+
+    const newMessages = [
+      ...messages,
+      { id: userMsgId, sender: 'user' as const, text: userText },
+      { id: aiMsgId, sender: 'ai' as const, text: '' },
+    ]
+    setMessages(newMessages)
+    setIsStreaming(true)
+
+    const words = fullAiResponse.split(' ')
+    let currentWordIdx = 0
+
+    const interval = setInterval(() => {
+      if (currentWordIdx < words.length) {
+        const partialText = words.slice(0, currentWordIdx + 1).join(' ')
+        setMessages((prev) =>
+          prev.map((m) => (m.id === aiMsgId ? { ...m, text: partialText } : m))
+        )
+        currentWordIdx++
+      } else {
+        clearInterval(interval)
+        setIsStreaming(false)
+      }
+    }, 45)
+  }
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!inputVal.trim() || isStreaming) return
+    const txt = inputVal.trim()
+    setInputVal('')
+    triggerStream(txt)
+  }
+
+  const handleReset = () => {
+    setMessages([
+      {
+        id: 1,
+        sender: 'user',
+        text: 'How does MessageScroller handle live streaming AI text?',
+      },
+      {
+        id: 2,
+        sender: 'ai',
+        text: 'MessageScroller detects new content as tokens land in the viewport. When autoScroll is active, it automatically keeps the newest text in view without jarring page shifts.',
+      },
+    ])
+    setIsStreaming(false)
+    setTimeout(() => inputRef.current?.focus(), 50)
   }
 
   return (
-    <div className="space-y-3 w-full max-w-md bg-zinc-950 p-6 rounded-2xl border border-zinc-900">
-      <div className="h-48 rounded-lg bg-black/30 overflow-hidden relative">
-        <MessageScroller variant="glass">
-          <MessageScrollerViewport className="p-3">
-            <MessageScrollerContent className="gap-3">
-              {messages.map((msg, idx) => (
-                <MessageScrollerItem key={idx}>
-                  <Message
-                    align={idx % 2 === 0 ? 'end' : 'start'}
-                    variant="glass"
-                    className="items-end gap-2"
-                  >
-                    {idx % 2 !== 0 ? (
-                      <AvatarPlaceholder text="OL" />
-                    ) : (
-                      <AvatarPlaceholder text="ME" />
-                    )}
-                    <MessageContent
-                      className={`text-[11px] py-1.5 px-3 leading-relaxed rounded-2xl ${
-                        idx % 2 === 0
-                          ? 'bg-blue-600 border-transparent text-white rounded-tr-none'
-                          : 'bg-zinc-800 border-transparent text-white rounded-tl-none'
-                      }`}
+    <div className="w-full max-w-full flex flex-col gap-2 my-2 h-full">
+      <div className="rounded-xl border border-border bg-card text-card-foreground shadow-md overflow-hidden flex flex-col h-[520px] w-full">
+        {/* Card Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/40 select-none">
+          <div>
+            <div className="flex items-center gap-2">
+              <h4 className="text-sm font-semibold leading-none">Streaming Messages</h4>
+              {isStreaming && (
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Auto-scroll follows the live edge as tokens stream in word-by-word.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleReset}
+            disabled={isStreaming}
+            className="h-8 w-8 p-0 cursor-pointer"
+            title="Reset stream"
+          >
+            <RotateCw className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+
+        {/* MessageScroller Viewport */}
+        <div className="flex-1 min-h-0 overflow-hidden relative">
+          <MessageScroller variant="default" className="h-full border-none rounded-none bg-transparent">
+            <MessageScrollerViewport className="p-4">
+              <MessageScrollerContent className="gap-3">
+                {messages.map((msg) => (
+                  <MessageScrollerItem key={msg.id}>
+                    <Message
+                      align={msg.sender === 'user' ? 'end' : 'start'}
+                      variant="default"
+                      className="gap-2"
                     >
-                      {msg}
-                    </MessageContent>
-                  </Message>
-                </MessageScrollerItem>
-              ))}
-            </MessageScrollerContent>
-          </MessageScrollerViewport>
-          <MessageScrollerButton />
-        </MessageScroller>
+                      <AvatarPlaceholder text={msg.sender === 'user' ? 'ME' : 'AI'} />
+                      <MessageContent
+                        className={`text-xs leading-relaxed ${
+                          msg.sender === 'user'
+                            ? 'bg-primary text-primary-foreground border-transparent'
+                            : 'bg-muted text-foreground border-border'
+                        }`}
+                      >
+                        {msg.text}
+                      </MessageContent>
+                    </Message>
+                  </MessageScrollerItem>
+                ))}
+              </MessageScrollerContent>
+            </MessageScrollerViewport>
+            <MessageScrollerButton />
+          </MessageScroller>
+        </div>
+
+        {/* Form Footer */}
+        <form onSubmit={handleSend} className="p-3 border-t border-border bg-card">
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-9 w-9 p-0 shrink-0 cursor-pointer"
+                  title="Add files or actions"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" side="top" className="w-48">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Paperclip className="h-4 w-4 text-muted-foreground" />
+                  <span>Add Photos & Files</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Image className="h-4 w-4 text-muted-foreground" />
+                  <span>Create Image</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Globe className="h-4 w-4 text-muted-foreground" />
+                  <span>Web Search</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Search className="h-4 w-4 text-muted-foreground" />
+                  <span>Deep Research</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Input
+              ref={inputRef}
+              autoFocus
+              type="text"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              placeholder={isStreaming ? "AI is typing..." : "Type a message to stream response..."}
+              disabled={isStreaming}
+              className="text-xs h-9 flex-1"
+            />
+            <Button
+              type="submit"
+              size="sm"
+              disabled={!inputVal.trim() || isStreaming}
+              className="h-9 px-3 shrink-0 cursor-pointer"
+            >
+              <Send className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        </form>
       </div>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && send()}
-          placeholder="Type your message..."
-          className="flex-1 text-xs bg-zinc-900 border border-white/10 rounded px-2.5 py-1.5 text-white outline-none"
-        />
-        <Button
-          variant="glow"
-          onClick={send}
-          className="h-8 w-8 p-0 flex items-center justify-center rounded"
-        >
-          <Send className="h-3.5 w-3.5" />
-        </Button>
+      <div className="text-center text-[11px] text-muted-foreground select-none">
+        Streaming is simulated word-by-word. Auto-scroll follows the live text edge.
       </div>
     </div>
   )
@@ -757,3 +704,68 @@ export default function ChatDemo() {
 ```
 
 </ComponentPreview>
+
+---
+
+## Props
+
+### MessageScroller
+
+<PropsTable title="MessageScroller">
+  <PropRow
+    prop="variant"
+    type='"default" | "glass" | "retro" | "glow" | "cyberpunk"'
+    default='"default"'
+    description="Visual style preset of the scroller frame container."
+  />
+  <PropRow
+    prop="threshold"
+    type="number"
+    default="150"
+    description="Pixel distance threshold from bottom edge before auto-scrolling triggers."
+  />
+</PropsTable>
+
+### MessageScrollerViewport
+
+<PropsTable title="MessageScrollerViewport">
+  <PropRow
+    prop="className"
+    type="string"
+    default="-"
+    description="Additional CSS classes applied to the scrollable viewport element."
+  />
+</PropsTable>
+
+### MessageScrollerContent
+
+<PropsTable title="MessageScrollerContent">
+  <PropRow
+    prop="className"
+    type="string"
+    default="-"
+    description="Additional CSS classes applied to the message items flex container."
+  />
+</PropsTable>
+
+### MessageScrollerItem
+
+<PropsTable title="MessageScrollerItem">
+  <PropRow
+    prop="className"
+    type="string"
+    default="-"
+    description="Additional CSS classes applied to individual message item rows."
+  />
+</PropsTable>
+
+### MessageScrollerButton
+
+<PropsTable title="MessageScrollerButton">
+  <PropRow
+    prop="className"
+    type="string"
+    default="-"
+    description="Additional CSS classes applied to the floating scroll-to-bottom action button."
+  />
+</PropsTable>

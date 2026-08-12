@@ -1,7 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { InputOTP } from 'vibe-ui'
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator,
+} from 'vibe-ui'
 
 // 1. 4-Digit
 export function OTP4Digit() {
@@ -19,21 +24,19 @@ export function OTP6Digit() {
 export function OTPDouble3Digit() {
   const [val, setVal] = useState('')
   return (
-    <div className="flex items-center gap-2">
-      <InputOTP
-        length={3}
-        value={val.slice(0, 3)}
-        onChange={(v) => setVal(v + val.slice(3))}
-        variant="default"
-      />
-      <span className="text-zinc-500 font-bold">-</span>
-      <InputOTP
-        length={3}
-        value={val.slice(3)}
-        onChange={(v) => setVal(val.slice(0, 3) + v)}
-        variant="default"
-      />
-    </div>
+    <InputOTP maxLength={6} value={val} onChange={setVal} variant="default">
+      <InputOTPGroup>
+        <InputOTPSlot index={0} />
+        <InputOTPSlot index={1} />
+        <InputOTPSlot index={2} />
+      </InputOTPGroup>
+      <InputOTPSeparator />
+      <InputOTPGroup>
+        <InputOTPSlot index={3} />
+        <InputOTPSlot index={4} />
+        <InputOTPSlot index={5} />
+      </InputOTPGroup>
+    </InputOTP>
   )
 }
 
@@ -110,7 +113,7 @@ export function OTPCustomSlotWidths() {
       value={val}
       onChange={setVal}
       variant="glow"
-      className="gap-3 *:w-12 *:h-14 *:text-xl"
+      className="gap-3 *:w-12 *:h-12 *:text-xl"
     />
   )
 }

@@ -69,8 +69,7 @@ const drawerContentVariants = tv({
         'bg-background/80 dark:bg-zinc-900/40 backdrop-blur-md border-black/10 dark:border-white/10 text-foreground shadow-[0_8px_32px_0_rgba(0,0,0,0.08)]',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
-      glow:
-        'border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.15)] dark:shadow-[0_0_30px_rgba(168,85,247,0.25)] bg-card/95 dark:bg-zinc-950/95 text-foreground',
+      glow: 'border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.15)] dark:shadow-[0_0_30px_rgba(168,85,247,0.25)] bg-card/95 dark:bg-zinc-950/95 text-foreground',
     },
   },
   compoundVariants: [
@@ -119,10 +118,7 @@ const DrawerContent = React.forwardRef<
       <DrawerPrimitive.Content
         ref={ref}
         data-slot="drawer-content"
-        className={cn(
-          drawerContentVariants({ side, variant }),
-          className,
-        )}
+        className={cn(drawerContentVariants({ side, variant }), className)}
         {...props}
       >
         {side === 'bottom' && (

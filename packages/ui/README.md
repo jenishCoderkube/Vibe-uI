@@ -1,13 +1,13 @@
 <div align="center">
-  
-  # 📦 vibe-ui
-  
-  ### *The official React package distribution for Vibe UI components.*
-  
-  [![npm](https://img.shields.io/npm/v/vibe-ui.svg?style=flat-square&color=black)](https://www.npmjs.com/package/vibe-ui)
-  [![typescript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
-  [![tailwind](https://img.shields.io/badge/Tailwind-3.x%20%7C%204.x-38bdf8.svg?style=flat-square)](https://tailwindcss.com/)
-  [![license](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+
+# 📦 vibe-ui
+
+### _The official React package distribution for Vibe UI components._
+
+[![npm](https://img.shields.io/npm/v/vibe-ui.svg?style=flat-square&color=black)](https://www.npmjs.com/package/vibe-ui)
+[![typescript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
+[![tailwind](https://img.shields.io/badge/Tailwind-3.x%20%7C%204.x-38bdf8.svg?style=flat-square)](https://tailwindcss.com/)
+[![license](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
 </div>
 
@@ -29,6 +29,7 @@ npm install vibe-ui lucide-react tailwind-variants
 ## 🛠️ Usage Example
 
 ### 1. Standard Imports & Theme Variants
+
 Import components directly from `'vibe-ui'`:
 
 ```tsx
@@ -41,7 +42,7 @@ export default function App() {
     <div className="flex flex-col gap-4">
       {/* Vibe's retro theme variant */}
       <InputOTP length={4} value={otp} onChange={setOtp} variant="retro" />
-      
+
       {/* Vibe's neon glow button variant */}
       <Button variant="glow" onClick={() => alert(otp)}>
         Submit Code
@@ -52,10 +53,16 @@ export default function App() {
 ```
 
 ### 2. Composed API Example
+
 Take maximum control of layout alignment using Vibe's composed primitives:
 
 ```tsx
-import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from 'vibe-ui'
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator,
+} from 'vibe-ui'
 
 export default function Composed() {
   return (
@@ -77,9 +84,11 @@ export default function Composed() {
 ---
 
 ## 📖 Documentation
+
 Check out the complete component list, variant guides, and API details on the [Vibe UI Documentation site](https://vibe-ui-kit.vercel.app/).
 
 ---
 
 ## 📄 License
+
 MIT © [Vibe UI](https://github.com/jenishCoderkube/Vibe-uI)

@@ -10,11 +10,13 @@ const itemVariants = tv({
   variants: {
     variant: {
       default:
-        'bg-transparent border-transparent text-foreground hover:bg-muted/40',
-      outline: 'border-border bg-background hover:bg-muted/30',
-      muted: 'bg-muted/50 border-transparent hover:bg-muted/70',
+        'bg-transparent border-transparent text-foreground hover:bg-muted',
+      outline:
+        'border-border bg-background hover:bg-muted/80 dark:hover:bg-muted/20',
+      muted:
+        'bg-muted/50 border-transparent hover:bg-muted dark:hover:bg-muted/30',
       glass:
-        'bg-white/5 border-white/10 backdrop-blur-md text-zinc-300 hover:text-white hover:bg-white/10 hover:border-white/20',
+        'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md text-muted-foreground hover:text-foreground hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/20',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)]',
       glow: 'border-primary/10 bg-primary/[0.01] text-primary/80 hover:text-primary hover:border-primary/30 hover:shadow-[0_0_12px_rgba(168,85,247,0.15)]',
@@ -80,7 +82,7 @@ const ItemSeparator = React.forwardRef<HTMLDivElement, ItemSeparatorProps>(
       <div
         ref={ref}
         data-slot="item-separator"
-        className={cn('h-px bg-white/5 my-0.5', className)}
+        className={cn('h-px bg-border my-0.5', className)}
         {...props}
       />
     )
@@ -93,9 +95,9 @@ const itemMediaVariants = tv({
   variants: {
     variant: {
       default: 'bg-transparent',
-      icon: 'size-8 rounded-md bg-muted border border-white/5 [&_svg]:size-4 text-zinc-400 group-hover/item:text-white',
+      icon: 'size-8 rounded-md bg-muted border border-border [&_svg]:size-4 text-muted-foreground group-hover/item:text-foreground',
       image:
-        'size-10 rounded-md border border-white/10 [&_img]:size-full [&_img]:object-cover',
+        'size-10 rounded-md border border-border [&_img]:size-full [&_img]:object-cover',
     },
   },
   defaultVariants: {
@@ -150,7 +152,7 @@ const ItemTitle = React.forwardRef<HTMLDivElement, ItemTitleProps>(
         ref={ref}
         data-slot="item-title"
         className={cn(
-          'text-sm font-semibold text-white tracking-wide truncate flex items-center gap-1.5',
+          'text-sm font-semibold text-foreground tracking-wide truncate flex items-center gap-1.5',
           className,
         )}
         {...props}
@@ -205,7 +207,7 @@ const ItemHeader = React.forwardRef<HTMLDivElement, ItemHeaderProps>(
         ref={ref}
         data-slot="item-header"
         className={cn(
-          'flex basis-full items-center justify-between gap-2 border-b border-white/5 pb-2 mb-2',
+          'flex basis-full items-center justify-between gap-2 border-b border-border pb-2 mb-2',
           className,
         )}
         {...props}
@@ -224,7 +226,7 @@ const ItemFooter = React.forwardRef<HTMLDivElement, ItemFooterProps>(
         ref={ref}
         data-slot="item-footer"
         className={cn(
-          'flex basis-full items-center justify-between gap-2 border-t border-white/5 pt-2 mt-2 text-xs text-muted-foreground',
+          'flex basis-full items-center justify-between gap-2 border-t border-border pt-2 mt-2 text-xs text-muted-foreground',
           className,
         )}
         {...props}

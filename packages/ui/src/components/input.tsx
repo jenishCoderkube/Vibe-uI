@@ -18,18 +18,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         type={type}
         data-slot="input"
         className={cn(
-          'flex h-10 w-full min-w-0 px-3 py-2 text-sm transition-all duration-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+          'flex h-10 w-full min-w-0 px-3 py-2 text-sm transition-all duration-200 focus-visible:outline-none ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50',
           // Variants
           variant === 'default' &&
-            'rounded-md border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 shadow-sm',
+            'rounded-md border border-input bg-background placeholder:text-muted-foreground focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black dark:focus-visible:border-white dark:focus-visible:ring-1 dark:focus-visible:ring-white shadow-sm',
           variant === 'bottom' &&
             'rounded-none border-0 border-b border-input bg-transparent px-0 focus-visible:border-primary shadow-none focus-visible:ring-0',
           variant === 'glass' &&
-            'rounded-md border border-white/20 dark:border-white/10 bg-white/5 dark:bg-black/20 backdrop-blur-md placeholder:text-muted-foreground/60 focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:bg-white/10 dark:focus-visible:bg-black/30 shadow-sm',
+            'rounded-md border border-white/20 dark:border-white/10 bg-white/5 dark:bg-black/20 backdrop-blur-md placeholder:text-muted-foreground/60 focus-visible:border-white/40 focus-visible:ring-[3px] focus-visible:ring-white/20 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10 shadow-sm',
           variant === 'filled' &&
             'rounded-t-md rounded-b-none border-0 border-b border-input bg-muted/50 dark:bg-muted/20 hover:bg-muted/70 dark:hover:bg-muted/30 focus-visible:border-primary shadow-none focus-visible:ring-0',
           variant === 'glow' &&
-            'rounded-md border border-primary/30 bg-primary/[0.02] placeholder:text-muted-foreground/65 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 shadow-[0_0_10px_rgba(168,85,247,0.05)]',
+            'rounded-md border border-primary/30 bg-primary/[0.02] placeholder:text-muted-foreground/65 focus-visible:ring-[3px] focus-visible:ring-primary/20 focus-visible:border-primary/50 shadow-[0_0_10px_rgba(168,85,247,0.05)]',
           variant === 'retro' &&
             'rounded-none border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] focus-visible:translate-x-[1px] focus-visible:translate-y-[1px] focus-visible:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:focus-visible:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]',
           variant === 'cyberpunk' &&
@@ -39,19 +39,19 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           // Error states
           isInvalid &&
             variant === 'default' &&
-            'border-destructive focus-visible:ring-destructive',
+            'border-destructive focus-visible:ring-[3px] focus-visible:ring-destructive/50',
           isInvalid &&
             variant === 'bottom' &&
             'border-destructive focus-visible:border-destructive',
           isInvalid &&
             variant === 'glass' &&
-            'border-destructive focus-visible:ring-destructive',
+            'border-destructive focus-visible:ring-[3px] focus-visible:ring-destructive/50',
           isInvalid &&
             variant === 'filled' &&
             'border-destructive focus-visible:border-destructive',
           isInvalid &&
             variant === 'glow' &&
-            'border-destructive focus-visible:ring-destructive',
+            'border-destructive focus-visible:ring-[3px] focus-visible:ring-destructive/50',
           isInvalid &&
             variant === 'retro' &&
             'border-destructive shadow-[3px_3px_0px_0px_rgba(239,68,68,1)] dark:shadow-[3px_3px_0px_0px_rgba(239,68,68,1)]',
@@ -91,16 +91,16 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
             variant === 'filled' ? 'pt-5 pb-1.5' : 'py-2',
             // Variants
             variant === 'default' &&
-              'rounded-md border border-input bg-background ring-offset-background focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary shadow-sm',
+              'rounded-md border border-input bg-background focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black dark:focus-visible:border-white dark:focus-visible:ring-1 dark:focus-visible:ring-white shadow-sm',
             variant === 'bottom' &&
               'rounded-none border-0 border-b border-input bg-transparent px-0 focus-visible:border-primary shadow-none focus-visible:ring-0',
             variant === 'glass' &&
-              'rounded-md border border-black/10 dark:border-white/10 bg-white/70 dark:bg-black/20 backdrop-blur-md focus-visible:ring-1 focus-visible:ring-primary focus-visible:bg-white dark:focus-visible:bg-black/30 shadow-sm',
+              'rounded-md border border-black/10 dark:border-white/10 bg-white/70 dark:bg-black/20 backdrop-blur-md focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-primary/20 focus-visible:bg-white dark:focus-visible:bg-black/30 shadow-sm',
             variant === 'filled' &&
               'rounded-t-md rounded-b-none border-0 border-b border-input bg-muted/50 dark:bg-muted/20 hover:bg-muted/70 dark:hover:bg-muted/30 focus-visible:border-primary shadow-none focus-visible:ring-0',
             // Error states
             error &&
-              'border-destructive focus-visible:ring-destructive focus-visible:border-destructive',
+              'border-destructive focus-visible:ring-[3px] focus-visible:ring-destructive/30 focus-visible:border-destructive',
             className,
           )}
           ref={ref}

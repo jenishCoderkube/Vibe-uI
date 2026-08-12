@@ -202,8 +202,27 @@ export const MultiSelectTrigger = React.forwardRef<
       <button
         type="button"
         ref={ref}
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-label={
+          props['aria-label'] ||
+          (typeof placeholder === 'string' ? placeholder : undefined)
+        }
         data-slot="multi-select-trigger"
+        data-state={isOpen ? 'open' : 'closed'}
         onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+            if (!isOpen) {
+              e.preventDefault()
+              setIsOpen(true)
+            }
+          } else if (e.key === 'Escape' && isOpen) {
+            e.preventDefault()
+            setIsOpen(false)
+          }
+        }}
         className={cn(multiSelectVariants({ variant }), className)}
         {...props}
       >
@@ -272,22 +291,36 @@ export const MultiSelectContent = React.forwardRef<
   HTMLDivElement,
   MultiSelectContentProps
 >(({ className, children, showSearch = false, ...props }, ref) => {
-  const { isOpen, variant, searchQuery, setSearchQuery } = useMultiSelect()
+  const { isOpen, setIsOpen, variant, searchQuery, setSearchQuery, mode } =
+    useMultiSelect()
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isOpen && e.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, setIsOpen])
 
   if (!isOpen) return null
 
   return (
     <div
       ref={ref}
+      role="listbox"
+      aria-multiselectable={mode !== 'single'}
       data-slot="multi-select-content"
+      data-state={isOpen ? 'open' : 'closed'}
       className={cn(
-        'absolute z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md transition-all duration-200 origin-top',
+        'absolute left-0 top-full z-50 mt-1.5 max-h-72 w-full overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-lg transition-all duration-200 origin-top animate-in fade-in-0 zoom-in-95',
         variant === 'glass' &&
-          'bg-white/10 dark:bg-white/[0.04] backdrop-blur-md border-white/20 dark:border-white/10',
+          'bg-background/95 dark:bg-zinc-900/95 backdrop-blur-md border-border shadow-xl',
         variant === 'retro' &&
-          'border-2 border-foreground bg-background rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]',
+          'border-2 border-foreground bg-background rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]',
         variant === 'glow' &&
-          'border-primary/45 shadow-[0_0_20px_rgba(168,85,247,0.15)] bg-zinc-950/80',
+          'border-primary/45 shadow-[0_0_20px_rgba(168,85,247,0.25)] bg-popover',
         className,
       )}
       {...props}
@@ -523,6 +556,8 @@ export const MultiSelectItem = React.forwardRef<
   return (
     <div
       ref={ref}
+      role="option"
+      aria-selected={isSelected}
       onClick={() => toggleValue(itemValue, children)}
       data-slot="multi-select-item"
       className={cn(

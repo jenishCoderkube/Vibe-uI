@@ -164,7 +164,9 @@ export function ComponentHeader({
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div className="space-y-2 flex-1">
           <h1
-            onClick={() => window.dispatchEvent(new CustomEvent('vibe-sidebar-center'))}
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent('vibe-sidebar-center'))
+            }
             className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground cursor-pointer hover:opacity-80 transition-opacity select-none"
             title="Click to center in sidebar"
           >

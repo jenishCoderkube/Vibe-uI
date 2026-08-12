@@ -21,7 +21,7 @@ const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
       reverse = false,
       pauseOnHover = false,
       direction = 'left',
-      speed = 30,
+      speed = 12,
       fade = true,
       gap = '1rem',
       repeat = 4,
@@ -36,7 +36,6 @@ const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
     const marqueeStyles = {
       '--gap': gap,
       '--duration': `${speed}s`,
-      gap: gap,
     } as React.CSSProperties
 
     return (

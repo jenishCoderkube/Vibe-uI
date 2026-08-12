@@ -7,11 +7,11 @@ import { cn } from '../lib/utils'
 import { ButtonGroupContext } from './button-group'
 
 export const buttonVariants = tv({
-  base: 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:-translate-y-0.5 hover:shadow-sm hover:opacity-90 active:translate-y-0 active:scale-95 cursor-pointer',
+  base: 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-60 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:-translate-y-0.5 hover:shadow-sm hover:opacity-90 active:translate-y-0 active:scale-95 cursor-pointer',
   variants: {
     variant: {
       default:
-        'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm',
+        'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none',
       destructive:
         'bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm',
       outline:

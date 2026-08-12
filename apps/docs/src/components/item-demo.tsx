@@ -35,7 +35,7 @@ export function ItemDefaultTheme() {
   return (
     <Item
       variant="default"
-      className="w-full max-w-[340px] border border-zinc-800 bg-zinc-900/40"
+      className="w-full max-w-[340px] border border-border bg-card/50"
     >
       <ItemContent>
         <ItemTitle>Notification Hub</ItemTitle>

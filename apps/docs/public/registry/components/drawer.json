@@ -1,7 +1,8 @@
 {
   "name": "drawer",
   "dependencies": [
-    "vaul",
+    "@radix-ui/react-dialog",
+    "lucide-react",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

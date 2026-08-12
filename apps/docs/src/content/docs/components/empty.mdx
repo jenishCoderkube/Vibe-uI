@@ -5,7 +5,18 @@ An empty state container used to present clear guidance, icons, and call-to-acti
 ## Preview
 
 <ComponentPreview>
-  <EmptyDemo />
+  <Empty className="w-full max-w-sm">
+    <EmptyIcon>
+      <FolderOpen className="h-6 w-6" />
+    </EmptyIcon>
+    <EmptyTitle>No Projects Found</EmptyTitle>
+    <EmptyDescription>
+      You haven't created any workspace projects yet. Get started by creating your first project.
+    </EmptyDescription>
+    <EmptyActions>
+      <Button variant="default">Create Project</Button>
+    </EmptyActions>
+  </Empty>
 
 ```tsx
 import {
@@ -18,7 +29,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { FolderOpen } from 'lucide-react'
 
-export default function EmptyDemo() {
+export function EmptyDemo() {
   return (
     <Empty className="w-full max-w-sm">
       <EmptyIcon>
@@ -38,7 +49,7 @@ export default function EmptyDemo() {
 
 </ComponentPreview>
 
-<Installation name="empty" vibeDeps="button">
+<Installation name="empty" vibeDeps="button" npmDeps="tailwind-variants lucide-react">
 
 ```tsx
 'use client'
@@ -84,76 +95,81 @@ export interface EmptyProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof emptyVariants> {}
 
-export function Empty({ className, variant = 'default', children, ...props }: EmptyProps) {
-  return (
-    <div className={cn(emptyVariants({ variant }), className)} {...props}>
-      {children}
-    </div>
-  )
-}
+export const Empty = React.forwardRef<HTMLDivElement, EmptyProps>(
+  ({ className, variant = 'default', children, ...props }, ref) => {
+    return (
+      <div ref={ref} className={cn(emptyVariants({ variant }), className)} {...props}>
+        {children}
+      </div>
+    )
+  },
+)
+Empty.displayName = 'Empty'
 
 export interface EmptyIconProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof emptyIconVariants> {}
 
-export function EmptyIcon({ className, variant = 'default', children, ...props }: EmptyIconProps) {
-  return (
-    <div className={cn(emptyIconVariants({ variant }), className)} {...props}>
-      {children}
-    </div>
-  )
-}
+export const EmptyIcon = React.forwardRef<HTMLDivElement, EmptyIconProps>(
+  ({ className, variant = 'default', children, ...props }, ref) => {
+    return (
+      <div ref={ref} className={cn(emptyIconVariants({ variant }), className)} {...props}>
+        {children}
+      </div>
+    )
+  },
+)
+EmptyIcon.displayName = 'EmptyIcon'
 
-export function EmptyTitle({ className, children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return (
-    <h3 className={cn('text-base font-semibold tracking-tight text-foreground mb-1', className)} {...props}>
-      {children}
-    </h3>
-  )
-}
+export const EmptyMedia = EmptyIcon
 
-export function EmptyDescription({ className, children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return (
-    <p className={cn('text-xs text-muted-foreground max-w-xs mb-6 leading-relaxed', className)} {...props}>
-      {children}
-    </p>
-  )
-}
+export const EmptyTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <h3 ref={ref} className={cn('text-base font-semibold tracking-tight text-foreground mb-1', className)} {...props}>
+        {children}
+      </h3>
+    )
+  },
+)
+EmptyTitle.displayName = 'EmptyTitle'
 
-export function EmptyActions({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div className={cn('flex items-center justify-center gap-2.5', className)} {...props}>
-      {children}
-    </div>
-  )
-}
+export const EmptyDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <div ref={ref} className={cn('text-xs text-muted-foreground max-w-xs mb-6 leading-relaxed', className)} {...props}>
+        {children}
+      </div>
+    )
+  },
+)
+EmptyDescription.displayName = 'EmptyDescription'
+
+export const EmptyActions = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <div ref={ref} className={cn('flex items-center justify-center gap-2.5', className)} {...props}>
+        {children}
+      </div>
+    )
+  },
+)
+EmptyActions.displayName = 'EmptyActions'
 ```
 
 </Installation>
 
-## Variations
+## Examples
 
-### Search Filter Empty
+Explore real-world design patterns — search filters, glassmorphic inboxes, red error states, and compact inline layouts.
 
 <ComponentPreview>
-  <EmptySearchDemo />
-
-```tsx
-import {
-  Empty,
-  EmptyIcon,
-  EmptyTitle,
-  EmptyDescription,
-  EmptyActions,
-} from '@/components/ui/empty'
-import { Button } from '@/components/ui/button'
-import { Search } from 'lucide-react'
-
-export default function EmptySearchDemo() {
-  return (
-    <Empty className="w-full max-w-sm">
+  <div className="flex flex-wrap gap-6 items-stretch justify-center w-full py-4 px-2">
+    
+    {/* Search Filter */}
+    <Empty className="w-full max-w-sm flex-1 min-w-[280px]">
       <EmptyIcon variant="glow">
-        <Search className="h-6 w-6" />
+        <SearchIcon className="h-6 w-6" />
       </EmptyIcon>
       <EmptyTitle>No Search Matches</EmptyTitle>
       <EmptyDescription>
@@ -163,67 +179,9 @@ export default function EmptySearchDemo() {
         <Button variant="outline">Clear Search Filter</Button>
       </EmptyActions>
     </Empty>
-  )
-}
-```
 
-</ComponentPreview>
-
-### Glassmorphic Inbox
-
-<ComponentPreview>
-  <EmptyInboxDemo />
-
-```tsx
-import {
-  Empty,
-  EmptyIcon,
-  EmptyTitle,
-  EmptyDescription,
-  EmptyActions,
-} from '@/components/ui/empty'
-import { Button } from '@/components/ui/button'
-import { Inbox } from 'lucide-react'
-
-export default function EmptyInboxDemo() {
-  return (
-    <Empty variant="glass" className="w-full max-w-sm">
-      <EmptyIcon variant="glass">
-        <Inbox className="h-6 w-6" />
-      </EmptyIcon>
-      <EmptyTitle>Your Inbox is Empty</EmptyTitle>
-      <EmptyDescription>
-        All caught up! You have zero unread notifications or messages in your queue.
-      </EmptyDescription>
-      <EmptyActions>
-        <Button variant="glass">Refresh Feed</Button>
-      </EmptyActions>
-    </Empty>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Connection Error
-
-<ComponentPreview>
-  <EmptyErrorDemo />
-
-```tsx
-import {
-  Empty,
-  EmptyIcon,
-  EmptyTitle,
-  EmptyDescription,
-  EmptyActions,
-} from '@/components/ui/empty'
-import { Button } from '@/components/ui/button'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
-
-export default function EmptyErrorDemo() {
-  return (
-    <Empty className="w-full max-w-sm">
+    {/* Connection Error */}
+    <Empty className="w-full max-w-sm flex-1 min-w-[280px]">
       <EmptyIcon className="bg-destructive/10 text-destructive border-destructive/20">
         <AlertTriangle className="h-6 w-6" />
       </EmptyIcon>
@@ -233,21 +191,27 @@ export default function EmptyErrorDemo() {
       </EmptyDescription>
       <EmptyActions>
         <Button variant="destructive" className="gap-2">
-          <RefreshCw className="h-4 w-4" />
+          <RefreshCwIcon className="h-4 w-4" />
           <span>Retry Connection</span>
         </Button>
       </EmptyActions>
     </Empty>
-  )
-}
-```
 
-</ComponentPreview>
+    {/* Compact Domain */}
+    <div className="rounded-xl border border-border p-6 text-center w-full max-w-sm flex-1 min-w-[280px] bg-card/50 flex flex-col items-center justify-center">
+      <EmptyIcon className="mx-auto h-12 w-12 p-0 mb-3">
+        <GlobeIcon className="h-5 w-5" />
+      </EmptyIcon>
+      <h3 className="font-semibold text-sm">No Custom Domains</h3>
+      <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-[220px]">
+        Connect a custom domain name to customize your app URL.
+      </p>
+      <Button size="sm" variant="outline" className="mt-auto">
+        Connect Domain
+      </Button>
+    </div>
 
-### Neubrutalism Retro
-
-<ComponentPreview>
-  <EmptyRetroDemo />
+  </div>
 
 ```tsx
 import {
@@ -258,51 +222,55 @@ import {
   EmptyActions,
 } from '@/components/ui/empty'
 import { Button } from '@/components/ui/button'
-import { Layers } from 'lucide-react'
+import { SearchIcon, AlertTriangle, RefreshCwIcon, GlobeIcon } from 'lucide-react'
 
-export default function EmptyRetroDemo() {
+export default function EmptyExamples() {
   return (
-    <Empty variant="retro" className="w-full max-w-sm">
-      <EmptyIcon variant="retro">
-        <Layers className="h-6 w-6" />
-      </EmptyIcon>
-      <EmptyTitle>NO DEPLOYMENTS FOUND</EmptyTitle>
-      <EmptyDescription>
-        Zero deployment instances registered in your cluster namespace. Initialize a container image to deploy.
-      </EmptyDescription>
-      <EmptyActions>
-        <Button variant="retro">INITIALIZE CONTAINER</Button>
-      </EmptyActions>
-    </Empty>
-  )
-}
-```
+    <div className="flex flex-wrap gap-6 items-stretch justify-center w-full">
+      {/* 1. Search Filter */}
+      <Empty className="w-full max-w-sm flex-1 min-w-[280px]">
+        <EmptyIcon variant="glow">
+          <SearchIcon className="h-6 w-6" />
+        </EmptyIcon>
+        <EmptyTitle>No Search Matches</EmptyTitle>
+        <EmptyDescription>
+          We couldn't find any results matching your search terms. Try checking for typos or using different keywords.
+        </EmptyDescription>
+        <EmptyActions>
+          <Button variant="outline">Clear Search Filter</Button>
+        </EmptyActions>
+      </Empty>
 
-</ComponentPreview>
+      {/* 2. Connection Error */}
+      <Empty className="w-full max-w-sm flex-1 min-w-[280px]">
+        <EmptyIcon className="bg-destructive/10 text-destructive border-destructive/20">
+          <AlertTriangle className="h-6 w-6" />
+        </EmptyIcon>
+        <EmptyTitle>Connection Timeout</EmptyTitle>
+        <EmptyDescription>
+          Unable to sync data with the server. Please verify your network connection and try again.
+        </EmptyDescription>
+        <EmptyActions>
+          <Button variant="destructive" className="gap-2">
+            <RefreshCwIcon className="h-4 w-4" />
+            <span>Retry Connection</span>
+          </Button>
+        </EmptyActions>
+      </Empty>
 
-### Compact Card Inline
-
-<ComponentPreview>
-  <EmptyCompactDemo />
-
-```tsx
-import { EmptyIcon } from '@/components/ui/empty'
-import { Button } from '@/components/ui/button'
-import { Globe } from 'lucide-react'
-
-export default function EmptyCompactDemo() {
-  return (
-    <div className="rounded-xl border border-border p-6 text-center w-full max-w-sm bg-card/50">
-      <EmptyIcon className="mx-auto h-10 w-10 p-2 mb-3">
-        <Globe className="h-5 w-5" />
-      </EmptyIcon>
-      <h3 className="font-semibold text-sm">No Custom Domains</h3>
-      <p className="text-xs text-muted-foreground mt-1 mb-4">
-        Connect a custom domain name to customize your app URL.
-      </p>
-      <Button size="sm" variant="outline">
-        Connect Domain
-      </Button>
+      {/* 3. Compact Domain */}
+      <div className="rounded-xl border border-border p-6 text-center w-full max-w-sm flex-1 min-w-[280px] bg-card/50 flex flex-col items-center justify-center">
+        <EmptyIcon className="mx-auto h-12 w-12 p-0 mb-3">
+          <GlobeIcon className="h-5 w-5" />
+        </EmptyIcon>
+        <h3 className="font-semibold text-sm">No Custom Domains</h3>
+        <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-[220px]">
+          Connect a custom domain name to customize your app URL.
+        </p>
+        <Button size="sm" variant="outline" className="mt-auto">
+          Connect Domain
+        </Button>
+      </div>
     </div>
   )
 }
@@ -310,17 +278,139 @@ export default function EmptyCompactDemo() {
 
 </ComponentPreview>
 
-## Component Concept
+## Themes
 
-Vibe UI's Empty State component provides a flexible, modular layout structure for displaying informative feedback, illustrative icons, and call-to-action buttons when workspace content or data streams are empty.
+Explore design aesthetics side-by-side.
 
-### Modular Architecture
+<ComponentPreview>
+  <div className="flex flex-wrap gap-6 items-stretch justify-center w-full py-4 px-2">
+    
+    {/* Default */}
+    <Empty variant="default" className="w-full max-w-sm flex-1 min-w-[280px]">
+      <EmptyIcon variant="default">
+        <FolderOpen className="h-6 w-6" />
+      </EmptyIcon>
+      <EmptyTitle>Default Layout</EmptyTitle>
+      <EmptyDescription>
+        Standard style featuring standard borders and soft drop shadows.
+      </EmptyDescription>
+      <EmptyActions>
+        <Button variant="default">Select</Button>
+      </EmptyActions>
+    </Empty>
 
-Built using decoupled sub-primitives (`Empty`, `EmptyIcon`, `EmptyTitle`, `EmptyDescription`, and `EmptyActions`), allowing developers to customize layout hierarchies, icon wrappers, or action buttons freely.
+    {/* Glassmorphic */}
+    <Empty variant="glass" className="w-full max-w-sm flex-1 min-w-[280px]">
+      <EmptyIcon variant="glass">
+        <InboxIcon className="h-6 w-6" />
+      </EmptyIcon>
+      <EmptyTitle>Glassmorphic UI</EmptyTitle>
+      <EmptyDescription>
+        All caught up! Translucent saturation with backdrop blur textures.
+      </EmptyDescription>
+      <EmptyActions>
+        <Button variant="glass">Refresh Feed</Button>
+      </EmptyActions>
+    </Empty>
 
-### Theme & Variant Styling
+    {/* Retro */}
+    <Empty variant="retro" className="w-full max-w-sm flex-1 min-w-[280px]">
+      <EmptyIcon variant="retro">
+        <Layers className="h-6 w-6" />
+      </EmptyIcon>
+      <EmptyTitle>RETRO NEOBRUTALISM</EmptyTitle>
+      <EmptyDescription>
+        Bold 2px border strokes and hard flat offset shadows.
+      </EmptyDescription>
+      <EmptyActions>
+        <Button variant="retro">INITIALIZE SYSTEM</Button>
+      </EmptyActions>
+    </Empty>
 
-- **Glassmorphic (`variant="glass"`)**: Uses frosted saturation with translucent backdrop blur for modern dark & light card interfaces.
-- **Retro Neobrutalism (`variant="retro"`)**: Features bold 2px border strokes and hard flat offset shadows for high-contrast cyberpunk themes.
-- **Neon Glow (`variant="glow"`)**: Employs a purple glow aura background behind the empty icon badge.
+  </div>
 
+```tsx
+import {
+  Empty,
+  EmptyIcon,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyActions,
+} from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { FolderOpen, InboxIcon, Layers } from 'lucide-react'
+
+export default function EmptyThemes() {
+  return (
+    <div className="flex flex-wrap gap-6 items-stretch justify-center w-full">
+      {/* Default */}
+      <Empty variant="default" className="w-full max-w-sm flex-1 min-w-[280px]">
+        <EmptyIcon variant="default">
+          <FolderOpen className="h-6 w-6" />
+        </EmptyIcon>
+        <EmptyTitle>Default Layout</EmptyTitle>
+        <EmptyDescription>
+          Standard style featuring standard borders and soft drop shadows.
+        </EmptyDescription>
+        <EmptyActions>
+          <Button variant="default">Select</Button>
+        </EmptyActions>
+      </Empty>
+
+      {/* Glassmorphic */}
+      <Empty variant="glass" className="w-full max-w-sm flex-1 min-w-[280px]">
+        <EmptyIcon variant="glass">
+          <InboxIcon className="h-6 w-6" />
+        </EmptyIcon>
+        <EmptyTitle>Glassmorphic UI</EmptyTitle>
+        <EmptyDescription>
+          All caught up! Translucent saturation with backdrop blur textures.
+        </EmptyDescription>
+        <EmptyActions>
+          <Button variant="glass">Refresh Feed</Button>
+        </EmptyActions>
+      </Empty>
+
+      {/* Retro */}
+      <Empty variant="retro" className="w-full max-w-sm flex-1 min-w-[280px]">
+        <EmptyIcon variant="retro">
+          <Layers className="h-6 w-6" />
+        </EmptyIcon>
+        <EmptyTitle>RETRO NEOBRUTALISM</EmptyTitle>
+        <EmptyDescription>
+          Bold 2px border strokes and hard flat offset shadows.
+        </EmptyDescription>
+        <EmptyActions>
+          <Button variant="retro">INITIALIZE SYSTEM</Button>
+        </EmptyActions>
+      </Empty>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Props
+
+### Empty
+
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    default="'default'"
+    description="The visual aesthetic theme to apply to the empty state container card."
+  />
+</PropsTable>
+
+### EmptyIcon
+
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    default="'default'"
+    description="The visual aesthetic theme to apply to the icon badge background."
+  />
+</PropsTable>

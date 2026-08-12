@@ -13,21 +13,24 @@ export function Sidebar({ open }: { open?: boolean }) {
   React.useEffect(() => {
     const handleScroll = (behavior: ScrollBehavior) => {
       const desktopContainer = document.getElementById('docs-sidebar-aside')
-      const mobileContainer = document.getElementById('docs-sidebar-mobile-aside')
+      const mobileContainer = document.getElementById(
+        'docs-sidebar-mobile-aside',
+      )
 
       // Use the mobile container if it is active/visible, otherwise default to desktop container
       let container = desktopContainer
-      if (mobileContainer && mobileContainer.getBoundingClientRect().height > 0) {
+      if (
+        mobileContainer &&
+        mobileContainer.getBoundingClientRect().height > 0
+      ) {
         container = mobileContainer
       }
 
       if (!container) return
 
-      const activeLink = (
-        container.querySelector(`a[href="${pathname}"]`) ||
+      const activeLink = (container.querySelector(`a[href="${pathname}"]`) ||
         container.querySelector('a.bg-accent') ||
-        container.querySelector('a[data-active="true"]')
-      ) as HTMLElement
+        container.querySelector('a[data-active="true"]')) as HTMLElement
       if (activeLink) {
         const containerRect = container.getBoundingClientRect()
         const linkRect = activeLink.getBoundingClientRect()

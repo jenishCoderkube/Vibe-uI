@@ -11,7 +11,7 @@ const kbdVariants = tv({
     variant: {
       default: 'border-border',
       glass:
-        'bg-white/5 border-white/20 dark:border-white/10 text-foreground backdrop-blur-md',
+        'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 text-foreground backdrop-blur-md',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:shadow-[1px_1px_0px_0px_rgba(255,255,255,1)] rounded-none',
       glow: 'border-border shadow-[0_0_10px_rgba(0,0,0,0.05)]',

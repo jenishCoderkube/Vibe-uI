@@ -100,10 +100,10 @@ const EmptyTitle = React.forwardRef<
 EmptyTitle.displayName = 'EmptyTitle'
 
 const EmptyDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, ...props }, ref) => (
-  <p
+  <div
     ref={ref}
     data-slot="empty-description"
     className={cn(
@@ -113,7 +113,7 @@ const EmptyDescription = React.forwardRef<
     {...props}
   >
     {children}
-  </p>
+  </div>
 ))
 EmptyDescription.displayName = 'EmptyDescription'
 

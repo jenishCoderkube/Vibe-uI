@@ -4,10 +4,13 @@ import { render, screen, act, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {
   Select,
+  SelectGroup,
   SelectTrigger,
   SelectValue,
   SelectContent,
+  SelectLabel,
   SelectItem,
+  SelectSeparator,
 } from '../select'
 
 describe('Select Component', () => {
@@ -171,5 +174,114 @@ describe('Select Component', () => {
     const triggerDefault = screen.getByRole('combobox')
     expect(triggerDefault).toHaveClass('h-10')
     expect(triggerDefault).toHaveClass('text-sm')
+  })
+
+  it('supports glow and glass variants on select trigger', () => {
+    const { rerender } = render(
+      <Select variant="glow">
+        <SelectTrigger>
+          <SelectValue placeholder="Glow select" />
+        </SelectTrigger>
+      </Select>,
+    )
+    const glowTrigger = screen.getByRole('combobox')
+    expect(glowTrigger).toHaveClass('bg-primary/10')
+    expect(glowTrigger).toHaveClass('text-primary')
+
+    rerender(
+      <Select variant="glass">
+        <SelectTrigger>
+          <SelectValue placeholder="Glass select" />
+        </SelectTrigger>
+      </Select>,
+    )
+    const glassTrigger = screen.getByRole('combobox')
+    expect(glassTrigger).toHaveClass('backdrop-blur-md')
+  })
+
+  it('renders SelectGroup, SelectLabel, and SelectSeparator within content', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <Select>
+        <SelectTrigger>
+          <SelectValue placeholder="Grouped select" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Fruits</SelectLabel>
+            <SelectItem value="apple">Apple</SelectItem>
+          </SelectGroup>
+          <SelectSeparator data-testid="select-sep" />
+          <SelectGroup>
+            <SelectLabel>Vegetables</SelectLabel>
+            <SelectItem value="carrot">Carrot</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>,
+    )
+
+    await user.click(screen.getByRole('combobox'))
+    expect(screen.getByText('Fruits')).toBeInTheDocument()
+    expect(screen.getByText('Vegetables')).toBeInTheDocument()
+    expect(screen.getByText('Apple')).toBeInTheDocument()
+    expect(screen.getByText('Carrot')).toBeInTheDocument()
+    expect(screen.getByTestId('select-sep')).toBeInTheDocument()
+  })
+
+  it('supports disabled state on Select and SelectItem', () => {
+    render(
+      <Select disabled>
+        <SelectTrigger>
+          <SelectValue placeholder="Disabled select" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="opt1">Option 1</SelectItem>
+        </SelectContent>
+      </Select>,
+    )
+
+    const trigger = screen.getByRole('combobox')
+    expect(trigger).toBeDisabled()
+  })
+
+  it('handles a real-life SaaS subscription plan selector dropdown', async () => {
+    const user = userEvent.setup()
+    const handlePlanChange = vi.fn()
+
+    render(
+      <div className="space-y-2">
+        <label className="text-sm font-semibold">Subscription Tier</label>
+        <Select onValueChange={handlePlanChange} defaultValue="starter">
+          <SelectTrigger className="w-[280px]">
+            <SelectValue placeholder="Select plan tier" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Individual</SelectLabel>
+              <SelectItem value="free">Hobby (Free)</SelectItem>
+              <SelectItem value="starter">Starter ($10 / mo)</SelectItem>
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>Business</SelectLabel>
+              <SelectItem value="pro">Pro Team ($29 / mo)</SelectItem>
+              <SelectItem value="enterprise">Enterprise Custom</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>,
+    )
+
+    const trigger = screen.getByRole('combobox')
+    expect(trigger).toHaveTextContent('Starter ($10 / mo)')
+
+    // Open dropdown
+    await user.click(trigger)
+    expect(screen.getByText('Pro Team ($29 / mo)')).toBeInTheDocument()
+
+    // Select Pro Team
+    await user.click(screen.getByText('Pro Team ($29 / mo)'))
+    expect(handlePlanChange).toHaveBeenCalledWith('pro')
   })
 })

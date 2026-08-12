@@ -7,15 +7,17 @@ import { cn } from '../lib/utils'
 import { Button, type ButtonProps } from './button'
 
 const scrollerVariants = tv({
-  base: 'relative flex flex-col w-full h-full overflow-hidden border bg-zinc-950/20',
+  base: 'relative flex flex-col w-full h-full overflow-hidden border bg-background/50',
   variants: {
     variant: {
-      default: 'border-zinc-800 rounded-xl',
-      glass: 'border-white/10 bg-white/5 backdrop-blur-md rounded-xl',
+      default: 'border-border rounded-xl',
+      glass:
+        'border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-md rounded-xl',
       retro:
-        'border-2 border-foreground bg-background shadow-[3px_3px_0px_rgba(0,0,0,1)] rounded-none',
-      glow: 'border-primary/20 shadow-[0_0_15px_rgba(168,85,247,0.1)] rounded-xl',
-      cyberpunk: 'border-emerald-950 bg-black rounded-lg',
+        'border-2 border-foreground bg-background shadow-[3px_3px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'border-primary/20 bg-primary/[0.02] shadow-[0_0_15px_rgba(168,85,247,0.1)] rounded-xl',
+      cyberpunk:
+        'border-emerald-500/30 dark:border-emerald-950 bg-emerald-950/10 dark:bg-black rounded-lg',
     },
   },
   defaultVariants: {

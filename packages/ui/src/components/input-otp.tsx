@@ -22,13 +22,13 @@ const otpVariants = tv({
 })
 
 const slotVariants = tv({
-  base: 'relative w-10 h-12 flex items-center justify-center border text-base font-semibold transition-all duration-200 text-center outline-none select-none rounded-md',
+  base: 'relative w-10 h-10 flex items-center justify-center border text-base font-semibold transition-all duration-200 text-center outline-none select-none rounded-md',
   variants: {
     variant: {
       default:
-        'bg-background border-input text-foreground data-[active=true]:border-primary data-[active=true]:ring-2 data-[active=true]:ring-primary/40',
+        'bg-background border-input text-foreground ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 data-[active=true]:z-10 data-[active=true]:border-black data-[active=true]:ring-1 data-[active=true]:ring-black dark:data-[active=true]:border-white dark:data-[active=true]:ring-1 dark:data-[active=true]:ring-white',
       glass:
-        'bg-white/5 border-white/10 backdrop-blur-md text-white data-[active=true]:border-white/30 data-[active=true]:bg-white/10 data-[active=true]:ring-2 data-[active=true]:ring-white/20',
+        'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 backdrop-blur-md text-foreground data-[active=true]:border-black/30 dark:data-[active=true]:border-white/30 data-[active=true]:bg-black/10 dark:data-[active=true]:bg-white/10 data-[active=true]:ring-2 data-[active=true]:ring-black/5 dark:data-[active=true]:ring-white/20',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)] data-[active=true]:translate-x-[1px] data-[active=true]:translate-y-[1px] data-[active=true]:shadow-[1px_1px_0px_rgba(0,0,0,1)]',
       glow: 'border-primary/20 bg-primary/[0.02] text-primary data-[active=true]:border-primary data-[active=true]:shadow-[0_0_12px_rgba(168,85,247,0.3)] data-[active=true]:ring-2 data-[active=true]:ring-primary/30',
@@ -51,7 +51,10 @@ const InputOTPVariantContext = React.createContext<{
 
 export interface InputOTPProps
   extends
-    Omit<React.ComponentPropsWithoutRef<typeof OTPInput>, 'onChange' | 'maxLength'>,
+    Omit<
+      React.ComponentPropsWithoutRef<typeof OTPInput>,
+      'onChange' | 'maxLength'
+    >,
     VariantProps<typeof otpVariants> {
   length?: number
   maxLength?: number
@@ -176,8 +179,7 @@ const InputOTPGroup = React.forwardRef<
 ))
 InputOTPGroup.displayName = 'InputOTPGroup'
 
-export interface InputOTPSlotProps
-  extends React.ComponentPropsWithoutRef<'div'> {
+export interface InputOTPSlotProps extends React.ComponentPropsWithoutRef<'div'> {
   index: number
 }
 
@@ -185,8 +187,7 @@ const InputOTPSlot = React.forwardRef<HTMLDivElement, InputOTPSlotProps>(
   ({ className, index, ...props }, ref) => {
     const inputOTPContext = React.useContext(OTPInputContext)
     const { variant, disabled } = React.useContext(InputOTPVariantContext)
-    const { char, hasFakeCaret, isActive } =
-      inputOTPContext?.slots[index] ?? {}
+    const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {}
 
     return (
       <div
