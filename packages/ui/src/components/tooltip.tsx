@@ -21,6 +21,8 @@ const tooltipContentVariants = tv({
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none',
       glow: 'bg-card border border-border shadow-[0_0_15px_rgba(0,0,0,0.15)] dark:shadow-[0_0_15px_rgba(255,255,255,0.15)]',
+      cyberpunk:
+        'rounded-none border border-emerald-500 bg-black text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.15)]',
     },
   },
   defaultVariants: {

@@ -13,11 +13,14 @@ const sliderTrackVariants = tv({
   base: 'relative grow overflow-hidden rounded-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=horizontal]:h-2 data-[orientation=vertical]:w-2',
   variants: {
     variant: {
-      default: 'bg-secondary/50 dark:bg-foreground/80 border border-border/50',
+      default: 'bg-secondary/50 dark:bg-zinc-800/80 border border-border/50',
       retro:
         'border-2 border-foreground bg-background data-[orientation=horizontal]:h-3 data-[orientation=vertical]:w-3 rounded-none',
       glass:
         'bg-white/10 dark:bg-black/40 border border-white/20 dark:border-white/10 backdrop-blur-md shadow-inner',
+      glow: 'bg-primary/20 border border-primary/45 shadow-[0_0_12px_rgba(168,85,247,0.15)]',
+      cyberpunk:
+        'border border-emerald-500/30 bg-emerald-950/20 rounded-none shadow-[0_0_8px_rgba(16,185,129,0.1)] data-[orientation=horizontal]:h-3 data-[orientation=vertical]:w-3',
     },
   },
   defaultVariants: {
@@ -29,9 +32,12 @@ const sliderRangeVariants = tv({
   base: 'absolute rounded-full data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full',
   variants: {
     variant: {
-      default: 'bg-primary dark:bg-white',
+      default: 'bg-primary',
       retro: 'bg-foreground rounded-none',
       glass: 'bg-gradient-to-r from-violet-500 to-indigo-500',
+      glow: 'bg-primary shadow-[0_0_8px_rgba(168,85,247,0.5)]',
+      cyberpunk:
+        'bg-emerald-500 rounded-none shadow-[0_0_8px_rgba(16,185,129,0.5)]',
     },
   },
   defaultVariants: {
@@ -43,11 +49,14 @@ const sliderThumbVariants = tv({
   base: 'relative block rounded-full bg-background shadow-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-grab active:cursor-grabbing',
   variants: {
     variant: {
-      default: 'h-5 w-5 border-2 border-primary dark:border-white',
+      default: 'h-5 w-5 border-2 border-primary',
       retro:
         'h-6 w-6 border-2 border-foreground bg-background shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none',
       glass:
         'h-5 w-5 bg-white/30 dark:bg-black/50 backdrop-blur-md border border-white/50 dark:border-white/30 shadow-md',
+      glow: 'h-5 w-5 border-2 border-primary bg-background shadow-[0_0_10px_rgba(168,85,247,0.4)]',
+      cyberpunk:
+        'border-2 border-emerald-500 bg-black shadow-[0_0_8px_rgba(16,185,129,0.4)] rounded-none data-[orientation=horizontal]:h-6 data-[orientation=horizontal]:w-3 data-[orientation=horizontal]:cursor-ew-resize data-[orientation=vertical]:h-3 data-[orientation=vertical]:w-6 data-[orientation=vertical]:cursor-ns-resize',
     },
   },
   defaultVariants: {
@@ -59,7 +68,7 @@ export interface SliderProps extends Omit<
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>,
   'value' | 'defaultValue'
 > {
-  variant?: 'default' | 'retro' | 'glass'
+  variant?: 'default' | 'retro' | 'glass' | 'glow' | 'cyberpunk'
   value?: number[] | string | number
   defaultValue?: number[] | string | number
   showTooltip?: boolean
@@ -74,7 +83,7 @@ const Slider = React.forwardRef<
   (
     {
       className,
-      variant,
+      variant = 'default',
       value,
       defaultValue,
       min = 0,
@@ -83,6 +92,7 @@ const Slider = React.forwardRef<
       showTooltip = false,
       tooltipFormat,
       marks,
+      orientation = 'horizontal',
       ...props
     },
     ref,
@@ -131,23 +141,30 @@ const Slider = React.forwardRef<
       tickValues = marks
     }
 
+    const isVertical = orientation === 'vertical'
+
     return (
       <div
         className={cn(
           'relative w-full',
-          tickValues.some((t) => t.label) && 'mb-8',
+          tickValues.some((t) => t.label) && (isVertical ? 'mr-12' : 'mb-8'),
         )}
       >
         <SliderPrimitive.Root
           ref={ref}
           data-slot="slider"
-          className={cn(sliderRootVariants(), className)}
+          className={cn(
+            sliderRootVariants(),
+            isVertical && 'mx-auto',
+            className,
+          )}
           value={parsedValue}
           defaultValue={parsedDefaultValue}
           min={numMin}
           max={numMax}
           step={numStep}
           onValueChange={handleValueChange}
+          orientation={orientation}
           {...props}
         >
           <SliderPrimitive.Track
@@ -165,9 +182,19 @@ const Slider = React.forwardRef<
               return (
                 <span
                   key={idx}
-                  className="absolute top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-foreground/20 dark:bg-white/30 pointer-events-none"
+                  className={cn(
+                    'absolute pointer-events-none',
+                    isVertical
+                      ? 'left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-foreground/20 dark:bg-white/30'
+                      : 'top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-foreground/20 dark:bg-white/30',
+                    (variant === 'retro' || variant === 'cyberpunk') &&
+                      'rounded-none h-1 w-1 bg-foreground dark:bg-white',
+                    variant === 'glow' && 'bg-primary/30 dark:bg-primary/50',
+                  )}
                   style={{
-                    left: `${pct}%`,
+                    left: isVertical ? '50%' : `${pct}%`,
+                    bottom: isVertical ? `${pct}%` : undefined,
+                    top: isVertical ? undefined : '50%',
                     transform: 'translate(-50%, -50%)',
                   }}
                 />
@@ -183,7 +210,19 @@ const Slider = React.forwardRef<
               className={cn(sliderThumbVariants({ variant }))}
             >
               {showTooltip && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 bg-foreground text-background text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-foreground pointer-events-none select-none z-30">
+                <div
+                  className={cn(
+                    "absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 bg-foreground text-background text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-foreground pointer-events-none select-none z-30",
+                    variant === 'retro' &&
+                      'rounded-none border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] font-bold after:border-t-foreground',
+                    variant === 'cyberpunk' &&
+                      'rounded-none border border-emerald-500/30 bg-black text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.3)] after:border-t-black border-t-emerald-500',
+                    variant === 'glow' &&
+                      'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(168,85,247,0.3)] after:border-t-primary',
+                    variant === 'glass' &&
+                      'bg-popover/80 backdrop-blur-md border border-border text-popover-foreground shadow-md',
+                  )}
+                >
                   {tooltipFormat ? tooltipFormat(val) : val}
                 </div>
               )}
@@ -198,8 +237,17 @@ const Slider = React.forwardRef<
           return (
             <span
               key={idx}
-              className="absolute top-6 text-[10px] font-medium text-muted-foreground -translate-x-1/2 whitespace-nowrap pointer-events-none select-none"
-              style={{ left: `${pct}%` }}
+              className={cn(
+                'absolute text-[10px] font-medium text-muted-foreground pointer-events-none select-none',
+                isVertical
+                  ? 'left-6 -translate-y-1/2'
+                  : 'top-6 -translate-x-1/2 whitespace-nowrap',
+                variant === 'cyberpunk' && 'font-mono text-emerald-500/80',
+              )}
+              style={{
+                left: isVertical ? '1.5rem' : `${pct}%`,
+                bottom: isVertical ? `${pct}%` : undefined,
+              }}
             >
               {tick.label}
             </span>

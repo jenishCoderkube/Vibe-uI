@@ -13,8 +13,8 @@ const switchVariants = tv({
       glass:
         'bg-black/10 dark:bg-black/40 border-black/15 dark:border-white/10 data-[state=checked]:bg-primary/80 dark:data-[state=checked]:bg-white/20 backdrop-blur-sm',
       retro:
-        'border-2 border-foreground bg-background data-[state=checked]:bg-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]',
-      glow: 'bg-input data-[state=checked]:bg-primary hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]',
+        'border-2 border-foreground bg-background data-[state=checked]:bg-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-input data-[state=checked]:bg-primary data-[state=checked]:shadow-[0_0_12px_rgba(168,85,247,0.5)] data-[state=checked]:border-primary/50 hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.15)]',
       cyberpunk:
         'bg-emerald-950/20 dark:bg-black border border-emerald-500/50 data-[state=checked]:bg-emerald-950/60 data-[state=checked]:border-emerald-400 data-[state=checked]:shadow-[0_0_10px_rgba(16,185,129,0.3)] rounded-none h-5 w-10',
     },
@@ -31,10 +31,10 @@ const thumbVariants = tv({
       default: 'bg-background',
       glass: 'bg-foreground/80 dark:bg-foreground',
       retro:
-        'border border-foreground bg-background data-[state=checked]:bg-background',
+        'border border-foreground bg-background data-[state=checked]:bg-background rounded-none',
       glow: 'bg-background',
       cyberpunk:
-        'bg-emerald-500 border border-emerald-400 rounded-none h-4 w-4 data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0',
+        'bg-emerald-500 border border-emerald-400 rounded-none h-4 w-4 data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0',
     },
   },
   defaultVariants: {

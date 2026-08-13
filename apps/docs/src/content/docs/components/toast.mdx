@@ -213,254 +213,36 @@ export {
 
 
 
-## Preset Variations
+## Variations
 
-### Glassmorphic
+Vibe UI's Toast component supports multiple visual style presets to match your application's theme:
 
-<ComponentPreview>
-  <ToastDemoGlass />
-
-```tsx
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast'
-
-export default function ToastDemoGlass() {
-  return (
-    <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast variant="glass" open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>Glassmorphic Alert</ToastTitle>
-            <ToastDescription>
-              Backdrop blur filters applied successfully.
-            </ToastDescription>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
-      </div>
-    </ToastProvider>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Retro Neobrutalism
-
-<ComponentPreview>
-  <ToastDemoRetro />
-
-```tsx
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast'
-
-export default function ToastDemoRetro() {
-  return (
-    <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast variant="retro" open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>RETRO WIDGET</ToastTitle>
-            <ToastDescription>
-              SOLID FLAT BLACK BORDERS IN ACTION.
-            </ToastDescription>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
-      </div>
-    </ToastProvider>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Neon Glow
-
-<ComponentPreview>
-  <ToastDemoGlow />
-
-```tsx
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast'
-
-export default function ToastDemoGlow() {
-  return (
-    <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast variant="glow" open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>Neon Glow Active</ToastTitle>
-            <ToastDescription>
-              Ambient drop shadows lighting up.
-            </ToastDescription>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
-      </div>
-    </ToastProvider>
-  )
-}
-```
-
-</ComponentPreview>
-
----
-
-## Premium Use Case Examples
-
-### 1. Interactive Trigger Toast controller
-
-<ComponentPreview>
-  <ToastDemoInteractiveTrigger />
-
-```tsx
-import React, { useState } from 'react'
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast'
-import { Button } from '@/components/ui/button'
-
-export default function ToastDemoInteractiveTrigger() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="flex flex-col items-center gap-3 w-full">
-      <Button
-        onClick={() => {
-          setOpen(true)
-          setTimeout(() => setOpen(false), 3000)
-        }}
-      >
-        Trigger Interactive Toast
-      </Button>
-      <ToastProvider>
-        <Toast open={open} onOpenChange={setOpen} variant="glow">
-          <div className="grid gap-1 text-left">
-            <ToastTitle>Success!</ToastTitle>
-            <ToastDescription>
-              Interactive toast triggered successfully.
-            </ToastDescription>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 mt-3 flex flex-col gap-2" />
-      </ToastProvider>
+<ComponentPreview className="w-full">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left p-0">
+    {/* Glassmorphic */}
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Glassmorphic Style</span>
+      <ToastDemoGlass />
     </div>
-  )
-}
-```
 
-</ComponentPreview>
+    {/* Neon Glow */}
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Neon Glow Style</span>
+      <ToastDemoGlow />
+    </div>
 
-### 2. Action confirmation toast dialog
+    {/* Retro Brutalist */}
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Retro Brutalist Style</span>
+      <ToastDemoRetro />
+    </div>
 
-<ComponentPreview>
-  <ToastDemoAction />
-
-```tsx
-import {
-  Toast,
-  ToastAction,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast'
-
-export default function ToastDemoAction() {
-  return (
-    <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>Workspace file deleted</ToastTitle>
-            <ToastDescription>
-              file components.json was removed.
-            </ToastDescription>
-          </div>
-          <ToastAction altText="Undo action">Undo</ToastAction>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
-      </div>
-    </ToastProvider>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 3. Destructive warning critical error
-
-<ComponentPreview>
-  <ToastDemoDestructive />
-
-```tsx
-import {
-  Toast,
-  ToastAction,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast'
-
-export default function ToastDemoDestructive() {
-  return (
-    <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast variant="destructive" open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>Connection Failed</ToastTitle>
-            <ToastDescription>
-              Could not reach npmjs registry servers.
-            </ToastDescription>
-          </div>
-          <ToastAction altText="Retry connection">Retry</ToastAction>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
-      </div>
-    </ToastProvider>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 4. Background processing progress loader
-
-<ComponentPreview>
-  <ToastDemoLoading />
+    {/* Cyberpunk Matrix */}
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider font-mono ml-1">Cyberpunk Matrix Style</span>
+      <ToastDemoCyberpunk />
+    </div>
+  </div>
 
 ```tsx
 import {
@@ -472,116 +254,47 @@ import {
   ToastViewport,
 } from '@/components/ui/toast'
 
-export default function ToastDemoLoading() {
+export default function ToastVariantsDemo() {
   return (
     <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast open={true}>
-          <div className="flex items-center gap-3 text-left">
-            <span className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin shrink-0" />
-            <div>
-              <ToastTitle>Building registry map</ToastTitle>
-              <ToastDescription>
-                Compiling CLI components schema...
-              </ToastDescription>
-            </div>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
-      </div>
+      {/* 1. Glassmorphic */}
+      <Toast variant="glass" open={true}>
+        <ToastTitle>Glassmorphic Notification</ToastTitle>
+        <ToastDescription>Frosted glass effect.</ToastDescription>
+        <ToastClose />
+      </Toast>
+
+      {/* 2. Neon Glow */}
+      <Toast variant="glow" open={true}>
+        <ToastTitle>Neon Glow Notification</ToastTitle>
+        <ToastDescription>Vibrant colored highlights.</ToastDescription>
+        <ToastClose />
+      </Toast>
+
+      {/* 3. Retro Brutalist */}
+      <Toast variant="retro" open={true}>
+        <ToastTitle>RETRO NOTIFICATION</ToastTitle>
+        <ToastDescription>SOLID OUTLINES AND SHADOWS.</ToastDescription>
+        <ToastClose />
+      </Toast>
+
+      {/* 4. Cyberpunk Matrix */}
+      <Toast variant="cyberpunk" open={true}>
+        <ToastTitle>CYBERPUNK NOTIFICATION</ToastTitle>
+        <ToastDescription>EMERALD GREEN SCANLINES.</ToastDescription>
+        <ToastClose />
+      </Toast>
     </ToastProvider>
   )
 }
 ```
-
 </ComponentPreview>
 
-### 5. Sound audio volume status
-
-<ComponentPreview>
-  <ToastDemoVolume />
-
-```tsx
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast'
-import { Volume2 } from 'lucide-react'
-
-export default function ToastDemoVolume() {
-  return (
-    <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast open={true} variant="glass">
-          <div className="flex items-center gap-2.5 text-left">
-            <Volume2 className="h-4.5 w-4.5 text-cyan-400 shrink-0" />
-            <div>
-              <ToastTitle>Volume Changed</ToastTitle>
-              <ToastDescription>Output level set to 85%.</ToastDescription>
-            </div>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
-      </div>
-    </ToastProvider>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 6. User Verification code validation
-
-<ComponentPreview>
-  <ToastDemoVerification />
-
-```tsx
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@/components/ui/toast'
-import { CheckCircle2 } from 'lucide-react'
-
-export default function ToastDemoVerification() {
-  return (
-    <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast open={true} variant="glow">
-          <div className="flex items-center gap-2.5 text-left">
-            <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400 shrink-0" />
-            <div>
-              <ToastTitle>Profile Verified</ToastTitle>
-              <ToastDescription>
-                Token authenticated successfully.
-              </ToastDescription>
-            </div>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2" />
-      </div>
-    </ToastProvider>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 7. Interactive Viewport Positioning
+## Viewport Positioning
 
 Toasts can be dispatched to specific screen coordinates using the `position` prop on `<ToastViewport>`. Supported options are `top-left`, `top-right`, `top-center`, `bottom-left`, `bottom-right`, and `bottom-center`.
 
-<ComponentPreview>
+<ComponentPreview className="w-full min-h-0" vibeDeps="button">
   <ToastDemoPositions />
 
 ```tsx
@@ -703,4 +416,34 @@ export default function ToastDemoPositions() {
 ```
 
 </ComponentPreview>
+
+## Props
+
+### Toast
+
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'destructive' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual theme preset style of the Toast notification."
+  />
+  <PropRow
+    prop="position"
+    type="'top-left' | 'top-right' | 'top-center' | 'bottom-left' | 'bottom-right' | 'bottom-center'"
+    default="'bottom-right'"
+    description="Position variant matching viewport dispatch target."
+  />
+</PropsTable>
+
+### ToastViewport
+
+<PropsTable>
+  <PropRow
+    prop="position"
+    type="'top-left' | 'top-right' | 'top-center' | 'bottom-left' | 'bottom-right' | 'bottom-center' | 'inline'"
+    default="'bottom-right'"
+    description="Screen coordinates where the list of active toasts should render."
+  />
+</PropsTable>
 

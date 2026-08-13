@@ -4,7 +4,7 @@ A floating, interactive visual customizer widget that lets users switch active d
 
 ## Preview
 
-<ComponentPreview>
+<ComponentPreview vibeDeps="card, button, badge">
   <ThemeSwitcherDemo />
 
 ```tsx
@@ -52,7 +52,7 @@ export default function ThemeSwitcherDemo() {
 
 </ComponentPreview>
 
-<Installation name="theme-switcher">
+<Installation name="theme-switcher" vibeDeps="dropdown-menu">
 
 ```tsx
 "use client"
@@ -219,321 +219,78 @@ export { ThemeSwitcher }
 
 ## Variations
 
-Explore the 6 visual styles and positioning layouts available for the floating ThemeSwitcher widget.
+Explore the visual styles, positioning layouts, and interactive state triggers available for the floating ThemeSwitcher widget.
 
-### 1. Glassmorphism Styling
+<ComponentPreview className="w-full">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left p-0">
+    {/* Glassmorphic */}
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Glassmorphic Style</span>
+      <ThemeSwitcherGlassDemo />
+    </div>
 
-A frosted backdrop with glowing borders that integrates smoothly into clean design screens.
+    {/* Neon Glow */}
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Neon Glow Style</span>
+      <ThemeSwitcherGlowDemo />
+    </div>
 
-<ComponentPreview>
-  <ThemeSwitcherGlassDemo />
+    {/* Retro Brutalist */}
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">Retro Brutalist Style</span>
+      <ThemeSwitcherRetroDemo />
+    </div>
+
+    {/* Cyberpunk Matrix */}
+    <div className="space-y-1.5">
+      <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider font-mono ml-1">Cyberpunk Matrix Style</span>
+      <ThemeSwitcherCyberpunkDemo />
+    </div>
+  </div>
 
 ```tsx
 import React, { useState } from 'react'
-import { ThemeSwitcher } from '@/components/ui/theme-switcher'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { ThemeSwitcher, Card, Button, Badge } from 'vibe-ui'
 
-export default function GlassSwitcher() {
-  const [localTheme, setLocalTheme] = useState('glass')
-
+export default function ThemeSwitcherVariants() {
   return (
-    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
-      <Card
-        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
-      >
-        <Badge
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          className="w-fit"
-        >
-          {localTheme.toUpperCase()}
-        </Badge>
-        <p className="text-xs text-muted-foreground">
-          Glassmorphic style button and drop-down menu.
-        </p>
-        <Button
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          size="sm"
-          className="w-full"
-        >
-          Action
-        </Button>
-      </Card>
-      <ThemeSwitcher
-        defaultTheme="glass"
-        variant="glass"
-        onThemeChange={(t) => setLocalTheme(t)}
-        className="absolute bottom-4 right-4 !fixed-none !z-10"
-      />
+    <div className="space-y-12">
+      {/* 1. Glassmorphism Styling */}
+      <ThemeSwitcher defaultTheme="glass" variant="glass" />
+
+      {/* 2. Neon Glow Styling */}
+      <ThemeSwitcher defaultTheme="glow" variant="glow" />
+
+      {/* 3. Retro Brutalist Styling */}
+      <ThemeSwitcher defaultTheme="retro" variant="retro" />
+
+      {/* 4. Cyberpunk Matrix Styling */}
+      <ThemeSwitcher defaultTheme="cyberpunk" variant="cyberpunk" />
     </div>
   )
 }
 ```
-
 </ComponentPreview>
 
-### 2. Neon Glow Styling
+## Props
 
-An intense glow border highlight indicating active choices with ambient light drops.
-
-<ComponentPreview>
-  <ThemeSwitcherGlowDemo />
-
-```tsx
-import React, { useState } from 'react'
-import { ThemeSwitcher } from '@/components/ui/theme-switcher'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-
-export default function GlowSwitcher() {
-  const [localTheme, setLocalTheme] = useState('glow')
-
-  return (
-    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
-      <Card
-        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
-      >
-        <Badge
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          className="w-fit"
-        >
-          {localTheme.toUpperCase()}
-        </Badge>
-        <p className="text-xs text-muted-foreground">
-          Neon glow borders and floating aura effects.
-        </p>
-        <Button
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          size="sm"
-          className="w-full"
-        >
-          Action
-        </Button>
-      </Card>
-      <ThemeSwitcher
-        defaultTheme="glow"
-        variant="glow"
-        onThemeChange={(t) => setLocalTheme(t)}
-        className="absolute bottom-4 right-4 !fixed-none !z-10"
-      />
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 3. Retro Brutalist Styling
-
-Bold flat-outlines and a hard offset drop shadow that fits nostalgic neobrutalist aesthetics.
-
-<ComponentPreview>
-  <ThemeSwitcherRetroDemo />
-
-```tsx
-import React, { useState } from 'react'
-import { ThemeSwitcher } from '@/components/ui/theme-switcher'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-
-export default function RetroSwitcher() {
-  const [localTheme, setLocalTheme] = useState('retro')
-
-  return (
-    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
-      <Card
-        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
-      >
-        <Badge
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          className="w-fit"
-        >
-          {localTheme.toUpperCase()}
-        </Badge>
-        <p className="text-xs text-muted-foreground font-mono">
-          Retro brutalist switcher with thick outlines.
-        </p>
-        <Button
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          size="sm"
-          className="w-full"
-        >
-          Action
-        </Button>
-      </Card>
-      <ThemeSwitcher
-        defaultTheme="retro"
-        variant="retro"
-        onThemeChange={(t) => setLocalTheme(t)}
-        className="absolute bottom-4 right-4 !fixed-none !z-10"
-      />
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 4. Cyberpunk Matrix Styling
-
-Emerald scanline borders and custom monospaced elements styling.
-
-<ComponentPreview>
-  <ThemeSwitcherCyberpunkDemo />
-
-```tsx
-import React, { useState } from 'react'
-import { ThemeSwitcher } from '@/components/ui/theme-switcher'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-
-export default function CyberpunkSwitcher() {
-  const [localTheme, setLocalTheme] = useState('cyberpunk')
-
-  return (
-    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
-      <Card
-        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
-      >
-        <Badge
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          className="w-fit"
-        >
-          {localTheme.toUpperCase()}
-        </Badge>
-        <p className="text-xs text-muted-foreground font-mono">
-          Cyberpunk interface styling with neon emerald lines.
-        </p>
-        <Button
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          size="sm"
-          className="w-full"
-        >
-          Action
-        </Button>
-      </Card>
-      <ThemeSwitcher
-        defaultTheme="cyberpunk"
-        variant="cyberpunk"
-        onThemeChange={(t) => setLocalTheme(t)}
-        className="absolute bottom-4 right-4 !fixed-none !z-10"
-      />
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 5. Top Right Float Positioning
-
-Configure alternate absolute placement layouts inside container zones.
-
-<ComponentPreview>
-  <ThemeSwitcherTopRightDemo />
-
-```tsx
-import React, { useState } from 'react'
-import { ThemeSwitcher } from '@/components/ui/theme-switcher'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-
-export default function TopRightSwitcher() {
-  const [localTheme, setLocalTheme] = useState('default')
-
-  return (
-    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
-      <Card
-        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
-      >
-        <Badge
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          className="w-fit"
-        >
-          {localTheme.toUpperCase()}
-        </Badge>
-        <p className="text-xs text-muted-foreground">
-          Positional offset variant floating in the top-right corner.
-        </p>
-        <Button
-          variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-          size="sm"
-          className="w-full"
-        >
-          Action
-        </Button>
-      </Card>
-      <ThemeSwitcher
-        defaultTheme="default"
-        onThemeChange={(t) => setLocalTheme(t)}
-        className="absolute top-4 right-4 bottom-auto !fixed-none !z-10"
-      />
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 6. Interactive State Callback
-
-Demonstrating parent callback hooks triggering reactive state layouts.
-
-<ComponentPreview>
-  <ThemeSwitcherCustomDemo />
-
-```tsx
-import React, { useState } from 'react'
-import { ThemeSwitcher } from '@/components/ui/theme-switcher'
-import { Card } from '@/components/ui/card'
-import { Switch } from '@/components/ui/switch'
-import { Badge } from '@/components/ui/badge'
-
-export default function CustomSwitcher() {
-  const [localTheme, setLocalTheme] = useState('default')
-
-  return (
-    <div className="w-full min-h-[300px] flex flex-col gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5 relative overflow-hidden">
-      <div className="flex flex-col gap-2 items-center text-center">
-        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
-          Interactive Custom Event Log
-        </span>
-        <span className="text-xs font-mono font-bold text-emerald-400">
-          Triggered callback: onThemeChange("{localTheme}")
-        </span>
-      </div>
-      <Card
-        variant={localTheme === 'default' ? 'default' : (localTheme as any)}
-        className="w-full max-w-xs p-6 flex flex-col gap-4 text-left"
-      >
-        <div className="flex justify-between items-center">
-          <Badge variant={localTheme === 'default' ? 'default' : (localTheme as any)}>
-            {localTheme.toUpperCase()}
-          </Badge>
-          <Switch variant={localTheme === 'default' ? 'default' : (localTheme as any)} defaultChecked />
-        </div>
-        <p className="text-xs text-muted-foreground">
-          Demonstrating target callbacks for custom application dashboards.
-        </p>
-      </Card>
-      <ThemeSwitcher
-        defaultTheme="default"
-        onThemeChange={(t) => setLocalTheme(t)}
-        className="absolute bottom-4 right-4 !fixed-none !z-10"
-      />
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
+<PropsTable>
+  <PropRow
+    prop="defaultTheme"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The initially selected active visual preset."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The aesthetic design variation of the control button and menu."
+  />
+  <PropRow
+    prop="onThemeChange"
+    type="(theme: VibeTheme) => void"
+    default="undefined"
+    description="Callback function triggered when the user switches to a different visual preset."
+  />
+</PropsTable>

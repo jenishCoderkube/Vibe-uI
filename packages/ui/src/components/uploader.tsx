@@ -9,17 +9,14 @@ import { Progress } from './progress'
 import { Badge } from './badge'
 
 const uploaderVariants = tv({
-  base: 'flex flex-col gap-4 w-full p-6 border rounded-xl transition-all duration-300',
+  base: 'flex flex-col gap-4 w-full transition-all duration-300',
   variants: {
     variant: {
-      default: 'border-border bg-card shadow-sm',
-      glass:
-        'bg-white/5 dark:bg-black/20 border-white/20 dark:border-white/10 backdrop-blur-md shadow-lg',
-      retro:
-        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
-      glow: 'bg-primary/5 border border-primary/25 shadow-[0_0_20px_rgba(168,85,247,0.1)]',
-      cyberpunk:
-        'bg-black border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)] rounded-none text-emerald-500 font-mono',
+      default: '',
+      glass: '',
+      retro: 'text-foreground font-bold',
+      glow: '',
+      cyberpunk: 'text-emerald-500 font-mono',
     },
   },
   defaultVariants: {
@@ -283,25 +280,44 @@ const Uploader = React.forwardRef<HTMLDivElement, UploaderProps>(
           <div className="flex flex-col items-center gap-3">
             <div
               className={cn(
-                'p-3 rounded-full border transition-all duration-300',
-                variant === 'glass'
-                  ? 'bg-white/10 border-white/20'
-                  : 'bg-muted border-border',
+                'p-3 transition-all duration-300 border',
+                variant === 'default' && 'rounded-full bg-muted border-border',
+                variant === 'glass' &&
+                  'rounded-full bg-white/10 border-white/20',
+                variant === 'retro' &&
+                  'rounded-none bg-background border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]',
+                variant === 'glow' &&
+                  'rounded-full bg-primary/5 border-primary/20 shadow-[0_0_10px_rgba(168,85,247,0.15)]',
+                variant === 'cyberpunk' &&
+                  'rounded-none bg-black border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.15)]',
               )}
             >
               <UploadCloud
                 className={cn(
                   'h-6 w-6',
-                  variant === 'glow'
-                    ? 'text-primary animate-pulse'
-                    : 'text-muted-foreground',
+                  variant === 'cyberpunk' && 'text-emerald-500',
+                  variant === 'glow' && 'text-primary animate-pulse',
+                  variant === 'retro' && 'text-foreground',
+                  variant !== 'cyberpunk' &&
+                    variant !== 'glow' &&
+                    variant !== 'retro' &&
+                    'text-muted-foreground',
                 )}
               />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-semibold text-foreground">
                 Drag & drop files here, or{' '}
-                <span className="text-primary hover:underline font-bold">
+                <span
+                  className={cn(
+                    'hover:underline font-bold',
+                    variant === 'cyberpunk' && 'text-emerald-500',
+                    variant === 'retro' && 'text-foreground underline',
+                    variant !== 'cyberpunk' &&
+                      variant !== 'retro' &&
+                      'text-primary',
+                  )}
+                >
                   browse
                 </span>
               </p>
@@ -315,7 +331,13 @@ const Uploader = React.forwardRef<HTMLDivElement, UploaderProps>(
         {/* Uploaded File List */}
         {localFiles.length > 0 && (
           <div className="space-y-2.5" data-slot="uploader-queue">
-            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider pl-1">
+            <h4
+              className={cn(
+                'text-xs font-bold text-muted-foreground uppercase tracking-wider pl-1',
+                variant === 'cyberpunk' && 'text-emerald-500 font-mono',
+                variant === 'retro' && 'text-foreground font-bold',
+              )}
+            >
               Files Queue ({localFiles.length})
             </h4>
             <div className="space-y-2 max-h-[250px] overflow-y-auto pr-1 select-none">
@@ -325,23 +347,51 @@ const Uploader = React.forwardRef<HTMLDivElement, UploaderProps>(
                   data-slot="uploader-file-item"
                   className={cn(
                     'flex flex-col gap-2 p-3 rounded-lg border transition-all duration-200',
-                    variant === 'glass'
-                      ? 'bg-white/[0.02] border-white/10'
-                      : 'bg-muted/30 border-border/40',
+                    variant === 'default' && 'bg-muted/30 border-border/40',
+                    variant === 'glass' && 'bg-white/[0.02] border-white/10',
                     variant === 'retro' &&
-                      'border-2 border-foreground rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]',
+                      'border-2 border-foreground bg-background text-foreground rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-bold',
+                    variant === 'glow' &&
+                      'bg-primary/[0.01] border-primary/20 shadow-[0_0_10px_rgba(168,85,247,0.05)]',
+                    variant === 'cyberpunk' &&
+                      'border border-emerald-500/30 bg-black rounded-none shadow-[0_0_10px_rgba(16,185,129,0.1)] text-emerald-400 font-mono',
                   )}
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="p-2 rounded-md bg-primary/10 text-primary shrink-0">
+                      <div
+                        className={cn(
+                          'p-2 rounded-md shrink-0',
+                          variant === 'default' && 'bg-primary/10 text-primary',
+                          variant === 'glass' && 'bg-white/10 text-white',
+                          variant === 'retro' &&
+                            'bg-foreground text-background rounded-none border border-foreground',
+                          variant === 'glow' && 'bg-primary/15 text-primary',
+                          variant === 'cyberpunk' &&
+                            'bg-emerald-950/30 text-emerald-500 rounded-none border border-emerald-500/20',
+                        )}
+                      >
                         <File className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 text-left">
-                        <p className="text-xs font-semibold text-foreground truncate max-w-[200px] sm:max-w-xs">
+                        <p
+                          className={cn(
+                            'text-xs font-semibold text-foreground truncate max-w-[200px] sm:max-w-xs',
+                            variant === 'cyberpunk' &&
+                              'text-emerald-400 font-mono',
+                            variant === 'retro' && 'text-foreground font-bold',
+                          )}
+                        >
                           {file.name}
                         </p>
-                        <p className="text-[10px] text-muted-foreground">
+                        <p
+                          className={cn(
+                            'text-[10px] text-muted-foreground',
+                            variant === 'cyberpunk' &&
+                              'text-emerald-600 font-mono',
+                            variant === 'retro' && 'text-muted-foreground',
+                          )}
+                        >
                           {formatSize(file.size)}
                         </p>
                       </div>
@@ -354,8 +404,18 @@ const Uploader = React.forwardRef<HTMLDivElement, UploaderProps>(
                       {file.status === 'error' && (
                         <div className="flex items-center gap-1.5">
                           <Badge
-                            variant="destructive"
-                            className="text-[9px] px-1.5 py-0"
+                            variant={
+                              variant === 'cyberpunk'
+                                ? 'outline'
+                                : 'destructive'
+                            }
+                            className={cn(
+                              'text-[9px] px-1.5 py-0',
+                              variant === 'cyberpunk' &&
+                                'border-emerald-500 text-emerald-500 rounded-none bg-emerald-950/20 font-mono',
+                              variant === 'retro' &&
+                                'border-2 border-foreground bg-destructive text-destructive-foreground rounded-none',
+                            )}
                           >
                             Error
                           </Badge>
@@ -376,13 +436,28 @@ const Uploader = React.forwardRef<HTMLDivElement, UploaderProps>(
 
                   {file.status === 'uploading' && (
                     <div className="space-y-1.5 w-full">
-                      <div className="flex items-center justify-between text-[10px] font-mono text-muted-foreground">
+                      <div
+                        className={cn(
+                          'flex items-center justify-between text-[10px] font-mono text-muted-foreground',
+                          variant === 'cyberpunk' && 'text-emerald-500',
+                          variant === 'retro' &&
+                            'text-foreground font-bold font-sans',
+                        )}
+                      >
                         <span>Uploading...</span>
                         <span>{file.progress}%</span>
                       </div>
                       <Progress
                         value={file.progress}
-                        indicatorVariant="gradient"
+                        indicatorVariant={
+                          variant === 'cyberpunk' ? 'default' : 'gradient'
+                        }
+                        className={cn(
+                          variant === 'retro' &&
+                            'border-2 border-foreground rounded-none bg-muted',
+                          variant === 'cyberpunk' &&
+                            'border border-emerald-500/20 rounded-none bg-emerald-950/10 [&_[data-slot=progress-indicator]]:bg-emerald-500',
+                        )}
                       />
                     </div>
                   )}

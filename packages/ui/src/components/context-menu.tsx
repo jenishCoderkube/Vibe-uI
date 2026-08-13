@@ -32,7 +32,7 @@ const ContextMenuSubTrigger = React.forwardRef<
     ref={ref}
     data-slot="context-menu-sub-trigger"
     data-inset={inset}
-    className={cn(contextMenuSubTriggerVariants(), className)}
+    className={cn(contextMenuSubTriggerVariants(), inset && 'pl-8', className)}
     {...props}
   >
     {children}
@@ -47,10 +47,12 @@ const contextMenuSubContentVariants = tv({
     variant: {
       default: 'bg-popover text-popover-foreground border-border',
       glass:
-        'bg-slate-950/85 dark:bg-black/80 text-foreground border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl',
+        'bg-white/75 dark:bg-black/80 text-foreground border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
       glow: 'bg-popover text-popover-foreground border-primary/40 shadow-[0_0_20px_rgba(168,85,247,0.25)]',
+      cyberpunk:
+        'rounded-none border border-emerald-500 bg-black text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.15)] dark:shadow-[0_0_15px_rgba(16,185,129,0.25)]',
     },
   },
   defaultVariants: {
@@ -82,10 +84,12 @@ const contextMenuContentVariants = tv({
     variant: {
       default: 'bg-popover text-popover-foreground border-border',
       glass:
-        'bg-slate-950/85 dark:bg-black/80 text-foreground border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl',
+        'bg-white/75 dark:bg-black/80 text-foreground border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
       glow: 'bg-popover text-popover-foreground border-primary/40 shadow-[0_0_25px_rgba(168,85,247,0.25)]',
+      cyberpunk:
+        'rounded-none border border-emerald-500 bg-black text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.15)] dark:shadow-[0_0_15px_rgba(16,185,129,0.25)]',
     },
   },
   defaultVariants: {
@@ -126,7 +130,8 @@ const ContextMenuItem = React.forwardRef<
     data-inset={inset}
     data-variant={variant}
     className={cn(
-      "relative flex cursor-pointer select-none items-center rounded-sm px-2.5 py-1.5 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! gap-2",
+      "relative flex cursor-pointer select-none items-center rounded-sm px-2.5 py-1.5 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! gap-2",
+      inset && 'pl-8',
       className,
     )}
     {...props}
@@ -193,7 +198,8 @@ const ContextMenuLabel = React.forwardRef<
     data-slot="context-menu-label"
     data-inset={inset}
     className={cn(
-      'px-2 py-1.5 text-xs font-bold text-foreground tracking-tight data-[inset]:pl-8',
+      'px-2 py-1.5 text-xs font-bold text-foreground tracking-tight',
+      inset && 'pl-8',
       className,
     )}
     {...props}

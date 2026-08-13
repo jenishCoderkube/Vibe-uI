@@ -39,7 +39,7 @@ export default function ContextMenuDemo() {
 
 </ComponentPreview>
 
-<Installation name="context-menu" npmDeps="@radix-ui/react-context-menu lucide-react tailwind-variants">
+<Installation name="context-menu" npmDeps="@radix-ui/react-context-menu">
 
 ```tsx
 'use client'
@@ -51,20 +51,93 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
 
 const ContextMenu = ContextMenuPrimitive.Root
+
 const ContextMenuTrigger = ContextMenuPrimitive.Trigger
+
 const ContextMenuGroup = ContextMenuPrimitive.Group
+
 const ContextMenuPortal = ContextMenuPrimitive.Portal
+
 const ContextMenuSub = ContextMenuPrimitive.Sub
+
 const ContextMenuRadioGroup = ContextMenuPrimitive.RadioGroup
 
-const contextMenuContentVariants = tv({
-  base: 'z-50 min-w-[12rem] overflow-hidden rounded-xl border p-1 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+const contextMenuSubTriggerVariants = tv({
+  base: 'flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground gap-2',
+})
+
+const ContextMenuSubTrigger = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.SubTrigger>,
+  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubTrigger> & {
+    inset?: boolean
+  }
+>(({ className, inset, children, ...props }, ref) => (
+  <ContextMenuPrimitive.SubTrigger
+    ref={ref}
+    data-slot="context-menu-sub-trigger"
+    data-inset={inset}
+    className={cn(
+      contextMenuSubTriggerVariants(),
+      inset && 'pl-8',
+      className
+    )}
+    {...props}
+  >
+    {children}
+    <ChevronRight className="ml-auto h-4 w-4 shrink-0 opacity-70" />
+  </ContextMenuPrimitive.SubTrigger>
+))
+ContextMenuSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName
+
+const contextMenuSubContentVariants = tv({
+  base: 'z-50 min-w-[8rem] overflow-hidden rounded-md border p-1 shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
   variants: {
     variant: {
       default: 'bg-popover text-popover-foreground border-border',
-      glass: 'bg-slate-950/85 dark:bg-black/80 text-foreground border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl',
-      retro: 'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glass:
+        'bg-white/75 dark:bg-black/80 text-foreground border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-popover text-popover-foreground border-primary/40 shadow-[0_0_20px_rgba(168,85,247,0.25)]',
+      cyberpunk:
+        'rounded-none border border-emerald-500 bg-black text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.15)] dark:shadow-[0_0_15px_rgba(16,185,129,0.25)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface ContextMenuSubContentProps
+  extends
+    React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubContent>,
+    VariantProps<typeof contextMenuSubContentVariants> {}
+
+const ContextMenuSubContent = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.SubContent>,
+  ContextMenuSubContentProps
+>(({ className, variant = 'default', ...props }, ref) => (
+  <ContextMenuPrimitive.SubContent
+    ref={ref}
+    data-slot="context-menu-sub-content"
+    className={cn(contextMenuSubContentVariants({ variant }), className)}
+    {...props}
+  />
+))
+ContextMenuSubContent.displayName = ContextMenuPrimitive.SubContent.displayName
+
+const contextMenuContentVariants = tv({
+  base: 'z-50 min-w-[12rem] overflow-hidden rounded-xl border p-1 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+  variants: {
+    variant: {
+      default: 'bg-popover text-popover-foreground border-border',
+      glass:
+        'bg-white/75 dark:bg-black/80 text-foreground border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
       glow: 'bg-popover text-popover-foreground border-primary/40 shadow-[0_0_25px_rgba(168,85,247,0.25)]',
+      cyberpunk:
+        'rounded-none border border-emerald-500 bg-black text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.15)] dark:shadow-[0_0_15px_rgba(16,185,129,0.25)]',
     },
   },
   defaultVariants: {
@@ -73,7 +146,8 @@ const contextMenuContentVariants = tv({
 })
 
 export interface ContextMenuContentProps
-  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content>,
+  extends
+    React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content>,
     VariantProps<typeof contextMenuContentVariants> {}
 
 const ContextMenuContent = React.forwardRef<
@@ -83,6 +157,7 @@ const ContextMenuContent = React.forwardRef<
   <ContextMenuPrimitive.Portal>
     <ContextMenuPrimitive.Content
       ref={ref}
+      data-slot="context-menu-content"
       className={cn(contextMenuContentVariants({ variant }), className)}
       {...props}
     />
@@ -94,13 +169,17 @@ const ContextMenuItem = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Item> & {
     inset?: boolean
+    variant?: 'default' | 'destructive'
   }
->(({ className, inset, ...props }, ref) => (
+>(({ className, inset, variant = 'default', ...props }, ref) => (
   <ContextMenuPrimitive.Item
     ref={ref}
+    data-slot="context-menu-item"
+    data-inset={inset}
+    data-variant={variant}
     className={cn(
-      'relative flex cursor-pointer select-none items-center rounded-sm px-2.5 py-1.5 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 gap-2',
-      inset && 'pl-8',
+      "relative flex cursor-pointer select-none items-center rounded-sm px-2.5 py-1.5 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive! gap-2",
+      inset && "pl-8",
       className,
     )}
     {...props}
@@ -108,12 +187,81 @@ const ContextMenuItem = React.forwardRef<
 ))
 ContextMenuItem.displayName = ContextMenuPrimitive.Item.displayName
 
+const ContextMenuCheckboxItem = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.CheckboxItem>,
+  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.CheckboxItem>
+>(({ className, children, checked, ...props }, ref) => (
+  <ContextMenuPrimitive.CheckboxItem
+    ref={ref}
+    data-slot="context-menu-checkbox-item"
+    className={cn(
+      'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      className,
+    )}
+    checked={checked}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <ContextMenuPrimitive.ItemIndicator>
+        <Check className="h-4 w-4" />
+      </ContextMenuPrimitive.ItemIndicator>
+    </span>
+    {children}
+  </ContextMenuPrimitive.CheckboxItem>
+))
+ContextMenuCheckboxItem.displayName =
+  ContextMenuPrimitive.CheckboxItem.displayName
+
+const ContextMenuRadioItem = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.RadioItem>,
+  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.RadioItem>
+>(({ className, children, ...props }, ref) => (
+  <ContextMenuPrimitive.RadioItem
+    ref={ref}
+    data-slot="context-menu-radio-item"
+    className={cn(
+      'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-xs outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      className,
+    )}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <ContextMenuPrimitive.ItemIndicator>
+        <Circle className="h-2 w-2 fill-current" />
+      </ContextMenuPrimitive.ItemIndicator>
+    </span>
+    {children}
+  </ContextMenuPrimitive.RadioItem>
+))
+ContextMenuRadioItem.displayName = ContextMenuPrimitive.RadioItem.displayName
+
+const ContextMenuLabel = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.Label>,
+  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> & {
+    inset?: boolean
+  }
+>(({ className, inset, ...props }, ref) => (
+  <ContextMenuPrimitive.Label
+    ref={ref}
+    data-slot="context-menu-label"
+    data-inset={inset}
+    className={cn(
+      'px-2 py-1.5 text-xs font-bold text-foreground tracking-tight',
+      inset && 'pl-8',
+      className,
+    )}
+    {...props}
+  />
+))
+ContextMenuLabel.displayName = ContextMenuPrimitive.Label.displayName
+
 const ContextMenuSeparator = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Separator>
 >(({ className, ...props }, ref) => (
   <ContextMenuPrimitive.Separator
     ref={ref}
+    data-slot="context-menu-separator"
     className={cn('-mx-1 my-1 h-px bg-border/60', className)}
     {...props}
   />
@@ -123,15 +271,18 @@ ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName
 const ContextMenuShortcut = ({
   className,
   ...props
-}: React.HTMLAttributes<HTMLSpanElement>) => (
-  <span
-    className={cn(
-      'ml-auto text-[10px] tracking-widest text-muted-foreground uppercase',
-      className,
-    )}
-    {...props}
-  />
-)
+}: React.HTMLAttributes<HTMLSpanElement>) => {
+  return (
+    <span
+      data-slot="context-menu-shortcut"
+      className={cn(
+        'ml-auto text-[10px] tracking-widest text-muted-foreground uppercase',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
 ContextMenuShortcut.displayName = 'ContextMenuShortcut'
 
 export {
@@ -139,8 +290,17 @@ export {
   ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuCheckboxItem,
+  ContextMenuRadioItem,
+  ContextMenuLabel,
   ContextMenuSeparator,
   ContextMenuShortcut,
+  ContextMenuGroup,
+  ContextMenuPortal,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuRadioGroup,
 }
 ```
 
@@ -148,85 +308,110 @@ export {
 
 ## Variations
 
-### Glassmorphic Menu
+Vibe UI's Context Menu supports multiple visual style presets to match your application's theme:
 
-<ComponentPreview>
-  <ContextMenuGlassDemo />
+<ComponentPreview className="w-full">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full p-0">
+    <ContextMenuGlassDemo />
+    <ContextMenuRetroDemo />
+    <ContextMenuGlowDemo />
+    <ContextMenuCyberpunkDemo />
+  </div>
 
 ```tsx
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+  ContextMenuSeparator,
+} from '@/components/ui/context-menu'
 
-export default function ContextMenuGlassDemo() {
+export default function ContextMenuPresets() {
   return (
-    <ContextMenu>
-      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center rounded-xl border border-white/20 bg-slate-950/60 backdrop-blur-md text-xs text-foreground select-none">
-        Right click (Glass)
-      </ContextMenuTrigger>
-      <ContextMenuContent variant="glass">
-        <ContextMenuItem>New Tab</ContextMenuItem>
-        <ContextMenuItem>New Window</ContextMenuItem>
-      </ContextMenuContent>
-    </ContextMenu>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+      {/* 1. Glassmorphic Style */}
+      <ContextMenu>
+        <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center rounded-xl border border-border/80 bg-white/20 dark:bg-black/20 backdrop-blur-md hover:bg-white/30 dark:hover:bg-black/30 text-xs text-foreground select-none">
+          Right click (Glass)
+        </ContextMenuTrigger>
+        <ContextMenuContent variant="glass">
+          <ContextMenuItem>New Tab</ContextMenuItem>
+          <ContextMenuItem>New Window</ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+
+      {/* 2. Retro Brutalist Style */}
+      <ContextMenu>
+        <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center border-2 border-foreground bg-background text-xs font-bold select-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          RIGHT CLICK (RETRO)
+        </ContextMenuTrigger>
+        <ContextMenuContent variant="retro">
+          <ContextMenuItem>COPY FILE</ContextMenuItem>
+          <ContextMenuItem>PASTE FILE</ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+
+      {/* 3. Neon Glow Style */}
+      <ContextMenu>
+        <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center rounded-xl border border-primary/40 bg-card text-xs text-foreground select-none shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+          Right click (Neon Glow)
+        </ContextMenuTrigger>
+        <ContextMenuContent variant="glow">
+          <ContextMenuItem>Activate Matrix</ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+
+      {/* 4. Cyberpunk Matrix Style */}
+      <ContextMenu>
+        <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center border border-emerald-500/30 bg-black text-xs font-mono text-emerald-500 select-none shadow-[0_0_15px_rgba(16,185,129,0.15)] rounded-none">
+          RIGHT CLICK (CYBERPUNK)
+        </ContextMenuTrigger>
+        <ContextMenuContent variant="cyberpunk">
+          <ContextMenuItem>SYSTEM_SCAN</ContextMenuItem>
+          <ContextMenuItem>BYPASS_FIREWALL</ContextMenuItem>
+          <ContextMenuSeparator className="bg-emerald-500/30" />
+          <ContextMenuItem>TERMINATE_SESSION</ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+    </div>
   )
 }
 ```
-
 </ComponentPreview>
 
-### Neubrutalism Retro
+## Props
 
-<ComponentPreview>
-  <ContextMenuRetroDemo />
+### ContextMenuContent
 
-```tsx
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual theme preset style of the context menu container."
+  />
+  <PropRow
+    prop="className"
+    type="string"
+    default="undefined"
+    description="Custom class name to apply to the context menu content."
+  />
+</PropsTable>
 
-export default function ContextMenuRetroDemo() {
-  return (
-    <ContextMenu>
-      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center border-2 border-foreground bg-background text-xs font-bold select-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        RIGHT CLICK (RETRO)
-      </ContextMenuTrigger>
-      <ContextMenuContent variant="retro">
-        <ContextMenuItem>COPY FILE</ContextMenuItem>
-        <ContextMenuItem>PASTE FILE</ContextMenuItem>
-      </ContextMenuContent>
-    </ContextMenu>
-  )
-}
-```
+### ContextMenuItem
 
-</ComponentPreview>
-
-### Neon Glow Accent
-
-<ComponentPreview>
-  <ContextMenuGlowDemo />
-
-```tsx
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu'
-
-export default function ContextMenuGlowDemo() {
-  return (
-    <ContextMenu>
-      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center rounded-xl border border-primary/40 bg-card text-xs text-foreground select-none shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-        Right click (Neon Glow)
-      </ContextMenuTrigger>
-      <ContextMenuContent variant="glow">
-        <ContextMenuItem>Activate Matrix</ContextMenuItem>
-      </ContextMenuContent>
-    </ContextMenu>
-  )
-}
-```
-
-</ComponentPreview>
-
-## Component Concept
-
-Vibe UI's Context Menu provides accessible right-click interaction menus with keyboard shortcuts, nested submenus, and theme variants.
-
-### Features
-
-- **Keyboard Shortcuts**: Built-in shortcut indicator `<ContextMenuShortcut>` right-aligned for mac/windows key bindings.
-- **Submenus & Groups**: Supports hierarchical menu structures with nested Radix sub-triggers.
+<PropsTable>
+  <PropRow
+    prop="inset"
+    type="boolean"
+    default="false"
+    description="If true, adds extra left padding to align item labels when checkbox/radio indicators are used."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'destructive'"
+    default="'default'"
+    description="Changes the style of the menu item to match its semantic meaning."
+  />
+</PropsTable>

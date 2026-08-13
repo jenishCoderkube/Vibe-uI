@@ -2,24 +2,19 @@
 
 A visual progress loading indicator widget supporting customized speed animations and theme presets.
 
-## Preview: Neon Glow Loader
+## Preview
 
 <ComponentPreview>
-  <SpinnerGlow />
+  <SpinnerDemoBasic />
 
 ```tsx
 import { Spinner } from '@/components/ui/spinner'
 
-export default function GlowSpinnerDemo() {
+export default function SpinnerDemo() {
   return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Neon Glow</h4>
-        <p className="text-[10px] text-muted-foreground">Ambient purple aura glowing preloader</p>
-      </div>
-      <div className="flex justify-center p-6 bg-zinc-900/40 rounded-lg">
-        <Spinner variant="glow" size="md" />
-      </div>
+    <div className="flex items-center gap-3">
+      <Spinner variant="glow" size="md" />
+      <span>Loading workspace...</span>
     </div>
   )
 }
@@ -27,121 +22,212 @@ export default function GlowSpinnerDemo() {
 
 </ComponentPreview>
 
-<Installation name="spinner">
+<Installation name="spinner" npmDeps="tailwind-variants">
 
 ```tsx
-"use client"
+'use client'
 
-import * as React from "react"
-import { tv, type VariantProps } from "tailwind-variants"
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
 
 const spinnerVariants = tv({
-  base: "animate-spin shrink-0 select-none",
+  base: 'shrink-0 select-none',
   variants: {
     variant: {
-      default: "text-muted-foreground",
-      glass: "text-zinc-300 drop-shadow-[0_2px_4px_rgba(255,255,255,0.1)]",
-      retro: "text-foreground stroke-[3px]",
-      glow: "text-primary drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]",
-      cyberpunk: "text-emerald-500 drop-shadow-[0_0_6px_rgba(16,185,129,0.4)]",
+      default: 'text-muted-foreground',
+      glass:
+        'text-zinc-400 dark:text-zinc-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)] dark:drop-shadow-[0_2px_4px_rgba(255,255,255,0.1)]',
+      retro: 'text-foreground stroke-[3px]',
+      glow: 'text-primary drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]',
+      cyberpunk: 'text-emerald-500 drop-shadow-[0_0_6px_rgba(16,185,129,0.4)]',
     },
     size: {
-      sm: "h-4 w-4",
-      md: "h-6 w-6",
-      lg: "h-10 w-10",
+      sm: 'h-4 w-4',
+      md: 'h-6 w-6',
+      lg: 'h-10 w-10',
     },
   },
   defaultVariants: {
-    variant: "default",
-    size: "md",
+    variant: 'default',
+    size: 'md',
   },
 })
 
 export interface SpinnerProps
   extends React.SVGProps<SVGSVGElement>,
-    VariantProps<typeof spinnerVariants> {}
+    VariantProps<typeof spinnerVariants> {
+  design?: 'circle' | 'dots' | 'bars' | 'grid' | 'pinwheel' | 'pulse'
+}
 
 const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, variant, size, design = 'circle', ...props }, ref) => {
     return (
       <svg
         ref={ref}
+        data-slot="spinner"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
-        className={cn(spinnerVariants({ variant, size }), className)}
+        className={cn(
+          spinnerVariants({ variant, size }),
+          design === 'circle' && 'animate-spin',
+          className,
+        )}
         {...props}
       >
-        <circle
-          className="opacity-20"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="3"
-        />
-        <path
-          className="opacity-80"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        />
+        {design === 'circle' && (
+          <>
+            <circle
+              className="opacity-20"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="3"
+              data-slot="spinner-track"
+            />
+            <path
+              className="opacity-80"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              data-slot="spinner-head"
+            />
+          </>
+        )}
+        {design === 'dots' && (
+          <>
+            <circle
+              cx="4"
+              cy="12"
+              r="2.5"
+              fill="currentColor"
+              className="animate-bounce [animation-delay:-0.3s]"
+            />
+            <circle
+              cx="12"
+              cy="12"
+              r="2.5"
+              fill="currentColor"
+              className="animate-bounce [animation-delay:-0.15s]"
+            />
+            <circle cx="20" cy="12" r="2.5" fill="currentColor" className="animate-bounce" />
+          </>
+        )}
+        {design === 'bars' && (
+          <>
+            <rect
+              x="3"
+              y="4"
+              width="3.5"
+              height="16"
+              rx="1"
+              fill="currentColor"
+              className="animate-pulse [animation-delay:-0.3s]"
+            />
+            <rect
+              x="10.25"
+              y="4"
+              width="3.5"
+              height="16"
+              rx="1"
+              fill="currentColor"
+              className="animate-pulse [animation-delay:-0.15s]"
+            />
+            <rect x="17.5" y="4" width="3.5" height="16" rx="1" fill="currentColor" className="animate-pulse" />
+          </>
+        )}
+        {design === 'grid' && (
+          <>
+            <rect
+              x="3"
+              y="3"
+              width="7"
+              height="7"
+              fill="currentColor"
+              className="animate-pulse [animation-delay:0s]"
+            />
+            <rect
+              x="14"
+              y="3"
+              width="7"
+              height="7"
+              fill="currentColor"
+              className="animate-pulse [animation-delay:0.15s]"
+            />
+            <rect
+              x="3"
+              y="14"
+              width="7"
+              height="7"
+              fill="currentColor"
+              className="animate-pulse [animation-delay:0.3s]"
+            />
+            <rect
+              x="14"
+              y="14"
+              width="7"
+              height="7"
+              fill="currentColor"
+              className="animate-pulse [animation-delay:0.45s]"
+            />
+          </>
+        )}
+        {design === 'pinwheel' && (
+          <>
+            <circle cx="12" cy="4" r="2" fill="currentColor" className="animate-pulse [animation-delay:0s]" />
+            <circle cx="17.66" cy="6.34" r="2" fill="currentColor" className="animate-pulse [animation-delay:0.1s]" />
+            <circle cx="20" cy="12" r="2" fill="currentColor" className="animate-pulse [animation-delay:0.2s]" />
+            <circle cx="17.66" cy="17.66" r="2" fill="currentColor" className="animate-pulse [animation-delay:0.3s]" />
+            <circle cx="12" cy="20" r="2" fill="currentColor" className="animate-pulse [animation-delay:0.4s]" />
+            <circle cx="6.34" cy="17.66" r="2" fill="currentColor" className="animate-pulse [animation-delay:0.5s]" />
+            <circle cx="4" cy="12" r="2" fill="currentColor" className="animate-pulse [animation-delay:0.6s]" />
+            <circle cx="6.34" cy="6.34" r="2" fill="currentColor" className="animate-pulse [animation-delay:0.7s]" />
+          </>
+        )}
+        {design === 'pulse' && (
+          <>
+            <circle
+              cx="12"
+              cy="12"
+              r="8"
+              fill="currentColor"
+              className="animate-ping opacity-75"
+              style={{ transformOrigin: 'center' }}
+            />
+            <circle cx="12" cy="12" r="3" fill="currentColor" />
+          </>
+        )}
       </svg>
     )
-  }
+  },
 )
-Spinner.displayName = "Spinner"
+
+Spinner.displayName = 'Spinner'
 
 export { Spinner, spinnerVariants }
 ```
 
 </Installation>
 
+## Preset Variations
 
-
-## Standard Variations
-
-### Presets Comparison
+Explore the visual design presets of the Spinner component, including Default, Glassmorphic, Retro Brutalist, Neon Glow, and Cyberpunk matrix styles.
 
 <ComponentPreview>
-  <SpinnerVariantsDemo />
+  <SpinnerDemoPresets />
 
 ```tsx
 import { Spinner } from '@/components/ui/spinner'
 
-export default function PresetGrid() {
+export default function SpinnerPresets() {
   return (
-    <div className="w-full flex flex-wrap gap-6 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5">
-      <div className="flex flex-col items-center gap-1.5 font-mono text-xs">
-        <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">
-          Default
-        </span>
-        <Spinner variant="default" size="md" />
-      </div>
-      <div className="flex flex-col items-center gap-1.5 font-mono text-xs">
-        <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">
-          Glass
-        </span>
-        <Spinner variant="glass" size="md" />
-      </div>
-      <div className="flex flex-col items-center gap-1.5 font-mono text-xs">
-        <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">
-          Retro
-        </span>
-        <Spinner variant="retro" size="md" />
-      </div>
-      <div className="flex flex-col items-center gap-1.5 font-mono text-xs">
-        <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">
-          Glow
-        </span>
-        <Spinner variant="glow" size="md" />
-      </div>
-      <div className="flex flex-col items-center gap-1.5 font-mono text-xs">
-        <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">
-          Cyberpunk
-        </span>
-        <Spinner variant="cyberpunk" size="md" />
-      </div>
+    <div className="flex gap-6">
+      <Spinner variant="default" size="md" />
+      <Spinner variant="glass" size="md" />
+      <Spinner variant="retro" size="md" />
+      <Spinner variant="glow" size="md" />
+      <Spinner variant="cyberpunk" size="md" />
     </div>
   )
 }
@@ -149,24 +235,25 @@ export default function PresetGrid() {
 
 </ComponentPreview>
 
-### Standard slate loader
+## Design Shapes
+
+The Spinner component supports multiple layout motions beyond simple rotation, including bouncing dots, fading bars, and flashing grid squares.
 
 <ComponentPreview>
-  <SpinnerDefault />
+  <SpinnerDemoShapes />
 
 ```tsx
 import { Spinner } from '@/components/ui/spinner'
 
-export default function SlateDemo() {
+export default function SpinnerShapes() {
   return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Default Loader</h4>
-        <p className="text-[10px] text-muted-foreground">Simple muted slate rotation indicator</p>
-      </div>
-      <div className="flex justify-center p-6 bg-zinc-900/40 rounded-lg">
-        <Spinner variant="default" size="md" />
-      </div>
+    <div className="flex gap-6">
+      <Spinner design="circle" variant="glow" />
+      <Spinner design="dots" variant="glow" />
+      <Spinner design="bars" variant="glow" />
+      <Spinner design="grid" variant="glow" />
+      <Spinner design="pinwheel" variant="glow" />
+      <Spinner design="pulse" variant="glow" />
     </div>
   )
 }
@@ -174,293 +261,63 @@ export default function SlateDemo() {
 
 </ComponentPreview>
 
-### Glassmorphic spinner
+## Interactive Use Cases
+
+Combine Spinner presets inside buttons, data upload containers, and workspace overlays to indicate loading feedback loops.
 
 <ComponentPreview>
-  <SpinnerGlass />
-
-```tsx
-import { Spinner } from '@/components/ui/spinner'
-
-export default function GlassDemo() {
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Glassmorphic Loader</h4>
-        <p className="text-[10px] text-muted-foreground">Frosted white loading ring with soft shadow</p>
-      </div>
-      <div className="flex justify-center p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-lg">
-        <Spinner variant="glass" size="md" />
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Retro brutalist spinner
-
-<ComponentPreview>
-  <SpinnerRetro />
-
-```tsx
-import { Spinner } from '@/components/ui/spinner'
-
-export default function RetroDemo() {
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Retro Brutalist</h4>
-        <p className="text-[10px] text-muted-foreground">Thick outline flat black loading ring</p>
-      </div>
-      <div className="flex justify-center p-6 bg-zinc-900/40 border-2 border-foreground rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-        <Spinner variant="retro" size="md" />
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Cyber matrix loader
-
-<ComponentPreview>
-  <SpinnerCyber />
-
-```tsx
-import { Spinner } from '@/components/ui/spinner'
-
-export default function CyberDemo() {
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Cyberpunk Matrix</h4>
-        <p className="text-[10px] text-muted-foreground">Emerald green glowing scanline loader</p>
-      </div>
-      <div className="flex justify-center p-6 bg-black border border-emerald-950 rounded-lg">
-        <Spinner variant="cyberpunk" size="md" />
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Terminal scanning indicator
-
-<ComponentPreview>
-  <SpinnerGlitchText />
-
-```tsx
-import { Spinner } from '@/components/ui/spinner'
-
-export default function TextDemo() {
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Status Loader</h4>
-        <p className="text-[10px] text-muted-foreground">Spinner matched with text metadata details</p>
-      </div>
-      <div className="flex items-center gap-3 p-4 bg-zinc-900/40 rounded-lg justify-center">
-        <Spinner variant="glow" size="sm" />
-        <span className="text-xs font-mono text-primary font-bold animate-pulse">
-          CONNECTING PORT 8080...
-        </span>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Button action load states
-
-<ComponentPreview>
-  <SpinnerInsideButton />
+  <SpinnerDemoInteractive />
 
 ```tsx
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 
-export default function ButtonDemo() {
+export default function LoadStates() {
   const [loading, setLoading] = useState(false)
 
-  const triggerLoad = () => {
-    setLoading(true)
-    setTimeout(() => setLoading(false), 2000)
-  }
-
   return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Button Load States</h4>
-        <p className="text-[10px] text-muted-foreground">Trigger loading feedback loops inside buttons</p>
-      </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Button
-          variant="glow"
-          onClick={triggerLoad}
-          disabled={loading}
-          className="w-full"
-        >
-          {loading ? (
-            <>
-              <Spinner variant="glow" size="sm" className="mr-2" />
-              <span>Fetching Data...</span>
-            </>
-          ) : (
-            <span>Load Workspace</span>
-          )}
-        </Button>
-      </div>
-    </div>
+    <Button
+      variant="glow"
+      onClick={() => setLoading(true)}
+      disabled={loading}
+    >
+      {loading ? (
+        <>
+          <Spinner variant="glow" size="sm" className="mr-2" />
+          <span>Syncing Workspace...</span>
+        </>
+      ) : (
+        <span>Sync Workspace</span>
+      )}
+    </Button>
   )
 }
 ```
 
 </ComponentPreview>
 
-### File attachments uploader
+## Props
 
-<ComponentPreview>
-  <SpinnerInsideUploader />
+### Spinner
 
-```tsx
-import React, { useState } from 'react'
-import { Spinner } from '@/components/ui/spinner'
-import { UploadCloud, CheckCircle2 } from 'lucide-react'
-
-export default function UploadDemo() {
-  const [uploading, setUploading] = useState(false)
-  const [done, setDone] = useState(false)
-
-  const handleUpload = () => {
-    if (uploading || done) return
-    setUploading(true)
-    setTimeout(() => {
-      setUploading(false)
-      setDone(true)
-      setTimeout(() => setDone(false), 2000)
-    }, 2500)
-  }
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Grid Uploader Feed</h4>
-        <p className="text-[10px] text-muted-foreground">Files attachment loader simulation</p>
-      </div>
-      <div
-        onClick={handleUpload}
-        className="flex flex-col items-center justify-center p-6 border border-dashed border-white/10 rounded-lg bg-zinc-900/30 cursor-pointer hover:bg-zinc-900/60 transition-all select-none min-h-[110px]"
-      >
-        {uploading ? (
-          <>
-            <Spinner variant="cyberpunk" size="md" className="mb-2" />
-            <span className="text-[10px] font-mono text-emerald-400">
-              UPLOADING DATA PACKET (45%)...
-            </span>
-          </>
-        ) : done ? (
-          <>
-            <CheckCircle2 className="h-6 w-6 text-emerald-400 mb-1" />
-            <span className="text-xs font-semibold text-white">Upload Completed!</span>
-          </>
-        ) : (
-          <>
-            <UploadCloud className="h-6 w-6 text-zinc-400 mb-1" />
-            <span className="text-xs text-zinc-300">Click to Upload Large Document</span>
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Custom Equalizer Audio Bars
-
-<ComponentPreview>
-  <SpinnerWaveEqualizer />
-
-```tsx
-export default function EqualizerDemo() {
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Equalizer Bars</h4>
-        <p className="text-[10px] text-muted-foreground">Custom wave pulse animation bars</p>
-      </div>
-      <div className="flex gap-1 justify-center items-end p-6 bg-zinc-900/40 rounded-lg h-[68px]">
-        {[1, 2, 3, 4, 5].map((idx) => (
-          <div
-            key={idx}
-            style={{ animationDelay: `${idx * 0.15}s` }}
-            className="w-1 bg-primary rounded-t animate-[bounce_0.8s_infinite] h-8"
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Card blur overlay refresh
-
-<ComponentPreview>
-  <SpinnerCardOverlay />
-
-```tsx
-import React, { useState } from 'react'
-import { Spinner } from '@/components/ui/spinner'
-import { Button } from '@/components/ui/button'
-
-export default function OverlayDemo() {
-  const [loading, setLoading] = useState(false)
-
-  const trigger = () => {
-    setLoading(true)
-    setTimeout(() => setLoading(false), 2000)
-  }
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Card Blur Overlay</h4>
-        <p className="text-[10px] text-muted-foreground">Lock interactive widgets under overlays</p>
-      </div>
-      <div className="relative p-4 border border-white/5 rounded-lg bg-zinc-900/40">
-        {loading && (
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs rounded-lg flex flex-col items-center justify-center gap-2 z-10 animate-in fade-in duration-200">
-            <Spinner variant="glow" size="md" />
-            <span className="text-[9px] font-mono text-zinc-400 uppercase tracking-widest">
-              Refreshing Grid...
-            </span>
-          </div>
-        )}
-        <div className="space-y-2 text-xs">
-          <div className="flex justify-between font-mono text-[10px] text-zinc-500">
-            <span>Grid ID</span>
-            <span>#0921B</span>
-          </div>
-          <p className="font-bold text-white">Database Workspace Node</p>
-          <Button variant="glass" size="sm" className="w-full h-8" onClick={trigger}>
-            Sync Node
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual design style variant preset of the spinner SVG outline and drop-shadow."
+  />
+  <PropRow
+    prop="size"
+    type="'sm' | 'md' | 'lg'"
+    default="'md'"
+    description="The height and width dimensions of the spinner SVG."
+  />
+  <PropRow
+    prop="design"
+    type="'circle' | 'dots' | 'bars' | 'grid' | 'pinwheel' | 'pulse'"
+    default="'circle'"
+    description="The layout design shape of the spinner. When not set to circle, container rotation is disabled and internal shape animations are used."
+  />
+</PropsTable>

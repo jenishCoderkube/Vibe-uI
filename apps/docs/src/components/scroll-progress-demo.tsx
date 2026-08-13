@@ -22,17 +22,16 @@ export function ScrollProgressDemo() {
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 w-full">
-      <div className="flex gap-8 items-center justify-center flex-wrap">
+      <div className="flex gap-6 items-center justify-center flex-wrap">
         <div className="flex flex-col items-center gap-2">
           <span className="text-xs text-muted-foreground font-semibold">
-            Circular Scroll
+            Default Scroll
           </span>
           <CircularProgress
             value={scrollPercent}
             size={80}
             strokeWidth={8}
             showValue
-            indicatorVariant="gradient"
             className="shadow-sm"
           />
         </div>
@@ -60,7 +59,32 @@ export function ScrollProgressDemo() {
             strokeWidth={8}
             showValue
             variant="retro"
-            indicatorVariant="retro"
+            className="shadow-sm"
+          />
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-xs text-muted-foreground font-semibold">
+            Glow Scroll
+          </span>
+          <CircularProgress
+            value={scrollPercent}
+            size={80}
+            strokeWidth={8}
+            showValue
+            variant="glow"
+            className="shadow-sm"
+          />
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-xs text-muted-foreground font-semibold">
+            Cyberpunk Scroll
+          </span>
+          <CircularProgress
+            value={scrollPercent}
+            size={80}
+            strokeWidth={8}
+            showValue
+            variant="cyberpunk"
             className="shadow-sm"
           />
         </div>

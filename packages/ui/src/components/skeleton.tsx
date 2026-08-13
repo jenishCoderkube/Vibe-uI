@@ -11,7 +11,8 @@ const skeletonVariants = tv({
       pulse: 'animate-pulse',
       shimmer: 'bg-muted/50',
       glow: 'shadow-[0_0_15px_rgba(168,85,247,0.25)] border border-primary/30 bg-primary/10 animate-pulse',
-      glass: 'bg-card/40 border border-border backdrop-blur-md animate-pulse',
+      glass:
+        'bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 backdrop-blur-md animate-pulse',
       retro:
         'border-2 border-foreground bg-muted rounded-none vibe-retro-flash-effect',
     },
@@ -447,9 +448,12 @@ export const SkeletonDashboard = React.forwardRef<
     <div className="flex-1 flex flex-col min-w-0">
       {/* Header */}
       <div className="h-14 border-b border-border flex items-center justify-between px-6 shrink-0">
-        <SkeletonLine height="1.25rem" className="w-32" {...props} />
+        <SkeletonLine height="1.25rem" className="w-24 sm:w-32" {...props} />
         <div className="flex items-center space-x-3">
-          <Skeleton className="h-8 w-24 rounded-md" {...props} />
+          <Skeleton
+            className="h-8 w-24 rounded-md hidden sm:block"
+            {...props}
+          />
           <SkeletonCircle size={28} {...props} />
         </div>
       </div>

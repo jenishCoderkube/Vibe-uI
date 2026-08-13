@@ -211,17 +211,6 @@
     "registryDependencies": ["utils"]
   },
   {
-    "name": "data-table",
-    "files": ["data-table.tsx"],
-    "dependencies": [
-      "lucide-react",
-      "tailwind-variants",
-      "clsx",
-      "tailwind-merge"
-    ],
-    "registryDependencies": ["utils"]
-  },
-  {
     "name": "date-picker",
     "files": ["date-picker.tsx"],
     "dependencies": [

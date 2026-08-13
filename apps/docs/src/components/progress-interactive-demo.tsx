@@ -13,7 +13,7 @@ export function ProgressInteractiveDemo() {
           <span className="text-sm font-semibold text-foreground">
             Interactive Value Controller
           </span>
-          <span className="text-sm font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+          <span className="text-sm font-mono font-bold text-secondary-foreground bg-secondary px-2.5 py-0.5 rounded-md border border-border/50 shadow-sm">
             {value[0]}%
           </span>
         </div>
@@ -30,7 +30,7 @@ export function ProgressInteractiveDemo() {
         <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           Horizontal Progress Designs
         </h4>
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-medium text-muted-foreground">
               Default Style
@@ -55,9 +55,21 @@ export function ProgressInteractiveDemo() {
           </div>
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-medium text-muted-foreground">
-              Gradient Glow
+              Gradient Design
             </span>
             <Progress value={value[0]} indicatorVariant="gradient" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">
+              Neon Glow
+            </span>
+            <Progress value={value[0]} variant="glow" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">
+              Cyberpunk Monospace
+            </span>
+            <Progress value={value[0]} variant="cyberpunk" />
           </div>
         </div>
       </div>
@@ -66,8 +78,8 @@ export function ProgressInteractiveDemo() {
         <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           Circular Progress Designs
         </h4>
-        <div className="flex flex-wrap justify-between gap-4">
-          <div className="flex flex-col items-center gap-2 flex-1 min-w-[100px]">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 justify-items-center">
+          <div className="flex flex-col items-center gap-2">
             <span className="text-[11px] font-medium text-muted-foreground">
               Default
             </span>
@@ -78,7 +90,7 @@ export function ProgressInteractiveDemo() {
               strokeWidth={6}
             />
           </div>
-          <div className="flex flex-col items-center gap-2 flex-1 min-w-[100px]">
+          <div className="flex flex-col items-center gap-2">
             <span className="text-[11px] font-medium text-muted-foreground">
               Glass
             </span>
@@ -91,7 +103,7 @@ export function ProgressInteractiveDemo() {
               strokeWidth={6}
             />
           </div>
-          <div className="flex flex-col items-center gap-2 flex-1 min-w-[100px]">
+          <div className="flex flex-col items-center gap-2">
             <span className="text-[11px] font-medium text-muted-foreground">
               Retro
             </span>
@@ -103,13 +115,37 @@ export function ProgressInteractiveDemo() {
               strokeWidth={6}
             />
           </div>
-          <div className="flex flex-col items-center gap-2 flex-1 min-w-[100px]">
+          <div className="flex flex-col items-center gap-2">
             <span className="text-[11px] font-medium text-muted-foreground">
               Gradient
             </span>
             <CircularProgress
               value={value[0]}
               indicatorVariant="gradient"
+              showValue
+              size={70}
+              strokeWidth={6}
+            />
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Glow
+            </span>
+            <CircularProgress
+              value={value[0]}
+              variant="glow"
+              showValue
+              size={70}
+              strokeWidth={6}
+            />
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Cyberpunk
+            </span>
+            <CircularProgress
+              value={value[0]}
+              variant="cyberpunk"
               showValue
               size={70}
               strokeWidth={6}

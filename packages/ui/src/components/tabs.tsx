@@ -7,6 +7,7 @@ import { cn } from '../lib/utils'
 interface TabsContextValue {
   value: string
   onValueChange: (value: string) => void
+  variant?: 'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
 }
 
 const TabsContext = React.createContext<TabsContextValue | undefined>(undefined)
@@ -25,11 +26,20 @@ export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultValue?: string
   value?: string
   onValueChange?: (value: string) => void
+  variant?: 'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
 }
 
 const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
   (
-    { defaultValue, value, onValueChange, className, children, ...props },
+    {
+      defaultValue,
+      value,
+      onValueChange,
+      variant,
+      className,
+      children,
+      ...props
+    },
     ref,
   ) => {
     const [localValue, setLocalValue] = React.useState(defaultValue || '')
@@ -47,7 +57,11 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
 
     return (
       <TabsContext.Provider
-        value={{ value: activeValue, onValueChange: handleValueChange }}
+        value={{
+          value: activeValue,
+          onValueChange: handleValueChange,
+          variant,
+        }}
       >
         <div ref={ref} className={cn('w-full', className)} {...props}>
           {children}
@@ -83,9 +97,10 @@ export interface TabsListProps
     VariantProps<typeof tabsListVariants> {}
 
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, variant: propVariant, ...props }, ref) => {
     const containerRef = React.useRef<HTMLDivElement>(null)
     const context = useTabs()
+    const variant = propVariant || context.variant || 'default'
     const [indicatorStyle, setIndicatorStyle] =
       React.useState<React.CSSProperties>({
         position: 'absolute',
@@ -219,9 +234,10 @@ export interface TabsTriggerProps
 }
 
 const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({ className, value, variant, ...props }, ref) => {
+  ({ className, value, variant: propVariant, ...props }, ref) => {
     const context = useTabs()
     const isActive = context.value === value
+    const variant = propVariant || context.variant || 'default'
 
     return (
       <button

@@ -146,13 +146,6 @@ const componentDeps: Record<string, string[]> = {
     'clsx',
     'tailwind-merge',
   ],
-  sheet: [
-    '@radix-ui/react-dialog',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
   'context-menu': [
     '@radix-ui/react-context-menu',
     'lucide-react',
@@ -160,7 +153,6 @@ const componentDeps: Record<string, string[]> = {
     'clsx',
     'tailwind-merge',
   ],
-  'data-table': ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   carousel: [
     'embla-carousel-react',
     'lucide-react',

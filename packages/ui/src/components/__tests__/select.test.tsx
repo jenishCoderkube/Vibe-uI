@@ -185,8 +185,8 @@ describe('Select Component', () => {
       </Select>,
     )
     const glowTrigger = screen.getByRole('combobox')
-    expect(glowTrigger).toHaveClass('bg-primary/10')
-    expect(glowTrigger).toHaveClass('text-primary')
+    expect(glowTrigger).toHaveClass('bg-primary/5')
+    expect(glowTrigger).toHaveClass('text-foreground')
 
     rerender(
       <Select variant="glass">

@@ -23,7 +23,7 @@ import {
   CardTitle,
 } from './card'
 import { Input } from './input'
-import { Sheet, SheetContent, SheetTrigger } from './sheet'
+import { Drawer, DrawerContent, DrawerTrigger } from './drawer'
 
 export function DashboardBlock02() {
   return (
@@ -71,8 +71,8 @@ export function DashboardBlock02() {
             Analytics
           </a>
         </nav>
-        <Sheet>
-          <SheetTrigger asChild>
+        <Drawer direction="left">
+          <DrawerTrigger asChild>
             <Button
               variant="outline"
               size="icon"
@@ -81,8 +81,8 @@ export function DashboardBlock02() {
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
-          </SheetTrigger>
-          <SheetContent side="left">
+          </DrawerTrigger>
+          <DrawerContent side="left">
             <nav className="grid gap-6 text-lg font-medium">
               <a
                 href="#"
@@ -115,8 +115,8 @@ export function DashboardBlock02() {
                 Customers
               </a>
             </nav>
-          </SheetContent>
-        </Sheet>
+          </DrawerContent>
+        </Drawer>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <form className="ml-auto flex-1 sm:flex-initial">
             <div className="relative">

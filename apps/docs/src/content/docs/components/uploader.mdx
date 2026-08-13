@@ -4,7 +4,7 @@ A premium stateful dropzone component supporting drag-and-drop file inputs, file
 
 ## Preview
 
-<ComponentPreview sandbox="uploader">
+<ComponentPreview>
   <div className="w-full text-left">
     <Uploader />
   </div>
@@ -20,7 +20,6 @@ export default function UploaderDemo() {
   )
 }
 ```
-
 </ComponentPreview>
 
 <Installation name="uploader" vibeDeps="button, progress, badge">
@@ -32,18 +31,16 @@ import * as React from 'react'
 import { UploadCloud, File, X, CheckCircle, AlertCircle } from 'lucide-react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
-import { Button } from './button'
-import { Progress } from './progress'
-import { Badge } from './badge'
 
 const uploaderVariants = tv({
-  base: 'flex flex-col gap-4 w-full p-6 border rounded-xl transition-all duration-300',
+  base: 'flex flex-col gap-4 w-full transition-all duration-300',
   variants: {
     variant: {
-      default: 'border-border bg-card shadow-sm',
-      glass: 'bg-white/5 dark:bg-black/20 border-white/20 dark:border-white/10 backdrop-blur-md shadow-lg',
-      retro: 'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
-      glow: 'bg-primary/5 border border-primary/25 shadow-[0_0_20px_rgba(168,85,247,0.1)]',
+      default: '',
+      glass: '',
+      retro: 'text-foreground font-bold',
+      glow: '',
+      cyberpunk: 'text-emerald-500 font-mono',
     },
   },
   defaultVariants: {
@@ -381,71 +378,78 @@ export { Uploader }
 </Installation>
 
 
-## All Variations
+## Variations
 
-Explore all interactive states and combinations of the Uploader component.
+Vibe UI's Uploader component supports multiple visual style presets to match your application's theme:
 
-### 1. Preset Variations
-
-Every variation supports our 4 built-in theme presets.
-
-#### Glassmorphism Preset
-
-<ComponentPreview>
-  <div className="w-full text-left">
+<ComponentPreview className="w-full">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full p-0">
     <Uploader variant="glass" />
-  </div>
-
-```tsx
-import { Uploader } from '@/components/ui/uploader'
-
-export default function GlassUploaderDemo() {
-  return <Uploader variant="glass" />
-}
-```
-
-</ComponentPreview>
-
-#### Retro Neobrutalism Preset
-
-<ComponentPreview>
-  <div className="w-full text-left">
     <Uploader variant="retro" />
-  </div>
-
-```tsx
-import { Uploader } from '@/components/ui/uploader'
-
-export default function RetroUploaderDemo() {
-  return <Uploader variant="retro" />
-}
-```
-
-</ComponentPreview>
-
-#### Neon Glow Preset
-
-<ComponentPreview>
-  <div className="w-full text-left">
     <Uploader variant="glow" />
+    <Uploader variant="cyberpunk" />
   </div>
 
 ```tsx
 import { Uploader } from '@/components/ui/uploader'
 
-export default function GlowUploaderDemo() {
-  return <Uploader variant="glow" />
+export default function UploaderPresets() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+      {/* 1. Glassmorphic Style */}
+      <Uploader variant="glass" />
+
+      {/* 2. Retro Brutalist Style */}
+      <Uploader variant="retro" />
+
+      {/* 3. Neon Glow Style */}
+      <Uploader variant="glow" />
+
+      {/* 4. Cyberpunk Matrix Style */}
+      <Uploader variant="cyberpunk" />
+    </div>
+  )
 }
 ```
-
 </ComponentPreview>
 
+## Props
 
-## Component Concept
-
-Vibe UI's Uploader is a stateful dropzone interface built on top of native file inputs. It provides a visual area for drag-and-drop selections, file validators, size validation indicators, and reactive layout grids.
-
-### Accessibility
-
-- **Keyboard Focusable:** Fully clickable and focusable dropzone targets.
-- **Screen Reader Support:** Text labels explicitly describing size limitations.
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual theme preset style of the uploader container and dropzone."
+  />
+  <PropRow
+    prop="maxSizeMB"
+    type="number"
+    default="5"
+    description="The maximum allowed file size in megabytes."
+  />
+  <PropRow
+    prop="accept"
+    type="string[]"
+    default="undefined"
+    description="Array of accepted file MIME types or extensions (e.g. ['image/*', '.pdf'])."
+  />
+  <PropRow
+    prop="onFilesSelected"
+    type="(files: File[]) => void"
+    default="undefined"
+    description="Callback function triggered when valid files are chosen or dropped."
+  />
+  <PropRow
+    prop="onFileRemoved"
+    type="(fileId: string) => void"
+    default="undefined"
+    description="Callback function triggered when a file item is removed from the queue."
+  />
+  <PropRow
+    prop="files"
+    type="UploadedFile[]"
+    default="[]"
+    description="Optional array of initial files to pre-populate the uploader queue."
+  />
+</PropsTable>

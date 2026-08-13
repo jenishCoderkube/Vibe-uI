@@ -12,6 +12,20 @@ const nextConfig = {
       },
     ]
   },
+  async redirects() {
+    return [
+      {
+        source: '/docs/components',
+        destination: '/docs/components/accordion',
+        permanent: true,
+      },
+      {
+        source: '/docs/installation',
+        destination: '/docs/installation/cli',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig

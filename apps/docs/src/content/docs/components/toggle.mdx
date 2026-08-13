@@ -2,7 +2,7 @@
 
 A two-state button component that can be pressed or active, designed to capture boolean actions.
 
-## Preview: Toggle Heart Active
+## Preview
 
 <ComponentPreview>
   <ToggleLike />
@@ -16,24 +16,15 @@ export default function HeartLikeDemo() {
   const [pressed, setPressed] = useState(false)
 
   return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Active Like Option</h4>
-        <p className="text-[10px] text-muted-foreground">Press to change liked heart status</p>
-      </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={pressed} onPressedChange={setPressed} variant="glow">
-          <Heart
-            className={`h-4 w-4 transition-all ${pressed ? 'fill-primary text-primary scale-110' : 'text-zinc-400'}`}
-          />
-          <span className="ml-2 text-xs">{pressed ? 'Liked' : 'Like'}</span>
-        </Toggle>
-      </div>
-    </div>
+    <Toggle pressed={pressed} onPressedChange={setPressed} variant="glow">
+      <Heart
+        className={`h-4 w-4 transition-all ${pressed ? 'fill-primary text-primary scale-110' : 'text-zinc-400'}`}
+      />
+      <span className="ml-2 text-xs">{pressed ? 'Liked' : 'Like'}</span>
+    </Toggle>
   )
 }
 ```
-
 </ComponentPreview>
 
 <Installation name="toggle" npmDeps="@radix-ui/react-toggle lucide-react tailwind-variants">
@@ -114,174 +105,41 @@ export { Toggle, toggleVariants }
 
 
 
-## Icon-Only Toggles (Showcase)
+## Variations
 
-Compare 8 distinct interactive icon-only toggles (like Heart, Bookmark, Mute, Pin, Star, Visibility, Lock, Power) rendered inline:
+Vibe UI's Toggle component supports multiple visual style presets to match your application's theme:
 
-<ComponentPreview>
-  <ToggleIconShowcase />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-import { Heart, Bookmark, Volume2, VolumeX, Pin, Star, Eye, EyeOff, Lock, Unlock, Power } from 'lucide-react'
-
-export default function IconToggleGrid() {
-  const [liked, setLiked] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [muted, setMuted] = useState(false)
-  const [pinned, setPinned] = useState(false)
-  const [starred, setStarred] = useState(false)
-  const [visible, setVisible] = useState(true)
-  const [locked, setLocked] = useState(false)
-  const [active, setActive] = useState(false)
-
-  return (
-    <div className="w-full flex flex-wrap gap-4 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5">
-      {/* 1. Heart Only */}
-      <Toggle
-        pressed={liked}
-        onPressedChange={setLiked}
-        variant="glow"
-        size="lg"
-        className="rounded-full h-11 w-11 p-0 flex items-center justify-center"
-      >
-        <Heart
-          className={`h-5 w-5 transition-transform duration-200 ${liked ? 'fill-red-500 text-red-500 scale-110' : 'text-zinc-400'}`}
-        />
-      </Toggle>
-
-      {/* 2. Save/Bookmark Only */}
-      <Toggle
-        pressed={saved}
-        onPressedChange={setSaved}
-        variant="glass"
-        size="lg"
-        className="h-11 w-11 p-0 flex items-center justify-center"
-      >
-        <Bookmark
-          className={`h-5 w-5 transition-transform duration-200 ${saved ? 'fill-primary text-primary scale-110' : 'text-zinc-400'}`}
-        />
-      </Toggle>
-
-      {/* 3. Mute Only */}
-      <Toggle
-        pressed={muted}
-        onPressedChange={setMuted}
-        variant="glow"
-        size="lg"
-        className="h-11 w-11 p-0 flex items-center justify-center"
-      >
-        {muted ? (
-          <VolumeX className="h-5 w-5 text-red-400" />
-        ) : (
-          <Volume2 className="h-5 w-5 text-zinc-400" />
-        )}
-      </Toggle>
-
-      {/* 4. Pin Only */}
-      <Toggle
-        pressed={pinned}
-        onPressedChange={setPinned}
-        variant="retro"
-        size="lg"
-        className="h-11 w-11 p-0 flex items-center justify-center"
-      >
-        <Pin
-          className={`h-5 w-5 transition-transform duration-200 ${pinned ? 'rotate-45' : 'text-muted-foreground/60'}`}
-        />
-      </Toggle>
-
-      {/* 5. Star Only */}
-      <Toggle
-        pressed={starred}
-        onPressedChange={setStarred}
-        variant="glow"
-        size="lg"
-        className="h-11 w-11 p-0 flex items-center justify-center"
-      >
-        <Star
-          className={`h-5 w-5 transition-transform duration-200 ${starred ? 'fill-amber-400 text-amber-400 scale-110' : 'text-zinc-400'}`}
-        />
-      </Toggle>
-
-      {/* 6. Eye Visibility Only */}
-      <Toggle
-        pressed={visible}
-        onPressedChange={setVisible}
-        variant="glass"
-        size="lg"
-        className="h-11 w-11 p-0 flex items-center justify-center"
-      >
-        {visible ? (
-          <Eye className="h-5 w-5 text-emerald-400" />
-        ) : (
-          <EyeOff className="h-5 w-5 text-zinc-500" />
-        )}
-      </Toggle>
-
-      {/* 7. Lock Only */}
-      <Toggle
-        pressed={locked}
-        onPressedChange={setLocked}
-        variant="cyberpunk"
-        size="lg"
-        className="h-11 w-11 p-0 flex items-center justify-center"
-      >
-        {locked ? (
-          <Lock className="h-5 w-5 text-emerald-400" />
-        ) : (
-          <Unlock className="h-5 w-5 text-zinc-500" />
-        )}
-      </Toggle>
-
-      {/* 8. Power Status */}
-      <Toggle
-        pressed={active}
-        onPressedChange={setActive}
-        variant="retro"
-        size="lg"
-        className="rounded-full h-11 w-11 p-0 flex items-center justify-center"
-      >
-        <Power
-          className={`h-5 w-5 transition-transform duration-200 ${active ? 'text-emerald-500 scale-110' : 'text-muted-foreground'}`}
-        />
-      </Toggle>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-
-
-## Standard Variations
-
-### Theme Presets Comparison
-
-<ComponentPreview>
+<ComponentPreview className="w-full">
   <ToggleVariantsDemo />
 
 ```tsx
 import { Toggle } from '@/components/ui/toggle'
-import { Bold, Italic } from 'lucide-react'
+import { Bold } from 'lucide-react'
 
-export default function PresetShowcase() {
+export default function ToggleVariants() {
   return (
-    <div className="w-full flex flex-wrap gap-4 items-center justify-center p-8 bg-zinc-950/20 rounded-xl border border-white/5">
+    <div className="flex gap-4">
+      {/* 1. Default Style */}
       <Toggle variant="default">
         <Bold className="h-4 w-4" />
       </Toggle>
+
+      {/* 2. Glassmorphic Style */}
       <Toggle variant="glass">
-        <Italic className="h-4 w-4" />
+        <Bold className="h-4 w-4" />
       </Toggle>
+
+      {/* 3. Retro Brutalist Style */}
       <Toggle variant="retro">
         <Bold className="h-4 w-4" />
       </Toggle>
+
+      {/* 4. Neon Glow Style */}
       <Toggle variant="glow">
-        <Italic className="h-4 w-4" />
+        <Bold className="h-4 w-4" />
       </Toggle>
+
+      {/* 5. Cyberpunk Matrix Style */}
       <Toggle variant="cyberpunk">
         <span className="font-mono text-xs">EXE</span>
       </Toggle>
@@ -289,302 +147,336 @@ export default function PresetShowcase() {
   )
 }
 ```
-
 </ComponentPreview>
 
-### Format editor toolbar
+## Examples
+
+### Icon-Only Actions
+
+A row of border-less or circular shape variations for toggles containing only symbols:
 
 <ComponentPreview>
-  <ToggleToolbar />
+  <ToggleIconShowcase />
 
 ```tsx
 import React, { useState } from 'react'
 import { Toggle } from '@/components/ui/toggle'
-import { Bold, Italic, Code } from 'lucide-react'
+import {
+  Heart,
+  Bookmark,
+  VolumeX,
+  Volume2,
+  Pin,
+  Star,
+  Power,
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  Bell,
+  BellOff,
+  Sun,
+  Moon,
+  Mic,
+  MicOff,
+  Wifi,
+  WifiOff,
+  Play,
+  Pause,
+  Shield,
+  ShieldAlert,
+  CheckCircle2,
+  XCircle,
+  Flame,
+  HeartCrack,
+  Sparkles,
+  Trash2,
+  HelpCircle,
+} from 'lucide-react'
 
-export default function ToolbarDemo() {
-  const [bold, setBold] = useState(false)
-  const [italic, setItalic] = useState(false)
-  const [code, setCode] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Text Formatting</h4>
-        <p className="text-[10px] text-muted-foreground">Toolbar select items matching actions</p>
-      </div>
-      <div className="flex gap-2 p-3 bg-zinc-900/40 rounded-lg justify-center">
-        <Toggle pressed={bold} onPressedChange={setBold} variant="glass" size="sm">
-          <Bold className="h-4 w-4" />
-        </Toggle>
-        <Toggle pressed={italic} onPressedChange={setItalic} variant="glass" size="sm">
-          <Italic className="h-4 w-4" />
-        </Toggle>
-        <Toggle pressed={code} onPressedChange={setCode} variant="glass" size="sm">
-          <Code className="h-4 w-4" />
-        </Toggle>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Audio volume controller
-
-<ComponentPreview>
-  <ToggleMute />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-import { Volume2, VolumeX } from 'lucide-react'
-
-export default function SoundDemo() {
-  const [muted, setMuted] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Sound Control</h4>
-        <p className="text-[10px] text-muted-foreground">Mute and unmute audio feeds</p>
-      </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={muted} onPressedChange={setMuted} variant="glow">
-          {muted ? (
-            <VolumeX className="h-4 w-4 text-primary" />
-          ) : (
-            <Volume2 className="h-4 w-4 text-zinc-400" />
-          )}
-          <span className="ml-2 text-xs">{muted ? 'Muted' : 'Playing'}</span>
-        </Toggle>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Document saver bookmark
-
-<ComponentPreview>
-  <ToggleBookmark />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-import { Bookmark } from 'lucide-react'
-
-export default function BookmarkDemo() {
+export default function IconToggleGrid() {
+  const [liked, setLiked] = useState(false)
   const [saved, setSaved] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Save Progress</h4>
-        <p className="text-[10px] text-muted-foreground">Bookmark directory logs</p>
-      </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={saved} onPressedChange={setSaved} variant="glass">
-          <Bookmark className={`h-4 w-4 ${saved ? 'fill-white text-white' : 'text-zinc-400'}`} />
-          <span className="ml-2 text-xs">{saved ? 'Saved' : 'Save Item'}</span>
-        </Toggle>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Active pinned folder
-
-<ComponentPreview>
-  <TogglePin />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-import { Pin } from 'lucide-react'
-
-export default function PinDemo() {
+  const [muted, setMuted] = useState(false)
   const [pinned, setPinned] = useState(false)
+  const [starred, setStarred] = useState(false)
 
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Pin Topic</h4>
-        <p className="text-[10px] text-muted-foreground">Lock thread panel item to the top</p>
-      </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={pinned} onPressedChange={setPinned} variant="glow">
-          <Pin className={`h-4 w-4 ${pinned ? 'rotate-45 text-primary' : 'text-zinc-400'}`} />
-          <span className="ml-2 text-xs">{pinned ? 'Pinned' : 'Pin Thread'}</span>
-        </Toggle>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Cyber terminal override
-
-<ComponentPreview>
-  <ToggleCyberGlitch />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-
-export default function OverrideDemo() {
-  const [glitch, setGlitch] = useState(true)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Cyberpunk Presets</h4>
-        <p className="text-[10px] text-muted-foreground">Glitch scanline mode selector</p>
-      </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={glitch} onPressedChange={setGlitch} variant="cyberpunk">
-          <span className="font-mono text-xs">{glitch ? 'GLITCH: ON' : 'GLITCH: OFF'}</span>
-        </Toggle>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Grid vs List swapper
-
-<ComponentPreview>
-  <ToggleGridList />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-import { LayoutGrid, List } from 'lucide-react'
-
-export default function SwapperDemo() {
-  const [isGrid, setIsGrid] = useState(true)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Grid vs List</h4>
-        <p className="text-[10px] text-muted-foreground">Control product display patterns</p>
-      </div>
-      <div className="flex gap-2 justify-center p-3 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={isGrid} onPressedChange={() => setIsGrid(true)} variant="glass">
-          <LayoutGrid className="h-4 w-4" />
-        </Toggle>
-        <Toggle pressed={!isGrid} onPressedChange={() => setIsGrid(false)} variant="glass">
-          <List className="h-4 w-4" />
-        </Toggle>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Retro Neobrutalist active options
-
-<ComponentPreview>
-  <ToggleBrutalistGrid />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-
-export default function RetroOptionDemo() {
+  const [locked, setLocked] = useState(false)
+  const [visible, setVisible] = useState(true)
   const [active, setActive] = useState(false)
+  const [notified, setNotified] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
+
+  const [micActive, setMicActive] = useState(false)
+  const [wifiActive, setWifiActive] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [shieldActive, setShieldActive] = useState(true)
+  const [statusChecked, setStatusChecked] = useState(false)
+
+  const [flameActive, setFlameActive] = useState(false)
+  const [heartBroken, setHeartBroken] = useState(false)
+  const [sparkleActive, setSparkleActive] = useState(false)
+  const [trashActive, setTrashActive] = useState(false)
+  const [helpActive, setHelpActive] = useState(false)
 
   return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Retro Options</h4>
-        <p className="text-[10px] text-muted-foreground">Thick outline flat option panel</p>
+    <div className="flex flex-col gap-4 items-center justify-center p-0 w-full">
+      {/* Row 1 */}
+      <div className="flex flex-wrap gap-4 items-center justify-center">
+        <Toggle
+          pressed={liked}
+          onPressedChange={setLiked}
+          variant="glow"
+          size="lg"
+          className="rounded-full h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <Heart className={`h-5 w-5 transition-transform duration-200 ${liked ? 'fill-red-500 text-red-500 scale-110' : 'text-zinc-400'}`} />
+        </Toggle>
+
+        <Toggle
+          pressed={saved}
+          onPressedChange={setSaved}
+          variant="glass"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <Bookmark className={`h-5 w-5 transition-transform duration-200 ${saved ? 'fill-primary text-primary scale-110' : 'text-zinc-400'}`} />
+        </Toggle>
+
+        <Toggle
+          pressed={muted}
+          onPressedChange={setMuted}
+          variant="glow"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {muted ? <VolumeX className="h-5 w-5 text-red-400" /> : <Volume2 className="h-5 w-5 text-zinc-400" />}
+        </Toggle>
+
+        <Toggle
+          pressed={pinned}
+          onPressedChange={setPinned}
+          variant="retro"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <Pin className={`h-5 w-5 transition-transform duration-200 ${pinned ? 'rotate-45' : 'text-muted-foreground/60'}`} />
+        </Toggle>
+
+        <Toggle
+          pressed={starred}
+          onPressedChange={setStarred}
+          variant="glow"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <Star className={`h-5 w-5 transition-transform duration-200 ${starred ? 'fill-amber-400 text-amber-400 scale-110' : 'text-zinc-400'}`} />
+        </Toggle>
       </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={active} onPressedChange={setActive} variant="retro">
-          <span className="font-bold text-xs uppercase">Choose Variant</span>
+
+      {/* Row 2 */}
+      <div className="flex flex-wrap gap-4 items-center justify-center">
+        <Toggle
+          pressed={locked}
+          onPressedChange={setLocked}
+          variant="cyberpunk"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {locked ? <Lock className="h-5 w-5 text-emerald-400" /> : <Unlock className="h-5 w-5 text-zinc-500" />}
+        </Toggle>
+
+        <Toggle
+          pressed={visible}
+          onPressedChange={setVisible}
+          variant="glass"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {visible ? <Eye className="h-5 w-5 text-emerald-400" /> : <EyeOff className="h-5 w-5 text-zinc-500" />}
+        </Toggle>
+
+        <Toggle
+          pressed={active}
+          onPressedChange={setActive}
+          variant="retro"
+          size="lg"
+          className="rounded-full h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <Power className={`h-5 w-5 transition-transform duration-200 ${active ? 'text-emerald-500 scale-110' : 'text-muted-foreground'}`} />
+        </Toggle>
+
+        <Toggle
+          pressed={notified}
+          onPressedChange={setNotified}
+          variant="glow"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {notified ? <Bell className="h-5 w-5 text-purple-400 animate-bounce" /> : <BellOff className="h-5 w-5 text-zinc-500" />}
+        </Toggle>
+
+        <Toggle
+          pressed={darkMode}
+          onPressedChange={setDarkMode}
+          variant="glass"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {darkMode ? <Moon className="h-5 w-5 text-yellow-400" /> : <Sun className="h-5 w-5 text-zinc-400" />}
+        </Toggle>
+      </div>
+
+      {/* Row 3 */}
+      <div className="flex flex-wrap gap-4 items-center justify-center">
+        <Toggle
+          pressed={micActive}
+          onPressedChange={setMicActive}
+          variant="glow"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {micActive ? <Mic className="h-5 w-5 text-purple-400" /> : <MicOff className="h-5 w-5 text-zinc-500" />}
+        </Toggle>
+
+        <Toggle
+          pressed={wifiActive}
+          onPressedChange={setWifiActive}
+          variant="cyberpunk"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {wifiActive ? <Wifi className="h-5 w-5 text-emerald-400" /> : <WifiOff className="h-5 w-5 text-red-500" />}
+        </Toggle>
+
+        <Toggle
+          pressed={isPlaying}
+          onPressedChange={setIsPlaying}
+          variant="retro"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {isPlaying ? (
+            <Pause className="h-5 w-5 transition-transform duration-200 scale-110" />
+          ) : (
+            <Play className="h-5 w-5 transition-transform duration-200" />
+          )}
+        </Toggle>
+
+        <Toggle
+          pressed={shieldActive}
+          onPressedChange={setShieldActive}
+          variant="glass"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {shieldActive ? <Shield className="h-5 w-5 text-emerald-400" /> : <ShieldAlert className="h-5 w-5 text-red-500" />}
+        </Toggle>
+
+        <Toggle
+          pressed={statusChecked}
+          onPressedChange={setStatusChecked}
+          variant="glow"
+          size="lg"
+          className="rounded-full h-11 w-11 p-0 flex items-center justify-center"
+        >
+          {statusChecked ? <CheckCircle2 className="h-5 w-5 text-emerald-400" /> : <XCircle className="h-5 w-5 text-zinc-500" />}
+        </Toggle>
+      </div>
+
+      {/* Row 4 */}
+      <div className="flex flex-wrap gap-4 items-center justify-center">
+        <Toggle
+          pressed={flameActive}
+          onPressedChange={setFlameActive}
+          variant="glow"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <Flame
+            className={`h-5 w-5 transition-transform duration-200 ${flameActive ? 'text-orange-500 fill-orange-500 scale-110' : 'text-zinc-400'}`}
+          />
+        </Toggle>
+
+        <Toggle
+          pressed={heartBroken}
+          onPressedChange={setHeartBroken}
+          variant="glow"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <HeartCrack
+            className={`h-5 w-5 transition-transform duration-200 ${heartBroken ? 'text-red-500 scale-110' : 'text-zinc-400'}`}
+          />
+        </Toggle>
+
+        <Toggle
+          pressed={sparkleActive}
+          onPressedChange={setSparkleActive}
+          variant="glass"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <Sparkles
+            className={`h-5 w-5 transition-transform duration-200 ${sparkleActive ? 'text-purple-400 fill-purple-400 scale-110' : 'text-zinc-400'}`}
+          />
+        </Toggle>
+
+        <Toggle
+          pressed={trashActive}
+          onPressedChange={setTrashActive}
+          variant="retro"
+          size="lg"
+          className="h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <Trash2
+            className={`h-5 w-5 transition-transform duration-200 ${trashActive ? 'text-red-500 scale-110' : 'text-muted-foreground'}`}
+          />
+        </Toggle>
+
+        <Toggle
+          pressed={helpActive}
+          onPressedChange={setHelpActive}
+          variant="glass"
+          size="lg"
+          className="rounded-full h-11 w-11 p-0 flex items-center justify-center"
+        >
+          <HelpCircle
+            className={`h-5 w-5 transition-transform duration-200 ${helpActive ? 'text-blue-400 scale-110' : 'text-zinc-500'}`}
+          />
         </Toggle>
       </div>
     </div>
   )
 }
 ```
-
 </ComponentPreview>
 
-### Favorite star selector
+## Props
 
-<ComponentPreview>
-  <ToggleStar />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-import { Star } from 'lucide-react'
-
-export default function StarDemo() {
-  const [fav, setFav] = useState(false)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Star Favorite</h4>
-        <p className="text-[10px] text-muted-foreground">Mark components directory as starred</p>
-      </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={fav} onPressedChange={setFav} variant="glow">
-          <Star className={`h-4 w-4 ${fav ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
-          <span className="ml-2 text-xs">{fav ? 'Starred' : 'Favorite'}</span>
-        </Toggle>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Availability profile toggle
-
-<ComponentPreview>
-  <ToggleActiveUser />
-
-```tsx
-import React, { useState } from 'react'
-import { Toggle } from '@/components/ui/toggle'
-import { User } from 'lucide-react'
-
-export default function UserStatusDemo() {
-  const [online, setOnline] = useState(true)
-
-  return (
-    <div className="w-full max-w-[350px] overflow-hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 shadow-xl text-left text-white select-none">
-      <div className="mb-3 space-y-0.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider">Developer Status</h4>
-        <p className="text-[10px] text-muted-foreground">Show active availability settings</p>
-      </div>
-      <div className="flex justify-center p-4 bg-zinc-900/40 rounded-lg">
-        <Toggle pressed={online} onPressedChange={setOnline} variant="glass">
-          <User className="h-4 w-4" />
-          <span className="ml-2 text-xs">{online ? 'Online' : 'Away'}</span>
-        </Toggle>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual theme preset style of the Toggle control."
+  />
+  <PropRow
+    prop="size"
+    type="'default' | 'sm' | 'lg'"
+    default="'default'"
+    description="The button size variation."
+  />
+  <PropRow
+    prop="pressed"
+    type="boolean"
+    default="undefined"
+    description="The controlled active state of the button."
+  />
+  <PropRow
+    prop="onPressedChange"
+    type="(pressed: boolean) => void"
+    default="undefined"
+    description="Event handler triggered when the active state changes."
+  />
+</PropsTable>

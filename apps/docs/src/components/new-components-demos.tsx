@@ -40,6 +40,9 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverAnchor,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverDescription,
   ToastProvider,
   ToastViewport,
   Toast,
@@ -83,13 +86,6 @@ import {
   EmptyActions,
   ButtonGroup,
   ButtonGroupItem,
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetFooter,
-  SheetTitle,
-  SheetDescription,
   ContextMenu,
   ContextMenuTrigger,
   ContextMenuContent,
@@ -99,7 +95,6 @@ import {
   ContextMenuLabel,
   ContextMenuSeparator,
   ContextMenuShortcut,
-  DataTable,
   DashboardBlock02,
   Card,
   CardHeader,
@@ -129,6 +124,27 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  Progress,
+  CircularProgress,
+  RadioGroup,
+  RadioGroupItem,
+  Separator,
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonLine,
+  SkeletonDashboard,
+  Slider,
+  Spinner,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Textarea,
 } from 'vibe-ui'
 import {
   Home,
@@ -154,6 +170,7 @@ import {
   TrendingUp,
   Volume2,
   Download,
+  UploadCloud,
   FolderOpen,
   LayoutGrid,
   FileCode,
@@ -173,9 +190,18 @@ import {
   Italic,
   Underline,
   Strikethrough,
+  Globe,
   Heart,
   MessageSquare,
-  Globe,
+  ArrowUpDown,
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronsLeft,
+  ChevronsRight,
+  Eye,
+  Edit,
+  GripVertical,
 } from 'lucide-react'
 
 // ==========================================
@@ -1827,15 +1853,24 @@ export function PaginationDemoNewProgressLine() {
 // ==========================================
 
 export function ScrollAreaDemoBasic() {
+  const tags = Array.from({ length: 50 }).map(
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`,
+  )
+
   return (
-    <ScrollArea className="h-32 w-52 border border-border rounded bg-card p-3">
-      <div className="space-y-2">
-        <div className="text-xs font-bold text-white">Scrollable logs</div>
-        <div className="text-[11px] text-muted-foreground leading-relaxed">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec
-          odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla
-          quis sem at nibh elementum imperdiet.
-        </div>
+    <ScrollArea className="h-48 w-48 rounded-md border border-border bg-card text-foreground">
+      <div className="p-4">
+        <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Tags
+        </h4>
+        {tags.map((tag, idx) => (
+          <div key={tag}>
+            <div className="text-sm py-1.5 font-medium">{tag}</div>
+            {idx < tags.length - 1 && (
+              <div className="h-[1px] bg-border/50 my-1" />
+            )}
+          </div>
+        ))}
       </div>
     </ScrollArea>
   )
@@ -2265,11 +2300,11 @@ export function PopoverDemoBasic() {
         <Button variant="outline">Open Popover</Button>
       </PopoverTrigger>
       <PopoverContent className="w-56">
-        <div className="text-left text-xs">
-          <div className="font-bold text-white mb-1">Simple Popover</div>
-          <div className="text-muted-foreground">
+        <div className="text-left space-y-1">
+          <PopoverTitle>Simple Popover</PopoverTitle>
+          <PopoverDescription>
             A customizable floating container for context details.
-          </div>
+          </PopoverDescription>
         </div>
       </PopoverContent>
     </Popover>
@@ -2283,8 +2318,11 @@ export function PopoverDemoGlass() {
         <Button variant="glass">Glass Popover</Button>
       </PopoverTrigger>
       <PopoverContent variant="glass" className="w-56">
-        <div className="text-left text-xs">
-          Glossy blurred glass card panels.
+        <div className="text-left space-y-1">
+          <PopoverTitle>Glassmorphic</PopoverTitle>
+          <PopoverDescription>
+            Glossy blurred glass card panels.
+          </PopoverDescription>
         </div>
       </PopoverContent>
     </Popover>
@@ -2297,9 +2335,12 @@ export function PopoverDemoRetro() {
       <PopoverTrigger asChild>
         <Button variant="retro">Retro Popover</Button>
       </PopoverTrigger>
-      <PopoverContent variant="retro" className="w-56">
-        <div className="text-left text-xs font-mono">
-          Brutalist thick boundary card.
+      <PopoverContent variant="retro" className="w-56 font-mono">
+        <div className="text-left space-y-1">
+          <PopoverTitle>Neobrutalist</PopoverTitle>
+          <PopoverDescription>
+            Brutalist thick boundary card.
+          </PopoverDescription>
         </div>
       </PopoverContent>
     </Popover>
@@ -2313,11 +2354,118 @@ export function PopoverDemoGlow() {
         <Button variant="glow">Glow Popover</Button>
       </PopoverTrigger>
       <PopoverContent variant="glow" className="w-56">
-        <div className="text-left text-xs">
-          Neon backlight border drop shadow card.
+        <div className="text-left space-y-1">
+          <PopoverTitle>Neon Glow</PopoverTitle>
+          <PopoverDescription>
+            Neon backlight border drop shadow card.
+          </PopoverDescription>
         </div>
       </PopoverContent>
     </Popover>
+  )
+}
+
+export function PopoverDemoCyberpunk() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="cyberpunk"
+          className="border-emerald-500/80 bg-emerald-950/20 text-emerald-400 font-mono rounded-none"
+        >
+          Cyberpunk Popover
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent variant="cyberpunk" className="w-56">
+        <div className="text-left space-y-1 font-mono">
+          <PopoverTitle className="text-emerald-400">CYBER_POP</PopoverTitle>
+          <PopoverDescription className="text-emerald-500/80">
+            Terminal aesthetic monospace system layout.
+          </PopoverDescription>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+export function PopoverDemoPresets() {
+  return (
+    <div className="flex flex-wrap items-center gap-4 justify-center p-6">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">Default</Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-56">
+          <div className="text-left space-y-1">
+            <PopoverTitle>Default Style</PopoverTitle>
+            <PopoverDescription>
+              Standard clean popover layout with light/dark tokens.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="glass">Glass</Button>
+        </PopoverTrigger>
+        <PopoverContent variant="glass" className="w-56">
+          <div className="text-left space-y-1">
+            <PopoverTitle>Glassmorphic</PopoverTitle>
+            <PopoverDescription>
+              Glossy blurred translucent card style overlay.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="retro">Retro</Button>
+        </PopoverTrigger>
+        <PopoverContent variant="retro" className="w-56 font-mono">
+          <div className="text-left space-y-1">
+            <PopoverTitle>Neobrutalist</PopoverTitle>
+            <PopoverDescription>
+              Bold borders and solid shadow styling offsets.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="glow">Glow</Button>
+        </PopoverTrigger>
+        <PopoverContent variant="glow" className="w-56">
+          <div className="text-left space-y-1">
+            <PopoverTitle>Neon Glow</PopoverTitle>
+            <PopoverDescription>
+              Backlight border drop shadow highlighting focus.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="cyberpunk"
+            className="border-emerald-500/80 bg-emerald-950/20 text-emerald-400 font-mono rounded-none"
+          >
+            Cyberpunk
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent variant="cyberpunk" className="w-56">
+          <div className="text-left space-y-1 font-mono">
+            <PopoverTitle className="text-emerald-400">CYBER_POP</PopoverTitle>
+            <PopoverDescription className="text-emerald-500/80">
+              Terminal aesthetic monospace system layout.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
 
@@ -2331,15 +2479,21 @@ export function PopoverDemoSettings() {
       </PopoverTrigger>
       <PopoverContent className="w-64">
         <div className="text-left space-y-3">
-          <div className="font-bold text-xs text-white">System Settings</div>
+          <PopoverTitle className="text-xs font-bold">
+            System Settings
+          </PopoverTitle>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label className="text-[11px]">Auto Update</Label>
-              <Switch id="pop-sw-1" defaultChecked />
+              <Label className="text-[11px]" htmlFor="pop-sw-1-basic">
+                Auto Update
+              </Label>
+              <Switch id="pop-sw-1-basic" defaultChecked />
             </div>
             <div className="flex items-center justify-between">
-              <Label className="text-[11px]">Developer Mode</Label>
-              <Switch id="pop-sw-2" />
+              <Label className="text-[11px]" htmlFor="pop-sw-2-basic">
+                Developer Mode
+              </Label>
+              <Switch id="pop-sw-2-basic" />
             </div>
           </div>
         </div>
@@ -2363,19 +2517,21 @@ export function PopoverDemoColorPicker() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <div className="flex items-center gap-2 cursor-pointer bg-card border rounded p-1.5">
+        <div className="flex items-center gap-2 cursor-pointer bg-card border rounded p-1.5 w-fit">
           <span
             className="h-4 w-4 rounded-full border border-white/20"
             style={{ backgroundColor: selected }}
           />
-          <span className="text-xs font-semibold text-white">Color Picker</span>
+          <span className="text-xs font-semibold text-foreground">
+            Color Picker
+          </span>
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-52">
         <div className="text-left space-y-2">
-          <div className="text-xs font-bold text-white">
+          <PopoverTitle className="text-xs font-bold">
             Select Accent Color
-          </div>
+          </PopoverTitle>
           <div className="flex gap-2 flex-wrap">
             {colors.map((c) => (
               <span
@@ -2383,7 +2539,7 @@ export function PopoverDemoColorPicker() {
                 onClick={() => setSelected(c)}
                 className={
                   'h-5 w-5 rounded-full cursor-pointer border-2 transition-all hover:scale-110 ' +
-                  (selected === c ? 'border-white' : 'border-transparent')
+                  (selected === c ? 'border-foreground' : 'border-transparent')
                 }
                 style={{ backgroundColor: c }}
               />
@@ -2403,15 +2559,15 @@ export function PopoverDemoMiniCart() {
       </PopoverTrigger>
       <PopoverContent className="w-64" variant="glass">
         <div className="text-left space-y-3">
-          <div className="font-bold text-xs text-white">Your Cart</div>
+          <PopoverTitle className="text-xs font-bold">Your Cart</PopoverTitle>
           <div className="space-y-2 max-h-32 overflow-y-auto">
-            <div className="flex justify-between text-xs border-b border-border/30 pb-1.5">
+            <div className="flex justify-between text-xs border-b border-border/30 pb-1.5 text-foreground">
               <span>Switch Component</span>
-              <span className="font-bold text-white">$12</span>
+              <span className="font-bold">$12</span>
             </div>
-            <div className="flex justify-between text-xs">
+            <div className="flex justify-between text-xs text-foreground">
               <span>Card Component</span>
-              <span className="font-bold text-white">$15</span>
+              <span className="font-bold">$15</span>
             </div>
           </div>
           <Button className="w-full h-8 text-[11px] font-semibold mt-1">
@@ -2434,9 +2590,11 @@ export function PopoverDemoFeedback() {
       </PopoverTrigger>
       <PopoverContent className="w-64">
         <div className="text-left space-y-2.5">
-          <div className="font-bold text-xs text-white">Send Feedback</div>
+          <PopoverTitle className="text-xs font-bold">
+            Send Feedback
+          </PopoverTitle>
           <textarea
-            className="w-full h-16 bg-muted border border-border rounded text-xs p-2 text-white outline-none focus:border-primary/50"
+            className="w-full h-16 bg-muted border border-border rounded text-xs p-2 text-foreground outline-none focus:border-primary/50"
             placeholder="Tell us what you think..."
           />
           <Button className="w-full h-8 text-xs">Submit</Button>
@@ -2457,7 +2615,9 @@ export function PopoverDemoShare() {
       </PopoverTrigger>
       <PopoverContent className="w-72">
         <div className="text-left space-y-2">
-          <div className="font-bold text-xs text-white">Share page link</div>
+          <PopoverTitle className="text-xs font-bold">
+            Share page link
+          </PopoverTitle>
           <div className="flex items-center gap-1.5">
             <Input className="h-8 text-xs flex-1" readOnly value={link} />
             <Button
@@ -2495,12 +2655,12 @@ export function PopoverDemoAlert() {
       </PopoverTrigger>
       <PopoverContent className="w-60 border-rose-500/40 bg-rose-500/5">
         <div className="text-left space-y-2.5">
-          <div className="font-bold text-xs text-rose-400">
+          <PopoverTitle className="text-rose-400">
             Are you absolutely sure?
-          </div>
-          <div className="text-[10px] text-muted-foreground">
+          </PopoverTitle>
+          <PopoverDescription>
             Deleting this repository will wipe all registry packages forever.
-          </div>
+          </PopoverDescription>
           <Button
             variant="destructive"
             className="w-full h-8 text-[11px] font-semibold bg-rose-600"
@@ -2513,6 +2673,206 @@ export function PopoverDemoAlert() {
   )
 }
 
+export function PopoverDemoPremiumGroup1() {
+  const colors = [
+    '#ef4444',
+    '#f97316',
+    '#eab308',
+    '#22c55e',
+    '#3b82f6',
+    '#6366f1',
+    '#a855f7',
+  ]
+  const [selected, setSelected] = React.useState('#a855f7')
+
+  return (
+    <div className="flex flex-wrap items-center gap-4 justify-center p-6">
+      {/* 1. System Settings Config Panel */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Settings className="h-4 w-4" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64">
+          <div className="text-left space-y-3">
+            <PopoverTitle className="text-xs font-bold">
+              System Settings
+            </PopoverTitle>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-[11px]" htmlFor="pop-sw-1-g1">
+                  Auto Update
+                </Label>
+                <Switch id="pop-sw-1-g1" defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label className="text-[11px]" htmlFor="pop-sw-2-g1">
+                  Developer Mode
+                </Label>
+                <Switch id="pop-sw-2-g1" />
+              </div>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* 2. Accent Color Palette Selector */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="flex items-center gap-2 cursor-pointer bg-card border rounded p-1.5">
+            <span
+              className="h-4 w-4 rounded-full border border-white/20"
+              style={{ backgroundColor: selected }}
+            />
+            <span className="text-xs font-semibold text-foreground">
+              Color Picker
+            </span>
+          </div>
+        </PopoverTrigger>
+        <PopoverContent className="w-52">
+          <div className="text-left space-y-2">
+            <PopoverTitle className="text-xs font-bold">
+              Select Accent Color
+            </PopoverTitle>
+            <div className="flex gap-2 flex-wrap">
+              {colors.map((c) => (
+                <span
+                  key={c}
+                  onClick={() => setSelected(c)}
+                  className={
+                    'h-5 w-5 rounded-full cursor-pointer border-2 transition-all hover:scale-110 ' +
+                    (selected === c
+                      ? 'border-foreground'
+                      : 'border-transparent')
+                  }
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* 3. Interactive Feedback Form */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">
+            <HelpCircle className="h-4 w-4 mr-1.5" />
+            Help
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64">
+          <div className="text-left space-y-2.5">
+            <PopoverTitle className="text-xs font-bold">
+              Send Feedback
+            </PopoverTitle>
+            <textarea
+              className="w-full h-16 bg-muted border border-border rounded text-xs p-2 text-foreground outline-none focus:border-primary/50"
+              placeholder="Tell us what you think..."
+            />
+            <Button className="w-full h-8 text-xs">Submit</Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}
+
+export function PopoverDemoPremiumGroup2() {
+  const [copied, setCopied] = React.useState(false)
+  const link = 'https://vibe-ui-kit.vercel.app/'
+
+  return (
+    <div className="flex flex-wrap items-center gap-4 justify-center p-6">
+      {/* 1. Shopping mini-cart checkout dropdown */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">View Cart (2)</Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64" variant="glass">
+          <div className="text-left space-y-3">
+            <PopoverTitle className="text-xs font-bold">Your Cart</PopoverTitle>
+            <div className="space-y-2 max-h-32 overflow-y-auto">
+              <div className="flex justify-between text-xs border-b border-border/30 pb-1.5 text-foreground">
+                <span>Switch Component</span>
+                <span className="font-bold">$12</span>
+              </div>
+              <div className="flex justify-between text-xs text-foreground">
+                <span>Card Component</span>
+                <span className="font-bold">$15</span>
+              </div>
+            </div>
+            <Button className="w-full h-8 text-[11px] font-semibold mt-1">
+              Checkout
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* 2. URL Share copied links panel */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">Share link</Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-72">
+          <div className="text-left space-y-2">
+            <PopoverTitle className="text-xs font-bold">
+              Share page link
+            </PopoverTitle>
+            <div className="flex items-center gap-1.5">
+              <Input className="h-8 text-xs flex-1" readOnly value={link} />
+              <Button
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => {
+                  navigator.clipboard.writeText(link)
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                }}
+              >
+                {copied ? (
+                  <Check className="h-4.5 w-4.5 text-emerald-400" />
+                ) : (
+                  <Copy className="h-4.5 w-4.5" />
+                )}
+              </Button>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* 3. Glow destructive validation check */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="glow"
+            className="bg-rose-500/10 border-rose-500/40 text-rose-400 hover:bg-rose-500/20"
+          >
+            Danger zone
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-60 border-rose-500/40 bg-rose-500/5">
+          <div className="text-left space-y-2.5">
+            <PopoverTitle className="text-rose-400">
+              Are you absolutely sure?
+            </PopoverTitle>
+            <PopoverDescription>
+              Deleting this repository will wipe all registry packages forever.
+            </PopoverDescription>
+            <Button
+              variant="destructive"
+              className="w-full h-8 text-[11px] font-semibold bg-rose-600"
+            >
+              Delete Project
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}
+
 // ==========================================
 // 7. TOAST DEMOS (10 Examples)
 // ==========================================
@@ -2520,21 +2880,19 @@ export function PopoverDemoAlert() {
 export function ToastDemoBasic() {
   return (
     <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast variant="default" open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>Database Backup Completed</ToastTitle>
-            <ToastDescription>
-              All workspace schemas saved successfully.
-            </ToastDescription>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport
-          position="inline"
-          className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
-        />
-      </div>
+      <Toast variant="default" open={true}>
+        <div className="grid gap-1 text-left">
+          <ToastTitle>Database Backup Completed</ToastTitle>
+          <ToastDescription>
+            All workspace schemas saved successfully.
+          </ToastDescription>
+        </div>
+        <ToastClose />
+      </Toast>
+      <ToastViewport
+        position="inline"
+        className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
+      />
     </ToastProvider>
   )
 }
@@ -2542,21 +2900,19 @@ export function ToastDemoBasic() {
 export function ToastDemoGlass() {
   return (
     <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast variant="glass" open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>Glassmorphic Alert</ToastTitle>
-            <ToastDescription>
-              Backdrop blur filters applied successfully.
-            </ToastDescription>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport
-          position="inline"
-          className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
-        />
-      </div>
+      <Toast variant="glass" open={true}>
+        <div className="grid gap-1 text-left">
+          <ToastTitle>Glassmorphic Alert</ToastTitle>
+          <ToastDescription>
+            Backdrop blur filters applied successfully.
+          </ToastDescription>
+        </div>
+        <ToastClose />
+      </Toast>
+      <ToastViewport
+        position="inline"
+        className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
+      />
     </ToastProvider>
   )
 }
@@ -2564,21 +2920,19 @@ export function ToastDemoGlass() {
 export function ToastDemoRetro() {
   return (
     <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast variant="retro" open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>RETRO WIDGET</ToastTitle>
-            <ToastDescription>
-              SOLID FLAT BLACK BORDERS IN ACTION.
-            </ToastDescription>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport
-          position="inline"
-          className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
-        />
-      </div>
+      <Toast variant="retro" open={true}>
+        <div className="grid gap-1 text-left">
+          <ToastTitle>RETRO WIDGET</ToastTitle>
+          <ToastDescription>
+            SOLID FLAT BLACK BORDERS IN ACTION.
+          </ToastDescription>
+        </div>
+        <ToastClose />
+      </Toast>
+      <ToastViewport
+        position="inline"
+        className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
+      />
     </ToastProvider>
   )
 }
@@ -2586,21 +2940,35 @@ export function ToastDemoRetro() {
 export function ToastDemoGlow() {
   return (
     <ToastProvider>
-      <div className="p-4 bg-muted/20 border border-border/40 rounded-lg max-w-sm w-full">
-        <Toast variant="glow" open={true}>
-          <div className="grid gap-1 text-left">
-            <ToastTitle>Neon Glow Active</ToastTitle>
-            <ToastDescription>
-              Ambient drop shadows lighting up.
-            </ToastDescription>
-          </div>
-          <ToastClose />
-        </Toast>
-        <ToastViewport
-          position="inline"
-          className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
-        />
-      </div>
+      <Toast variant="glow" open={true}>
+        <div className="grid gap-1 text-left">
+          <ToastTitle>Neon Glow Active</ToastTitle>
+          <ToastDescription>Ambient drop shadows lighting up.</ToastDescription>
+        </div>
+        <ToastClose />
+      </Toast>
+      <ToastViewport
+        position="inline"
+        className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
+      />
+    </ToastProvider>
+  )
+}
+
+export function ToastDemoCyberpunk() {
+  return (
+    <ToastProvider>
+      <Toast variant="cyberpunk" open={true}>
+        <div className="grid gap-1 text-left">
+          <ToastTitle>CYBERPUNK ACTIVATED</ToastTitle>
+          <ToastDescription>EMERALD SCANLINES ENGAGED.</ToastDescription>
+        </div>
+        <ToastClose />
+      </Toast>
+      <ToastViewport
+        position="inline"
+        className="relative bottom-auto right-auto top-auto p-0 max-w-full z-0 flex flex-col gap-2"
+      />
     </ToastProvider>
   )
 }
@@ -4936,145 +5304,6 @@ export function DateRangePickerDemo() {
 }
 
 // ==========================================
-// SHEET DEMOS
-// ==========================================
-export function SheetDemo() {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Open Sheet</Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Edit Profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <SheetFooter>
-          <Button type="submit">Save changes</Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
-export function SheetSideDemo() {
-  return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      {(['top', 'bottom', 'left', 'right'] as const).map((side) => (
-        <Sheet key={side}>
-          <SheetTrigger asChild>
-            <Button variant="outline" className="capitalize">
-              {side}
-            </Button>
-          </SheetTrigger>
-          <SheetContent side={side}>
-            <SheetHeader>
-              <SheetTitle className="capitalize">{side} Drawer</SheetTitle>
-              <SheetDescription>
-                This is a slide-over panel appearing from the {side} edge.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="py-6 text-xs text-muted-foreground">
-              Configure component options or view side panel context
-              information.
-            </div>
-          </SheetContent>
-        </Sheet>
-      ))}
-    </div>
-  )
-}
-
-export function SheetGlassDemo() {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="glass">Glass Sheet</Button>
-      </SheetTrigger>
-      <SheetContent variant="glass">
-        <SheetHeader>
-          <SheetTitle className="text-foreground">
-            Glassmorphic Sheet
-          </SheetTitle>
-          <SheetDescription>
-            Frosted glass slide-over drawer panel with backdrop blur effects.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="py-6 text-xs text-muted-foreground">
-          Premium frosted glass drawer panel layout.
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
-export function SheetRetroDemo() {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="retro">RETRO SHEET</Button>
-      </SheetTrigger>
-      <SheetContent variant="retro">
-        <SheetHeader>
-          <SheetTitle>NEUBRUTALISM DRAWER</SheetTitle>
-          <SheetDescription>
-            Hard border shadows and retro brutalist typography.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="py-6 text-xs font-mono">
-          High-contrast retro design system panel.
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
-export function SheetGlowDemo() {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="glow">Neon Sheet</Button>
-      </SheetTrigger>
-      <SheetContent variant="glow">
-        <SheetHeader>
-          <SheetTitle>Neon Glow Drawer</SheetTitle>
-          <SheetDescription>
-            Cyberpunk purple aura ambient glow drawer panel.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="py-6 text-xs text-muted-foreground">
-          Neon ambient backlight slide-over.
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
-// ==========================================
 // CONTEXT MENU DEMOS
 // ==========================================
 export function ContextMenuDemo() {
@@ -5111,7 +5340,7 @@ export function ContextMenuDemo() {
 export function ContextMenuGlassDemo() {
   return (
     <ContextMenu>
-      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center rounded-xl border border-white/20 bg-slate-950/60 backdrop-blur-md text-xs text-foreground font-medium select-none">
+      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center rounded-xl border border-border/80 bg-white/20 dark:bg-black/20 backdrop-blur-md hover:bg-white/30 dark:hover:bg-black/30 text-xs text-foreground font-medium select-none">
         Right click (Glass)
       </ContextMenuTrigger>
       <ContextMenuContent variant="glass">
@@ -5166,132 +5395,19 @@ export function ContextMenuGlowDemo() {
   )
 }
 
-// ==========================================
-// DATA TABLE DEMOS
-// ==========================================
-const sampleUsers = [
-  {
-    id: 1,
-    name: 'Alice Smith',
-    email: 'alice@example.com',
-    role: 'Administrator',
-    status: 'Active',
-  },
-  {
-    id: 2,
-    name: 'Bob Jones',
-    email: 'bob@example.com',
-    role: 'Editor',
-    status: 'Active',
-  },
-  {
-    id: 3,
-    name: 'Charlie Brown',
-    email: 'charlie@example.com',
-    role: 'Viewer',
-    status: 'Inactive',
-  },
-  {
-    id: 4,
-    name: 'Diana Prince',
-    email: 'diana@example.com',
-    role: 'Administrator',
-    status: 'Active',
-  },
-  {
-    id: 5,
-    name: 'Ethan Hunt',
-    email: 'ethan@example.com',
-    role: 'Contributor',
-    status: 'Active',
-  },
-  {
-    id: 6,
-    name: 'Fiona Gallagher',
-    email: 'fiona@example.com',
-    role: 'Viewer',
-    status: 'Inactive',
-  },
-]
-
-const sampleColumns = [
-  {
-    key: 'name',
-    header: 'Name',
-    accessor: (r: any) => <span className="font-semibold">{r.name}</span>,
-    sortable: true,
-  },
-  {
-    key: 'email',
-    header: 'Email',
-    accessor: (r: any) => (
-      <span className="text-muted-foreground">{r.email}</span>
-    ),
-  },
-  {
-    key: 'role',
-    header: 'Role',
-    accessor: (r: any) => <span>{r.role}</span>,
-    sortable: true,
-  },
-  {
-    key: 'status',
-    header: 'Status',
-    accessor: (r: any) => (
-      <Badge
-        variant={r.status === 'Active' ? 'default' : 'secondary'}
-        className="text-[10px]"
-      >
-        {r.status}
-      </Badge>
-    ),
-  },
-]
-
-export function DataTableDemo() {
+export function ContextMenuCyberpunkDemo() {
   return (
-    <div className="w-full max-w-2xl">
-      <DataTable data={sampleUsers} columns={sampleColumns} pageSize={4} />
-    </div>
-  )
-}
-
-export function DataTableGlassDemo() {
-  return (
-    <div className="w-full max-w-2xl p-4 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/20">
-      <DataTable
-        data={sampleUsers}
-        columns={sampleColumns}
-        variant="glass"
-        pageSize={4}
-      />
-    </div>
-  )
-}
-
-export function DataTableRetroDemo() {
-  return (
-    <div className="w-full max-w-2xl">
-      <DataTable
-        data={sampleUsers}
-        columns={sampleColumns}
-        variant="retro"
-        pageSize={4}
-      />
-    </div>
-  )
-}
-
-export function DataTableGlowDemo() {
-  return (
-    <div className="w-full max-w-2xl">
-      <DataTable
-        data={sampleUsers}
-        columns={sampleColumns}
-        variant="glow"
-        pageSize={4}
-      />
-    </div>
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-[140px] w-full max-w-[300px] items-center justify-center border border-emerald-500/30 bg-black text-xs font-mono text-emerald-500 select-none shadow-[0_0_15px_rgba(16,185,129,0.15)] rounded-none">
+        RIGHT CLICK (CYBERPUNK)
+      </ContextMenuTrigger>
+      <ContextMenuContent variant="cyberpunk">
+        <ContextMenuItem>SYSTEM_SCAN</ContextMenuItem>
+        <ContextMenuItem>BYPASS_FIREWALL</ContextMenuItem>
+        <ContextMenuSeparator className="bg-emerald-500/30" />
+        <ContextMenuItem>TERMINATE_SESSION</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   )
 }
 
@@ -5937,5 +6053,2433 @@ export function DropdownMenuHoverDemo() {
         <DropdownMenuItem className="text-destructive">Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+export function ProgressDemoPresets() {
+  return (
+    <div className="flex flex-col gap-6 p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm w-full max-w-2xl mx-auto shadow-sm">
+      <div className="flex flex-col gap-4">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Horizontal Presets
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">
+              Default
+            </span>
+            <Progress value={60} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">
+              Glassmorphic
+            </span>
+            <Progress value={45} variant="glass" indicatorVariant="glass" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">
+              Retro Neobrutalist
+            </span>
+            <Progress value={75} variant="retro" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">
+              Neon Glow
+            </span>
+            <Progress value={85} variant="glow" />
+          </div>
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <span className="text-xs font-medium text-muted-foreground">
+              Cyberpunk Terminal
+            </span>
+            <Progress value={30} variant="cyberpunk" />
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-border/50 pt-4 flex flex-col gap-4">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Circular Presets
+        </h4>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 justify-items-center">
+          <div className="flex flex-col items-center gap-1.5">
+            <CircularProgress value={60} showValue size={60} strokeWidth={5} />
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Default
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-1.5">
+            <CircularProgress
+              value={45}
+              variant="glass"
+              indicatorVariant="glass"
+              showValue
+              size={60}
+              strokeWidth={5}
+            />
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Glass
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-1.5">
+            <CircularProgress
+              value={75}
+              variant="retro"
+              showValue
+              size={60}
+              strokeWidth={5}
+            />
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Retro
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-1.5">
+            <CircularProgress
+              value={85}
+              variant="glow"
+              showValue
+              size={60}
+              strokeWidth={5}
+            />
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Glow
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-1.5 col-span-2 sm:col-span-1">
+            <CircularProgress
+              value={30}
+              variant="cyberpunk"
+              showValue
+              size={60}
+              strokeWidth={5}
+            />
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Cyberpunk
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function ProgressDemoBasic() {
+  return <Progress value={50} className="w-full max-w-md" />
+}
+
+export function RadioGroupDemoBasic() {
+  return (
+    <RadioGroup defaultValue="option-one">
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="option-one" id="basic-option-one" />
+        <Label htmlFor="basic-option-one">Option One</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="option-two" id="basic-option-two" />
+        <Label htmlFor="basic-option-two">Option Two</Label>
+      </div>
+    </RadioGroup>
+  )
+}
+
+export function RadioGroupDemoPresets() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm w-full max-w-4xl mx-auto shadow-sm">
+      <div className="flex flex-col gap-3">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Default style
+        </span>
+        <RadioGroup defaultValue="1">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="1" id="presets-def-1" />
+            <Label htmlFor="presets-def-1">Option A</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="2" id="presets-def-2" />
+            <Label htmlFor="presets-def-2">Option B</Label>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Glassmorphic
+        </span>
+        <RadioGroup defaultValue="1">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="1" id="presets-glass-1" variant="glass" />
+            <Label htmlFor="presets-glass-1">Option A</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="2" id="presets-glass-2" variant="glass" />
+            <Label htmlFor="presets-glass-2">Option B</Label>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Retro Neobrutalist
+        </span>
+        <RadioGroup defaultValue="1">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="1" id="presets-retro-1" variant="retro" />
+            <Label htmlFor="presets-retro-1">Option A</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="2" id="presets-retro-2" variant="retro" />
+            <Label htmlFor="presets-retro-2">Option B</Label>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Neon Glow
+        </span>
+        <RadioGroup defaultValue="1">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="1" id="presets-glow-1" variant="glow" />
+            <Label htmlFor="presets-glow-1">Option A</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="2" id="presets-glow-2" variant="glow" />
+            <Label htmlFor="presets-glow-2">Option B</Label>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <div className="flex flex-col gap-3 sm:col-span-2 md:col-span-1">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Cyberpunk Monospace
+        </span>
+        <RadioGroup defaultValue="1">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem
+              value="1"
+              id="presets-cyber-1"
+              variant="cyberpunk"
+            />
+            <Label
+              htmlFor="presets-cyber-1"
+              className="font-mono text-emerald-500"
+            >
+              OPTION_A
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem
+              value="2"
+              id="presets-cyber-2"
+              variant="cyberpunk"
+            />
+            <Label
+              htmlFor="presets-cyber-2"
+              className="font-mono text-emerald-500"
+            >
+              OPTION_B
+            </Label>
+          </div>
+        </RadioGroup>
+      </div>
+    </div>
+  )
+}
+
+export function RadioGroupInteractiveDemo() {
+  const [variant, setVariant] = React.useState<
+    'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
+  >('default')
+  const [layout, setLayout] = React.useState<'vertical' | 'horizontal'>(
+    'vertical',
+  )
+  const [selectedValue, setSelectedValue] = React.useState('pro')
+
+  const containerClass = {
+    default: 'p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm',
+    glass:
+      'p-6 rounded-xl border border-white/20 bg-white/10 dark:bg-black/30 backdrop-blur-md',
+    retro:
+      'p-6 border-2 border-foreground bg-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+    glow: 'p-6 rounded-xl border border-purple-500/20 bg-purple-500/5 dark:bg-purple-950/10 shadow-[0_0_15px_rgba(168,85,247,0.15)]',
+    cyberpunk:
+      'p-6 border border-emerald-500/30 bg-emerald-950/10 dark:bg-black rounded-none font-mono text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]',
+  }[variant]
+
+  return (
+    <div className="flex flex-col gap-8 p-6 rounded-2xl border border-border bg-card/10 backdrop-blur-xs w-full max-w-2xl mx-auto shadow-sm">
+      {/* Config Panel */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-6 border-b border-border/50">
+        {/* Variant selector */}
+        <div className="flex flex-col gap-2.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            Select Preset Variant
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {(['default', 'glass', 'retro', 'glow', 'cyberpunk'] as const).map(
+              (v) => (
+                <button
+                  key={v}
+                  onClick={() => setVariant(v)}
+                  className={cn(
+                    'px-2.5 py-1 text-xs font-semibold rounded-md border border-border transition-all cursor-pointer capitalize',
+                    variant === v
+                      ? 'bg-primary text-primary-foreground border-transparent shadow-sm'
+                      : 'bg-background hover:bg-muted text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  {v}
+                </button>
+              ),
+            )}
+          </div>
+        </div>
+
+        {/* Layout switcher */}
+        <div className="flex flex-col gap-2.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            Layout Orientation
+          </span>
+          <div className="flex gap-2">
+            {(['vertical', 'horizontal'] as const).map((l) => (
+              <button
+                key={l}
+                onClick={() => setLayout(l)}
+                className={cn(
+                  'px-2.5 py-1 text-xs font-semibold rounded-md border border-border transition-all cursor-pointer capitalize',
+                  layout === l
+                    ? 'bg-primary text-primary-foreground border-transparent shadow-sm'
+                    : 'bg-background hover:bg-muted text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Component under test */}
+      <div className="flex flex-col items-center justify-center py-4">
+        <div
+          className={cn(
+            'w-full max-w-md transition-all duration-300',
+            containerClass,
+          )}
+        >
+          <div className="mb-4">
+            <h3
+              className={cn(
+                'text-sm font-semibold text-foreground',
+                variant === 'cyberpunk' &&
+                  'text-emerald-500 font-mono uppercase tracking-wider',
+              )}
+            >
+              Subscription Billing
+            </h3>
+            <p
+              className={cn(
+                'text-xs text-muted-foreground mt-0.5',
+                variant === 'cyberpunk' && 'text-emerald-500/70 font-mono',
+              )}
+            >
+              Choose a pricing tier for your project
+            </p>
+          </div>
+
+          <RadioGroup
+            value={selectedValue}
+            onValueChange={setSelectedValue}
+            className={cn(
+              layout === 'horizontal'
+                ? 'flex flex-row gap-6 flex-wrap'
+                : 'grid gap-3',
+            )}
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="starter"
+                id="int-radio-starter"
+                variant={variant}
+              />
+              <Label
+                htmlFor="int-radio-starter"
+                className={cn(
+                  'cursor-pointer text-sm font-medium text-foreground',
+                  variant === 'cyberpunk' && 'font-mono text-emerald-500',
+                )}
+              >
+                Starter Pack ($10)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="pro"
+                id="int-radio-pro"
+                variant={variant}
+              />
+              <Label
+                htmlFor="int-radio-pro"
+                className={cn(
+                  'cursor-pointer text-sm font-medium text-foreground',
+                  variant === 'cyberpunk' && 'font-mono text-emerald-500',
+                )}
+              >
+                Professional ($30)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="enterprise"
+                id="int-radio-enterprise"
+                variant={variant}
+              />
+              <Label
+                htmlFor="int-radio-enterprise"
+                className={cn(
+                  'cursor-pointer text-sm font-medium text-foreground',
+                  variant === 'cyberpunk' && 'font-mono text-emerald-500',
+                )}
+              >
+                Enterprise ($90)
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function ScrollAreaDemoPresets() {
+  const tags = Array.from({ length: 50 }).map(
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`,
+  )
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          Default
+        </span>
+        <ScrollArea className="h-40 border border-border bg-card rounded-md">
+          <div className="p-3">
+            {tags.slice(0, 10).map((tag) => (
+              <div key={tag} className="text-xs py-1 font-medium">
+                {tag}
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          Glassmorphic
+        </span>
+        <ScrollArea
+          variant="glass"
+          className="h-40 border border-white/20 bg-white/5 dark:bg-black/20 rounded-md"
+        >
+          <div className="p-3">
+            {tags.slice(0, 10).map((tag) => (
+              <div key={tag} className="text-xs py-1 font-medium">
+                {tag}
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          Retro
+        </span>
+        <ScrollArea
+          variant="retro"
+          className="h-40 border-2 border-foreground bg-background rounded-none"
+        >
+          <div className="p-3">
+            {tags.slice(0, 10).map((tag) => (
+              <div key={tag} className="text-xs py-1 font-bold font-mono">
+                {tag}
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          Glow
+        </span>
+        <ScrollArea
+          variant="glow"
+          className="h-40 border border-purple-500/20 bg-purple-500/5 dark:bg-purple-950/10 shadow-[0_0_10px_rgba(168,85,247,0.1)] rounded-md"
+        >
+          <div className="p-3">
+            {tags.slice(0, 10).map((tag) => (
+              <div
+                key={tag}
+                className="text-xs py-1 font-medium text-purple-600 dark:text-purple-400"
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          Cyberpunk
+        </span>
+        <ScrollArea
+          variant="cyberpunk"
+          className="h-40 border border-emerald-500/30 bg-emerald-950/10 dark:bg-black rounded-none"
+        >
+          <div className="p-3">
+            {tags.slice(0, 10).map((tag) => (
+              <div
+                key={tag}
+                className="text-xs py-1 font-mono text-emerald-500"
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
+  )
+}
+
+export function SeparatorDemoBasic() {
+  return (
+    <div className="w-full max-w-xs p-4 rounded-xl border border-border bg-card text-foreground">
+      <div className="space-y-1">
+        <h4 className="text-sm font-bold text-foreground">Radix Primitives</h4>
+        <p className="text-xs text-muted-foreground leading-normal">
+          An open-source UI component library.
+        </p>
+      </div>
+      <Separator className="my-4" />
+      <div className="flex h-4 items-center gap-3 text-xs font-medium text-muted-foreground">
+        <span className="hover:text-foreground cursor-pointer transition-colors">
+          Blog
+        </span>
+        <Separator orientation="vertical" />
+        <span className="hover:text-foreground cursor-pointer transition-colors">
+          Docs
+        </span>
+        <Separator orientation="vertical" />
+        <span className="hover:text-foreground cursor-pointer transition-colors">
+          Source
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export function SeparatorDemoPresets() {
+  return (
+    <div className="flex flex-col gap-8 w-full max-w-2xl p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm shadow-sm mx-auto">
+      {/* Horizontal presets */}
+      <div className="flex flex-col gap-4">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Horizontal Presets
+        </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] text-muted-foreground font-medium">
+              Default
+            </span>
+            <Separator variant="default" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] text-muted-foreground font-medium">
+              Glassmorphic
+            </span>
+            <Separator variant="glass" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] text-muted-foreground font-medium">
+              Retro Neobrutalist
+            </span>
+            <Separator variant="retro" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] text-muted-foreground font-medium">
+              Neon Glow
+            </span>
+            <Separator variant="glow" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] text-muted-foreground font-medium">
+              Cyberpunk Terminal
+            </span>
+            <Separator variant="cyberpunk" />
+          </div>
+        </div>
+      </div>
+
+      {/* Vertical presets */}
+      <div className="flex flex-col gap-4">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Vertical Presets
+        </span>
+        <div className="flex justify-around items-stretch h-24 p-3">
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-[9px] text-muted-foreground font-mono">
+              DEF
+            </span>
+            <Separator orientation="vertical" variant="default" />
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-[9px] text-muted-foreground font-mono">
+              GLS
+            </span>
+            <Separator orientation="vertical" variant="glass" />
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-[9px] text-muted-foreground font-mono">
+              RTR
+            </span>
+            <Separator orientation="vertical" variant="retro" />
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-[9px] text-muted-foreground font-mono">
+              GLW
+            </span>
+            <Separator orientation="vertical" variant="glow" />
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-[9px] text-muted-foreground font-mono">
+              CYB
+            </span>
+            <Separator orientation="vertical" variant="cyberpunk" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function SelectDemoBasic() {
+  return (
+    <div className="w-[200px] max-w-full">
+      <Select defaultValue="react">
+        <SelectTrigger>
+          <SelectValue placeholder="Select framework" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="react">React</SelectItem>
+          <SelectItem value="vue">Vue</SelectItem>
+          <SelectItem value="svelte">Svelte</SelectItem>
+          <SelectItem value="nextjs">Next.js</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}
+
+export function SelectDemoPresets() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm w-full max-w-4xl mx-auto shadow-sm">
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Default style
+        </span>
+        <Select defaultValue="react">
+          <SelectTrigger>
+            <SelectValue placeholder="Select framework" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="react">React</SelectItem>
+            <SelectItem value="vue">Vue</SelectItem>
+            <SelectItem value="svelte">Svelte</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Glassmorphic
+        </span>
+        <Select defaultValue="react" variant="glass">
+          <SelectTrigger>
+            <SelectValue placeholder="Select framework" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="react">React</SelectItem>
+            <SelectItem value="vue">Vue</SelectItem>
+            <SelectItem value="svelte">Svelte</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Retro Neobrutalist
+        </span>
+        <Select defaultValue="react" variant="retro">
+          <SelectTrigger>
+            <SelectValue placeholder="Select framework" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="react">React</SelectItem>
+            <SelectItem value="vue">Vue</SelectItem>
+            <SelectItem value="svelte">Svelte</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Neon Glow
+        </span>
+        <Select defaultValue="react" variant="glow">
+          <SelectTrigger>
+            <SelectValue placeholder="Select framework" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="react">React</SelectItem>
+            <SelectItem value="vue">Vue</SelectItem>
+            <SelectItem value="svelte">Svelte</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col gap-2 sm:col-span-2 md:col-span-1">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Cyberpunk Monospace
+        </span>
+        <Select defaultValue="react" variant="cyberpunk">
+          <SelectTrigger>
+            <SelectValue placeholder="Select framework" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="react">REACT_JS</SelectItem>
+            <SelectItem value="vue">VUE_JS</SelectItem>
+            <SelectItem value="svelte">SVELTE_JS</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  )
+}
+
+export function SkeletonDemoBasic() {
+  return (
+    <div className="flex items-center space-x-4 w-[280px] max-w-full mx-auto text-left">
+      <SkeletonCircle size={48} />
+      <div className="space-y-2 flex-1">
+        <SkeletonLine height="1rem" className="w-5/6" />
+        <SkeletonLine height="0.75rem" className="w-2/3" />
+      </div>
+    </div>
+  )
+}
+
+export function SkeletonDemoPresets() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm w-full max-w-3xl mx-auto shadow-sm">
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Pulse (Default)
+        </span>
+        <Skeleton className="h-12 w-full" variant="pulse" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Shimmer (Wave)
+        </span>
+        <Skeleton className="h-12 w-full" variant="shimmer" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Neon Glow
+        </span>
+        <Skeleton className="h-12 w-full" variant="glow" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Glassmorphic
+        </span>
+        <Skeleton className="h-12 w-full" variant="glass" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Retro Brutalist
+        </span>
+        <Skeleton className="h-12 w-full" variant="retro" />
+      </div>
+    </div>
+  )
+}
+
+export function SkeletonDemoPremium() {
+  return (
+    <div className="w-full">
+      <SkeletonDashboard />
+    </div>
+  )
+}
+
+export function SliderDemoBasic() {
+  return (
+    <div className="w-full max-w-md mx-auto p-4">
+      <Slider defaultValue={[50]} max={100} step={1} />
+    </div>
+  )
+}
+
+export function SliderDemoPresets() {
+  return (
+    <div className="flex flex-col gap-6 p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm w-full max-w-2xl mx-auto shadow-sm">
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Default style
+        </span>
+        <Slider defaultValue={[40]} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Glassmorphic
+        </span>
+        <Slider defaultValue={[60]} variant="glass" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Retro Neobrutalist
+        </span>
+        <Slider defaultValue={[50]} variant="retro" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Neon Glow
+        </span>
+        <Slider defaultValue={[75]} variant="glow" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Cyberpunk Monospace
+        </span>
+        <Slider defaultValue={[30]} variant="cyberpunk" />
+      </div>
+    </div>
+  )
+}
+
+export function SliderDemoInteractive() {
+  const [value, setValue] = React.useState<number[]>([20, 80])
+  return (
+    <div className="flex flex-col gap-8 w-full max-w-xl mx-auto p-6 rounded-xl border border-border bg-card/30 shadow-sm">
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between items-center text-xs font-semibold text-foreground">
+          <span>Range Slider (Double Handle)</span>
+          <span className="font-mono bg-primary/10 text-primary px-2 py-0.5 rounded">
+            {value[0]} - {value[1]}
+          </span>
+        </div>
+        <Slider
+          value={value}
+          onValueChange={setValue}
+          min={0}
+          max={100}
+          step={1}
+          showTooltip
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-semibold text-foreground text-center">
+          Discrete Steps & Ticks
+        </span>
+        <Slider
+          defaultValue={[40]}
+          min={0}
+          max={100}
+          step={20}
+          marks={[
+            { value: 0, label: '0%' },
+            { value: 20, label: '20%' },
+            { value: 40, label: '40%' },
+            { value: 60, label: '60%' },
+            { value: 80, label: '80%' },
+            { value: 100, label: '100%' },
+          ]}
+          showTooltip
+        />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <span className="text-xs font-semibold text-foreground text-center">
+          Vertical Sliders (Single & Double Dot)
+        </span>
+        <div className="h-64 flex justify-center items-center gap-12 py-4">
+          <div className="flex flex-col items-center gap-2 h-full">
+            <span className="text-[10px] text-muted-foreground font-medium">
+              Single Dot
+            </span>
+            <Slider
+              defaultValue={[50]}
+              min={0}
+              max={100}
+              step={1}
+              orientation="vertical"
+              showTooltip
+            />
+          </div>
+          <div className="flex flex-col items-center gap-2 h-full">
+            <span className="text-[10px] text-muted-foreground font-medium">
+              Double Dot
+            </span>
+            <Slider
+              defaultValue={[30, 70]}
+              min={0}
+              max={100}
+              step={1}
+              orientation="vertical"
+              showTooltip
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function SpinnerDemoBasic() {
+  return (
+    <div className="flex items-center gap-3 justify-center py-4">
+      <Spinner variant="glow" size="md" />
+      <span className="text-sm font-semibold text-foreground">
+        Loading workspace...
+      </span>
+    </div>
+  )
+}
+
+export function SpinnerDemoPresets() {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm w-full max-w-3xl mx-auto shadow-sm">
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          Default
+        </span>
+        <Spinner variant="default" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          Glassmorphic
+        </span>
+        <Spinner variant="glass" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          Retro Brutalist
+        </span>
+        <Spinner variant="retro" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          Neon Glow
+        </span>
+        <Spinner variant="glow" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-2 col-span-2 sm:col-span-1">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          Cyberpunk
+        </span>
+        <Spinner variant="cyberpunk" size="md" />
+      </div>
+    </div>
+  )
+}
+
+export function SpinnerDemoInteractive() {
+  const [loading, setLoading] = React.useState(false)
+  const [uploading, setUploading] = React.useState(false)
+  const [uploadDone, setUploadDone] = React.useState(false)
+  const [overlayLoading, setOverlayLoading] = React.useState(false)
+
+  const triggerLoad = () => {
+    setLoading(true)
+    setTimeout(() => setLoading(false), 2000)
+  }
+
+  const handleUpload = () => {
+    if (uploading || uploadDone) return
+    setUploading(true)
+    setTimeout(() => {
+      setUploading(false)
+      setUploadDone(true)
+      setTimeout(() => setUploadDone(false), 2000)
+    }, 2000)
+  }
+
+  const triggerOverlay = () => {
+    setOverlayLoading(true)
+    setTimeout(() => setOverlayLoading(false), 2000)
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
+      {/* Button Loader */}
+      <div className="flex flex-col gap-3 p-5 rounded-xl border border-border bg-card/30 shadow-sm justify-center">
+        <Button
+          variant="glow"
+          onClick={triggerLoad}
+          disabled={loading}
+          className="w-full"
+        >
+          {loading ? (
+            <>
+              <Spinner variant="glow" size="sm" className="mr-2" />
+              <span>Fetching Data...</span>
+            </>
+          ) : (
+            <span>Load Workspace</span>
+          )}
+        </Button>
+      </div>
+
+      {/* Uploader Feedback */}
+      <div className="flex flex-col gap-3 p-5 rounded-xl border border-border bg-card/30 shadow-sm justify-center">
+        <div
+          onClick={handleUpload}
+          className="flex flex-col items-center justify-center p-4 border border-dashed border-border rounded-lg bg-muted/10 cursor-pointer hover:bg-muted/20 transition-all select-none min-h-[90px] w-full"
+        >
+          {uploading ? (
+            <>
+              <Spinner variant="cyberpunk" size="md" className="mb-2" />
+              <span className="text-[10px] font-mono text-emerald-500 animate-pulse">
+                UPLOADING DATA PACKET (45%)...
+              </span>
+            </>
+          ) : uploadDone ? (
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+              <span className="text-xs font-semibold text-emerald-500">
+                Upload Completed!
+              </span>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-1">
+              <UploadCloud className="h-6 w-6 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">
+                Click to upload large document
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Card Blur Overlay */}
+      <div className="flex flex-col gap-3 p-5 rounded-xl border border-border bg-card/30 shadow-sm justify-center md:col-span-2 animate-in fade-in duration-300">
+        <div className="relative p-4 border border-border rounded-lg bg-muted/20 overflow-hidden w-full">
+          {overlayLoading && (
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex flex-col items-center justify-center gap-2 z-10">
+              <Spinner variant="glow" size="md" />
+              <span className="text-[9px] font-mono text-zinc-400 uppercase tracking-widest">
+                Refreshing Node...
+              </span>
+            </div>
+          )}
+          <div className="space-y-3 text-xs">
+            <div className="flex justify-between font-mono text-[10px] text-muted-foreground">
+              <span>Node ID</span>
+              <span>#0921B-NODE</span>
+            </div>
+            <p className="font-bold text-foreground">Database Sync Status</p>
+            <Button
+              variant="glass"
+              size="sm"
+              className="w-full h-8"
+              onClick={triggerOverlay}
+            >
+              Sync Node Details
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function SpinnerDemoShapes() {
+  return (
+    <div className="grid grid-cols-3 gap-6 p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm w-full max-w-2xl mx-auto shadow-sm">
+      <div className="flex flex-col items-center gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Rotating Circle
+        </span>
+        <Spinner design="circle" variant="glow" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Bouncing Dots
+        </span>
+        <Spinner design="dots" variant="glow" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Pulsating Bars
+        </span>
+        <Spinner design="bars" variant="glow" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Flashing Grid
+        </span>
+        <Spinner design="grid" variant="glow" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Radial Pinwheel
+        </span>
+        <Spinner design="pinwheel" variant="glow" size="md" />
+      </div>
+      <div className="flex flex-col items-center gap-3">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">
+          Expanding Ripple
+        </span>
+        <Spinner design="pulse" variant="glow" size="md" />
+      </div>
+    </div>
+  )
+}
+
+export function SpinnerDemoPremium() {
+  const [status, setStatus] = React.useState<'idle' | 'loading' | 'success'>(
+    'idle',
+  )
+  const [logs, setLogs] = React.useState<string[]>([])
+
+  const systemLogs = [
+    'Establishing SSH Handshake...',
+    'Loading Secure Kernel Modules...',
+    'Fetching Quantum Entropy Matrix...',
+    'Verifying Encrypted Credentials...',
+    'Node fully initialized. Welcome back, agent.',
+  ]
+
+  const startBoot = () => {
+    setStatus('loading')
+    setLogs([])
+
+    systemLogs.forEach((log, index) => {
+      setTimeout(
+        () => {
+          setLogs((prev) => [...prev, log])
+          if (index === systemLogs.length - 1) {
+            setStatus('success')
+          }
+        },
+        (index + 1) * 800,
+      )
+    })
+  }
+
+  return (
+    <div className="w-full max-w-2xl mx-auto rounded-2xl border border-emerald-500/20 bg-zinc-950 p-6 font-mono text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.07)] select-none">
+      <div className="flex justify-between items-center border-b border-emerald-500/20 pb-4 mb-6">
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-red-500" />
+          <div className="h-2 w-2 rounded-full bg-yellow-500" />
+          <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[10px] text-emerald-500/60 ml-2">
+            AGENT_NODE_INIT.SH
+          </span>
+        </div>
+        <span className="text-[10px] text-emerald-500/60 font-mono">
+          PORT 8820 // SECURE_SHELL
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div className="md:col-span-2 flex flex-col items-center justify-center border border-emerald-500/10 rounded-xl bg-emerald-950/5 p-6 min-h-[220px]">
+          {status === 'idle' && (
+            <div className="text-center space-y-4 w-full">
+              <div className="h-16 w-16 mx-auto rounded-full border border-dashed border-emerald-500/30 flex items-center justify-center text-emerald-500/50 text-xl font-bold animate-pulse">
+                ?
+              </div>
+              <p className="text-[11px] text-emerald-500/70">
+                Node connection offline.
+              </p>
+              <Button
+                onClick={startBoot}
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-black border-none font-bold text-xs"
+              >
+                BOOT CONSOLE
+              </Button>
+            </div>
+          )}
+
+          {status === 'loading' && (
+            <div className="text-center space-y-4 flex flex-col items-center">
+              <Spinner variant="cyberpunk" size="lg" className="h-16 w-16" />
+              <div className="space-y-1">
+                <p className="text-xs font-bold uppercase tracking-wider animate-pulse">
+                  Initializing
+                </p>
+                <p className="text-[10px] text-emerald-500/60">
+                  Booting modules...
+                </p>
+              </div>
+            </div>
+          )}
+
+          {status === 'success' && (
+            <div className="text-center space-y-4 w-full">
+              <div className="h-16 w-16 mx-auto rounded-full border-2 border-emerald-500 flex items-center justify-center text-emerald-500 font-bold text-2xl shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                ✓
+              </div>
+              <p className="text-[11px] text-emerald-400 font-bold">
+                Node online and secure.
+              </p>
+              <Button
+                onClick={startBoot}
+                variant="glass"
+                className="w-full text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10 font-bold text-xs"
+              >
+                REBOOT CONSOLE
+              </Button>
+            </div>
+          )}
+        </div>
+
+        <div className="md:col-span-3 flex flex-col justify-between border border-emerald-500/10 rounded-xl bg-black/50 p-4 h-[220px]">
+          <div className="overflow-y-auto space-y-1.5 text-[11px]">
+            <div className="text-emerald-500/40">
+              {'>'} systemctl start agent-node.service
+            </div>
+            {logs.map((log, index) => (
+              <div
+                key={index}
+                className="flex gap-2 animate-in fade-in duration-200"
+              >
+                <span
+                  className={
+                    index === systemLogs.length - 1
+                      ? 'text-emerald-400 font-bold'
+                      : 'text-emerald-500/80'
+                  }
+                >
+                  {index === systemLogs.length - 1 ? '[ OK ]' : '•'} {log}
+                </span>
+              </div>
+            ))}
+            {status === 'loading' && (
+              <div className="flex gap-2 items-center text-emerald-400 animate-pulse mt-1">
+                <Spinner
+                  variant="cyberpunk"
+                  size="sm"
+                  className="h-3 w-3 shrink-0"
+                />
+                <span>Working...</span>
+              </div>
+            )}
+          </div>
+          <div className="text-[10px] text-emerald-500/30 border-t border-emerald-500/10 pt-2 flex justify-between mt-2">
+            <span>MEM: 12.4 GB / 32 GB</span>
+            <span>CPU: 34%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function SwitchDemoBasic() {
+  return (
+    <div className="flex items-center space-x-2 justify-center py-4">
+      <Switch id="airplane-mode-basic" defaultChecked />
+      <span className="text-sm font-semibold text-foreground cursor-pointer select-none">
+        Airplane Mode
+      </span>
+    </div>
+  )
+}
+
+export function SwitchDemoPresets() {
+  return (
+    <div className="flex flex-wrap items-center gap-8 justify-center p-6 rounded-xl border border-border bg-card/30 backdrop-blur-sm w-full max-w-2xl mx-auto shadow-sm">
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-default-preset" variant="default" defaultChecked />
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Default
+        </span>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-glass-preset" variant="glass" defaultChecked />
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Glass
+        </span>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-retro-preset" variant="retro" defaultChecked />
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Retro
+        </span>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-glow-preset" variant="glow" defaultChecked />
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Glow
+        </span>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Switch id="sw-cyberpunk-preset" variant="cyberpunk" defaultChecked />
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono">
+          Cyberpunk
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export function SwitchDemoInteractive() {
+  return (
+    <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
+      {/* Settings Card */}
+      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+        <div className="mb-4 text-left">
+          <h4 className="text-sm font-bold uppercase tracking-wider text-foreground">
+            Notification Preferences
+          </h4>
+          <p className="text-xs text-muted-foreground">
+            Choose what updates you want to receive.
+          </p>
+        </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between rounded-lg border border-border/50 p-4 bg-muted/10">
+            <div className="space-y-0.5 text-left">
+              <span className="text-sm font-semibold text-foreground">
+                Security Alerts
+              </span>
+              <p className="text-xs text-muted-foreground">
+                Get notified about suspicious logins.
+              </p>
+            </div>
+            <Switch defaultChecked variant="glow" />
+          </div>
+          <div className="flex items-center justify-between rounded-lg border border-border/50 p-4 bg-muted/10">
+            <div className="space-y-0.5 text-left">
+              <span className="text-sm font-semibold text-foreground">
+                Weekly Digest
+              </span>
+              <p className="text-xs text-muted-foreground">
+                Receive weekly stats and highlights.
+              </p>
+            </div>
+            <Switch variant="glass" />
+          </div>
+        </div>
+      </div>
+
+      {/* Disabled States Showcase */}
+      <div className="flex gap-6 justify-center p-4 rounded-xl border border-border/40 bg-card/20 text-xs">
+        <div className="flex items-center gap-2">
+          <Switch disabled />
+          <span className="text-muted-foreground opacity-55">Disabled Off</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Switch disabled defaultChecked />
+          <span className="text-muted-foreground opacity-55">Disabled On</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function TableDemoPresets() {
+  const data = [
+    { name: 'Core Engine', type: 'System', status: 'Active' },
+    { name: 'API Bridge', type: 'Gateway', status: 'Pending' },
+  ]
+
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 w-full max-w-5xl mx-auto p-4">
+      {/* 1. Default */}
+      <div className="space-y-2 text-left">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Default
+        </span>
+        <Table variant="default">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Service</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((item, idx) => (
+              <TableRow key={idx}>
+                <TableCell className="font-semibold">{item.name}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell className="text-right text-emerald-500">
+                  {item.status}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* 2. Glassmorphic */}
+      <div className="space-y-2 text-left">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Glassmorphic
+        </span>
+        <Table variant="glass">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Service</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((item, idx) => (
+              <TableRow key={idx}>
+                <TableCell className="font-semibold">{item.name}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell className="text-right text-emerald-500">
+                  {item.status}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* 3. Retro Neobrutalism */}
+      <div className="space-y-2 text-left">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Retro Neobrutalism
+        </span>
+        <Table variant="retro">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Service</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((item, idx) => (
+              <TableRow key={idx}>
+                <TableCell className="font-semibold">{item.name}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell className="text-right text-emerald-500">
+                  {item.status}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* 4. Glow Accent */}
+      <div className="space-y-2 text-left">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Glow Accent
+        </span>
+        <Table variant="glow">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Service</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((item, idx) => (
+              <TableRow key={idx}>
+                <TableCell className="font-semibold">{item.name}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell className="text-right text-emerald-500">
+                  {item.status}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* 5. Cyberpunk Matrix */}
+      <div className="space-y-2 text-left xl:col-span-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono">
+          Cyberpunk Matrix
+        </span>
+        <Table variant="cyberpunk">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Service</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((item, idx) => (
+              <TableRow key={idx}>
+                <TableCell className="font-semibold">{item.name}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell className="text-right text-emerald-400">
+                  {item.status}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  )
+}
+
+export function TableDemoPremium() {
+  const [activeTab, setActiveTab] = React.useState<
+    'status' | 'pricing' | 'inventory' | 'tasks' | 'files' | 'db'
+  >('status')
+
+  return (
+    <div className="w-full space-y-6">
+      <div className="flex flex-wrap gap-2 justify-center border-b border-border pb-4">
+        <Button
+          variant={activeTab === 'status' ? 'glow' : 'outline'}
+          onClick={() => setActiveTab('status')}
+          size="sm"
+        >
+          Server Status
+        </Button>
+        <Button
+          variant={activeTab === 'pricing' ? 'glow' : 'outline'}
+          onClick={() => setActiveTab('pricing')}
+          size="sm"
+        >
+          Pricing Matrix
+        </Button>
+        <Button
+          variant={activeTab === 'inventory' ? 'glow' : 'outline'}
+          onClick={() => setActiveTab('inventory')}
+          size="sm"
+        >
+          Inventory SKU
+        </Button>
+        <Button
+          variant={activeTab === 'tasks' ? 'glow' : 'outline'}
+          onClick={() => setActiveTab('tasks')}
+          size="sm"
+        >
+          Tasks Backlog
+        </Button>
+        <Button
+          variant={activeTab === 'files' ? 'glow' : 'outline'}
+          onClick={() => setActiveTab('files')}
+          size="sm"
+        >
+          File Explorer
+        </Button>
+        <Button
+          variant={activeTab === 'db' ? 'glow' : 'outline'}
+          onClick={() => setActiveTab('db')}
+          size="sm"
+        >
+          DB Schema
+        </Button>
+      </div>
+      <div className="animate-in fade-in duration-300">
+        {activeTab === 'status' && <TableDemoSystemStatus />}
+        {activeTab === 'pricing' && <TableDemoPricing />}
+        {activeTab === 'inventory' && <TableDemoInventory />}
+        {activeTab === 'tasks' && <TableDemoTasks />}
+        {activeTab === 'files' && <TableDemoFiles />}
+        {activeTab === 'db' && <TableDemoDbSchema />}
+      </div>
+    </div>
+  )
+}
+
+interface UserItem {
+  id: string
+  name: string
+  email: string
+  role: string
+  status: 'active' | 'pending' | 'inactive'
+  amount: number
+  date: string
+  avatarUrl?: string
+}
+
+const SAMPLE_USERS: UserItem[] = [
+  {
+    id: '1',
+    name: 'Sarah Connor',
+    email: 'sarah@skynet-resistance.org',
+    role: 'Team Lead',
+    status: 'active',
+    amount: 1540.0,
+    date: '2026-08-12',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+  },
+  {
+    id: '2',
+    name: 'John Connor',
+    email: 'john@skynet-resistance.org',
+    role: 'Commander',
+    status: 'active',
+    amount: 2850.5,
+    date: '2026-08-10',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+  },
+  {
+    id: '3',
+    name: 'Marcus Wright',
+    email: 'marcus@cyberdyne.sys',
+    role: 'Infiltrator',
+    status: 'pending',
+    amount: 890.0,
+    date: '2026-08-11',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+  },
+  {
+    id: '4',
+    name: 'Kyle Reese',
+    email: 'kyle@resistance.net',
+    role: 'Sergeant',
+    status: 'active',
+    amount: 1200.0,
+    date: '2026-08-09',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+  },
+  {
+    id: '5',
+    name: 'T-800 Model 101',
+    email: 'cyberdyne101@cyberdyne.sys',
+    role: 'Guardian',
+    status: 'active',
+    amount: 4500.0,
+    date: '2026-08-08',
+  },
+  {
+    id: '6',
+    name: 'T-1000 Prototype',
+    email: 'liquid@skynet.net',
+    role: 'Liquid Metal Assassin',
+    status: 'inactive',
+    amount: 5200.0,
+    date: '2026-08-07',
+  },
+  {
+    id: '7',
+    name: 'Dr. Miles Dyson',
+    email: 'dyson@cyberdyne.sys',
+    role: 'Lead Researcher',
+    status: 'inactive',
+    amount: 3100.0,
+    date: '2026-08-05',
+  },
+  {
+    id: '8',
+    name: 'Katherine Brewster',
+    email: 'kate@resistance.net',
+    role: 'Medic',
+    status: 'pending',
+    amount: 950.25,
+    date: '2026-08-06',
+  },
+  {
+    id: '9',
+    name: 'T-X Terminatrix',
+    email: 'tx@skynet.net',
+    role: 'Cybernetic Assassin',
+    status: 'inactive',
+    amount: 6100.0,
+    date: '2026-08-04',
+  },
+  {
+    id: '10',
+    name: 'Danny Dyson',
+    email: 'danny@cyberdyne.sys',
+    role: 'System Admin',
+    status: 'active',
+    amount: 750.0,
+    date: '2026-08-03',
+  },
+]
+
+export function TableDemoInteractive() {
+  const [data, setData] = React.useState<UserItem[]>(SAMPLE_USERS)
+  const [search, setSearch] = React.useState('')
+  const [status, setStatus] = React.useState('all')
+  const [sortKey, setSortKey] = React.useState<keyof UserItem | 'custom'>(
+    'date',
+  )
+  const [sortDir, setSortDir] = React.useState<'asc' | 'desc'>('desc')
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set())
+  const [page, setPage] = React.useState(1)
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null)
+
+  const itemsPerPage = 4
+
+  // Reset page when filters change
+  React.useEffect(() => {
+    setPage(1)
+  }, [search, status])
+
+  // Filter Data
+  const filteredData = React.useMemo(() => {
+    return data.filter((user) => {
+      const matchesSearch =
+        user.name.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase()) ||
+        user.role.toLowerCase().includes(search.toLowerCase())
+      const matchesStatus = status === 'all' || user.status === status
+      return matchesSearch && matchesStatus
+    })
+  }, [data, search, status])
+
+  // Sort Data
+  const sortedData = React.useMemo(() => {
+    if (sortKey === 'custom') return filteredData
+
+    return [...filteredData].sort((a, b) => {
+      const valA = a[sortKey as keyof UserItem]
+      const valB = b[sortKey as keyof UserItem]
+
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        return sortDir === 'asc' ? valA - valB : valB - valA
+      }
+      return sortDir === 'asc'
+        ? String(valA).localeCompare(String(valB))
+        : String(valB).localeCompare(String(valA))
+    })
+  }, [filteredData, sortKey, sortDir])
+
+  // Paginated Data
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage) || 1
+  const paginatedData = React.useMemo(() => {
+    const start = (page - 1) * itemsPerPage
+    return sortedData.slice(start, start + itemsPerPage)
+  }, [sortedData, page])
+
+  const handleSort = (key: keyof UserItem) => {
+    if (sortKey === key) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+  }
+
+  // Row Selection Handlers
+  const handleSelectRow = (id: string, checked: boolean) => {
+    const next = new Set(selectedIds)
+    if (checked) {
+      next.add(id)
+    } else {
+      next.delete(id)
+    }
+    setSelectedIds(next)
+  }
+
+  const handleSelectAllOnPage = (checked: boolean) => {
+    const next = new Set(selectedIds)
+    paginatedData.forEach((item) => {
+      if (checked) {
+        next.add(item.id)
+      } else {
+        next.delete(item.id)
+      }
+    })
+    setSelectedIds(next)
+  }
+
+  const isAllPageSelected =
+    paginatedData.length > 0 &&
+    paginatedData.every((item) => selectedIds.has(item.id))
+
+  const handleBulkDelete = () => {
+    setData(data.filter((u) => !selectedIds.has(u.id)))
+    setSelectedIds(new Set())
+  }
+
+  const handleBulkStatus = (newStatus: 'active' | 'pending' | 'inactive') => {
+    setData(
+      data.map((u) => {
+        if (selectedIds.has(u.id)) {
+          return { ...u, status: newStatus }
+        }
+        return u
+      }),
+    )
+    setSelectedIds(new Set())
+  }
+
+  const handleExportCSV = () => {
+    const headers = [
+      'Name',
+      'Email',
+      'Role',
+      'Status',
+      'Joined Date',
+      'Balance',
+    ]
+    const rows = sortedData.map((u) => [
+      u.name,
+      u.email,
+      u.role,
+      u.status,
+      u.date,
+      u.amount.toFixed(2),
+    ])
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((r) =>
+        r.map((val) => `"${val.replace(/"/g, '""')}"`).join(','),
+      ),
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute(
+      'download',
+      `vibe_table_export_${new Date().toISOString().slice(0, 10)}.csv`,
+    )
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleDragStart = (e: React.DragEvent, globalIndex: number) => {
+    setDraggedIndex(globalIndex)
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = 'move'
+      e.dataTransfer.setData('text/plain', String(globalIndex))
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent, globalIndex: number) => {
+    e.preventDefault()
+    if (dragOverIndex !== globalIndex) {
+      setDragOverIndex(globalIndex)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault()
+    if (draggedIndex === null || draggedIndex === targetIndex) {
+      setDraggedIndex(null)
+      setDragOverIndex(null)
+      return
+    }
+
+    const updatedData = [...data]
+    const draggedUser = sortedData[draggedIndex]
+    const targetUser = sortedData[targetIndex]
+
+    if (draggedUser && targetUser) {
+      const srcIndex = updatedData.findIndex((u) => u.id === draggedUser.id)
+      const dstIndex = updatedData.findIndex((u) => u.id === targetUser.id)
+
+      if (srcIndex !== -1 && dstIndex !== -1) {
+        const [removed] = updatedData.splice(srcIndex, 1)
+        updatedData.splice(dstIndex, 0, removed)
+        setData(updatedData)
+        setSortKey('custom')
+      }
+    }
+
+    setDraggedIndex(null)
+    setDragOverIndex(null)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null)
+    setDragOverIndex(null)
+  }
+
+  const renderSortIndicator = (key: keyof UserItem) => {
+    if (sortKey !== key) {
+      return <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-40 shrink-0" />
+    }
+    return sortDir === 'asc' ? (
+      <ChevronUp className="ml-1.5 h-3.5 w-3.5 text-primary shrink-0" />
+    ) : (
+      <ChevronDown className="ml-1.5 h-3.5 w-3.5 text-primary shrink-0" />
+    )
+  }
+
+  return (
+    <div className="w-full bg-card/60 dark:bg-zinc-900/40 backdrop-blur-md border border-border/80 rounded-2xl shadow-xl p-4 sm:p-5 space-y-5 text-left text-foreground">
+      {/* Control Bar */}
+      <div className="flex items-center justify-between gap-4">
+        {selectedIds.size > 0 ? (
+          /* Bulk Actions Row */
+          <div className="flex items-center justify-between bg-primary/10 border border-primary/20 rounded-xl px-4 py-2 w-full animate-in fade-in slide-in-from-top-2 duration-200">
+            <span className="text-xs font-semibold text-primary">
+              {selectedIds.size} user(s) selected
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleBulkStatus('active')}
+                className="h-8 text-xs hover:bg-emerald-500/10 hover:text-emerald-400"
+              >
+                Mark Active
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleBulkStatus('inactive')}
+                className="h-8 text-xs hover:bg-rose-500/10 hover:text-rose-400"
+              >
+                Mark Inactive
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBulkDelete}
+                className="h-8 text-xs text-rose-400 border-rose-500/30 hover:bg-rose-500/20"
+              >
+                Delete
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedIds(new Set())}
+                className="h-8 text-xs text-muted-foreground"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          /* Search & Filter Row */
+          <div className="flex items-center justify-between gap-3 w-full">
+            <div className="flex items-center gap-3">
+              <div className="w-40 shrink-0">
+                <Select value={status} onValueChange={setStatus}>
+                  <SelectTrigger className="h-9 text-xs font-sans py-0">
+                    <SelectValue placeholder="Filter Status" />
+                  </SelectTrigger>
+                  <SelectContent className="text-xs">
+                    <SelectItem value="all" className="text-xs">
+                      All Status
+                    </SelectItem>
+                    <SelectItem value="active" className="text-xs">
+                      Active
+                    </SelectItem>
+                    <SelectItem value="pending" className="text-xs">
+                      Pending
+                    </SelectItem>
+                    <SelectItem value="inactive" className="text-xs">
+                      Inactive
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportCSV}
+                className="h-9 text-xs flex items-center gap-1.5 hover:bg-muted border-border text-foreground bg-transparent"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Export CSV</span>
+              </Button>
+            </div>
+            <div className="relative w-full sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search name, email, or role..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 h-9 text-xs"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Main Table */}
+      <Table variant="glass" className="min-w-[800px]">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-12 text-center">
+              <Checkbox
+                checked={isAllPageSelected}
+                onCheckedChange={(c) => handleSelectAllOnPage(!!c)}
+                className="h-5 w-5"
+              />
+            </TableHead>
+            <TableHead
+              className="cursor-pointer select-none"
+              onClick={() => handleSort('name')}
+            >
+              <div className="flex items-center">
+                User
+                {renderSortIndicator('name')}
+              </div>
+            </TableHead>
+            <TableHead className="hidden md:table-cell">Role</TableHead>
+            <TableHead
+              className="cursor-pointer select-none"
+              onClick={() => handleSort('status')}
+            >
+              <div className="flex items-center">
+                Status
+                {renderSortIndicator('status')}
+              </div>
+            </TableHead>
+            <TableHead
+              className="cursor-pointer select-none hidden sm:table-cell min-w-[125px] whitespace-nowrap"
+              onClick={() => handleSort('date')}
+            >
+              <div className="flex items-center">
+                Joined Date
+                {renderSortIndicator('date')}
+              </div>
+            </TableHead>
+            <TableHead
+              className="cursor-pointer select-none text-right"
+              onClick={() => handleSort('amount')}
+            >
+              <div className="flex items-center justify-end">
+                Balance
+                {renderSortIndicator('amount')}
+              </div>
+            </TableHead>
+            <TableHead className="w-16 text-center">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {paginatedData.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={7}
+                className="h-32 text-center text-xs text-muted-foreground"
+              >
+                No users found. Try adjusting your search query or filters.
+              </TableCell>
+            </TableRow>
+          ) : (
+            paginatedData.map((user, index) => {
+              const isSelected = selectedIds.has(user.id)
+              const globalIndex = (page - 1) * itemsPerPage + index
+              return (
+                <TableRow
+                  key={user.id}
+                  data-state={isSelected ? 'selected' : undefined}
+                  className={cn(
+                    'hover:bg-muted/40 transition-colors cursor-grab active:cursor-grabbing',
+                    draggedIndex === globalIndex && 'opacity-40 bg-muted/60',
+                    dragOverIndex === globalIndex &&
+                      draggedIndex !== globalIndex &&
+                      'border-t-2 border-t-primary bg-primary/5',
+                  )}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, globalIndex)}
+                  onDragOver={(e) => handleDragOver(e, globalIndex)}
+                  onDrop={(e) => handleDrop(e, globalIndex)}
+                  onDragEnd={handleDragEnd}
+                >
+                  <TableCell className="text-center">
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={(c) => handleSelectRow(user.id, !!c)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-5 w-5"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8 shrink-0">
+                        {user.avatarUrl ? (
+                          <AvatarImage src={user.avatarUrl} alt={user.name} />
+                        ) : null}
+                        <AvatarFallback className="text-[10px] bg-primary/20 text-primary font-bold">
+                          {user.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-xs font-semibold text-foreground truncate">
+                          {user.name}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground truncate">
+                          {user.email}
+                        </span>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-xs hidden md:table-cell">
+                    {user.role}
+                  </TableCell>
+                  <TableCell>
+                    <Switch checked={user.status === 'active'} disabled />
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground hidden sm:table-cell">
+                    {user.date}
+                  </TableCell>
+                  <TableCell className="text-right text-xs font-semibold text-foreground">
+                    ${user.amount.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 hover:bg-muted/80 rounded-lg cursor-pointer"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-32 bg-background border-border text-xs"
+                      >
+                        <DropdownMenuItem className="flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted rounded-md cursor-pointer text-xs">
+                          <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span>View</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted rounded-md cursor-pointer text-xs">
+                          <Edit className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span>Edit</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="flex items-center gap-2 px-2.5 py-1.5 hover:bg-rose-500/10 focus:bg-rose-500/10 hover:text-rose-400 rounded-md cursor-pointer text-rose-500 text-xs"
+                          onClick={() =>
+                            setData(data.filter((u) => u.id !== user.id))
+                          }
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-rose-500 hover:text-rose-400" />
+                          <span>Delete</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              )
+            })
+          )}
+        </TableBody>
+      </Table>
+
+      {/* Pagination Controls */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+        <span className="text-[11px] text-muted-foreground">
+          Showing {Math.min(sortedData.length, (page - 1) * itemsPerPage + 1)}-
+          {Math.min(sortedData.length, page * itemsPerPage)} of{' '}
+          {sortedData.length} users
+        </span>
+        <div className="flex items-center space-x-1.5">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage(1)}
+            disabled={page === 1}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronsLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <div className="text-[11px] font-medium text-foreground px-3">
+            Page {page} of {totalPages}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage(totalPages)}
+            disabled={page === totalPages}
+            className="h-8 w-8 p-0"
+          >
+            <ChevronsRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ==========================================
+// TABS & TEXTAREA INTERACTIVE COMBINED DEMO
+// ==========================================
+
+export function TabsTextareaDemoInteractive() {
+  const [variant, setVariant] = React.useState<
+    'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
+  >('default')
+  const [autoResize, setAutoResize] = React.useState(true)
+  const [text, setText] = React.useState(
+    "Hello World! This is a premium interactive showcase combining Vibe UI's Tabs and Textarea components.\n\nTry typing more lines here to see the textarea automatically grow and adjust its height dynamically without scrollbars. Change the variant preset above to see the entire component transition themes!",
+  )
+  const [title, setTitle] = React.useState('My Workspace Draft')
+  const [errorOverride, setErrorOverride] = React.useState(false)
+
+  const maxChars = 280
+  const charCount = text.length
+  const isOverLimit = charCount > maxChars
+  const isWarning = charCount > maxChars - 50 && charCount <= maxChars
+  const isTextareaError = errorOverride || isOverLimit
+
+  return (
+    <div className="w-full max-w-2xl mx-auto space-y-6 text-left">
+      {/* Preset Theme Customizer */}
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-muted/40 border border-border/80 rounded-xl p-3.5">
+        <div className="flex flex-col">
+          <span className="text-xs font-bold text-foreground">
+            Theme Variant Preset
+          </span>
+          <span className="text-[10px] text-muted-foreground">
+            Select styling and indicator animation preset
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {(['default', 'glass', 'retro', 'glow', 'cyberpunk'] as const).map(
+            (v) => (
+              <button
+                key={v}
+                onClick={() => setVariant(v)}
+                className={cn(
+                  'px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-all capitalize cursor-pointer',
+                  variant === v
+                    ? 'bg-primary border-primary text-primary-foreground shadow-sm'
+                    : 'bg-background border-border text-muted-foreground hover:text-foreground hover:bg-muted',
+                )}
+              >
+                {v}
+              </button>
+            ),
+          )}
+        </div>
+      </div>
+
+      {/* Main Workspace Card Container */}
+      <div
+        className={cn(
+          'w-full rounded-2xl border p-5 sm:p-6 transition-all duration-300',
+          variant === 'glass' &&
+            'bg-card/40 border-white/10 dark:border-white/5 backdrop-blur-md shadow-xl',
+          variant === 'retro' &&
+            'border-2 border-foreground bg-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]',
+          variant === 'glow' &&
+            'bg-card border-border shadow-[0_0_25px_rgba(168,85,247,0.06)]',
+          variant === 'cyberpunk' &&
+            'bg-black border border-emerald-500/40 rounded-none shadow-[0_0_20px_rgba(16,185,129,0.1)]',
+          variant === 'default' && 'bg-card border-border shadow-lg',
+        )}
+      >
+        <Tabs
+          defaultValue="compose"
+          variant={variant}
+          className="w-full space-y-5"
+        >
+          {/* Tabs header strip */}
+          <div className="flex items-center justify-between border-b border-border/60 pb-3 flex-wrap gap-3">
+            <TabsList>
+              <TabsTrigger value="compose">Compose</TabsTrigger>
+              <TabsTrigger value="preview">Live Preview</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+            </TabsList>
+
+            <div className="flex items-center gap-1.5">
+              <span
+                className={cn(
+                  'h-2 w-2 rounded-full',
+                  isTextareaError
+                    ? 'bg-destructive animate-pulse'
+                    : isWarning
+                      ? 'bg-amber-400'
+                      : 'bg-emerald-500',
+                )}
+              />
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                {isTextareaError
+                  ? 'Error State'
+                  : isWarning
+                    ? 'Warning limit'
+                    : 'Draft Saved'}
+              </span>
+            </div>
+          </div>
+
+          {/* Tab 1: Compose Editor */}
+          <TabsContent
+            value="compose"
+            className="space-y-4 focus-visible:ring-0"
+          >
+            <div className="space-y-1 text-left">
+              <Label
+                htmlFor="draft-title"
+                className="text-xs font-semibold text-muted-foreground"
+              >
+                Draft Title
+              </Label>
+              <Input
+                id="draft-title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Name your draft..."
+                className="h-9 text-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5 text-left">
+              <Label
+                htmlFor="draft-desc"
+                className="text-xs font-semibold text-muted-foreground"
+              >
+                Content Details
+              </Label>
+              <Textarea
+                id="draft-desc"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Write description here..."
+                variant={variant}
+                autoResize={autoResize}
+                error={isTextareaError}
+                rows={4}
+                className="w-full min-h-[90px]"
+              />
+
+              {/* Count tracker bar */}
+              <div className="flex items-center justify-between text-[11px] pt-1">
+                <span
+                  className={cn(
+                    'font-medium',
+                    isOverLimit
+                      ? 'text-destructive'
+                      : isWarning
+                        ? 'text-amber-500'
+                        : 'text-muted-foreground',
+                  )}
+                >
+                  {isOverLimit
+                    ? 'Character limit exceeded!'
+                    : isWarning
+                      ? 'Approaching character limit...'
+                      : 'Dynamic auto-growing height active'}
+                </span>
+                <span
+                  className={cn(
+                    'font-mono font-bold px-1.5 py-0.5 rounded',
+                    isOverLimit
+                      ? 'bg-destructive/10 text-destructive border border-destructive/20'
+                      : isWarning
+                        ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                        : 'bg-muted text-muted-foreground',
+                  )}
+                >
+                  {charCount} / {maxChars}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <Button size="sm" disabled={isOverLimit} className="text-xs h-8">
+                Save Workspace
+              </Button>
+            </div>
+          </TabsContent>
+
+          {/* Tab 2: Live Preview */}
+          <TabsContent value="preview" className="focus-visible:ring-0">
+            <div
+              className={cn(
+                'p-5 rounded-xl border text-left',
+                variant === 'glass' &&
+                  'bg-white/5 border-white/10 backdrop-blur-md text-foreground',
+                variant === 'retro' &&
+                  'border-2 border-foreground bg-background shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] text-foreground',
+                variant === 'glow' &&
+                  'bg-card border-border shadow-[0_0_15px_rgba(168,85,247,0.08)] text-foreground',
+                variant === 'cyberpunk' &&
+                  'bg-black border border-emerald-500/50 text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.1)]',
+                variant === 'default' &&
+                  'bg-muted/40 border-border text-foreground',
+              )}
+            >
+              <h3 className="text-sm font-bold mb-2 uppercase tracking-wide border-b border-border/40 pb-1">
+                {title || 'Untitled Draft'}
+              </h3>
+              <p className="text-xs leading-relaxed whitespace-pre-wrap min-h-[60px]">
+                {text || (
+                  <span className="italic text-muted-foreground">
+                    No content details provided yet.
+                  </span>
+                )}
+              </p>
+            </div>
+          </TabsContent>
+
+          {/* Tab 3: Settings Config */}
+          <TabsContent
+            value="settings"
+            className="space-y-4 focus-visible:ring-0 text-left pt-2"
+          >
+            <div className="flex items-center justify-between p-3 rounded-lg border border-border/60 bg-muted/20">
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-foreground">
+                  AutoResize Textarea
+                </span>
+                <span className="text-[10px] text-muted-foreground">
+                  Adjust input height dynamically to fit text
+                </span>
+              </div>
+              <Switch checked={autoResize} onCheckedChange={setAutoResize} />
+            </div>
+
+            <div className="flex items-center justify-between p-3 rounded-lg border border-border/60 bg-muted/20">
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-foreground">
+                  Force Error Border
+                </span>
+                <span className="text-[10px] text-muted-foreground">
+                  Demonstrate validation error states manually
+                </span>
+              </div>
+              <Switch
+                checked={errorOverride}
+                onCheckedChange={setErrorOverride}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
   )
 }

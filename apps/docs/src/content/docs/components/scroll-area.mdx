@@ -11,15 +11,20 @@ A custom, uniform styled scrollbar viewport layout wrapper.
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function ScrollAreaDemo() {
+  const tags = Array.from({ length: 50 }).map(
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`
+  )
+
   return (
-    <ScrollArea className="h-32 w-52 border border-border rounded bg-card p-3">
-      <div className="space-y-2">
-        <div className="text-xs font-bold text-white">Scrollable logs</div>
-        <div className="text-[11px] text-muted-foreground leading-relaxed">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec
-          odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla
-          quis sem at nibh elementum imperdiet.
-        </div>
+    <ScrollArea className="h-48 w-48 rounded-md border border-border bg-card text-foreground">
+      <div className="p-4">
+        <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Tags</h4>
+        {tags.map((tag, idx) => (
+          <div key={tag}>
+            <div className="text-sm py-1.5 font-medium">{tag}</div>
+            {idx < tags.length - 1 && <div className="h-[1px] bg-border/50 my-1" />}
+          </div>
+        ))}
       </div>
     </ScrollArea>
   )
@@ -46,35 +51,79 @@ const scrollBarVariants = tv({
       horizontal: 'h-2.5 flex-col border-t border-t-transparent p-[1px]',
     },
     variant: {
-      default: 'hover:bg-muted/50 [&>div]:bg-muted-foreground/30 hover:[&>div]:bg-muted-foreground/50',
-      glass: 'hover:bg-white/5 [&>div]:bg-white/20 hover:[&>div]:bg-white/40 backdrop-blur-sm',
-      retro: 'border-2 border-foreground bg-background [&>div]:bg-foreground [&>div]:rounded-none w-3.5',
-      glow: 'hover:bg-primary/5 [&>div]:bg-primary/30 hover:[&>div]:bg-primary/60 hover:shadow-[0_0_8px_rgba(168,85,247,0.4)]',
+      default: 'hover:bg-muted/50',
+      glass: 'hover:bg-white/5 backdrop-blur-xs',
+      retro: 'border-foreground bg-background',
+      glow: 'hover:bg-primary/5',
+      cyberpunk: 'border-emerald-500/20 bg-black/40 hover:bg-black/60',
     },
   },
+  compoundVariants: [
+    {
+      orientation: 'vertical',
+      variant: 'retro',
+      className: 'border-l-2 w-3.5',
+    },
+    {
+      orientation: 'horizontal',
+      variant: 'retro',
+      className: 'border-t-2 h-3.5',
+    },
+    {
+      orientation: 'vertical',
+      variant: 'cyberpunk',
+      className: 'border-l w-3',
+    },
+    {
+      orientation: 'horizontal',
+      variant: 'cyberpunk',
+      className: 'border-t h-3',
+    },
+  ],
   defaultVariants: {
     orientation: 'vertical',
     variant: 'default',
   },
 })
 
+const scrollThumbVariants = tv({
+  base: 'relative flex-1 rounded-full transition-colors duration-200',
+  variants: {
+    variant: {
+      default: 'bg-muted-foreground/30 hover:bg-muted-foreground/50',
+      glass: 'bg-white/20 hover:bg-white/40',
+      retro: 'bg-foreground rounded-none border border-foreground',
+      glow: 'bg-primary/30 hover:bg-primary/60 shadow-[0_0_6px_rgba(168,85,247,0.4)]',
+      cyberpunk: 'bg-emerald-500/50 hover:bg-emerald-500 rounded-none shadow-[0_0_4px_rgba(16,185,129,0.5)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
 export interface ScrollAreaProps
-  extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>,
+  extends
+    React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>,
     VariantProps<typeof scrollBarVariants> {}
 
 const ScrollArea = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.Root>,
   ScrollAreaProps
->(({ className, children, variant, orientation = 'vertical', ...props }, ref) => (
+>(({ className, children, variant = 'default', ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
+    data-slot="scroll-area"
     className={cn('relative overflow-hidden', className)}
     {...props}
   >
-    <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit] [&>div]:!block">
+    <ScrollAreaPrimitive.Viewport
+      data-slot="scroll-area-viewport"
+      className="h-full w-full rounded-[inherit] [&>div]:!block"
+    >
       {children}
     </ScrollAreaPrimitive.Viewport>
-    <ScrollBar variant={variant} orientation={orientation} />
+    <ScrollBar variant={variant} />
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>
 ))
@@ -82,19 +131,22 @@ ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName
 
 const ScrollBar = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar> &
+  React.ComponentPropsWithoutRef<
+    typeof ScrollAreaPrimitive.ScrollAreaScrollbar
+  > &
     VariantProps<typeof scrollBarVariants>
->(({ className, orientation = 'vertical', variant, ...props }, ref) => (
+>(({ className, orientation = 'vertical', variant = 'default', ...props }, ref) => (
   <ScrollAreaPrimitive.ScrollAreaScrollbar
     ref={ref}
+    data-slot="scroll-area-scrollbar"
     orientation={orientation}
-    className={cn(
-      scrollBarVariants({ orientation, variant }),
-      className
-    )}
+    className={cn(scrollBarVariants({ orientation, variant }), className)}
     {...props}
   >
-    <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-border transition-colors" />
+    <ScrollAreaPrimitive.ScrollAreaThumb
+      data-slot="scroll-area-thumb"
+      className={cn(scrollThumbVariants({ variant }))}
+    />
   </ScrollAreaPrimitive.ScrollAreaScrollbar>
 ))
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName
@@ -104,277 +156,83 @@ export { ScrollArea, ScrollBar }
 
 </Installation>
 
-
-
 ## Preset Variations
 
-### Glassmorphic
+Explore the dynamic preset scroller variants of the Scroll Area component, including Default, Glassmorphic, Retro Neobrutalist, Neon Glow, and Cyberpunk styling handles.
 
 <ComponentPreview>
-  <ScrollAreaDemoGlass />
+  <ScrollAreaDemoPresets />
 
 ```tsx
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-export default function ScrollAreaDemoGlass() {
-  return (
-    <ScrollArea
-      variant="glass"
-      className="h-32 w-52 border border-white/10 rounded bg-white/5 p-3"
-    >
-      <div className="h-48 text-[11px] text-muted-foreground">
-        Semi-transparent glass tracking handles and tracks with custom blur
-        backdrops.
-      </div>
-    </ScrollArea>
+export default function ScrollAreaPresets() {
+  const tags = Array.from({ length: 50 }).map(
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`
   )
-}
-```
 
-</ComponentPreview>
-
-### Retro Neobrutalism
-
-<ComponentPreview>
-  <ScrollAreaDemoRetro />
-
-```tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-export default function ScrollAreaDemoRetro() {
   return (
-    <ScrollArea
-      variant="retro"
-      className="h-32 w-52 border-2 border-foreground rounded-none bg-background p-3"
-    >
-      <div className="h-48 text-[11px] font-mono">
-        Thick solid boxy brutalist offset handle scrollers.
-      </div>
-    </ScrollArea>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Neon Glow
-
-<ComponentPreview>
-  <ScrollAreaDemoGlow />
-
-```tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-export default function ScrollAreaDemoGlow() {
-  return (
-    <ScrollArea
-      variant="glow"
-      className="h-32 w-52 border border-primary/25 rounded bg-primary/5 p-3"
-    >
-      <div className="h-48 text-[11px] text-muted-foreground">
-        Neon glowing track scroll highlights active indicators.
-      </div>
-    </ScrollArea>
-  )
-}
-```
-
-</ComponentPreview>
-
----
-
-## Premium Use Case Examples
-
-### 1. Horizontal Cards Scroller
-
-<ComponentPreview>
-  <ScrollAreaDemoHorizontal />
-
-```tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-export default function ScrollAreaDemoHorizontal() {
-  return (
-    <ScrollArea
-      className="w-52 h-20 border border-border rounded bg-card p-3"
-      orientation="horizontal"
-    >
-      <div className="flex gap-2 w-[400px] h-full items-center">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div
-            key={i}
-            className="bg-muted p-2 rounded text-xs text-white shrink-0"
-          >
-            Item Card {i}
-          </div>
-        ))}
-      </div>
-    </ScrollArea>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 2. Dual Direction Grid Scroller
-
-<ComponentPreview>
-  <ScrollAreaDemoBoth />
-
-```tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-export default function ScrollAreaDemoBoth() {
-  return (
-    <ScrollArea
-      className="w-52 h-32 border border-border rounded bg-card p-3"
-      variant="glass"
-    >
-      <div className="w-[300px] h-[200px] p-2 text-xs text-muted-foreground">
-        Scrolling in both horizontal and vertical directions works seamlessly
-        with custom tracking bars.
-      </div>
-    </ScrollArea>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 3. Chat conversation stream layout
-
-<ComponentPreview>
-  <ScrollAreaDemoChat />
-
-```tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-export default function ScrollAreaDemoChat() {
-  return (
-    <ScrollArea className="h-40 w-56 border border-border rounded-xl bg-card p-3">
-      <div className="space-y-3">
-        <div className="text-left bg-muted p-2.5 rounded-r-xl rounded-bl-xl text-xs max-w-[85%]">
-          Hello! Is this the new Vibe UI scroll component?
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
+      {/* Default */}
+      <ScrollArea className="h-40 border border-border bg-card rounded-md">
+        <div className="p-3">
+          {tags.slice(0, 10).map((tag) => (
+            <div key={tag} className="text-xs py-1 font-medium">{tag}</div>
+          ))}
         </div>
-        <div className="text-right bg-primary text-primary-foreground p-2.5 rounded-l-xl rounded-br-xl text-xs max-w-[85%] ml-auto">
-          Yes! Built on radix primitives.
+      </ScrollArea>
+
+      {/* Glassmorphic */}
+      <ScrollArea variant="glass" className="h-40 border border-white/20 bg-white/5 dark:bg-black/20 rounded-md">
+        <div className="p-3">
+          {tags.slice(0, 10).map((tag) => (
+            <div key={tag} className="text-xs py-1 font-medium">{tag}</div>
+          ))}
         </div>
-        <div className="text-left bg-muted p-2.5 rounded-r-xl rounded-bl-xl text-xs max-w-[85%]">
-          Looks awesome and super smooth.
+      </ScrollArea>
+
+      {/* Retro */}
+      <ScrollArea variant="retro" className="h-40 border-2 border-foreground bg-background rounded-none">
+        <div className="p-3">
+          {tags.slice(0, 10).map((tag) => (
+            <div key={tag} className="text-xs py-1 font-bold font-mono">{tag}</div>
+          ))}
         </div>
-      </div>
-    </ScrollArea>
+      </ScrollArea>
+
+      {/* Glow */}
+      <ScrollArea variant="glow" className="h-40 border border-purple-500/20 bg-purple-500/5 dark:bg-purple-950/10 shadow-[0_0_10px_rgba(168,85,247,0.1)] rounded-md">
+        <div className="p-3">
+          {tags.slice(0, 10).map((tag) => (
+            <div key={tag} className="text-xs py-1 font-medium text-purple-600 dark:text-purple-400">{tag}</div>
+          ))}
+        </div>
+      </ScrollArea>
+
+      {/* Cyberpunk */}
+      <ScrollArea variant="cyberpunk" className="h-40 border border-emerald-500/30 bg-emerald-950/10 dark:bg-black rounded-none">
+        <div className="p-3">
+          {tags.slice(0, 10).map((tag) => (
+            <div key={tag} className="text-xs py-1 font-mono text-emerald-500">{tag}</div>
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
   )
 }
 ```
 
 </ComponentPreview>
 
-### 4. Custom sidebar links catalog
+## Props
 
-<ComponentPreview>
-  <ScrollAreaDemoMenu />
+### ScrollArea
 
-```tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-export default function ScrollAreaDemoMenu() {
-  return (
-    <ScrollArea className="h-40 w-48 border border-border rounded-lg bg-card p-2">
-      <div className="flex flex-col gap-1">
-        {[
-          'Dashboard',
-          'Analytics',
-          'Components',
-          'Registry',
-          'Settings',
-          'Profile',
-          'Security',
-          'Billing',
-        ].map((m) => (
-          <button
-            key={m}
-            className="text-left text-xs font-semibold px-2 py-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"
-          >
-            {m}
-          </button>
-        ))}
-      </div>
-    </ScrollArea>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 5. Shopping checkout bag items lists
-
-<ComponentPreview>
-  <ScrollAreaDemoCart />
-
-```tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-export default function ScrollAreaDemoCart() {
-  return (
-    <ScrollArea className="h-40 w-56 border border-border rounded-xl bg-card p-3">
-      <div className="space-y-3">
-        {[
-          { name: 'Button Component', price: '$15.00' },
-          { name: 'Glassmorphic Card', price: '$20.00' },
-          { name: 'Calendar Widget', price: '$25.00' },
-          { name: 'Carousel Slider', price: '$30.00' },
-        ].map((item, i) => (
-          <div
-            key={i}
-            className="flex justify-between items-center text-xs pb-2 border-b border-border/30 last:border-0"
-          >
-            <div>
-              <div className="font-semibold text-white">{item.name}</div>
-              <div className="text-[10px] text-muted-foreground">Qty: 1</div>
-            </div>
-            <span className="font-bold text-primary">{item.price}</span>
-          </div>
-        ))}
-      </div>
-    </ScrollArea>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 6. Code CLI setup terminal logs
-
-<ComponentPreview>
-  <ScrollAreaDemoTerminal />
-
-```tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
-
-export default function ScrollAreaDemoTerminal() {
-  return (
-    <ScrollArea
-      variant="glow"
-      className="h-40 w-64 border border-primary/20 rounded-lg bg-black p-3"
-    >
-      <div className="font-mono text-[11px] text-emerald-400 space-y-1.5">
-        <div>$ npx vibe-ui-kit add calendar</div>
-        <div className="text-white">✓ Resolving component "calendar"...</div>
-        <div className="text-white">
-          ✓ Created calendar.tsx at /components/ui
-        </div>
-        <div className="text-amber-400">
-          ⚠ Peer dependencies detected: react-day-picker
-        </div>
-        <div className="text-primary font-bold">
-          $ pnpm install react-day-picker
-        </div>
-        <div className="text-white">✓ Installed dependencies successfully.</div>
-      </div>
-    </ScrollArea>
-  )
-}
-```
-
-</ComponentPreview>
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'retro' | 'glass' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual preset style variant of the scrollbar tracking and handle indicator."
+  />
+</PropsTable>

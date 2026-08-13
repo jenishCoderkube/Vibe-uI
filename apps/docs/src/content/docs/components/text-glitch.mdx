@@ -151,12 +151,25 @@ export default function TextGlitchControl() {
 
 </ComponentPreview>
 
-## Component Concept
+## Props
 
-Vibe UI's TextGlitch component provides a pure-CSS chromatic distortion loop, avoiding heavy JS tracking packages. By copying text strings dynamically into pseudo-elements using HTML `data-text` selectors, it creates cyan/red outline channels that skew and split apart using randomized clipping bounds.
-
-### Key Attributes & Options
-
-- **`text`** (Required): `string` — The text label to render and duplicate.
-- **`speed`**: `'slow' | 'normal' | 'fast'` (default `'normal'`) — Controls keyframe interval loops.
-- **`active`**: `boolean` (default `true`) — Toggles the active CSS animation tracking.
+<PropsTable>
+  <PropRow
+    prop="text"
+    type="string"
+    default="undefined"
+    description="The text content to display and animate."
+  />
+  <PropRow
+    prop="speed"
+    type="'slow' | 'normal' | 'fast'"
+    default="'normal'"
+    description="The animation cycle speed."
+  />
+  <PropRow
+    prop="active"
+    type="boolean"
+    default="true"
+    description="When true, triggers the continuous glitch animation loops."
+  />
+</PropsTable>

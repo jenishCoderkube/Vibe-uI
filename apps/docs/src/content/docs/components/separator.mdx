@@ -1,42 +1,31 @@
 # Separator
 
-Visually divides content in layouts horizontally or vertically.
+A custom, uniform styled separator line layout divider.
 
 ## Preview
 
 <ComponentPreview>
-  <div className="w-[300px] text-left">
-    <div className="space-y-1">
-      <h4 className="text-sm font-semibold leading-none text-foreground">Vibe UI Core</h4>
-      <p className="text-sm text-muted-foreground">A clean, high-performance visual component toolkit.</p>
-    </div>
-    <Separator className="my-4" />
-    <div className="flex h-5 items-center space-x-4 text-sm text-foreground">
-      <span>Blog</span>
-      <Separator orientation="vertical" />
-      <span>Docs</span>
-      <Separator orientation="vertical" />
-      <span>Source</span>
-    </div>
-  </div>
+  <SeparatorDemoBasic />
 
 ```tsx
 import { Separator } from '@/components/ui/separator'
 
 export default function SeparatorDemo() {
   return (
-    <div className="w-[300px] text-left">
+    <div className="w-full max-w-xs p-4 rounded-xl border border-border bg-card text-foreground">
       <div className="space-y-1">
-        <h4 className="text-sm font-semibold leading-none text-foreground">Vibe UI Core</h4>
-        <p className="text-sm text-muted-foreground">A clean, high-performance visual component toolkit.</p>
+        <h4 className="text-sm font-bold text-foreground">Radix Primitives</h4>
+        <p className="text-xs text-muted-foreground leading-normal">
+          An open-source UI component library.
+        </p>
       </div>
       <Separator className="my-4" />
-      <div className="flex h-5 items-center space-x-4 text-sm text-foreground">
-        <span>Blog</span>
+      <div className="flex h-4 items-center gap-3 text-xs font-medium text-muted-foreground">
+        <span className="hover:text-foreground cursor-pointer transition-colors">Blog</span>
         <Separator orientation="vertical" />
-        <span>Docs</span>
+        <span className="hover:text-foreground cursor-pointer transition-colors">Docs</span>
         <Separator orientation="vertical" />
-        <span>Source</span>
+        <span className="hover:text-foreground cursor-pointer transition-colors">Source</span>
       </div>
     </div>
   )
@@ -45,15 +34,18 @@ export default function SeparatorDemo() {
 
 </ComponentPreview>
 
-<Installation name="separator" npmDeps="@radix-ui/react-separator lucide-react tailwind-variants">
+<Installation name="separator" npmDeps="@radix-ui/react-slot tailwind-variants">
 
 ```tsx
+'use client'
+
 import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
 
 const separatorVariants = tv({
-  base: 'shrink-0 bg-border transition-all duration-200',
+  base: 'shrink-0 transition-all duration-200',
   variants: {
     orientation: {
       horizontal: 'h-[1px] w-full',
@@ -61,11 +53,34 @@ const separatorVariants = tv({
     },
     variant: {
       default: 'bg-border',
-      glass: 'bg-white/20 dark:bg-white/10',
-      retro: 'bg-foreground h-[2px]',
-      glow: 'bg-primary/40',
+      glass: 'bg-white/20 dark:bg-white/10 backdrop-blur-xs',
+      retro: 'bg-foreground',
+      glow: 'bg-primary/40 shadow-[0_0_8px_rgba(168,85,247,0.4)] [filter:drop-shadow(0_0_2px_rgba(168,85,247,0.4))]',
+      cyberpunk: 'bg-emerald-500/50 shadow-[0_0_8px_rgba(16,185,129,0.4)] [filter:drop-shadow(0_0_2px_rgba(16,185,129,0.4))]',
     },
   },
+  compoundVariants: [
+    {
+      orientation: 'horizontal',
+      variant: 'retro',
+      className: 'h-[2px]',
+    },
+    {
+      orientation: 'vertical',
+      variant: 'retro',
+      className: 'w-[2px]',
+    },
+    {
+      orientation: 'horizontal',
+      variant: 'cyberpunk',
+      className: 'h-[1.5px]',
+    },
+    {
+      orientation: 'vertical',
+      variant: 'cyberpunk',
+      className: 'w-[1.5px]',
+    },
+  ],
   defaultVariants: {
     orientation: 'horizontal',
     variant: 'default',
@@ -75,13 +90,30 @@ const separatorVariants = tv({
 export interface SeparatorProps
   extends
     React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof separatorVariants> {}
+    VariantProps<typeof separatorVariants> {
+  asChild?: boolean
+}
 
 const Separator = React.forwardRef<HTMLDivElement, SeparatorProps>(
-  ({ className, orientation, variant, ...props }, ref) => {
+  (
+    {
+      className,
+      orientation = 'horizontal',
+      variant = 'default',
+      asChild = false,
+      ...props
+    },
+    ref,
+  ) => {
+    const Comp = asChild ? Slot : 'div'
     return (
-      <div
+      <Comp
         ref={ref}
+        role="separator"
+        aria-orientation={
+          orientation === 'vertical' ? 'vertical' : 'horizontal'
+        }
+        data-slot="separator"
         className={cn(separatorVariants({ orientation, variant }), className)}
         {...props}
       />
@@ -95,28 +127,34 @@ export { Separator }
 
 </Installation>
 
+## Preset Variations
 
-
-## Variants
-
-### Retro Line style
+Explore the visual design presets for both horizontal and vertical orientations, including Default, Glassmorphic, Retro Neobrutalist, Neon Glow, and Cyberpunk divider styles.
 
 <ComponentPreview>
-  <div className="w-[300px] text-left">
-    <span className="text-sm font-bold">Retro divider line:</span>
-    <Separator variant="retro" className="my-2" />
-    <span className="text-sm text-muted-foreground">Divider matching Brutalist design styles.</span>
-  </div>
+  <SeparatorDemoPresets />
 
 ```tsx
 import { Separator } from '@/components/ui/separator'
 
-export default function SeparatorRetro() {
+export default function SeparatorPresets() {
   return (
-    <div className="w-[300px] text-left">
-      <span className="text-sm font-bold">Retro divider line:</span>
-      <Separator variant="retro" className="my-2" />
-      <span className="text-sm text-muted-foreground">Divider matching Brutalist design styles.</span>
+    <div className="flex flex-col gap-6 w-full max-w-xs">
+      {/* Horizontal style */}
+      <Separator variant="default" />
+      <Separator variant="glass" />
+      <Separator variant="retro" />
+      <Separator variant="glow" />
+      <Separator variant="cyberpunk" />
+
+      {/* Vertical style */}
+      <div className="flex h-12 justify-around items-stretch">
+        <Separator orientation="vertical" variant="default" />
+        <Separator orientation="vertical" variant="glass" />
+        <Separator orientation="vertical" variant="retro" />
+        <Separator orientation="vertical" variant="glow" />
+        <Separator orientation="vertical" variant="cyberpunk" />
+      </div>
     </div>
   )
 }
@@ -124,6 +162,27 @@ export default function SeparatorRetro() {
 
 </ComponentPreview>
 
-## Component Concept
+## Props
 
-Vibe UI's Separator component divides layout structures visually. It wraps the Radix UI `Separator` primitive to provide horizontal or vertical borders with full screen-reader semantic alignment.
+### Separator
+
+<PropsTable>
+  <PropRow
+    prop="orientation"
+    type="'horizontal' | 'vertical'"
+    default="'horizontal'"
+    description="The layout direction orientation of the divider line."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'retro' | 'glass' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual preset style variant of the separator line."
+  />
+  <PropRow
+    prop="asChild"
+    type="boolean"
+    default="false"
+    description="Change the default rendering element to the element passed in children (via Radix Slot)."
+  />
+</PropsTable>

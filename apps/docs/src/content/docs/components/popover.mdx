@@ -4,7 +4,7 @@ Popover displays interactive content overlays inside floating boxes.
 
 ## Preview
 
-<ComponentPreview>
+<ComponentPreview vibeDeps="button">
   <PopoverDemoBasic />
 
 ```tsx
@@ -12,6 +12,8 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  PopoverTitle,
+  PopoverDescription,
 } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 
@@ -22,11 +24,11 @@ export default function PopoverDemo() {
         <Button variant="outline">Open Popover</Button>
       </PopoverTrigger>
       <PopoverContent className="w-56">
-        <div className="text-left text-xs">
-          <div className="font-bold text-white mb-1">Simple Popover</div>
-          <div className="text-muted-foreground">
+        <div className="text-left space-y-1">
+          <PopoverTitle>Simple Popover</PopoverTitle>
+          <PopoverDescription>
             A customizable floating container for context details.
-          </div>
+          </PopoverDescription>
         </div>
       </PopoverContent>
     </Popover>
@@ -36,7 +38,7 @@ export default function PopoverDemo() {
 
 </ComponentPreview>
 
-<Installation name="popover" npmDeps="@radix-ui/react-popover lucide-react tailwind-variants">
+<Installation name="popover" npmDeps="@radix-ui/react-popover lucide-react tailwind-variants" vibeDeps="button">
 
 ```tsx
 'use client'
@@ -51,9 +53,13 @@ const popoverContentVariants = tv({
   variants: {
     variant: {
       default: 'bg-popover text-popover-foreground border-border',
-      glass: 'bg-white/10 dark:bg-white/[0.03] backdrop-blur-md border border-white/20 dark:border-white/10 text-foreground',
-      retro: 'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
-      glow: 'bg-primary/5 border border-primary/30 shadow-[0_0_20px_rgba(168,85,247,0.15)] text-foreground',
+      glass:
+        'bg-background/80 dark:bg-zinc-900/80 border-border backdrop-blur-md text-foreground shadow-xl',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'bg-popover border border-primary/30 shadow-[0_0_20px_rgba(168,85,247,0.15)] dark:shadow-[0_0_20px_rgba(168,85,247,0.25)] text-foreground',
+      cyberpunk:
+        'border border-emerald-500/30 bg-emerald-950/20 dark:bg-black text-emerald-600 dark:text-emerald-400 font-mono shadow-[0_0_15px_rgba(16,185,129,0.15)] dark:shadow-[0_0_15px_rgba(16,185,129,0.25)] rounded-none',
     },
   },
   defaultVariants: {
@@ -63,9 +69,29 @@ const popoverContentVariants = tv({
 
 const Popover = PopoverPrimitive.Root
 
-const PopoverTrigger = PopoverPrimitive.Trigger
+const PopoverTrigger = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger>
+>(({ className, ...props }, ref) => (
+  <PopoverPrimitive.Trigger
+    ref={ref}
+    data-slot="popover-trigger"
+    {...props}
+  />
+))
+PopoverTrigger.displayName = PopoverPrimitive.Trigger.displayName
 
-const PopoverAnchor = PopoverPrimitive.Anchor
+const PopoverAnchor = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Anchor>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Anchor>
+>(({ className, ...props }, ref) => (
+  <PopoverPrimitive.Anchor
+    ref={ref}
+    data-slot="popover-anchor"
+    {...props}
+  />
+))
+PopoverAnchor.displayName = PopoverPrimitive.Anchor.displayName
 
 export interface PopoverContentProps
   extends React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>,
@@ -74,23 +100,82 @@ export interface PopoverContentProps
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   PopoverContentProps
->(({ className, align = 'center', sideOffset = 4, variant, ...props }, ref) => (
-  <PopoverPrimitive.Portal>
-    <PopoverPrimitive.Content
-      ref={ref}
-      align={align}
-      sideOffset={sideOffset}
-      className={cn(
-        popoverContentVariants({ variant }),
-        className
-      )}
-      {...props}
-    />
-  </PopoverPrimitive.Portal>
-))
+>(
+  (
+    {
+      className,
+      align = 'center',
+      sideOffset = 4,
+      variant = 'default',
+      ...props
+    },
+    ref,
+  ) => (
+    <PopoverPrimitive.Portal>
+      <PopoverPrimitive.Content
+        ref={ref}
+        data-slot="popover-content"
+        align={align}
+        sideOffset={sideOffset}
+        className={cn(popoverContentVariants({ variant }), className)}
+        {...props}
+      />
+    </PopoverPrimitive.Portal>
+  ),
+)
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
+const PopoverHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-slot="popover-header"
+    className={cn('flex flex-col gap-1 text-sm', className)}
+    {...props}
+  />
+))
+PopoverHeader.displayName = 'PopoverHeader'
+
+const PopoverTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    data-slot="popover-title"
+    className={cn(
+      'font-semibold leading-none tracking-tight text-foreground',
+      className,
+    )}
+    {...props}
+  />
+))
+PopoverTitle.displayName = 'PopoverTitle'
+
+const PopoverDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    data-slot="popover-description"
+    className={cn('text-sm text-muted-foreground', className)}
+    {...props}
+  />
+))
+PopoverDescription.displayName = 'PopoverDescription'
+
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverDescription,
+}
 ```
 
 </Installation>
@@ -99,81 +184,101 @@ export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
 
 ## Preset Variations
 
-### Glassmorphic
+### Styles & Presets
 
-<ComponentPreview>
-  <PopoverDemoGlass />
+Explore the different preset variants of the Popover component, supporting Default, Glassmorphic, Neobrutalist, Neon Glow, and Cyberpunk styling configurations.
 
-```tsx
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-
-export default function PopoverDemoGlass() {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="glass">Glass Popover</Button>
-      </PopoverTrigger>
-      <PopoverContent variant="glass" className="w-56">
-        <div className="text-left text-xs">
-          Glossy blurred glass card panels.
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Retro Neobrutalism
-
-<ComponentPreview>
-  <PopoverDemoRetro />
+<ComponentPreview vibeDeps="button">
+  <PopoverDemoPresets />
 
 ```tsx
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverTitle,
+  PopoverDescription,
+} from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 
-export default function PopoverDemoRetro() {
+export default function PopoverPresets() {
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="retro">Retro Popover</Button>
-      </PopoverTrigger>
-      <PopoverContent variant="retro" className="w-56">
-        <div className="text-left text-xs font-mono">
-          Brutalist thick boundary card.
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-```
+    <div className="flex flex-wrap items-center gap-4 justify-center p-6">
+      {/* Default style */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">Default</Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-56">
+          <div className="text-left space-y-1">
+            <PopoverTitle>Default Style</PopoverTitle>
+            <PopoverDescription>
+              Standard clean popover layout with light/dark tokens.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
 
-</ComponentPreview>
+      {/* Glassmorphic Style */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="glass">Glass</Button>
+        </PopoverTrigger>
+        <PopoverContent variant="glass" className="w-56">
+          <div className="text-left space-y-1">
+            <PopoverTitle>Glassmorphic</PopoverTitle>
+            <PopoverDescription>
+              Glossy blurred translucent card style overlay.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
 
-### Neon Glow
+      {/* Retro Style */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="retro">Retro</Button>
+        </PopoverTrigger>
+        <PopoverContent variant="retro" className="w-56 font-mono">
+          <div className="text-left space-y-1">
+            <PopoverTitle>Neobrutalist</PopoverTitle>
+            <PopoverDescription>
+              Bold borders and solid shadow styling offsets.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
 
-<ComponentPreview>
-  <PopoverDemoGlow />
+      {/* Glow Style */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="glow">Glow</Button>
+        </PopoverTrigger>
+        <PopoverContent variant="glow" className="w-56">
+          <div className="text-left space-y-1">
+            <PopoverTitle>Neon Glow</PopoverTitle>
+            <PopoverDescription>
+              Backlight border drop shadow highlighting focus.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
 
-```tsx
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-
-export default function PopoverDemoGlow() {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="glow">Glow Popover</Button>
-      </PopoverTrigger>
-      <PopoverContent variant="glow" className="w-56">
-        <div className="text-left text-xs">
-          Neon backlight border drop shadow card.
-        </div>
-      </PopoverContent>
-    </Popover>
+      {/* Cyberpunk Style */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="cyberpunk" className="border-emerald-500/80 bg-emerald-950/20 text-emerald-400 font-mono rounded-none">Cyberpunk</Button>
+        </PopoverTrigger>
+        <PopoverContent variant="cyberpunk" className="w-56">
+          <div className="text-left space-y-1 font-mono">
+            <PopoverTitle className="text-emerald-400">CYBER_POP</PopoverTitle>
+            <PopoverDescription className="text-emerald-500/80">
+              Terminal aesthetic monospace system layout.
+            </PopoverDescription>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
 ```
@@ -182,60 +287,28 @@ export default function PopoverDemoGlow() {
 
 ---
 
-## Premium Use Case Examples
+## Configuration & Feedback Overlays
 
-### 1. System Settings Config Panels
+A collection of utility and input overlays including System Settings panels, Accent Color selectors, and Interactive Help forms.
 
-<ComponentPreview>
-  <PopoverDemoSettings />
-
-```tsx
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-import { Settings } from 'lucide-react'
-
-export default function PopoverDemoSettings() {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Settings className="h-4 w-4" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64">
-        <div className="text-left space-y-3">
-          <div className="font-bold text-xs text-white">System Settings</div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label className="text-[11px]">Auto Update</Label>
-              <Switch id="pop-sw-1" defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
-              <Label className="text-[11px]">Developer Mode</Label>
-              <Switch id="pop-sw-2" />
-            </div>
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 2. Accent Color Palette Selector
-
-<ComponentPreview>
-  <PopoverDemoColorPicker />
+<ComponentPreview vibeDeps="button, switch, label">
+  <PopoverDemoPremiumGroup1 />
 
 ```tsx
 import React, { useState } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverTitle,
+  PopoverDescription,
+} from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Settings, HelpCircle } from 'lucide-react'
 
-export default function PopoverDemoColorPicker() {
+export default function ConfigAndFeedbackExamples() {
   const colors = [
     '#ef4444',
     '#f97316',
@@ -245,212 +318,255 @@ export default function PopoverDemoColorPicker() {
     '#6366f1',
     '#a855f7',
   ]
-  const [selected, setSelected] = useState('#a855f7')
+  const [selectedColor, setSelectedColor] = useState('#a855f7')
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <div className="flex items-center gap-2 cursor-pointer bg-card border rounded p-1.5 w-fit">
-          <span
-            className="h-4 w-4 rounded-full border border-white/20"
-            style={{ backgroundColor: selected }}
-          />
-          <span className="text-xs font-semibold text-white">Color Picker</span>
-        </div>
-      </PopoverTrigger>
-      <PopoverContent className="w-52">
-        <div className="text-left space-y-2">
-          <div className="text-xs font-bold text-white">
-            Select Accent Color
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {colors.map((c) => (
-              <span
-                key={c}
-                onClick={() => setSelected(c)}
-                className={
-                  'h-5 w-5 rounded-full cursor-pointer border-2 transition-all hover:scale-110 ' +
-                  (selected === c ? 'border-white' : 'border-transparent')
-                }
-                style={{ backgroundColor: c }}
-              />
-            ))}
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 3. Shopping mini-cart checkout dropdown
-
-<ComponentPreview>
-  <PopoverDemoMiniCart />
-
-```tsx
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-
-export default function PopoverDemoMiniCart() {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">View Cart (2)</Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64" variant="glass">
-        <div className="text-left space-y-3">
-          <div className="font-bold text-xs text-white">Your Cart</div>
-          <div className="space-y-2 max-h-32 overflow-y-auto">
-            <div className="flex justify-between text-xs border-b border-border/30 pb-1.5">
-              <span>Switch Component</span>
-              <span className="font-bold text-white">$12</span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span>Card Component</span>
-              <span className="font-bold text-white">$15</span>
-            </div>
-          </div>
-          <Button className="w-full h-8 text-[11px] font-semibold mt-1">
-            Checkout
+    <div className="flex flex-wrap items-center gap-4 justify-center p-6">
+      {/* 1. System Settings Config Panel */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Settings className="h-4 w-4" />
           </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverTrigger>
+        <PopoverContent className="w-64">
+          <div className="text-left space-y-3">
+            <PopoverTitle>System Settings</PopoverTitle>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-[11px]" htmlFor="pop-sw-1">Auto Update</Label>
+                <Switch id="pop-sw-1" defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label className="text-[11px]" htmlFor="pop-sw-2">Developer Mode</Label>
+                <Switch id="pop-sw-2" />
+              </div>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* 2. Accent Color Palette Selector */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="flex items-center gap-2 cursor-pointer bg-card border rounded p-1.5 w-fit">
+            <span
+              className="h-4 w-4 rounded-full border border-white/20"
+              style={{ backgroundColor: selectedColor }}
+            />
+            <span className="text-xs font-semibold text-foreground">Color Picker</span>
+          </div>
+        </PopoverTrigger>
+        <PopoverContent className="w-52">
+          <div className="text-left space-y-2">
+            <PopoverTitle>Select Accent Color</PopoverTitle>
+            <div className="flex gap-2 flex-wrap">
+              {colors.map((c) => (
+                <span
+                  key={c}
+                  onClick={() => setSelectedColor(c)}
+                  className={
+                    'h-5 w-5 rounded-full cursor-pointer border-2 transition-all hover:scale-110 ' +
+                    (selectedColor === c ? 'border-foreground' : 'border-transparent')
+                  }
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* 3. Interactive Feedback Form */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">
+            <HelpCircle className="h-4 w-4 mr-1.5" />
+            Help
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64">
+          <div className="text-left space-y-2.5">
+            <PopoverTitle>Send Feedback</PopoverTitle>
+            <textarea
+              className="w-full h-16 bg-muted border border-border rounded text-xs p-2 text-foreground outline-none focus:border-primary/50"
+              placeholder="Tell us what you think..."
+            />
+            <Button className="w-full h-8 text-xs">Submit</Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
 ```
 
 </ComponentPreview>
 
-### 4. Interactive Feedback Form
+## E-Commerce & Action Overlays
 
-<ComponentPreview>
-  <PopoverDemoFeedback />
+A collection of transaction and confirmation flows including mini Shopping Carts, URL Sharing panels, and destructive Action alerts.
 
-```tsx
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-import { HelpCircle } from 'lucide-react'
-
-export default function PopoverDemoFeedback() {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">
-          <HelpCircle className="h-4 w-4 mr-1.5" />
-          Help
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64">
-        <div className="text-left space-y-2.5">
-          <div className="font-bold text-xs text-white">Send Feedback</div>
-          <textarea
-            className="w-full h-16 bg-muted border border-border rounded text-xs p-2 text-white outline-none focus:border-primary/50"
-            placeholder="Tell us what you think..."
-          />
-          <Button className="w-full h-8 text-xs">Submit</Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 5. URL Share copied links panel
-
-<ComponentPreview>
-  <PopoverDemoShare />
+<ComponentPreview vibeDeps="button, input">
+  <PopoverDemoPremiumGroup2 />
 
 ```tsx
 import React, { useState } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverTitle,
+  PopoverDescription,
+} from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Check, Copy } from 'lucide-react'
 
-export default function PopoverDemoShare() {
+export default function EcommerceAndActionExamples() {
   const [copied, setCopied] = useState(false)
   const link = 'https://vibe-ui-kit.vercel.app/'
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Share link</Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-72">
-        <div className="text-left space-y-2">
-          <div className="font-bold text-xs text-white">Share page link</div>
-          <div className="flex items-center gap-1.5">
-            <Input className="h-8 text-xs flex-1" readOnly value={link} />
-            <Button
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => {
-                navigator.clipboard.writeText(link)
-                setCopied(true)
-                setTimeout(() => setCopied(false), 2000)
-              }}
-            >
-              {copied ? (
-                <Check className="h-4.5 w-4.5 text-emerald-400" />
-              ) : (
-                <Copy className="h-4.5 w-4.5" />
-              )}
+    <div className="flex flex-wrap items-center gap-4 justify-center p-6">
+      {/* 1. Shopping mini-cart checkout dropdown */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">View Cart (2)</Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64" variant="glass">
+          <div className="text-left space-y-3">
+            <PopoverTitle>Your Cart</PopoverTitle>
+            <div className="space-y-2 max-h-32 overflow-y-auto">
+              <div className="flex justify-between text-xs border-b border-border/30 pb-1.5">
+                <span>Switch Component</span>
+                <span className="font-bold">$12</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span>Card Component</span>
+                <span className="font-bold">$15</span>
+              </div>
+            </div>
+            <Button className="w-full h-8 text-[11px] font-semibold mt-1">
+              Checkout
             </Button>
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-```
+        </PopoverContent>
+      </Popover>
 
-</ComponentPreview>
-
-### 6. Glow destructive validation check
-
-<ComponentPreview>
-  <PopoverDemoAlert />
-
-```tsx
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-
-export default function PopoverDemoAlert() {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="glow"
-          className="bg-rose-500/10 border-rose-500/40 text-rose-400 hover:bg-rose-500/20"
-        >
-          Danger zone
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-60 border-rose-500/40 bg-rose-500/5">
-        <div className="text-left space-y-2.5">
-          <div className="font-bold text-xs text-rose-400">
-            Are you absolutely sure?
+      {/* 2. URL Share copied links panel */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">Share link</Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-72">
+          <div className="text-left space-y-2">
+            <PopoverTitle>Share page link</PopoverTitle>
+            <div className="flex items-center gap-1.5">
+              <Input className="h-8 text-xs flex-1" readOnly value={link} />
+              <Button
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => {
+                  navigator.clipboard.writeText(link)
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                }}
+              >
+                {copied ? (
+                  <Check className="h-4.5 w-4.5 text-emerald-400" />
+                ) : (
+                  <Copy className="h-4.5 w-4.5" />
+                )}
+              </Button>
+            </div>
           </div>
-          <div className="text-[10px] text-muted-foreground">
-            Deleting this repository will wipe all registry packages forever.
-          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* 3. Glow destructive validation check */}
+      <Popover>
+        <PopoverTrigger asChild>
           <Button
-            variant="destructive"
-            className="w-full h-8 text-[11px] font-semibold bg-rose-600"
+            variant="glow"
+            className="bg-rose-500/10 border-rose-500/40 text-rose-400 hover:bg-rose-500/20"
           >
-            Delete Project
+            Danger zone
           </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverTrigger>
+        <PopoverContent className="w-60 border-rose-500/40 bg-rose-500/5">
+          <div className="text-left space-y-2.5">
+            <PopoverTitle className="text-rose-400">Are you absolutely sure?</PopoverTitle>
+            <PopoverDescription>
+              Deleting this repository will wipe all registry packages forever.
+            </PopoverDescription>
+            <Button
+              variant="destructive"
+              className="w-full h-8 text-[11px] font-semibold bg-rose-600"
+            >
+              Delete Project
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
 ```
 
 </ComponentPreview>
+
+## Props
+
+### PopoverContent
+
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual preset style variant to apply to the floating popover container."
+  />
+  <PropRow
+    prop="align"
+    type="'start' | 'center' | 'end'"
+    default="'center'"
+    description="The alignment of the popover content relative to the trigger."
+  />
+  <PropRow
+    prop="sideOffset"
+    type="number"
+    default="4"
+    description="The distance in pixels from the trigger to position the popover."
+  />
+</PropsTable>
+
+### PopoverHeader
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    description="Custom utility classes for padding, layouts, or margin spacing."
+  />
+</PropsTable>
+
+### PopoverTitle
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    description="Custom styling overrides for fonts, headings, or text layout."
+  />
+</PropsTable>
+
+### PopoverDescription
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    description="Custom styling overrides for description fonts, text opacity, or colors."
+  />
+</PropsTable>

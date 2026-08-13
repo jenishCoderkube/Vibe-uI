@@ -266,16 +266,8 @@ export const docsConfig: DocsConfig = {
           href: '/docs/components/uploader',
         },
         {
-          title: 'Sheet',
-          href: '/docs/components/sheet',
-        },
-        {
           title: 'Context Menu',
           href: '/docs/components/context-menu',
-        },
-        {
-          title: 'Data Table',
-          href: '/docs/components/data-table',
         },
         {
           title: 'Layout Shell',

@@ -4,7 +4,7 @@ A set of layered sections of content—known as tab panels—that are displayed 
 
 ## Preview
 
-<ComponentPreview sandbox="tabs">
+<ComponentPreview sandbox="tabs" vibeDeps="card, label, input, button">
   <Tabs defaultValue="account" className="w-[400px]">
     <TabsList>
       <TabsTrigger value="account">Account</TabsTrigger>
@@ -304,154 +304,281 @@ export { Tabs, TabsList, TabsTrigger, TabsContent }
 
 ## Variants
 
-### Glassmorphic
+Vibe UI's Tabs component supports multiple rich aesthetic presets to match your application's design system:
 
-<ComponentPreview>
-  <Tabs defaultValue="tab1" className="w-[400px]">
-    <TabsList variant="glass">
-      <TabsTrigger variant="glass" value="tab1">Preview</TabsTrigger>
-      <TabsTrigger variant="glass" value="tab2">Code</TabsTrigger>
-    </TabsList>
-    <TabsContent value="tab1">
-      <div className="p-4 border rounded-lg bg-card text-muted-foreground text-left text-sm">Preview section glass content panel</div>
-    </TabsContent>
-    <TabsContent value="tab2">
-      <div className="p-4 border rounded-lg bg-card text-muted-foreground text-left text-sm">Code section glass content panel</div>
-    </TabsContent>
-  </Tabs>
+<ComponentPreview className="w-full">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left p-4">
+    {/* Glassmorphic */}
+    <div className="space-y-3 border border-border/60 rounded-xl p-4 bg-card/30 backdrop-blur-md">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Glassmorphic</span>
+      <Tabs defaultValue="tab1" variant="glass" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">Preview</TabsTrigger>
+          <TabsTrigger value="tab2">Code</TabsTrigger>
+          <TabsTrigger value="tab3">Activity</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1" className="mt-3">
+          <div className="p-4 rounded-xl border border-white/10 dark:border-white/5 bg-white/5 backdrop-blur-md text-xs text-muted-foreground text-left">
+            Glassmorphic preview card panel content.
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2" className="mt-3">
+          <div className="p-4 rounded-xl border border-white/10 dark:border-white/5 bg-white/5 backdrop-blur-md text-xs text-muted-foreground text-left">
+            Glassmorphic code card panel content.
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3" className="mt-3">
+          <div className="p-4 rounded-xl border border-white/10 dark:border-white/5 bg-white/5 backdrop-blur-md text-xs text-muted-foreground text-left">
+            Glassmorphic activity history card content.
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+
+    {/* Retro */}
+    <div className="space-y-3 border border-border/60 rounded-xl p-4 bg-card/30">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Retro Neobrutalism</span>
+      <Tabs defaultValue="tab1" variant="retro" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+          <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+          <TabsTrigger value="tab3">Tab 3</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1" className="mt-3">
+          <div className="p-4 border-2 border-foreground bg-background text-xs text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] text-left">
+            Retro panel 1 card content.
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2" className="mt-3">
+          <div className="p-4 border-2 border-foreground bg-background text-xs text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] text-left">
+            Retro panel 2 card content.
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3" className="mt-3">
+          <div className="p-4 border-2 border-foreground bg-background text-xs text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] text-left">
+            Retro panel 3 card content.
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+
+    {/* Glow */}
+    <div className="space-y-3 border border-border/60 rounded-xl p-4 bg-card/30">
+      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Glow Accent</span>
+      <Tabs defaultValue="tab1" variant="glow" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">Settings</TabsTrigger>
+          <TabsTrigger value="tab2">Profile</TabsTrigger>
+          <TabsTrigger value="tab3">Security</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1" className="mt-3">
+          <div className="p-4 rounded-xl border border-border/80 bg-card text-xs text-muted-foreground shadow-[0_0_15px_rgba(168,85,247,0.06)] text-left">
+            Glow active settings card panel.
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2" className="mt-3">
+          <div className="p-4 rounded-xl border border-border/80 bg-card text-xs text-muted-foreground shadow-[0_0_15px_rgba(168,85,247,0.06)] text-left">
+            Glow active profile card panel.
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3" className="mt-3">
+          <div className="p-4 rounded-xl border border-border/80 bg-card text-xs text-muted-foreground shadow-[0_0_15px_rgba(168,85,247,0.06)] text-left">
+            Glow active security card panel.
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+
+    {/* Cyberpunk */}
+    <div className="space-y-3 border border-border/60 rounded-xl p-4 bg-card/30">
+      <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider font-mono">Cyberpunk</span>
+      <Tabs defaultValue="tab1" variant="cyberpunk" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">SYSTEM</TabsTrigger>
+          <TabsTrigger value="tab2">DECRYPT</TabsTrigger>
+          <TabsTrigger value="tab3">LOGS</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1" className="mt-3">
+          <div className="p-4 border border-emerald-500/40 bg-black text-xs text-emerald-400 font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)] text-left">
+            root@system:~# INITIALIZING CORE SYSTEM PANEL...
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2" className="mt-3">
+          <div className="p-4 border border-emerald-500/40 bg-black text-xs text-emerald-400 font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)] text-left">
+            root@system:~# DECRYPTING TARGET STORAGE SECURELY...
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3" className="mt-3">
+          <div className="p-4 border border-emerald-500/40 bg-black text-xs text-emerald-400 font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)] text-left">
+            root@system:~# ACCESSING SECURE SYSTEM SYSTEM LOGS...
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  </div>
 
 ```tsx
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-export default function TabsGlass() {
+export default function TabsVariantsDemo() {
   return (
-    <Tabs defaultValue="tab1" className="w-[400px]">
-      <TabsList variant="glass">
-        <TabsTrigger variant="glass" value="tab1">
-          Preview
-        </TabsTrigger>
-        <TabsTrigger variant="glass" value="tab2">
-          Code
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="tab1">
-        <div className="p-4 border rounded-lg bg-card text-sm">
-          Preview content
-        </div>
-      </TabsContent>
-      <TabsContent value="tab2">
-        <div className="p-4 border rounded-lg bg-card text-sm">
-          Code content
-        </div>
-      </TabsContent>
-    </Tabs>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+      {/* Glassmorphic */}
+      <Tabs defaultValue="tab1" variant="glass" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">Preview</TabsTrigger>
+          <TabsTrigger value="tab2">Code</TabsTrigger>
+          <TabsTrigger value="tab3">Activity</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1">
+          <div className="p-4 rounded-xl border bg-white/5 backdrop-blur-md text-sm">
+            Glassmorphic content
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2">
+          <div className="p-4 rounded-xl border bg-white/5 backdrop-blur-md text-sm">
+            Code content
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3">
+          <div className="p-4 rounded-xl border bg-white/5 backdrop-blur-md text-sm">
+            Activity content
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Retro */}
+      <Tabs defaultValue="tab1" variant="retro" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+          <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+          <TabsTrigger value="tab3">Tab 3</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1">
+          <div className="p-4 border-2 border-foreground bg-background text-sm">
+            Panel 1
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2">
+          <div className="p-4 border-2 border-foreground bg-background text-sm">
+            Panel 2
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3">
+          <div className="p-4 border-2 border-foreground bg-background text-sm">
+            Panel 3
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Glow */}
+      <Tabs defaultValue="tab1" variant="glow" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">Settings</TabsTrigger>
+          <TabsTrigger value="tab2">Profile</TabsTrigger>
+          <TabsTrigger value="tab3">Security</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1">
+          <div className="p-4 rounded-xl border bg-card text-sm">
+            Settings panel
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2">
+          <div className="p-4 rounded-xl border bg-card text-sm">
+            Profile panel
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3">
+          <div className="p-4 rounded-xl border bg-card text-sm">
+            Security panel
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Cyberpunk */}
+      <Tabs defaultValue="tab1" variant="cyberpunk" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">SYSTEM</TabsTrigger>
+          <TabsTrigger value="tab2">DECRYPT</TabsTrigger>
+          <TabsTrigger value="tab3">LOGS</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1">
+          <div className="p-4 border border-emerald-500/40 bg-black text-emerald-400 font-mono text-sm">
+            System initialization
+          </div>
+        </TabsContent>
+        <TabsContent value="tab2">
+          <div className="p-4 border border-emerald-500/40 bg-black text-emerald-400 font-mono text-sm">
+            Secure decryption
+          </div>
+        </TabsContent>
+        <TabsContent value="tab3">
+          <div className="p-4 border border-emerald-500/40 bg-black text-emerald-400 font-mono text-sm">
+            Accessing logs
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   )
 }
 ```
-
 </ComponentPreview>
+## Props
 
-### Retro Neobrutalism
+### Tabs
 
-<ComponentPreview>
-  <Tabs defaultValue="tab1" className="w-[400px]">
-    <TabsList variant="retro">
-      <TabsTrigger variant="retro" value="tab1">Tab 1</TabsTrigger>
-      <TabsTrigger variant="retro" value="tab2">Tab 2</TabsTrigger>
-    </TabsList>
-    <TabsContent value="tab1">
-      <div className="p-4 border-2 border-foreground bg-background text-left text-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">Retro neobrutalist panel 1 text</div>
-    </TabsContent>
-    <TabsContent value="tab2">
-      <div className="p-4 border-2 border-foreground bg-background text-left text-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">Retro neobrutalist panel 2 text</div>
-    </TabsContent>
-  </Tabs>
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual aesthetic theme layout shared with list triggers."
+  />
+  <PropRow
+    prop="defaultValue"
+    type="string"
+    default="undefined"
+    description="The value of the tab that should be active when initially rendered."
+  />
+  <PropRow
+    prop="value"
+    type="string"
+    default="undefined"
+    description="The controlled value of the active tab."
+  />
+  <PropRow
+    prop="onValueChange"
+    type="(value: string) => void"
+    default="undefined"
+    description="Callback fired when the active tab value changes."
+  />
+  <PropRow
+    prop="orientation"
+    type="'horizontal' | 'vertical'"
+    default="'horizontal'"
+    description="The orientation of the tab components."
+  />
+</PropsTable>
 
-```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+### TabsTrigger
 
-export default function TabsRetro() {
-  return (
-    <Tabs defaultValue="tab1" className="w-[400px]">
-      <TabsList variant="retro">
-        <TabsTrigger variant="retro" value="tab1">
-          Tab 1
-        </TabsTrigger>
-        <TabsTrigger variant="retro" value="tab2">
-          Tab 2
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="tab1">
-        <div className="p-4 border-2 border-foreground bg-background text-sm">
-          Panel 1
-        </div>
-      </TabsContent>
-      <TabsContent value="tab2">
-        <div className="p-4 border-2 border-foreground bg-background text-sm">
-          Panel 2
-        </div>
-      </TabsContent>
-    </Tabs>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Glow Accent
-
-<ComponentPreview>
-  <Tabs defaultValue="tab1" className="w-[400px]">
-    <TabsList variant="glow">
-      <TabsTrigger variant="glow" value="tab1">Settings</TabsTrigger>
-      <TabsTrigger variant="glow" value="tab2">Profile</TabsTrigger>
-    </TabsList>
-    <TabsContent value="tab1">
-      <div className="p-4 border rounded-lg bg-card text-left text-sm shadow-[0_0_15px_rgba(0,0,0,0.01)]">Glow layout active settings configurations</div>
-    </TabsContent>
-    <TabsContent value="tab2">
-      <div className="p-4 border rounded-lg bg-card text-left text-sm shadow-[0_0_15px_rgba(0,0,0,0.01)]">Glow layout active profile configurations</div>
-    </TabsContent>
-  </Tabs>
-
-```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-
-export default function TabsGlow() {
-  return (
-    <Tabs defaultValue="tab1" className="w-[400px]">
-      <TabsList variant="glow">
-        <TabsTrigger variant="glow" value="tab1">
-          Settings
-        </TabsTrigger>
-        <TabsTrigger variant="glow" value="tab2">
-          Profile
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="tab1">
-        <div className="p-4 border rounded-lg bg-card text-sm">
-          Settings panel
-        </div>
-      </TabsContent>
-      <TabsContent value="tab2">
-        <div className="p-4 border rounded-lg bg-card text-sm">
-          Profile panel
-        </div>
-      </TabsContent>
-    </Tabs>
-  )
-}
-```
-
-</ComponentPreview>
-
-## Component Concept
-
-Vibe UI's Tabs component provides tabbed content structures built on Radix UI `Tabs` primitives. It divides content into distinct panels accessible via navigation trigger selectors.
-
-### Sub-Components
-
-- **`Tabs`**: Root state wrapper holding active panel coordinates.
-- **`TabsList`**: Flex row containing the tab toggle triggers.
-- **`TabsTrigger`**: Navigation button mapping to specific panels.
-- **`TabsContent`**: Container panel containing components.
+<PropsTable>
+  <PropRow
+    prop="value"
+    type="string"
+    default="undefined"
+    description="A unique value that associates the trigger with a content panel."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="Context inherited"
+    description="Override the theme style variation inherited from Tabs."
+  />
+  <PropRow
+    prop="disabled"
+    type="boolean"
+    default="false"
+    description="When true, prevents the user from interacting with the tab trigger."
+  />
+</PropsTable>

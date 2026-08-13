@@ -1,6 +1,6 @@
 # Table
 
-A fully-customizable responsive table component supporting all Vibe UI visual presets.
+A fully-customizable responsive table component supporting all Vibe UI visual presets and context-aware styling.
 
 ## Preview
 
@@ -29,12 +29,12 @@ export default function TableDemo() {
       </TableHeader>
       <TableBody>
         <TableRow>
-          <TableCell className="font-medium">index.html</TableCell>
+          <TableCell className="font-semibold">index.html</TableCell>
           <TableCell>HTML File</TableCell>
           <TableCell className="text-right">12 KB</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell className="font-medium">styles.css</TableCell>
+          <TableCell className="font-semibold">styles.css</TableCell>
           <TableCell>CSS Style</TableCell>
           <TableCell className="text-right">4.8 KB</TableCell>
         </TableRow>
@@ -46,7 +46,7 @@ export default function TableDemo() {
 
 </ComponentPreview>
 
-<Installation name="table" vibeDeps="checkbox, badge, avatar, button, input, pagination">
+<Installation name="table" npmDeps="tailwind-variants">
 
 ```tsx
 'use client'
@@ -56,13 +56,18 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
 
 const tableVariants = tv({
-  base: 'w-full caption-bottom text-sm',
+  base: 'relative w-full overflow-auto transition-all duration-300',
   variants: {
     variant: {
-      default: 'bg-background text-foreground',
-      glass: 'bg-white/5 dark:bg-muted/30 backdrop-blur-md border border-border dark:border-border rounded-lg overflow-hidden',
-      retro: 'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]',
-      glow: 'bg-primary/5 border border-primary/25 shadow-[0_0_15px_rgba(168,85,247,0.1)]',
+      default: '',
+      glass:
+        'rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-md shadow-sm overflow-hidden',
+      retro:
+        'rounded-none border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]',
+      glow:
+        'rounded-xl border border-primary/30 bg-card/90 shadow-[0_0_15px_rgba(168,85,247,0.15)] text-card-foreground',
+      cyberpunk:
+        'rounded-none border border-emerald-500/80 bg-black text-emerald-400 font-mono shadow-[0_0_12px_rgba(16,185,129,0.2)] hover:shadow-[0_0_20px_rgba(16,185,129,0.35)]',
     },
   },
   defaultVariants: {
@@ -70,38 +75,67 @@ const tableVariants = tv({
   },
 })
 
+interface TableContextValue {
+  variant?: 'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
+}
+
+const TableVariantContext = React.createContext<TableContextValue>({
+  variant: 'default',
+})
+
 export interface TableProps
   extends React.HTMLAttributes<HTMLTableElement>,
     VariantProps<typeof tableVariants> {}
 
 const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, variant = 'default', ...props }, ref) => {
     return (
-      <div className="relative w-full overflow-auto">
-        <table
-          ref={ref}
-          className={cn(tableVariants({ variant }), className)}
-          {...props}
-        />
-      </div>
+      <TableVariantContext.Provider value={{ variant }}>
+        <div className={tableVariants({ variant })}>
+          <table
+            ref={ref}
+            data-slot="table"
+            className={cn('w-full caption-bottom text-sm border-collapse', className)}
+            {...props}
+          />
+        </div>
+      </TableVariantContext.Provider>
     )
-  }
+  },
 )
 Table.displayName = 'Table'
 
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
->(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b bg-muted/40', className)} {...props} />
-))
+>(({ className, ...props }, ref) => {
+  const { variant } = React.useContext(TableVariantContext)
+  return (
+    <thead
+      ref={ref}
+      data-slot="table-header"
+      className={cn(
+        '[&_tr]:border-b bg-muted/40',
+        variant === 'retro' && 'bg-foreground/5 [&_tr]:border-b-2 border-foreground',
+        variant === 'cyberpunk' && 'bg-emerald-950/20 [&_tr]:border-emerald-500/30',
+        className,
+      )}
+      {...props}
+    />
+  )
+})
 TableHeader.displayName = 'TableHeader'
 
 const TableBody = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <tbody ref={ref} className={cn('[&_tr:last-child]:border-0', className)} {...props} />
+  <tbody
+    ref={ref}
+    data-slot="table-body"
+    className={cn('[&_tr:last-child]:border-0', className)}
+    {...props}
+  />
 ))
 TableBody.displayName = 'TableBody'
 
@@ -111,9 +145,10 @@ const TableFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tfoot
     ref={ref}
+    data-slot="table-footer"
     className={cn(
       'border-t bg-muted/50 font-medium [&>tr]:last:border-b-0',
-      className
+      className,
     )}
     {...props}
   />
@@ -123,16 +158,25 @@ TableFooter.displayName = 'TableFooter'
 const TableRow = React.forwardRef<
   HTMLTableRowElement,
   React.HTMLAttributes<HTMLTableRowElement>
->(({ className, ...props }, ref) => (
-  <tr
-    ref={ref}
-    className={cn(
-      'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const { variant } = React.useContext(TableVariantContext)
+  return (
+    <tr
+      ref={ref}
+      data-slot="table-row"
+      className={cn(
+        'border-b transition-colors data-[state=selected]:bg-muted',
+        variant === 'default' && 'hover:bg-muted/50 border-border',
+        variant === 'glass' && 'hover:bg-black/5 dark:hover:bg-white/5 border-black/10 dark:border-white/5',
+        variant === 'retro' && 'hover:bg-foreground/5 border-b-2 border-foreground',
+        variant === 'glow' && 'hover:bg-primary/5 border-primary/20',
+        variant === 'cyberpunk' && 'hover:bg-emerald-500/5 border-emerald-500/20',
+        className,
+      )}
+      {...props}
+    />
+  )
+})
 TableRow.displayName = 'TableRow'
 
 const TableHead = React.forwardRef<
@@ -141,9 +185,10 @@ const TableHead = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <th
     ref={ref}
+    data-slot="table-head"
     className={cn(
       'h-12 px-4 text-left align-middle font-semibold text-muted-foreground [&:has([role=checkbox])]:pr-0',
-      className
+      className,
     )}
     {...props}
   />
@@ -156,6 +201,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
+    data-slot="table-cell"
     className={cn('p-4 align-middle [&:has([role=checkbox])]:pr-0', className)}
     {...props}
   />
@@ -168,6 +214,7 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
+    data-slot="table-caption"
     className={cn('mt-4 text-xs text-muted-foreground', className)}
     {...props}
   />
@@ -188,16 +235,16 @@ export {
 
 </Installation>
 
+## Interactive Showcase
 
+An ultimate, production-ready interactive dashboard table demonstrating advanced client-side filtering, column sorting, pagination controls, multi-row selection, and badge integrations.
 
-## Preset Variations
-
-### Glassmorphic
-
-<ComponentPreview>
-  <TableDemoUsers />
+<ComponentPreview vibeDeps="checkbox, avatar, badge, button, dropdown-menu, input, select" className="w-full !p-0 !overflow-visible border-0 bg-transparent shadow-none">
+  <TableDemoInteractive />
 
 ```tsx
+'use client'
+
 import * as React from 'react'
 import {
   Table,
@@ -207,491 +254,370 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Switch } from '@/components/ui/switch'
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
-import { Search, Trash2, Plus, Download } from 'lucide-react'
+  ArrowUpDown,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  ChevronsLeft,
+  ChevronsRight,
+  Download,
+  Edit,
+  Eye,
+  GripVertical,
+  MoreHorizontal,
+  Search,
+  Trash2,
+} from 'lucide-react'
 
-export default function TableDemoUsers() {
-  const [users, setUsers] = React.useState([
-    {
-      name: 'Sarah Vance',
-      email: 'sarah@vibe.dev',
-      role: 'Owner',
-      status: 'Active',
-      initials: 'SV',
-      color: 'bg-violet-600',
-    },
-    {
-      name: 'Alex Mercer',
-      email: 'alex@vibe.dev',
-      role: 'Member',
-      status: 'Idle',
-      initials: 'AM',
-      color: 'bg-emerald-600',
-    },
-    {
-      name: 'Elena Rostova',
-      email: 'elena@vibe.dev',
-      role: 'Admin',
-      status: 'Active',
-      initials: 'ER',
-      color: 'bg-cyan-600',
-    },
-    {
-      name: 'Marcus Vance',
-      email: 'marcus@vibe.dev',
-      role: 'Billing',
-      status: 'Suspended',
-      initials: 'MV',
-      color: 'bg-rose-600',
-    },
-    {
-      name: 'Liam Chen',
-      email: 'liam@vibe.dev',
-      role: 'Developer',
-      status: 'Active',
-      initials: 'LC',
-      color: 'bg-amber-600',
-    },
-  ])
+interface UserItem {
+  id: string
+  name: string
+  email: string
+  role: string
+  status: 'active' | 'pending' | 'inactive'
+  amount: number
+  date: string
+  avatarUrl?: string
+}
+
+const SAMPLE_USERS: UserItem[] = [
+  { id: '1', name: 'Sarah Connor', email: 'sarah@skynet-resistance.org', role: 'Team Lead', status: 'active', amount: 1540.0, date: '2026-08-12', avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' },
+  { id: '2', name: 'John Connor', email: 'john@skynet-resistance.org', role: 'Commander', status: 'active', amount: 2850.5, date: '2026-08-10', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
+  { id: '3', name: 'Marcus Wright', email: 'marcus@cyberdyne.sys', role: 'Infiltrator', status: 'pending', amount: 890.0, date: '2026-08-11', avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150' },
+  { id: '4', name: 'Kyle Reese', email: 'kyle@resistance.net', role: 'Sergeant', status: 'active', amount: 1200.0, date: '2026-08-09', avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' },
+  { id: '5', name: 'T-800 Model 101', email: 'cyberdyne101@cyberdyne.sys', role: 'Guardian', status: 'active', amount: 4500.0, date: '2026-08-08' },
+  { id: '6', name: 'T-1000 Prototype', email: 'liquid@skynet.net', role: 'Liquid Metal Assassin', status: 'inactive', amount: 5200.0, date: '2026-08-07' },
+  { id: '7', name: 'Dr. Miles Dyson', email: 'dyson@cyberdyne.sys', role: 'Lead Researcher', status: 'inactive', amount: 3100.0, date: '2026-08-05' },
+  { id: '8', name: 'Katherine Brewster', email: 'kate@resistance.net', role: 'Medic', status: 'pending', amount: 950.25, date: '2026-08-06' },
+  { id: '9', name: 'T-X Terminatrix', email: 'tx@skynet.net', role: 'Cybernetic Assassin', status: 'inactive', amount: 6100.0, date: '2026-08-04' },
+  { id: '10', name: 'Danny Dyson', email: 'danny@cyberdyne.sys', role: 'System Admin', status: 'active', amount: 750.0, date: '2026-08-03' },
+]
+
+export default function TableDemoInteractive() {
+  const [data, setData] = React.useState<UserItem[]>(SAMPLE_USERS)
   const [search, setSearch] = React.useState('')
-  const [selected, setSelected] = React.useState<string[]>([])
-  const [statusFilter, setStatusFilter] = React.useState('All')
-  const [roleFilter, setRoleFilter] = React.useState('All Roles')
-  const [sortField, setSortField] = React.useState<'name' | 'role' | ''>('')
-  const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('asc')
-  const [pageSize, setPageSize] = React.useState(3)
+  const [status, setStatus] = React.useState('all')
+  const [sortKey, setSortKey] = React.useState<keyof UserItem | 'custom'>('date')
+  const [sortDir, setSortDir] = React.useState<'asc' | 'desc'>('desc')
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set())
   const [page, setPage] = React.useState(1)
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null)
 
-  // 1. Filter by search
-  let processedUsers = users.filter(
-    (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()) ||
-      u.role.toLowerCase().includes(search.toLowerCase())
-  )
+  const itemsPerPage = 4
 
-  // 2. Filter by status
-  if (statusFilter !== 'All') {
-    processedUsers = processedUsers.filter((u) => u.status === statusFilter)
-  }
-
-  // 3. Filter by role
-  if (roleFilter !== 'All Roles') {
-    processedUsers = processedUsers.filter((u) => u.role === roleFilter)
-  }
-
-  // 4. Sort
-  if (sortField) {
-    processedUsers.sort((a, b) => {
-      const valA = a[sortField].toLowerCase()
-      const valB = b[sortField].toLowerCase()
-      if (valA < valB) return sortOrder === 'asc' ? -1 : 1
-      if (valA > valB) return sortOrder === 'asc' ? 1 : -1
-      return 0
-    })
-  }
-
-  // 5. Pagination
-  const totalPages = Math.ceil(processedUsers.length / pageSize)
-  const startIndex = (page - 1) * pageSize
-  const paginatedUsers = processedUsers.slice(startIndex, startIndex + pageSize)
-
-  const isAllSelected =
-    paginatedUsers.length > 0 &&
-    paginatedUsers.every((u) => selected.includes(u.email))
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      const allEmails = paginatedUsers.map((u) => u.email)
-      setSelected(Array.from(new Set([...selected, ...allEmails])))
-    } else {
-      const filteredEmails = paginatedUsers.map((u) => u.email)
-      setSelected(selected.filter((email) => !filteredEmails.includes(email)))
-    }
-  }
-
-  const handleSelectRow = (email: string, checked: boolean) => {
-    if (checked) {
-      setSelected([...selected, email])
-    } else {
-      setSelected(selected.filter((e) => e !== email))
-    }
-  }
-
-  const handleSort = (field: 'name' | 'role') => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
-    } else {
-      setSortField(field)
-      setSortOrder('asc')
-    }
-  }
-
-  const handleAddUser = () => {
-    const names = [
-      'John Doe',
-      'Emma Watson',
-      'Oliver Twist',
-      'Sophia Loren',
-      'Lucas Silva',
-    ]
-    const roles = [
-      'Designer',
-      'Product Manager',
-      'QA Specialist',
-      'Support Lead',
-    ]
-    const statuses = ['Active', 'Idle', 'Suspended']
-    const colors = [
-      'bg-indigo-600',
-      'bg-teal-600',
-      'bg-pink-600',
-      'bg-lime-600',
-    ]
-
-    const name = names[Math.floor(Math.random() * names.length)]
-    const email = `${name.toLowerCase().replace(/\s/g, '')}@vibe.dev`
-    if (users.some((u) => u.email === email)) return
-
-    const role = roles[Math.floor(Math.random() * roles.length)]
-    const status = statuses[Math.floor(Math.random() * statuses.length)]
-    const initials = name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-    const color = colors[Math.floor(Math.random() * colors.length)]
-
-    setUsers([...users, { name, email, role, status, initials, color }])
-  }
-
-  const handleDeleteSelected = () => {
-    setUsers(users.filter((u) => !selected.includes(u.email)))
-    setSelected([])
+  React.useEffect(() => {
     setPage(1)
+  }, [search, status])
+
+  const filteredData = React.useMemo(() => {
+    return data.filter((user) => {
+      const matchesSearch =
+        user.name.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase()) ||
+        user.role.toLowerCase().includes(search.toLowerCase())
+      const matchesStatus = status === 'all' || user.status === status
+      return matchesSearch && matchesStatus
+    })
+  }, [data, search, status])
+
+  const sortedData = React.useMemo(() => {
+    if (sortKey === 'custom') return filteredData
+
+    return [...filteredData].sort((a, b) => {
+      const valA = a[sortKey as keyof UserItem]
+      const valB = b[sortKey as keyof UserItem]
+
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        return sortDir === 'asc' ? valA - valB : valB - valA
+      }
+      return sortDir === 'asc'
+        ? String(valA).localeCompare(String(valB))
+        : String(valB).localeCompare(String(valA))
+    })
+  }, [filteredData, sortKey, sortDir])
+
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage) || 1
+  const paginatedData = React.useMemo(() => {
+    const start = (page - 1) * itemsPerPage
+    return sortedData.slice(start, start + itemsPerPage)
+  }, [sortedData, page])
+
+  const handleSort = (key: keyof UserItem) => {
+    if (sortKey === key) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
   }
 
-  const handleBulkStatusChange = (
-    newStatus: 'Active' | 'Idle' | 'Suspended'
-  ) => {
-    setUsers(
-      users.map((u) =>
-        selected.includes(u.email) ? { ...u, status: newStatus } : u
-      )
+  const handleSelectRow = (id: string, checked: boolean) => {
+    const next = new Set(selectedIds)
+    if (checked) next.add(id)
+    else next.delete(id)
+    setSelectedIds(next)
+  }
+
+  const handleSelectAllOnPage = (checked: boolean) => {
+    const next = new Set(selectedIds)
+    paginatedData.forEach((item) => {
+      if (checked) next.add(item.id)
+      else next.delete(item.id)
+    })
+    setSelectedIds(next)
+  }
+
+  const isAllPageSelected =
+    paginatedData.length > 0 && paginatedData.every((item) => selectedIds.has(item.id))
+
+  const handleBulkDelete = () => {
+    setData(data.filter((u) => !selectedIds.has(u.id)))
+    setSelectedIds(new Set())
+  }
+
+  const handleBulkStatus = (newStatus: 'active' | 'pending' | 'inactive') => {
+    setData(
+      data.map((u) => {
+        if (selectedIds.has(u.id)) return { ...u, status: newStatus }
+        return u
+      })
     )
-    setSelected([])
+    setSelectedIds(new Set())
   }
 
   const handleExportCSV = () => {
-    const headers = 'Name,Email,Role,Status\n'
-    const rows = processedUsers
-      .map((u) => `"${u.name}","${u.email}","${u.role}","${u.status}"`)
-      .join('\n')
-    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' })
+    const headers = ['Name', 'Email', 'Role', 'Status', 'Joined Date', 'Balance']
+    const rows = sortedData.map((u) => [
+      u.name,
+      u.email,
+      u.role,
+      u.status,
+      u.date,
+      u.amount.toFixed(2),
+    ])
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((r) => r.map((val) => `"${val.replace(/"/g, '""')}"`).join(',')),
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.setAttribute('href', url)
-    link.setAttribute('download', 'vibe_users_export.csv')
-    link.style.visibility = 'hidden'
+    link.setAttribute('download', `vibe_table_export_${new Date().toISOString().slice(0, 10)}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   }
 
-  const renderSortIcon = (field: 'name' | 'role') => {
-    if (sortField !== field) return null
-    return sortOrder === 'asc' ? ' ▴' : ' ▾'
+  const handleDragStart = (e: React.DragEvent, globalIndex: number) => {
+    setDraggedIndex(globalIndex)
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = 'move'
+      e.dataTransfer.setData('text/plain', String(globalIndex))
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent, globalIndex: number) => {
+    e.preventDefault()
+    if (dragOverIndex !== globalIndex) {
+      setDragOverIndex(globalIndex)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault()
+    if (draggedIndex === null || draggedIndex === targetIndex) {
+      setDraggedIndex(null)
+      setDragOverIndex(null)
+      return
+    }
+
+    const updatedData = [...data]
+    const draggedUser = sortedData[draggedIndex]
+    const targetUser = sortedData[targetIndex]
+
+    if (draggedUser && targetUser) {
+      const srcIndex = updatedData.findIndex((u) => u.id === draggedUser.id)
+      const dstIndex = updatedData.findIndex((u) => u.id === targetUser.id)
+
+      if (srcIndex !== -1 && dstIndex !== -1) {
+        const [removed] = updatedData.splice(srcIndex, 1)
+        updatedData.splice(dstIndex, 0, removed)
+        setData(updatedData)
+        setSortKey('custom')
+      }
+    }
+
+    setDraggedIndex(null)
+    setDragOverIndex(null)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null)
+    setDragOverIndex(null)
+  }
+
+  const renderSortIndicator = (key: keyof UserItem) => {
+    if (sortKey !== key) {
+      return <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-40 shrink-0" />
+    }
+    return sortDir === 'asc' ? (
+      <ChevronUp className="ml-1.5 h-3.5 w-3.5 text-primary shrink-0" />
+    ) : (
+      <ChevronDown className="ml-1.5 h-3.5 w-3.5 text-primary shrink-0" />
+    )
   }
 
   return (
-    <div className="w-full space-y-3.5 text-left p-4 rounded-xl bg-zinc-950/40 border border-white/10 backdrop-blur-md">
-      {/* Top Search & Actions */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-2">
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-          <Input
-            placeholder="Search users, roles..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value)
-              setPage(1)
-            }}
-            className="pl-8 h-8.5 text-xs bg-zinc-900/50 border-white/10 text-white rounded-lg focus:border-primary/50"
-          />
-        </div>
-        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
-          {selected.length > 0 ? (
+    <div className="w-full bg-card/60 dark:bg-zinc-900/40 backdrop-blur-md border border-border/80 rounded-2xl shadow-xl p-4 sm:p-5 space-y-5 text-left text-foreground">
+      <div className="flex items-center justify-between gap-4">
+        {selectedIds.size > 0 ? (
+          <div className="flex items-center justify-between bg-primary/10 border border-primary/20 rounded-xl px-4 py-2 w-full">
+            <span className="text-xs font-semibold text-primary">{selectedIds.size} user(s) selected</span>
             <div className="flex items-center gap-2">
-              <Button
-                variant="destructive"
-                className="h-8 px-3 text-[10px] font-bold rounded-lg flex items-center gap-1.5 cursor-pointer"
-                onClick={handleDeleteSelected}
-              >
-                <Trash2 className="h-3 w-3" />
-                Delete ({selected.length})
-              </Button>
-              <Button
-                variant="glass"
-                className="h-8 px-3 text-[10px] font-bold rounded-lg cursor-pointer bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border-emerald-500/30"
-                onClick={() => handleBulkStatusChange('Active')}
-              >
-                Activate
-              </Button>
-              <Button
-                variant="glass"
-                className="h-8 px-3 text-[10px] font-bold rounded-lg cursor-pointer bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border-rose-500/30"
-                onClick={() => handleBulkStatusChange('Suspended')}
-              >
-                Suspend
+              <Button variant="outline" size="sm" onClick={() => handleBulkStatus('active')} className="h-8 text-xs hover:bg-emerald-500/10 hover:text-emerald-400">Mark Active</Button>
+              <Button variant="outline" size="sm" onClick={() => handleBulkStatus('inactive')} className="h-8 text-xs hover:bg-rose-500/10 hover:text-rose-400">Mark Inactive</Button>
+              <Button variant="outline" size="sm" onClick={handleBulkDelete} className="h-8 text-xs text-rose-400 border-rose-500/30 hover:bg-rose-500/20">Delete</Button>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())} className="h-8 text-xs text-muted-foreground">Cancel</Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-3 w-full">
+            <div className="flex items-center gap-3">
+              <div className="w-40 shrink-0">
+                <Select value={status} onValueChange={setStatus}>
+                  <SelectTrigger className="h-9 text-xs font-sans py-0"><SelectValue placeholder="Filter Status" /></SelectTrigger>
+                  <SelectContent className="text-xs">
+                    <SelectItem value="all" className="text-xs">All Status</SelectItem>
+                    <SelectItem value="active" className="text-xs">Active</SelectItem>
+                    <SelectItem value="pending" className="text-xs">Pending</SelectItem>
+                    <SelectItem value="inactive" className="text-xs">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleExportCSV} className="h-9 text-xs flex items-center gap-1.5 hover:bg-muted border-border text-foreground bg-transparent">
+                <Download className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Export CSV</span>
               </Button>
             </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="glass"
-                className="h-8 px-3 text-[10px] font-bold rounded-lg flex items-center gap-1.5 cursor-pointer"
-                onClick={handleExportCSV}
-              >
-                <Download className="h-3.5 w-3.5" /> Export CSV
-              </Button>
-              <Button
-                variant="glow"
-                className="h-8 px-3 text-[10px] font-bold rounded-lg flex items-center gap-1 cursor-pointer"
-                onClick={handleAddUser}
-              >
-                <Plus className="h-3.5 w-3.5" /> Add User
-              </Button>
+            <div className="relative w-full sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input placeholder="Search name, email, or role..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 h-9 text-xs" />
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
-      {/* Filters: Status, Role & Page Size */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pb-1 text-xs">
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Status Tabs */}
-          <div className="flex items-center gap-1 bg-zinc-900/50 border border-white/5 p-0.5 rounded-lg">
-            {['All', 'Active', 'Idle', 'Suspended'].map((status) => (
-              <button
-                key={status}
-                onClick={() => {
-                  setStatusFilter(status)
-                  setPage(1)
-                }}
-                className={`px-2.5 py-1 rounded-md font-semibold cursor-pointer transition-all ${
-                  statusFilter === status
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-white'
-                }`}
-              >
-                {status}
-              </button>
-            ))}
-          </div>
-
-          {/* Role Filter Selector */}
-          <select
-            value={roleFilter}
-            onChange={(e) => {
-              setRoleFilter(e.target.value)
-              setPage(1)
-            }}
-            className="h-8 px-2 text-xs bg-zinc-900/50 border border-white/5 text-muted-foreground rounded-lg focus:text-white focus:outline-none cursor-pointer"
-          >
-            {[
-              'All Roles',
-              'Owner',
-              'Member',
-              'Admin',
-              'Billing',
-              'Developer',
-            ].map((role) => (
-              <option
-                key={role}
-                value={role}
-                className="bg-zinc-900 text-white"
-              >
-                {role}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">Rows per page:</span>
-          <div className="flex items-center gap-1 bg-zinc-900/50 border border-white/5 p-0.5 rounded-lg">
-            {[3, 5].map((sz) => (
-              <button
-                key={sz}
-                onClick={() => {
-                  setPageSize(sz)
-                  setPage(1)
-                }}
-                className={`px-2.5 py-0.5 rounded font-semibold cursor-pointer transition-all ${
-                  pageSize === sz ? 'bg-white/10 text-white' : 'text-muted-foreground hover:text-white'
-                }`}
-              >
-                {sz}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Table */}
-      <div className="rounded-lg border border-white/5 bg-zinc-950/20 overflow-hidden">
-        <Table variant="glass">
-          <TableHeader className="bg-white/[0.02]">
-            <TableRow className="border-white/5 hover:bg-transparent">
-              <TableHead className="w-10 p-4">
-                <Checkbox
-                  checked={isAllSelected}
-                  onCheckedChange={handleSelectAll}
-                  aria-label="Select all rows"
-                />
-              </TableHead>
-              <TableHead
-                className="text-xs font-semibold text-zinc-400 cursor-pointer select-none hover:text-white transition-colors"
-                onClick={() => handleSort('name')}
-              >
-                Member{renderSortIcon('name')}
-              </TableHead>
-              <TableHead
-                className="text-xs font-semibold text-zinc-400 cursor-pointer select-none hover:text-white transition-colors"
-                onClick={() => handleSort('role')}
-              >
-                Role{renderSortIcon('role')}
-              </TableHead>
-              <TableHead className="text-xs font-semibold text-zinc-400">
-                Status
-              </TableHead>
+      <Table variant="glass" className="min-w-[800px]">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-12 text-center">
+              <Checkbox checked={isAllPageSelected} onCheckedChange={(c) => handleSelectAllOnPage(!!c)} className="h-5 w-5" />
+            </TableHead>
+            <TableHead className="cursor-pointer select-none" onClick={() => handleSort('name')}>
+              <div className="flex items-center">User{renderSortIndicator('name')}</div>
+            </TableHead>
+            <TableHead className="hidden md:table-cell">Role</TableHead>
+            <TableHead className="cursor-pointer select-none" onClick={() => handleSort('status')}>
+              <div className="flex items-center">Status{renderSortIndicator('status')}</div>
+            </TableHead>
+            <TableHead className="cursor-pointer select-none hidden sm:table-cell min-w-[125px] whitespace-nowrap" onClick={() => handleSort('date')}>
+              <div className="flex items-center">Joined Date{renderSortIndicator('date')}</div>
+            </TableHead>
+            <TableHead className="cursor-pointer select-none text-right" onClick={() => handleSort('amount')}>
+              <div className="flex items-center justify-end">Balance{renderSortIndicator('amount')}</div>
+            </TableHead>
+            <TableHead className="w-16 text-center">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {paginatedData.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={7} className="h-32 text-center text-xs text-muted-foreground">No users found. Try adjusting filters.</TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedUsers.length > 0 ? (
-              paginatedUsers.map((u) => {
-                const isSelected = selected.includes(u.email)
-                return (
-                  <TableRow
-                    key={u.email}
-                    className={`border-white/5 transition-all duration-150 ${
-                      isSelected ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-white/[0.02]'
-                    }`}
-                  >
-                    <TableCell className="p-4">
-                      <Checkbox
-                        checked={isSelected}
-                        onCheckedChange={(checked) =>
-                          handleSelectRow(u.email, !!checked)
-                        }
-                        aria-label={`Select ${u.name}`}
-                      />
-                    </TableCell>
-                    <TableCell className="flex items-center gap-3">
-                      <Avatar className="h-8 w-8 border border-white/10 shrink-0">
-                        <AvatarFallback
-                          className={`${u.color} text-[10px] text-white font-bold`}
-                        >
-                          {u.initials}
+          ) : (
+            paginatedData.map((user, index) => {
+              const isSelected = selectedIds.has(user.id)
+              const globalIndex = (page - 1) * itemsPerPage + index
+              return (
+                 <TableRow
+                  key={user.id}
+                  data-state={isSelected ? 'selected' : undefined}
+                  className={`hover:bg-muted/40 transition-colors cursor-grab active:cursor-grabbing ${draggedIndex === globalIndex ? 'opacity-40 bg-muted/60' : ''} ${dragOverIndex === globalIndex && draggedIndex !== globalIndex ? 'border-t-2 border-t-primary bg-primary/5' : ''}`}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, globalIndex)}
+                  onDragOver={(e) => handleDragOver(e, globalIndex)}
+                  onDrop={(e) => handleDrop(e, globalIndex)}
+                  onDragEnd={handleDragEnd}
+                >
+                  <TableCell className="text-center">
+                    <Checkbox checked={isSelected} onCheckedChange={(c) => handleSelectRow(user.id, !!c)} onClick={(e) => e.stopPropagation()} className="h-5 w-5" />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8 shrink-0">
+                        {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} />}
+                        <AvatarFallback className="text-[10px] bg-primary/20 text-primary font-bold">
+                          {user.name.split(' ').map((n) => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="text-left">
-                        <div className="font-semibold text-xs text-white">
-                          {u.name}
-                        </div>
-                        <div className="text-[10px] text-muted-foreground">
-                          {u.email}
-                        </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-xs font-semibold text-foreground truncate">{user.name}</span>
+                        <span className="text-[10px] text-muted-foreground truncate">{user.email}</span>
                       </div>
-                    </TableCell>
-                    <TableCell className="text-xs text-zinc-300 font-medium">
-                      {u.role}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          u.status === 'Active'
-                            ? 'glow'
-                            : u.status === 'Suspended'
-                            ? 'destructive'
-                            : 'glass'
-                        }
-                        className="text-[9px] px-2 py-0.5"
-                      >
-                        {u.status}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                )
-              })
-            ) : (
-              <TableRow className="hover:bg-transparent">
-                <TableCell
-                  colSpan={4}
-                  className="text-center py-8 text-xs text-muted-foreground"
-                >
-                  No users found matching your filters.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-xs hidden md:table-cell">{user.role}</TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={user.status === 'active'}
+                      disabled
+                    />
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground hidden sm:table-cell">{user.date}</TableCell>
+                  <TableCell className="text-right text-xs font-semibold text-foreground">${user.amount.toFixed(2)}</TableCell>
+                  <TableCell className="text-center">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted/80 rounded-lg cursor-pointer"><MoreHorizontal className="h-4 w-4" /></Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32 bg-background border-border text-xs">
+                        <DropdownMenuItem className="flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted rounded-md cursor-pointer text-xs"><Eye className="h-3.5 w-3.5 text-muted-foreground" /><span>View</span></DropdownMenuItem>
+                        <DropdownMenuItem className="flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted rounded-md cursor-pointer text-xs"><Edit className="h-3.5 w-3.5 text-muted-foreground" /><span>Edit</span></DropdownMenuItem>
+                        <DropdownMenuItem className="flex items-center gap-2 px-2.5 py-1.5 hover:bg-rose-500/10 focus:bg-rose-500/10 hover:text-rose-400 rounded-md cursor-pointer text-rose-500 text-xs" onClick={() => setData(data.filter((u) => u.id !== user.id))}><Trash2 className="h-3.5 w-3.5 text-rose-500" /><span>Delete</span></DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              )
+            })
+          )}
+        </TableBody>
+      </Table>
 
-      {/* Bottom Selection Stats & Pagination */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 text-xs text-muted-foreground">
-        <div>
-          {
-            selected.filter((email) =>
-              paginatedUsers.some((u) => u.email === email)
-            ).length
-          }{' '}
-          of {paginatedUsers.length} row(s) selected.
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+        <span className="text-[11px] text-muted-foreground">
+          Showing {Math.min(sortedData.length, (page - 1) * itemsPerPage + 1)}-{Math.min(sortedData.length, page * itemsPerPage)} of {sortedData.length} users
+        </span>
+        <div className="flex items-center space-x-1.5">
+          <Button variant="outline" size="sm" onClick={() => setPage(1)} disabled={page === 1} className="h-8 w-8 p-0"><ChevronsLeft className="h-4 w-4" /></Button>
+          <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="h-8 w-8 p-0"><ChevronLeft className="h-4 w-4" /></Button>
+          <div className="text-[11px] font-medium text-foreground px-3">Page {page} of {totalPages}</div>
+          <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="h-8 w-8 p-0"><ChevronRight className="h-4 w-4" /></Button>
+          <Button variant="outline" size="sm" onClick={() => setPage(totalPages)} disabled={page === totalPages} className="h-8 w-8 p-0"><ChevronsRight className="h-4 w-4" /></Button>
         </div>
-        <Pagination className="mx-0 w-auto">
-          <PaginationContent className="gap-1">
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (page > 1) setPage(page - 1)
-                }}
-                className={page === 1 ? 'pointer-events-none opacity-50' : ''}
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (page < totalPages) setPage(page + 1)
-                }}
-                className={
-                  page >= totalPages || totalPages === 0
-                    ? 'pointer-events-none opacity-50'
-                    : ''
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
       </div>
     </div>
   )
@@ -700,69 +626,12 @@ export default function TableDemoUsers() {
 
 </ComponentPreview>
 
-### Retro Neobrutalism
+## Preset Variations
+
+Explore the visual design presets of the Table component, displaying Default, Glassmorphic, Retro Neobrutalist, Glow Accent, and Cyberpunk Matrix layouts.
 
 <ComponentPreview>
-  <TableDemoLogs />
-
-```tsx
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-
-export default function TableDemoLogs() {
-  return (
-    <Table variant="retro">
-      <TableHeader className="bg-foreground text-background">
-        <TableRow>
-          <TableHead className="text-background font-bold">Severity</TableHead>
-          <TableHead className="text-background font-bold">Message</TableHead>
-          <TableHead className="text-background font-bold text-right">
-            Time
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell>
-            <Badge variant="destructive" className="rounded-none">
-              Error
-            </Badge>
-          </TableCell>
-          <TableCell className="font-mono text-xs">
-            Auth failed: Invalid credentials
-          </TableCell>
-          <TableCell className="text-right text-xs">12:04:15</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <Badge variant="retro" className="rounded-none">
-              Warning
-            </Badge>
-          </TableCell>
-          <TableCell className="font-mono text-xs">
-            Disk space warning: 85% full
-          </TableCell>
-          <TableCell className="text-right text-xs">12:03:10</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  )
-}
-```
-
-</ComponentPreview>
-
-### Neon Glow
-
-<ComponentPreview>
-  <TableDemoEcom />
+  <TableDemoPresets />
 
 ```tsx
 import {
@@ -774,367 +643,30 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-export default function TableDemoEcom() {
+export default function TablePresets() {
   return (
-    <Table variant="glow">
-      <TableHeader>
-        <TableRow>
-          <TableHead>Order ID</TableHead>
-          <TableHead>Products</TableHead>
-          <TableHead className="text-right">Total</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell className="font-mono font-bold text-primary">
-            #ORD-9024
-          </TableCell>
-          <TableCell className="text-xs">
-            Vibe Button CLI, Switch Element
-          </TableCell>
-          <TableCell className="text-right font-bold text-white">
-            $45.00
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-mono font-bold text-primary">
-            #ORD-8115
-          </TableCell>
-          <TableCell className="text-xs">
-            Circular Progress Indicator (Glow)
-          </TableCell>
-          <TableCell className="text-right font-bold text-white">
-            $15.00
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+    <div className="grid gap-8">
+      <Table variant="default">...</Table>
+      <Table variant="glass">...</Table>
+      <Table variant="retro">...</Table>
+      <Table variant="glow">...</Table>
+      <Table variant="cyberpunk">...</Table>
+    </div>
   )
 }
 ```
 
 </ComponentPreview>
 
----
+## Props
 
-## Premium Use Case Examples
+### Table
 
-### 1. Server Status dashboard
-
-<ComponentPreview>
-  <TableDemoSystemStatus />
-
-```tsx
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-
-export default function TableDemoSystemStatus() {
-  return (
-    <Table variant="glass">
-      <TableHeader>
-        <TableRow>
-          <TableHead>Node</TableHead>
-          <TableHead>CPU</TableHead>
-          <TableHead>Memory</TableHead>
-          <TableHead className="text-right">Status</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {[
-          {
-            node: 'us-east-1',
-            cpu: '24%',
-            mem: '68%',
-            status: 'Healthy',
-            color: 'text-emerald-400',
-          },
-          {
-            node: 'eu-west-2',
-            cpu: '94%',
-            mem: '89%',
-            status: 'Degraded',
-            color: 'text-rose-400',
-          },
-        ].map((s) => (
-          <TableRow key={s.node}>
-            <TableCell className="font-medium text-xs text-white">
-              {s.node}
-            </TableCell>
-            <TableCell className="text-xs">{s.cpu}</TableCell>
-            <TableCell className="text-xs">{s.mem}</TableCell>
-            <TableCell className={'text-right text-xs font-bold ' + s.color}>
-              {s.status}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 2. Pricing Matrix Table
-
-<ComponentPreview>
-  <TableDemoPricing />
-
-```tsx
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-
-export default function TableDemoPricing() {
-  return (
-    <Table variant="glass">
-      <TableHeader>
-        <TableRow>
-          <TableHead>Plan</TableHead>
-          <TableHead>Features</TableHead>
-          <TableHead className="text-right">Price</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell className="font-bold text-white">Developer</TableCell>
-          <TableCell className="text-xs">
-            CLI installer, standard components, custom support
-          </TableCell>
-          <TableCell className="text-right font-bold text-primary">
-            Free
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-bold text-white">Pro</TableCell>
-          <TableCell className="text-xs">
-            All presets, source access, multi-workspace license
-          </TableCell>
-          <TableCell className="text-right font-bold text-primary">
-            $19/mo
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 3. Inventory SKU Control
-
-<ComponentPreview>
-  <TableDemoInventory />
-
-```tsx
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-
-export default function TableDemoInventory() {
-  return (
-    <Table variant="retro">
-      <TableHeader className="bg-foreground text-background">
-        <TableRow>
-          <TableHead className="text-background">SKU</TableHead>
-          <TableHead className="text-background">Item</TableHead>
-          <TableHead className="text-background text-right">In Stock</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell className="font-mono text-xs">VIBE-BTN-01</TableCell>
-          <TableCell className="text-xs">Neon Glow Button Widget</TableCell>
-          <TableCell className="text-right font-bold">142</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-mono text-xs">VIBE-CRD-02</TableCell>
-          <TableCell className="text-xs">Glassmorphic Card Panel</TableCell>
-          <TableCell className="text-right font-bold">87</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 4. Active Tasks Backlog Tracker
-
-<ComponentPreview>
-  <TableDemoTasks />
-
-```tsx
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-
-export default function TableDemoTasks() {
-  return (
-    <Table variant="glow">
-      <TableHeader>
-        <TableRow>
-          <TableHead>Task</TableHead>
-          <TableHead>Assignee</TableHead>
-          <TableHead className="text-right">Priority</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell className="text-xs font-semibold text-white">
-            Implement embla slider
-          </TableCell>
-          <TableCell className="text-xs">Sarah V.</TableCell>
-          <TableCell className="text-right">
-            <Badge variant="glow">High</Badge>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="text-xs font-semibold text-white">
-            Style daypicker dates
-          </TableCell>
-          <TableCell className="text-xs">Alex M.</TableCell>
-          <TableCell className="text-right">
-            <Badge variant="default">Medium</Badge>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 5. Media File Explorer List
-
-<ComponentPreview>
-  <TableDemoFiles />
-
-```tsx
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { FileText } from 'lucide-react'
-
-export default function TableDemoFiles() {
-  return (
-    <Table variant="glass">
-      <TableHeader>
-        <TableRow>
-          <TableHead>File Name</TableHead>
-          <TableHead>Size</TableHead>
-          <TableHead className="text-right">Date Modified</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell className="flex items-center gap-2 text-xs text-white">
-            <FileText className="h-4 w-4 text-violet-400" />
-            <span>components.json</span>
-          </TableCell>
-          <TableCell className="text-xs text-muted-foreground">
-            3.2 KB
-          </TableCell>
-          <TableCell className="text-right text-xs">Today, 10:14 AM</TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="flex items-center gap-2 text-xs text-white">
-            <FileText className="h-4 w-4 text-violet-400" />
-            <span>utils.ts</span>
-          </TableCell>
-          <TableCell className="text-xs text-muted-foreground">
-            1.1 KB
-          </TableCell>
-          <TableCell className="text-right text-xs">
-            Yesterday, 4:45 PM
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  )
-}
-```
-
-</ComponentPreview>
-
-### 6. Database Table Schema Display
-
-<ComponentPreview>
-  <TableDemoDbSchema />
-
-```tsx
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-
-export default function TableDemoDbSchema() {
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Column</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead className="text-right">Constraints</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell className="font-mono text-xs font-bold text-primary">
-            id
-          </TableCell>
-          <TableCell className="font-mono text-xs">UUID</TableCell>
-          <TableCell className="text-right font-mono text-xs text-muted-foreground">
-            PRIMARY KEY
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-mono text-xs font-bold text-primary">
-            created_at
-          </TableCell>
-          <TableCell className="font-mono text-xs">TIMESTAMP</TableCell>
-          <TableCell className="text-right font-mono text-xs text-muted-foreground">
-            DEFAULT NOW()
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-  )
-}
-```
-
-</ComponentPreview>
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual design style variant preset of the table outer container box and scroll track wrapper."
+  />
+</PropsTable>

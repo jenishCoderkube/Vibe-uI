@@ -34,10 +34,12 @@ const selectVariants = tv({
     variant: {
       default: 'border-border bg-background hover:bg-accent/50',
       glass:
-        'bg-white/10 dark:bg-white/[0.03] backdrop-blur-md border-white/20 dark:border-white/10 text-foreground hover:bg-white/15 dark:hover:bg-white/[0.08] shadow-sm',
+        'bg-black/5 dark:bg-white/5 backdrop-blur-md border-black/10 dark:border-white/10 text-foreground hover:bg-black/10 dark:hover:bg-white/10 shadow-sm',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:active:shadow-[1px_1px_0px_0px_rgba(255,255,255,1)]',
-      glow: 'bg-primary/10 border border-primary/45 text-primary shadow-[0_0_12px_rgba(168,85,247,0.15)] hover:shadow-[0_0_18px_rgba(168,85,247,0.3)]',
+      glow: 'bg-primary/5 border border-primary/30 text-foreground shadow-[0_0_12px_rgba(168,85,247,0.1)] hover:border-primary/50 hover:shadow-[0_0_18px_rgba(168,85,247,0.2)] focus:ring-primary',
+      cyberpunk:
+        'border border-emerald-500/30 bg-emerald-950/20 dark:bg-black text-emerald-600 dark:text-emerald-400 font-mono shadow-[0_0_15px_rgba(16,185,129,0.15)] dark:shadow-[0_0_15px_rgba(16,185,129,0.25)] rounded-none hover:border-emerald-500 focus:ring-emerald-500',
     },
     size: {
       default: 'h-10 px-3 py-2 text-sm',
@@ -52,7 +54,7 @@ const selectVariants = tv({
 
 // Create a context to share variant styling with subcomponents
 interface SelectContextValue {
-  variant?: 'default' | 'glass' | 'retro' | 'glow'
+  variant?: 'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
 }
 
 const SelectVariantContext = React.createContext<SelectContextValue>({
@@ -63,7 +65,7 @@ const Select = ({
   variant = 'default',
   ...props
 }: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> & {
-  variant?: 'default' | 'glass' | 'retro' | 'glow'
+  variant?: 'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
 }) => (
   <SelectVariantContext.Provider value={{ variant }}>
     <SelectPrimitive.Root {...props} />
@@ -179,25 +181,43 @@ const SelectContent = React.forwardRef<
             position === 'popper' &&
               'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
             variant === 'glass' &&
-              'bg-popover/90 backdrop-blur-md border-border text-popover-foreground',
+              'bg-popover/80 dark:bg-zinc-900/80 backdrop-blur-md border-border text-popover-foreground shadow-xl',
             variant === 'retro' &&
               'border-2 border-foreground bg-background text-foreground rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]',
             variant === 'glow' &&
               'border-primary/45 shadow-[0_0_20px_rgba(168,85,247,0.15)] bg-popover/95 text-popover-foreground',
+            variant === 'cyberpunk' &&
+              'border border-emerald-500/30 bg-emerald-950/20 dark:bg-black font-mono text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.2)] rounded-none',
             className,
           )}
           {...props}
         >
           <SelectScrollUpButton />
           {showSearch && (
-            <div className="flex items-center border-b border-border/80 px-2 py-1.5 gap-2 shrink-0">
-              <Search className="h-3.5 w-3.5 opacity-50" />
+            <div
+              className={cn(
+                'flex items-center border-b border-border/80 px-2 py-1.5 gap-2 shrink-0',
+                variant === 'cyberpunk' && 'border-emerald-500/30',
+                variant === 'retro' && 'border-b-2 border-foreground',
+              )}
+            >
+              <Search
+                className={cn(
+                  'h-3.5 w-3.5 opacity-50',
+                  variant === 'cyberpunk' && 'text-emerald-500 opacity-80',
+                )}
+              />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex h-7 w-full rounded-md bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                className={cn(
+                  'flex h-7 w-full rounded-md bg-transparent text-sm outline-none placeholder:text-muted-foreground',
+                  variant === 'cyberpunk' &&
+                    'font-mono text-emerald-400 placeholder:text-emerald-600/50',
+                  variant === 'retro' && 'font-bold text-foreground',
+                )}
                 onKeyDown={(e) => {
                   // Prevent keyboard navigation inside Select triggering on Space/Enter inside input
                   if (e.key === ' ' || e.key === 'Enter') {
@@ -254,15 +274,21 @@ const SelectItem = React.forwardRef<
         'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-all duration-150 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-accent focus:text-accent-foreground',
         variant === 'retro' &&
           'focus:bg-foreground focus:text-background rounded-none',
-        variant === 'glow' &&
-          'focus:bg-primary/25 focus:text-primary-foreground',
+        variant === 'glow' && 'focus:bg-primary/15 focus:text-primary',
+        variant === 'cyberpunk' &&
+          'focus:bg-emerald-500/20 focus:text-emerald-400 font-mono rounded-none',
         className,
       )}
       {...props}
     >
       <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="h-4 w-4" />
+          <Check
+            className={cn(
+              'h-4 w-4',
+              variant === 'cyberpunk' && 'text-emerald-500',
+            )}
+          />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

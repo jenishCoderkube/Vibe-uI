@@ -4,7 +4,7 @@ A popup that displays information related to an element when the element receive
 
 ## Preview
 
-<ComponentPreview>
+<ComponentPreview vibeDeps="button">
   <div className="py-4">
     <Tooltip content="Add to library" delay={100}>
       <Button variant="outline">Hover me</Button>
@@ -26,43 +26,65 @@ export default function TooltipDemo() {
 
 </ComponentPreview>
 
-<Installation name="tooltip" npmDeps="@radix-ui/react-tooltip lucide-react tailwind-variants">
+<Installation name="tooltip" vibeDeps="button" npmDeps="@radix-ui/react-tooltip tailwind-variants">
 
 ```tsx
 'use client'
 
 import * as React from 'react'
+import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/lib/utils'
 
-const tooltipVariants = tv({
-  base: 'absolute z-50 overflow-hidden rounded-md px-3 py-1.5 text-xs shadow-md pointer-events-none transition-all duration-150 whitespace-nowrap',
+const TooltipProvider = TooltipPrimitive.Provider
+
+const TooltipRoot = TooltipPrimitive.Root
+
+const TooltipTrigger = TooltipPrimitive.Trigger
+
+const tooltipContentVariants = tv({
+  base: 'z-50 overflow-hidden rounded-md px-3 py-1.5 text-xs shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
   variants: {
     variant: {
       default: 'bg-card border border-border text-foreground',
       glass:
-        'bg-white/10 dark:bg-black/30 backdrop-blur-md border border-white/20 dark:border-white/10 text-foreground',
+        'bg-popover/90 backdrop-blur-md border border-border text-popover-foreground shadow-md',
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] rounded-none',
       glow: 'bg-card border border-border shadow-[0_0_15px_rgba(0,0,0,0.15)] dark:shadow-[0_0_15px_rgba(255,255,255,0.15)]',
-    },
-    position: {
-      top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-      bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-      left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-      right: 'left-full top-1/2 -translate-y-1/2 ml-2',
+      cyberpunk:
+        'rounded-none border border-emerald-500 bg-black text-emerald-400 font-mono shadow-[0_0_10px_rgba(16,185,129,0.15)]',
     },
   },
   defaultVariants: {
     variant: 'default',
-    position: 'top',
   },
 })
+
+export interface TooltipContentProps
+  extends
+    React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>,
+    VariantProps<typeof tooltipContentVariants> {}
+
+const TooltipContent = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Content>,
+  TooltipContentProps
+>((({ className, sideOffset = 4, variant, ...props }, ref) => (
+  <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Content
+      ref={ref}
+      sideOffset={sideOffset}
+      className={cn(tooltipContentVariants({ variant }), className)}
+      {...props}
+    />
+  </TooltipPrimitive.Portal>
+))
+TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
 export interface TooltipProps
   extends
     Omit<React.HTMLAttributes<HTMLDivElement>, 'content'>,
-    VariantProps<typeof tooltipVariants> {
+    VariantProps<typeof tooltipContentVariants> {
   content: React.ReactNode
   children: React.ReactNode
   delay?: number
@@ -72,76 +94,115 @@ const Tooltip: React.FC<TooltipProps> = ({
   children,
   content,
   variant,
-  position,
-  className,
   delay = 200,
+  className,
   ...props
 }) => {
-  const [visible, setVisible] = React.useState(false)
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
-
-  const showTooltip = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    timeoutRef.current = setTimeout(() => {
-      setVisible(true)
-    }, delay)
-  }
-
-  const hideTooltip = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    setVisible(false)
-  }
-
-  React.useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    }
-  }, [])
-
   return (
-    <div
-      className="relative inline-block"
-      onMouseEnter={showTooltip}
-      onMouseLeave={hideTooltip}
-      onFocus={showTooltip}
-      onBlur={hideTooltip}
-    >
-      {children}
-      {visible && (
-        <div
-          className={cn(tooltipVariants({ variant, position }), className)}
-          {...props}
-        >
+    <TooltipProvider delayDuration={delay}>
+      <TooltipRoot>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent variant={variant} className={className} {...props}>
           {content}
-        </div>
-      )}
-    </div>
+        </TooltipContent>
+      </TooltipRoot>
+    </TooltipProvider>
   )
 }
 
-export { Tooltip }
+export {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+  TooltipRoot as TooltipRootComponent,
+}
 ```
 
 </Installation>
 
+## Variations
 
+Vibe UI's Tooltip component supports multiple visual style presets to match your application's theme:
 
-## Variants
+<ComponentPreview className="w-full">
+  <div className="flex flex-wrap gap-4 items-center justify-center py-6 w-full">
+    <Tooltip content="Default visual preset info label" variant="default" delay={0}>
+      <Button variant="outline">Default Theme</Button>
+    </Tooltip>
 
-### Directions
+    <Tooltip content="Frosted glass visual preset info label" variant="glass" delay={0}>
+      <Button variant="outline">Glass Theme</Button>
+    </Tooltip>
 
-<ComponentPreview>
+    <Tooltip content="RETRO FLAT BORDERS ACTIVE" variant="retro" delay={0}>
+      <Button variant="outline">Retro Theme</Button>
+    </Tooltip>
+
+    <Tooltip content="Ambient purple glow preset indicator" variant="glow" delay={0}>
+      <Button variant="outline">Glow Theme</Button>
+    </Tooltip>
+
+    <Tooltip content="CYBERPUNK GLOW PRESET STYLING" variant="cyberpunk" delay={0}>
+      <Button variant="outline">Cyberpunk Theme</Button>
+    </Tooltip>
+  </div>
+
+```tsx
+import { Tooltip } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+
+export default function TooltipVariants() {
+  return (
+    <div className="flex gap-4">
+      {/* 1. Default Style */}
+      <Tooltip content="Default tooltip info" variant="default">
+        <Button variant="outline">Default</Button>
+      </Tooltip>
+
+      {/* 2. Glassmorphic Style */}
+      <Tooltip content="Glassmorphic tooltip info" variant="glass">
+        <Button variant="outline">Glass</Button>
+      </Tooltip>
+
+      {/* 3. Retro Brutalist Style */}
+      <Tooltip content="Retro tooltip info" variant="retro">
+        <Button variant="outline">Retro</Button>
+      </Tooltip>
+
+      {/* 4. Neon Glow Style */}
+      <Tooltip content="Neon glow tooltip info" variant="glow">
+        <Button variant="outline">Glow</Button>
+      </Tooltip>
+
+      {/* 5. Cyberpunk Matrix Style */}
+      <Tooltip content="Cyberpunk tooltip info" variant="cyberpunk">
+        <Button variant="outline">Cyberpunk</Button>
+      </Tooltip>
+    </div>
+  )
+}
+```
+</ComponentPreview>
+
+## Examples
+
+### Placements
+
+Tooltips can be positioned to open on the top, bottom, left, or right of the trigger element:
+
+<ComponentPreview vibeDeps="button">
   <div className="flex flex-wrap gap-2 justify-center py-4">
-    <Tooltip content="Tooltip top" position="top">
+    <Tooltip content="Tooltip on top side" side="top" delay={0}>
       <Button variant="outline">Top</Button>
     </Tooltip>
-    <Tooltip content="Tooltip bottom" position="bottom">
+    <Tooltip content="Tooltip on bottom side" side="bottom" delay={0}>
       <Button variant="outline">Bottom</Button>
     </Tooltip>
-    <Tooltip content="Tooltip left" position="left">
+    <Tooltip content="Tooltip on left side" side="left" delay={0}>
       <Button variant="outline">Left</Button>
     </Tooltip>
-    <Tooltip content="Tooltip right" position="right">
+    <Tooltip content="Tooltip on right side" side="right" delay={0}>
       <Button variant="outline">Right</Button>
     </Tooltip>
   </div>
@@ -153,53 +214,49 @@ import { Button } from '@/components/ui/button'
 export default function TooltipDirections() {
   return (
     <div className="flex flex-wrap gap-2 justify-center py-4">
-      <Tooltip content="Tooltip top" position="top">
+      <Tooltip content="Tooltip on top side" side="top">
         <Button variant="outline">Top</Button>
       </Tooltip>
-      <Tooltip content="Tooltip bottom" position="bottom">
+      <Tooltip content="Tooltip on bottom side" side="bottom">
         <Button variant="outline">Bottom</Button>
       </Tooltip>
-      <Tooltip content="Tooltip left" position="left">
+      <Tooltip content="Tooltip on left side" side="left">
         <Button variant="outline">Left</Button>
       </Tooltip>
-      <Tooltip content="Tooltip right" position="right">
+      <Tooltip content="Tooltip on right side" side="right">
         <Button variant="outline">Right</Button>
       </Tooltip>
     </div>
   )
 }
 ```
-
 </ComponentPreview>
 
-### Glassmorphic
+## Props
 
-<ComponentPreview>
-  <div className="py-4">
-    <Tooltip content="Glass style description text" variant="glass" position="bottom">
-      <Button variant="secondary">Glass Tooltip</Button>
-    </Tooltip>
-  </div>
-
-```tsx
-import { Tooltip } from '@/components/ui/tooltip'
-import { Button } from '@/components/ui/button'
-
-export default function TooltipGlass() {
-  return (
-    <Tooltip
-      content="Glass style description text"
-      variant="glass"
-      position="bottom"
-    >
-      <Button variant="secondary">Glass Tooltip</Button>
-    </Tooltip>
-  )
-}
-```
-
-</ComponentPreview>
-
-## Component Concept
-
-Vibe UI's Tooltip component displays helpful popover labels when hovering or focusing an element. It wraps Radix UI `Tooltip` primitives to manage delayed trigger toggles.
+<PropsTable>
+  <PropRow
+    prop="content"
+    type="ReactNode"
+    default="undefined"
+    description="The explanatory message or element displayed inside the tooltip popover."
+  />
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual theme preset style of the tooltip popover."
+  />
+  <PropRow
+    prop="delay"
+    type="number"
+    default="200"
+    description="The hover delay duration (in ms) before the tooltip opens."
+  />
+  <PropRow
+    prop="side"
+    type="'top' | 'bottom' | 'left' | 'right'"
+    default="'top'"
+    description="The default placement side of the tooltip relative to its trigger."
+  />
+</PropsTable>

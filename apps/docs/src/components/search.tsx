@@ -539,23 +539,12 @@ const SEARCH_ITEMS: SearchItem[] = [
     href: '/docs/components/uploader',
   },
   {
-    title: 'Sheet',
-    subtitle: 'Slide-Over Drawer Panel',
-    category: 'Components',
-    href: '/docs/components/sheet',
-  },
-  {
     title: 'Context Menu',
     subtitle: 'Right-Click Desktop Menu',
     category: 'Components',
     href: '/docs/components/context-menu',
   },
-  {
-    title: 'Data Table',
-    subtitle: 'Searchable Sortable Table Grid',
-    category: 'Components',
-    href: '/docs/components/data-table',
-  },
+
   {
     title: 'Button Group',
     subtitle: 'Grouped Action Buttons',

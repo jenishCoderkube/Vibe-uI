@@ -10,6 +10,14 @@ import {
   Terminal,
   ShieldAlert,
 } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from './dropdown-menu'
 
 export type VibeTheme = 'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'
 
@@ -74,7 +82,6 @@ const ThemeSwitcher = React.forwardRef<HTMLDivElement, ThemeSwitcherProps>(
     },
     ref,
   ) => {
-    const [isOpen, setIsOpen] = React.useState(false)
     const [activeTheme, setActiveTheme] =
       React.useState<VibeTheme>(defaultTheme)
 
@@ -93,25 +100,43 @@ const ThemeSwitcher = React.forwardRef<HTMLDivElement, ThemeSwitcherProps>(
       if (onThemeChange) {
         onThemeChange(theme)
       }
-      setIsOpen(false)
     }
 
     return (
       <div
         ref={ref}
         data-slot="theme-switcher"
-        className={cn(
-          'fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3',
-          className,
-        )}
+        className={cn('fixed bottom-6 right-6 z-50', className)}
         {...props}
       >
-        {/* Expanded Panel */}
-        {isOpen && (
-          <div
-            data-slot="theme-switcher-panel"
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              data-slot="theme-switcher-button"
+              className={cn(
+                'flex h-12 w-12 items-center justify-center rounded-full hover:scale-105 active:scale-95 transition-all cursor-pointer border relative overflow-hidden',
+                variant === 'default' &&
+                  'bg-primary text-primary-foreground border-border shadow-[0_0_20px_rgba(168,85,247,0.3)]',
+                variant === 'glass' &&
+                  'bg-popover/90 text-popover-foreground border-border backdrop-blur-md hover:bg-popover shadow-lg',
+                variant === 'glow' &&
+                  'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_22px_rgba(168,85,247,0.5)]',
+                variant === 'retro' &&
+                  'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_rgba(255,255,255,1)] rounded-none',
+                variant === 'cyberpunk' &&
+                  'border border-emerald-500 bg-card text-emerald-600 dark:text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] rounded-none',
+              )}
+              title="Toggle Visual Theme"
+            >
+              <Palette className="h-5 w-5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            side="top"
+            sideOffset={12}
             className={cn(
-              'w-[280px] p-4 shadow-2xl animate-in fade-in slide-in-from-bottom-5 duration-200 text-foreground z-50',
+              'w-[280px] p-2 shadow-2xl z-50',
               variant === 'default' &&
                 'rounded-xl border border-border bg-popover/90 backdrop-blur-xl text-popover-foreground',
               variant === 'glass' &&
@@ -124,9 +149,9 @@ const ThemeSwitcher = React.forwardRef<HTMLDivElement, ThemeSwitcherProps>(
                 'rounded-none border border-emerald-500 bg-card text-emerald-600 dark:text-emerald-400 font-mono shadow-[0_0_15px_rgba(16,185,129,0.25)]',
             )}
           >
-            <h4
+            <DropdownMenuLabel
               className={cn(
-                'text-xs font-bold uppercase tracking-widest mb-3 select-none',
+                'text-xs font-bold uppercase tracking-widest px-2 py-1.5 select-none',
                 variant === 'retro'
                   ? 'text-foreground'
                   : variant === 'cyberpunk'
@@ -135,16 +160,25 @@ const ThemeSwitcher = React.forwardRef<HTMLDivElement, ThemeSwitcherProps>(
               )}
             >
               Visual Preset
-            </h4>
-            <div className="flex flex-col gap-2">
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator
+              className={
+                variant === 'retro'
+                  ? 'bg-foreground h-0.5'
+                  : variant === 'cyberpunk'
+                    ? 'bg-emerald-500/25'
+                    : 'bg-muted'
+              }
+            />
+            <div className="flex flex-col gap-1 mt-1">
               {THEME_OPTIONS.map((theme) => {
                 const ThemeIcon = theme.icon
                 return (
-                  <button
+                  <DropdownMenuItem
                     key={theme.value}
                     onClick={() => handleThemeSelect(theme.value)}
                     className={cn(
-                      'flex items-center gap-3 w-full text-left p-2.5 rounded-lg border transition-all duration-200 cursor-pointer group',
+                      'flex items-center gap-3 w-full text-left p-2 rounded-lg border transition-all duration-200 cursor-pointer group',
                       // Selected state styling
                       activeTheme === theme.value
                         ? variant === 'cyberpunk'
@@ -155,8 +189,8 @@ const ThemeSwitcher = React.forwardRef<HTMLDivElement, ThemeSwitcherProps>(
                         : variant === 'cyberpunk'
                           ? 'border-emerald-950/40 bg-card text-emerald-700 dark:text-emerald-500 hover:text-emerald-400 hover:bg-muted'
                           : variant === 'retro'
-                            ? 'border-border bg-background text-muted-foreground hover:text-foreground hover:bg-muted'
-                            : 'border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted',
+                            ? 'border-transparent bg-background text-muted-foreground hover:text-foreground hover:bg-muted'
+                            : 'border-transparent bg-card text-muted-foreground hover:text-foreground hover:bg-muted',
                       // Preset corners
                       (variant === 'retro' || variant === 'cyberpunk') &&
                         'rounded-none',
@@ -190,35 +224,12 @@ const ThemeSwitcher = React.forwardRef<HTMLDivElement, ThemeSwitcherProps>(
                         )}
                       />
                     )}
-                  </button>
+                  </DropdownMenuItem>
                 )
               })}
             </div>
-          </div>
-        )}
-
-        {/* Floating Action Button (FAB) */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          data-slot="theme-switcher-button"
-          className={cn(
-            'flex h-12 w-12 items-center justify-center rounded-full hover:scale-105 active:scale-95 transition-all cursor-pointer border relative overflow-hidden',
-            variant === 'default' &&
-              'bg-primary text-primary-foreground border-border shadow-[0_0_20px_rgba(168,85,247,0.3)]',
-            variant === 'glass' &&
-              'bg-popover/90 text-popover-foreground border-border backdrop-blur-md hover:bg-popover shadow-lg',
-            variant === 'glow' &&
-              'bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_22px_rgba(168,85,247,0.5)]',
-            variant === 'retro' &&
-              'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_rgba(255,255,255,1)] rounded-none',
-            variant === 'cyberpunk' &&
-              'border border-emerald-500 bg-card text-emerald-600 dark:text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] rounded-none',
-            isOpen && 'rotate-45',
-          )}
-          title="Toggle Visual Theme"
-        >
-          <Palette className="h-5 w-5" />
-        </button>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     )
   },
