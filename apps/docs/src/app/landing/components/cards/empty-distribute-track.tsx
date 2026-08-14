@@ -19,7 +19,7 @@ export function EmptyDistributeTrack() {
     <Card className="w-full">
       <CardContent className="pt-6">
         <Empty className="p-4 border-none shadow-none">
-          <EmptyMedia variant="icon" className="bg-muted border border-border/40">
+          <EmptyMedia variant="default" className="bg-muted border border-border/40">
             <Plus className="size-4 text-muted-foreground" />
           </EmptyMedia>
           <EmptyHeader className="text-center mt-3 space-y-1">
