@@ -16,45 +16,64 @@ import { Payments } from './cards/payments'
 import { EmptyDistributeTrack } from './cards/empty-distribute-track'
 import { NotificationSettings } from './cards/notification-settings'
 import { TransferFunds } from './cards/transfer-funds'
+import { AnalyticsCard } from './cards/analytics-card'
+import { PowerUsage } from './cards/power-usage'
+import { VerificationCodeCard } from './cards/verification-code'
+import { BookingCard } from './cards/booking-card'
+import { TeamMembers } from './cards/team-members'
+import { FileUploadCard } from './cards/file-upload'
+import { CommandPaletteCard } from './cards/command-palette'
+import { AccordionDemoCard } from './cards/accordion-card'
+import { SliderDemoCard } from './cards/slider-card'
+import { TabsDemoCard } from './cards/tabs-card'
+import { CarouselDemoCard } from './cards/carousel-card'
+import { SparklesDemoCard } from './cards/sparkles-card'
+import { ProgressDemoCard } from './cards/progress-card'
 
 export function CardsDemo() {
   return (
     <section className="hidden md:block w-full border-t border-border/40 py-16 dark:bg-background">
       <div className="relative">
         
-        {/* Height-balanced 3-column masonry grid where column bottom cards align symmetrically */}
-        <div className="mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-[1300px] items-start px-4">
+        {/* Simple native CSS Masonry layout for auto-filling vertical space */}
+        <div className="mx-auto w-full px-4 md:px-8 columns-1 md:columns-2 lg:columns-3 2xl:columns-4 gap-8 pb-16">
           
-          {/* Column 1 (Total: ~1390px, ends with NewMilestone h-290px) */}
-          <div className="flex flex-col gap-8">
-            <UIElements />
-            <SidebarNav />
-            <SavingsTargets />
-            <PayoutThreshold />
-            <NewMilestone />
-          </div>
+          <div className="break-inside-avoid mb-8"><UIElements /></div>
+          <div className="break-inside-avoid mb-8"><SidebarNav /></div>
+          <div className="break-inside-avoid mb-8"><SavingsTargets /></div>
+          <div className="break-inside-avoid mb-8"><PayoutThreshold /></div>
+          <div className="break-inside-avoid mb-8"><AnalyticsCard /></div>
+          <div className="break-inside-avoid mb-8"><CommandPaletteCard /></div>
+          <div className="break-inside-avoid mb-8"><AccountAccess /></div>
+          
+          <div className="break-inside-avoid mb-8"><BookingCard /></div>
+          <div className="break-inside-avoid mb-8"><TeamMembers /></div>
+          <div className="break-inside-avoid mb-8"><ContributionHistory /></div>
+          <div className="break-inside-avoid mb-8"><DividendIncome /></div>
+          <div className="break-inside-avoid mb-8"><ClaimableBalance /></div>
+          
+          {/* These will naturally fall into the later columns */}
+          <div className="break-inside-avoid mb-8"><QrConnect /></div>
+          <div className="break-inside-avoid mb-8"><NewChat /></div>
+          <div className="break-inside-avoid mb-8"><Payments /></div>
+          
+          <div className="break-inside-avoid mb-8"><FileUploadCard /></div>
+          <div className="break-inside-avoid mb-8"><AccordionDemoCard /></div>
+          <div className="break-inside-avoid mb-8"><SliderDemoCard /></div>
+          <div className="break-inside-avoid mb-8"><TabsDemoCard /></div>
+          
+          <div className="break-inside-avoid mb-8"><TransferFunds /></div>
+          <div className="break-inside-avoid mb-8"><NewMilestone /></div>
+          <div className="break-inside-avoid mb-8"><EmptyDistributeTrack /></div>
+          <div className="break-inside-avoid mb-8"><PowerUsage /></div>
+          <div className="break-inside-avoid mb-8"><VerificationCodeCard /></div>
+          <div className="break-inside-avoid mb-8"><NotificationSettings /></div>
 
-          {/* Column 2 (Total: ~1480px, ends with NotificationSettings h-290px) */}
-          <div className="hidden flex-col gap-8 md:flex">
-            <ContributionHistory />
-            <ClaimableBalance />
-            <DividendIncome />
-            <TransferFunds />
-            <NotificationSettings />
-          </div>
-
-          {/* Column 3 (Total: ~1330px, ends with AccountAccess h-290px) */}
-          <div className="hidden flex-col gap-8 lg:flex">
-            <QrConnect />
-            <NewChat />
-            <Payments />
-            <EmptyDistributeTrack />
-            <AccountAccess />
-          </div>
+          {/* Brand new additions */}
+          <div className="break-inside-avoid mb-8"><CarouselDemoCard /></div>
+          <div className="break-inside-avoid mb-8"><SparklesDemoCard /></div>
+          <div className="break-inside-avoid mb-8"><ProgressDemoCard /></div>
         </div>
-
-        {/* Fading bottom gradient */}
-        <div className="absolute inset-x-0 bottom-0 z-20 h-64 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none lg:h-80 xl:h-64 dark:via-background/80" />
       </div>
     </section>
   )

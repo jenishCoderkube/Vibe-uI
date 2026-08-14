@@ -1,7 +1,13 @@
 {
   "name": "aspect-ratio",
-  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-  "registryDependencies": ["utils"],
+  "dependencies": [
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "aspect-ratio.tsx",

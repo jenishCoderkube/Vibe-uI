@@ -43,8 +43,8 @@ export default function LandingPage() {
         </PageHeader>
 
         {/* Section 2 & 3: Mobile Dashboard Preview & Desktop Cards Showcase */}
-        <div className="mx-auto w-full max-w-[1400px] flex-grow p-0">
-          <div className="mx-auto w-full px-4 md:px-6 lg:px-8 overflow-hidden md:px-0 lg:max-w-none">
+        <div className="mx-auto w-full flex-grow p-0">
+          <div className="mx-auto w-full px-4 md:px-6 lg:px-8 overflow-hidden md:px-0">
             <DashboardPreview />
             <CardsDemo />
           </div>

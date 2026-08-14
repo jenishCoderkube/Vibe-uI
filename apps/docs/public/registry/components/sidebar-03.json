@@ -6,7 +6,12 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": ["utils", "layout-shell", "avatar", "dropdown-menu"],
+  "registryDependencies": [
+    "utils",
+    "layout-shell",
+    "avatar",
+    "dropdown-menu"
+  ],
   "files": [
     {
       "name": "sidebar-03/components/docs-sidebar.tsx",

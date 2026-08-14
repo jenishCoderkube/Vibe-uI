@@ -1,7 +1,13 @@
 {
   "name": "animated-shiny-text",
-  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-  "registryDependencies": ["utils"],
+  "dependencies": [
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "animated-shiny-text.tsx",

@@ -178,12 +178,14 @@ const MessageScrollerItem = React.forwardRef<
 })
 MessageScrollerItem.displayName = 'MessageScrollerItem'
 
-export interface MessageScrollerButtonProps extends ButtonProps {}
+export interface MessageScrollerButtonProps extends ButtonProps {
+  threshold?: number
+}
 
 const MessageScrollerButton = React.forwardRef<
   HTMLButtonElement,
   MessageScrollerButtonProps
->(({ className, children, ...props }, ref) => {
+>(({ className, children, threshold = 120, ...props }, ref) => {
   const context = React.useContext(ScrollerContext)
   if (!context) throw new Error('Button must be used within MessageScroller')
 
@@ -195,14 +197,14 @@ const MessageScrollerButton = React.forwardRef<
     if (!el) return
     const checkScroll = () => {
       const isScrollable = el.scrollHeight > el.clientHeight
-      const isUp = el.scrollHeight - el.scrollTop - el.clientHeight > 120
+      const isUp = el.scrollHeight - el.scrollTop - el.clientHeight > threshold
       setVisible(isScrollable && isUp)
     }
     el.addEventListener('scroll', checkScroll)
     // Check once on mount
     setTimeout(checkScroll, 100)
     return () => el.removeEventListener('scroll', checkScroll)
-  }, [context])
+  }, [context, threshold])
 
   if (!visible) return null
 

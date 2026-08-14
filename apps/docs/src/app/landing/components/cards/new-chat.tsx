@@ -16,7 +16,12 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  WordRotate
+  WordRotate,
+  MessageScroller,
+  MessageScrollerViewport,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerButton
 } from 'vibe-ui'
 
 export function NewChat() {
@@ -35,6 +40,7 @@ export function NewChat() {
     }
   ])
   const [inputValue, setInputValue] = useState('')
+  // Scroll managed by MessageScroller component
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault()
@@ -56,7 +62,7 @@ export function NewChat() {
   }
 
   return (
-    <Card className="w-full h-[290px] flex flex-col justify-between overflow-hidden">
+    <Card className="relative w-full h-[290px] flex flex-col justify-between overflow-hidden">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 p-3.5 pb-2">
         <div className="space-y-0.5 text-left">
           <CardTitle className="text-xs font-semibold">AI Copilot</CardTitle>
@@ -79,53 +85,59 @@ export function NewChat() {
         </Button>
       </CardHeader>
 
-      <CardContent className="flex-1 overflow-y-auto p-3.5 space-y-3 scrollbar-none flex flex-col">
-        {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center p-2 space-y-1.5 opacity-80 select-none">
-            <div className="size-7 rounded-full bg-muted flex items-center justify-center border border-border/40">
-              <MessageSquareDashed className="size-3.5 text-muted-foreground" />
-            </div>
-            <div className="space-y-0.5">
-              <p className="text-[11px] font-semibold">Morning, friend!</p>
-              <p className="text-[9px] text-muted-foreground max-w-[180px] leading-relaxed">
-                What are we working on today? Press send to start a new conversation.
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3 w-full">
-            {messages.map((msg) => {
-              const isUser = msg.role === 'user'
-              return (
-                <div
-                  key={msg.id}
-                  className={`flex items-start gap-2 w-full ${isUser ? 'justify-end' : 'justify-start'}`}
-                >
-                  {!isUser && (
-                    <MessageAvatar className="size-6 text-[8px] shrink-0 border border-border/50 select-none">
-                      AI
-                    </MessageAvatar>
-                  )}
-                  <div
-                    className={`p-2 px-3 text-[11px] leading-relaxed rounded-2xl w-fit max-w-[75%] text-left ${
-                      isUser
-                        ? 'bg-primary text-primary-foreground rounded-tr-none ml-auto'
-                        : 'bg-muted border border-border/40 text-foreground rounded-tl-none mr-auto'
-                    }`}
-                  >
-                    <p>{msg.text}</p>
-                  </div>
-                  {isUser && (
-                    <MessageAvatar className="size-6 text-[8px] shrink-0 border border-border/50 select-none">
-                      ME
-                    </MessageAvatar>
-                  )}
+      <MessageScroller className="flex-1 min-h-0 border-none bg-transparent" threshold={20}>
+        <MessageScrollerViewport className="p-3.5 select-text overflow-y-auto scrollbar-none flex flex-col">
+          <MessageScrollerContent className="gap-3 flex flex-col w-full h-fit">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full min-h-[150px] text-center p-2 space-y-1.5 opacity-80 select-none">
+                <div className="size-7 rounded-full bg-muted flex items-center justify-center border border-border/40">
+                  <MessageSquareDashed className="size-3.5 text-muted-foreground" />
                 </div>
-              )
-            })}
-          </div>
-        )}
-      </CardContent>
+                <div className="space-y-0.5">
+                  <p className="text-[11px] font-semibold">Morning, friend!</p>
+                  <p className="text-[9px] text-muted-foreground max-w-[180px] leading-relaxed">
+                    What are we working on today? Press send to start a new conversation.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              messages.map((msg) => {
+                const isUser = msg.role === 'user'
+                return (
+                  <MessageScrollerItem
+                    key={msg.id}
+                    className={`flex items-start gap-2 w-full ${isUser ? 'justify-end' : 'justify-start'}`}
+                  >
+                    {!isUser && (
+                      <MessageAvatar className="size-6 text-[8px] shrink-0 border border-border/50 select-none">
+                        AI
+                      </MessageAvatar>
+                    )}
+                    <div
+                      className={`p-2 px-3 text-[11px] leading-relaxed rounded-2xl w-fit max-w-[75%] text-left ${
+                        isUser
+                          ? 'bg-primary text-primary-foreground rounded-tr-none ml-auto'
+                          : 'bg-muted border border-border/40 text-foreground rounded-tl-none mr-auto'
+                      }`}
+                    >
+                      <p>{msg.text}</p>
+                    </div>
+                    {isUser && (
+                      <MessageAvatar className="size-6 text-[8px] shrink-0 border border-border/50 select-none">
+                        ME
+                      </MessageAvatar>
+                    )}
+                  </MessageScrollerItem>
+                )
+              })
+            )}
+          </MessageScrollerContent>
+        </MessageScrollerViewport>
+        <MessageScrollerButton
+          threshold={20}
+          className="bottom-2 left-1/2 -translate-x-1/2 h-7 w-7 rounded-full shadow-md bg-background hover:bg-muted border border-border/80 text-foreground animate-none"
+        />
+      </MessageScroller>
 
       <CardFooter className="p-2.5 border-t border-border/40 bg-muted/20">
         <form onSubmit={handleSend} className="flex w-full items-center gap-1.5">

@@ -1,7 +1,14 @@
 {
   "name": "number-ticker",
-  "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-  "registryDependencies": ["utils"],
+  "dependencies": [
+    "motion",
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "number-ticker.tsx",

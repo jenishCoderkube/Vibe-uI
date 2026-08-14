@@ -6,7 +6,12 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": ["utils", "popover", "command", "button"],
+  "registryDependencies": [
+    "utils",
+    "popover",
+    "command",
+    "button"
+  ],
   "files": [
     {
       "name": "combobox.tsx",

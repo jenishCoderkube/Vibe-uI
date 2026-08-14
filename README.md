@@ -4,7 +4,7 @@
 
 ### _Beautiful, accessible React components with multi-aesthetic theme variants._
 
-[![npm](https://img.shields.io/npm/v/vibe-ui.svg?style=flat-square&color=black)](https://www.npmjs.com/package/vibe-ui)
+[![npm](https://img.shields.io/npm/v/vibe-ui-kit.svg?style=flat-square&color=black)](https://www.npmjs.com/package/vibe-ui-kit)
 [![typescript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![tailwind](https://img.shields.io/badge/Tailwind-3.x%20%7C%204.x-38bdf8.svg?style=flat-square)](https://tailwindcss.com/)
 [![license](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
@@ -29,13 +29,13 @@ Install the library using your preferred package manager:
 
 ```bash
 # npm
-npm install vibe-ui lucide-react tailwind-variants
+npm install vibe-ui-kit lucide-react tailwind-variants
 
 # pnpm
-pnpm add vibe-ui lucide-react tailwind-variants
+pnpm add vibe-ui-kit lucide-react tailwind-variants
 
 # yarn
-yarn add vibe-ui lucide-react tailwind-variants
+yarn add vibe-ui-kit lucide-react tailwind-variants
 ```
 
 ---
@@ -47,7 +47,7 @@ yarn add vibe-ui lucide-react tailwind-variants
 Import components and customize variants directly:
 
 ```tsx
-import { Button } from 'vibe-ui'
+import { Button } from 'vibe-ui-kit'
 
 export default function Demo() {
   return (
@@ -67,7 +67,7 @@ export default function Demo() {
 #### Simple Layout (Prototype Fast)
 
 ```tsx
-import { InputOTP } from 'vibe-ui'
+import { InputOTP } from 'vibe-ui-kit'
 
 export default function Simple() {
   return <InputOTP length={6} value={otp} onChange={setOtp} />
@@ -82,7 +82,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
   InputOTPSeparator,
-} from 'vibe-ui'
+} from 'vibe-ui-kit'
 
 export default function Composed() {
   return (

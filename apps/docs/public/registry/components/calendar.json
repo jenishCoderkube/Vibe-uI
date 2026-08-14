@@ -8,7 +8,10 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": ["utils", "button"],
+  "registryDependencies": [
+    "utils",
+    "button"
+  ],
   "files": [
     {
       "name": "calendar.tsx",
