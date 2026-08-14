@@ -12,7 +12,7 @@ export function Footer() {
               href="/"
               className="flex items-center space-x-2 font-bold text-foreground text-lg group"
             >
-              <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-violet-500 shadow-md">
+            <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-background shadow-md">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -21,7 +21,7 @@ export function Footer() {
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-3.5 w-3.5 text-primary-foreground"
+                  className="h-3.5 w-3.5 text-background"
                 >
                   <path d="M4 4c2 4 4 8 8 16" className="opacity-80" />
                   <path d="M20 4c-2 4-4 8-8 16" className="opacity-80" />

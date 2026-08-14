@@ -161,7 +161,7 @@ export function Header() {
               href="/"
               className="flex items-center space-x-2 font-bold text-foreground text-lg group"
             >
-              <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-violet-500 shadow-md group-hover:scale-105 transition-all duration-200">
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-background shadow-md group-hover:scale-105 transition-all duration-200">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -170,7 +170,7 @@ export function Header() {
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-4 w-4 text-primary-foreground"
+                  className="h-4 w-4 text-background"
                 >
                   <path d="M4 4c2 4 4 8 8 16" className="opacity-80" />
                   <path d="M20 4c-2 4-4 8-8 16" className="opacity-80" />
@@ -190,7 +190,7 @@ export function Header() {
                     style={{ animationDuration: '1.5s' }}
                   />
                 </svg>
-                <div className="absolute inset-0 rounded-lg bg-primary/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 rounded-lg bg-foreground/10 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <span className="bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent font-extrabold tracking-tight">
                 Vibe UI

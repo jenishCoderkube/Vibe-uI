@@ -2637,14 +2637,19 @@ export default async function DocsPage({ params }: PageProps) {
                     Contributors
                   </h4>
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/45 hover:border-primary/30 hover:bg-card/70 transition-all cursor-pointer w-fit select-none">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-tr from-primary to-violet-500 text-primary-foreground font-bold text-[10px]">
+                    <a
+                      href="https://github.com/jenishCoderkube"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/45 hover:border-primary/30 hover:bg-card/70 transition-all cursor-pointer w-fit select-none"
+                    >
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-foreground text-background font-bold text-[10px]">
                         JS
                       </div>
                       <span className="text-xs font-medium text-foreground">
                         Jenish Sabhadiya
                       </span>
-                    </div>
+                    </a>
                   </div>
                 </div>
               </article>

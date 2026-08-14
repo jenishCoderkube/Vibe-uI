@@ -24,3 +24,6 @@ Thumbs.db
 .env.local
 .env.*
 
+# Documentation mock preview assets
+apps/docs/public/images/dashboard-*
+

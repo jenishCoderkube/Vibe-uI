@@ -33,8 +33,7 @@ export function Preloader() {
       }`}
     >
       <div className="flex flex-col items-center space-y-6">
-        {/* Brand Logo Icon */}
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-violet-500 shadow-2xl animate-logo-box">
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-foreground text-background shadow-2xl animate-logo-box">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -43,7 +42,7 @@ export function Preloader() {
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="h-8 w-8 text-primary-foreground"
+            className="h-8 w-8 text-background"
           >
             <path d="M4 4c2 4 4 8 8 16" className="opacity-80" />
             <path d="M20 4c-2 4-4 8-8 16" className="opacity-80" />

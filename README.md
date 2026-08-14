@@ -4,7 +4,7 @@
 
 ### _Beautiful, accessible React components with multi-aesthetic theme variants._
 
-[![npm](https://img.shields.io/npm/v/vibe-ui.svg?style=flat-square&color=black)](https://www.npmjs.com/)
+[![npm](https://img.shields.io/npm/v/vibe-ui.svg?style=flat-square&color=black)](https://www.npmjs.com/package/vibe-ui)
 [![typescript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![tailwind](https://img.shields.io/badge/Tailwind-3.x%20%7C%204.x-38bdf8.svg?style=flat-square)](https://tailwindcss.com/)
 [![license](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
@@ -13,26 +13,29 @@
 
 ---
 
-**Vibe UI** is a collection of 50+ modern React components built on top of **Radix UI** primitives and **Tailwind CSS**. It is designed to give your applications a distinct, premium look with built-in support for multiple design styles.
+**Vibe UI** is a professional collection of **75+ high-fidelity React components** built on top of **Radix UI** primitives and **Tailwind CSS**. It is designed to give your applications a distinct, premium look with native support for multiple design styles.
 
-## 🚀 Key Powers
+## 🚀 Core Features
 
-- **Multi-Aesthetic (`variant`):** Switch between `glass` (translucent frosted), `glow` (neon drop-shadows), `retro` (flat hard shadows), or `cyberpunk` (monospace matrix) variants instantly.
-- **Hybrid API:** Prototype instantly with a simple, prop-driven API, or compose layout hierarchies using primitive subcomponents for advanced customization.
-- **Accessible & Typed:** 100% WAI-ARIA compliant keyboard navigation out of the box, fully written in strict TypeScript.
+- **Multi-Aesthetic Presets:** Switch between `glass` (translucent frosted), `glow` (neon drop-shadows), `retro` (flat hard shadows), or `cyberpunk` (monospace matrix) variants instantly.
+- **Hybrid API Architecture:** Prototype instantly with a simple, prop-driven API, or compose layout hierarchies using primitive subcomponents for advanced customization.
+- **Accessible & Type-Safe:** 100% WAI-ARIA compliant keyboard navigation out of the box, fully written in strict TypeScript.
 
 ---
 
-## 📦 Install & Quick Start
+## 📦 Installation & Quick Start
 
-Get components using the interactive CLI to install them directly into your codebase:
+Install the library using your preferred package manager:
 
 ```bash
-# Add a core component
-npx vibe-ui-kit add button
+# npm
+npm install vibe-ui lucide-react tailwind-variants
 
-# Add a hybrid component
-npx vibe-ui-kit add combobox input-otp
+# pnpm
+pnpm add vibe-ui lucide-react tailwind-variants
+
+# yarn
+yarn add vibe-ui lucide-react tailwind-variants
 ```
 
 ---
@@ -41,8 +44,10 @@ npx vibe-ui-kit add combobox input-otp
 
 ### 1. Style Aesthetics
 
+Import components and customize variants directly:
+
 ```tsx
-import { Button } from '@/components/ui/button'
+import { Button } from 'vibe-ui'
 
 export default function Demo() {
   return (
@@ -62,7 +67,7 @@ export default function Demo() {
 #### Simple Layout (Prototype Fast)
 
 ```tsx
-import { InputOTP } from '@/components/ui/input-otp'
+import { InputOTP } from 'vibe-ui'
 
 export default function Simple() {
   return <InputOTP length={6} value={otp} onChange={setOtp} />
@@ -77,7 +82,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
   InputOTPSeparator,
-} from '@/components/ui/input-otp'
+} from 'vibe-ui'
 
 export default function Composed() {
   return (
@@ -98,13 +103,33 @@ export default function Composed() {
 
 ---
 
+## 🧩 Component Library (75+ Presets)
+
+Vibe UI includes a wide range of components divided into category types:
+
+- **Forms & Inputs:** Button, Input, Checkbox, Switch, Textarea, Select, Combobox, Multi-Select, InputOTP, Date-Picker, Uploader
+- **Layout & Structure:** Card, Carousel, Tabs, Breadcrumb, Pagination, Table, Scroll-Area, Separator, Accordion, Collapsible
+- **Feedback & States:** Alert, Alert-Dialog, Progress, Slider, Toast, Tooltip, Skeleton, Empty, Spinner
+- **Motion & Typography:** WordRotate, TextGlitch, HyperText, SparklesText, Marquee, TypingAnimation, NumberTicker, AnimatedShinyText, SpinningText, ScrollBasedVelocity, BlurFade, AnimatedGradientText
+
+---
+
 ## 💻 Local Development
 
+Run the monorepo workspace locally:
+
 ```bash
+# Install dependencies
 pnpm install
-pnpm dev    # Launch docs & preview site
-pnpm test   # Run complete Vitest suite
-pnpm build  # Compile and generate registries
+
+# Start documentation dev server
+pnpm dev
+
+# Run Vitest test suite
+pnpm test
+
+# Build files and compile registries
+pnpm build
 ```
 
 ---
