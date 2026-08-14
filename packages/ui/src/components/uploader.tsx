@@ -450,7 +450,7 @@ const Uploader = React.forwardRef<HTMLDivElement, UploaderProps>(
                       <Progress
                         value={file.progress}
                         indicatorVariant={
-                          variant === 'cyberpunk' ? 'default' : 'gradient'
+                          variant === 'cyberpunk' ? 'default' : 'default'
                         }
                         className={cn(
                           variant === 'retro' &&

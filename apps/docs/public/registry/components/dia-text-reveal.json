@@ -1,7 +1,14 @@
 {
   "name": "dia-text-reveal",
-  "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-  "registryDependencies": ["utils"],
+  "dependencies": [
+    "motion",
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "dia-text-reveal.tsx",

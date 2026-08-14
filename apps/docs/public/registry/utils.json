@@ -1,6 +1,9 @@
 {
   "name": "utils",
-  "dependencies": ["clsx", "tailwind-merge"],
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
   "registryDependencies": [],
   "files": [
     {

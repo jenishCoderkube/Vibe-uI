@@ -7,7 +7,9 @@
     "tailwind-merge",
     "@radix-ui/react-slot"
   ],
-  "registryDependencies": ["utils"],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "breadcrumb.tsx",

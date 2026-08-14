@@ -19,11 +19,6 @@ const nextConfig = {
         destination: '/docs/components/accordion',
         permanent: true,
       },
-      {
-        source: '/docs/installation',
-        destination: '/docs/installation/cli',
-        permanent: true,
-      },
     ]
   },
 }

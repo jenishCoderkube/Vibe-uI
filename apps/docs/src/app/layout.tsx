@@ -21,6 +21,10 @@ const SITE_URL = 'https://vibe-ui-kit.vercel.app'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
   title: {
     default:
       'Vibe UI - Premium React Component Library | 38+ Themed Components',
