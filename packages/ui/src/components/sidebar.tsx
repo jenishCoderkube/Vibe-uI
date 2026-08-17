@@ -157,6 +157,7 @@ function Sidebar({
   collapsible = 'offcanvas',
   className,
   children,
+  onDrag,
   ...props
 }: React.ComponentProps<'div'> & {
   side?: 'left' | 'right'
@@ -173,6 +174,7 @@ function Sidebar({
           'flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground',
           className,
         )}
+        onDrag={onDrag}
         {...props}
       >
         {children}
@@ -186,7 +188,7 @@ function Sidebar({
         open={openMobile}
         onOpenChange={setOpenMobile}
         direction={side}
-        {...props}
+        {...(props as any)}
       >
         <DrawerContent
           data-sidebar="sidebar"
@@ -244,6 +246,7 @@ function Sidebar({
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
           className,
         )}
+        onDrag={onDrag}
         {...props}
       >
         <div
