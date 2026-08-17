@@ -1,7 +1,13 @@
 'use client'
 
 import * as React from 'react'
-import { Settings, CalendarDays, RefreshCw, ChevronRight, MoreHorizontal } from 'lucide-react'
+import {
+  Settings,
+  CalendarDays,
+  RefreshCw,
+  ChevronRight,
+  MoreHorizontal,
+} from 'lucide-react'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,7 +29,7 @@ import {
   ItemDescription,
   ItemGroup,
   ItemMedia,
-  ItemTitle
+  ItemTitle,
 } from 'vibe-ui'
 
 export function Payments() {
@@ -66,7 +72,10 @@ export function Payments() {
       </CardHeader>
       <CardContent>
         <ItemGroup>
-          <Item variant="muted" className="cursor-pointer hover:bg-muted/80 p-3.5 flex items-center justify-between">
+          <Item
+            variant="muted"
+            className="cursor-pointer hover:bg-muted/80 p-3.5 flex items-center justify-between"
+          >
             <ItemMedia variant="icon">
               <Settings className="size-4" />
             </ItemMedia>
@@ -79,7 +88,10 @@ export function Payments() {
             <ChevronRight className="size-4 shrink-0 text-muted-foreground ml-auto" />
           </Item>
 
-          <Item variant="muted" className="cursor-pointer hover:bg-muted/80 p-3.5 flex items-center justify-between">
+          <Item
+            variant="muted"
+            className="cursor-pointer hover:bg-muted/80 p-3.5 flex items-center justify-between"
+          >
             <ItemMedia variant="icon">
               <CalendarDays className="size-4" />
             </ItemMedia>
@@ -92,7 +104,10 @@ export function Payments() {
             <ChevronRight className="size-4 shrink-0 text-muted-foreground ml-auto" />
           </Item>
 
-          <Item variant="muted" className="cursor-pointer hover:bg-muted/80 p-3.5 flex items-center justify-between">
+          <Item
+            variant="muted"
+            className="cursor-pointer hover:bg-muted/80 p-3.5 flex items-center justify-between"
+          >
             <ItemMedia variant="icon">
               <RefreshCw className="size-4" />
             </ItemMedia>

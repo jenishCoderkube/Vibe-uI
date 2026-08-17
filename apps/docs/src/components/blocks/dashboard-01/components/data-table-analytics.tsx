@@ -22,54 +22,101 @@ import { Badge } from '@/components/ui/badge'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
-interface Transaction {
-  header: string
-  type: string
+interface AnalyticsSession {
+  source: string
+  category: string
   status: string
-  target: string
-  limit: string
-  reviewer: string
+  conversion: string
+  duration: string
+  agent: string
 }
 
-interface DataTableProps {
-  transactions: Transaction[]
-}
-
-export function DataTable({ transactions }: DataTableProps) {
+export function DataTableAnalytics() {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(4)
   const [selectedRows, setSelectedRows] = useState<string[]>([])
 
-  const totalPages = Math.ceil(transactions.length / pageSize) || 1
-  const paginated = transactions.slice(
+  const sessions: AnalyticsSession[] = [
+    {
+      source: 'github.com/vibe-ui',
+      category: 'Referral',
+      status: 'Active',
+      conversion: '4.2%',
+      duration: '4m 12s',
+      agent: 'Chrome / Win',
+    },
+    {
+      source: 'google.com/search',
+      category: 'Organic Search',
+      status: 'Active',
+      conversion: '1.5%',
+      duration: '0m 45s',
+      agent: 'Safari / iOS',
+    },
+    {
+      source: 'npmjs.com/package',
+      category: 'Referral',
+      status: 'Idle',
+      conversion: '0.8%',
+      duration: '2m 10s',
+      agent: 'Firefox / Mac',
+    },
+    {
+      source: 't.co (Twitter / X)',
+      category: 'Social',
+      status: 'Active',
+      conversion: '3.1%',
+      duration: '3m 05s',
+      agent: 'Brave / Linux',
+    },
+    {
+      source: 'direct / none',
+      category: 'Direct',
+      status: 'Active',
+      conversion: '5.0%',
+      duration: '5m 30s',
+      agent: 'Chrome / Mac',
+    },
+    {
+      source: 'bing.com',
+      category: 'Organic Search',
+      status: 'Idle',
+      conversion: '0.5%',
+      duration: '1m 15s',
+      agent: 'Edge / Win',
+    },
+  ]
+
+  const totalPages = Math.ceil(sessions.length / pageSize) || 1
+  const paginated = sessions.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   )
 
   const isAllSelected =
     paginated.length > 0 &&
-    paginated.every((t) => selectedRows.includes(t.header))
+    paginated.every((t) => selectedRows.includes(t.source))
   const handleSelectAllChange = (checked: boolean) => {
     if (checked) {
       setSelectedRows((prev) => {
         const newSelected = [...prev]
         paginated.forEach((t) => {
-          if (!newSelected.includes(t.header)) newSelected.push(t.header)
+          if (!newSelected.includes(t.source)) newSelected.push(t.source)
         })
         return newSelected
       })
     } else {
       setSelectedRows((prev) =>
-        prev.filter((header) => !paginated.some((t) => t.header === header)),
+        prev.filter((source) => !paginated.some((t) => t.source === source)),
       )
     }
   }
 
-  const handleSelectRowChange = (header: string, checked: boolean) => {
+  const handleSelectRowChange = (source: string, checked: boolean) => {
     if (checked) {
-      setSelectedRows((prev) => [...prev, header])
+      setSelectedRows((prev) => [...prev, source])
     } else {
-      setSelectedRows((prev) => prev.filter((h) => h !== header))
+      setSelectedRows((prev) => prev.filter((s) => s !== source))
     }
   }
 
@@ -89,22 +136,22 @@ export function DataTable({ transactions }: DataTableProps) {
                   />
                 </TableHead>
                 <TableHead className="text-left text-muted-foreground border-border/80">
-                  Header
+                  Referral Source
                 </TableHead>
-                <TableHead className="text-left text-muted-foreground border-border/80 min-w-[145px]">
-                  Section Type
+                <TableHead className="text-left text-muted-foreground border-border/80">
+                  Traffic Category
                 </TableHead>
                 <TableHead className="text-left text-muted-foreground border-border/80">
                   Status
                 </TableHead>
                 <TableHead className="text-left text-muted-foreground border-border/80">
-                  Progress
+                  Conversion Rate
                 </TableHead>
                 <TableHead className="text-left text-muted-foreground border-border/80">
-                  Version
+                  Duration
                 </TableHead>
                 <TableHead className="text-left text-muted-foreground border-border/80">
-                  Reviewer
+                  Session Agent
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -117,24 +164,24 @@ export function DataTable({ transactions }: DataTableProps) {
                   >
                     <TableCell className="text-center text-muted-foreground border-border/40">
                       <Checkbox
-                        checked={selectedRows.includes(t.header)}
+                        checked={selectedRows.includes(t.source)}
                         onCheckedChange={(checked) =>
-                          handleSelectRowChange(t.header, checked === true)
+                          handleSelectRowChange(t.source, checked === true)
                         }
                       />
                     </TableCell>
                     <TableCell className="font-semibold text-foreground truncate max-w-[200px] border-border/40">
-                      {t.header}
+                      {t.source}
                     </TableCell>
-                    <TableCell className="border-border/40 min-w-[145px]">
+                    <TableCell className="border-border/40">
                       <Badge className="bg-muted text-foreground border border-border py-0.5 px-2 text-[10px] font-medium">
-                        {t.type}
+                        {t.category}
                       </Badge>
                     </TableCell>
                     <TableCell className="border-border/40">
                       <span
                         className={
-                          t.status === 'Done'
+                          t.status === 'Active'
                             ? 'text-foreground font-semibold text-xs'
                             : 'text-muted-foreground font-medium text-xs'
                         }
@@ -143,55 +190,25 @@ export function DataTable({ transactions }: DataTableProps) {
                       </span>
                     </TableCell>
                     <TableCell className="text-left font-mono text-xs text-muted-foreground border-border/40">
-                      {t.target}
+                      {t.conversion}
                     </TableCell>
                     <TableCell className="text-left font-mono text-xs text-muted-foreground border-border/40">
-                      {t.limit}
+                      {t.duration}
                     </TableCell>
                     <TableCell className="border-border/40">
-                      {t.reviewer === 'Assign reviewer' ? (
-                        <div className="w-36">
-                          <Select defaultValue="assign">
-                            <SelectTrigger className="h-7 text-[11px] bg-muted border-border font-sans py-0 px-2 text-foreground">
-                              <SelectValue placeholder="Assign reviewer" />
-                            </SelectTrigger>
-                            <SelectContent className="w-36 text-xs bg-card border-border">
-                              <SelectItem
-                                value="assign"
-                                className="text-[11px] py-1 pl-8 text-foreground"
-                              >
-                                Assign reviewer
-                              </SelectItem>
-                              <SelectItem
-                                value="lake"
-                                className="text-[11px] py-1 pl-8 text-foreground"
-                              >
-                                Eddie Lake
-                              </SelectItem>
-                              <SelectItem
-                                value="jamik"
-                                className="text-[11px] py-1 pl-8 text-foreground"
-                              >
-                                Jamik Tashpulatov
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 select-none">
-                          <Avatar className="h-6 w-6 shrink-0">
-                            <AvatarFallback className="text-[9px] bg-primary text-primary-foreground font-bold">
-                              {t.reviewer
-                                .split(' ')
-                                .map((n) => n[0])
-                                .join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-xs text-muted-foreground font-medium">
-                            {t.reviewer}
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2 select-none">
+                        <Avatar className="h-6 w-6 shrink-0">
+                          <AvatarFallback className="text-[9px] bg-primary text-primary-foreground font-bold">
+                            {t.agent
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-xs text-muted-foreground font-medium">
+                          {t.agent}
+                        </span>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -201,7 +218,7 @@ export function DataTable({ transactions }: DataTableProps) {
                     colSpan={7}
                     className="h-24 text-center text-muted-foreground text-xs"
                   >
-                    No transactions found matching filters.
+                    No sessions found matching filters.
                   </TableCell>
                 </TableRow>
               )}
@@ -212,10 +229,9 @@ export function DataTable({ transactions }: DataTableProps) {
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border border-border bg-muted/10 rounded-b-lg text-xs text-muted-foreground select-none shrink-0">
         <div className="text-center sm:text-left">
-          Showing{' '}
-          {transactions.length === 0 ? 0 : (currentPage - 1) * pageSize + 1} to{' '}
-          {Math.min(currentPage * pageSize, transactions.length)} of{' '}
-          {transactions.length} entries
+          Showing {sessions.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}{' '}
+          to {Math.min(currentPage * pageSize, sessions.length)} of{' '}
+          {sessions.length} entries
         </div>
         <div className="flex flex-row items-center gap-3 sm:gap-4 justify-center">
           <div className="flex items-center gap-1.5">

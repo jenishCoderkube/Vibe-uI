@@ -1,13 +1,7 @@
 {
   "name": "tooltip",
-  "dependencies": [
-    "tailwind-variants",
-    "clsx",
-    "tailwind-merge"
-  ],
-  "registryDependencies": [
-    "utils"
-  ],
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
   "files": [
     {
       "name": "tooltip.tsx",

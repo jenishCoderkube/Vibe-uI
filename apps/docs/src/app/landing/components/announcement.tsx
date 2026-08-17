@@ -7,9 +7,9 @@ import { Badge } from 'vibe-ui'
 
 export function Announcement() {
   return (
-    <Badge 
-      asChild 
-      variant="secondary" 
+    <Badge
+      asChild
+      variant="secondary"
       className="cursor-pointer bg-muted hover:bg-muted/80 text-foreground border-transparent px-3 py-1 text-xs font-medium flex items-center gap-1.5 transition-colors"
     >
       <Link href="/docs/introduction">

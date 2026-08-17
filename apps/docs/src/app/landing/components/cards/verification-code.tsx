@@ -12,7 +12,7 @@ import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-  InputOTPSeparator
+  InputOTPSeparator,
 } from 'vibe-ui'
 
 export function VerificationCodeCard() {
@@ -37,7 +37,9 @@ export function VerificationCodeCard() {
   return (
     <Card className="w-full text-left">
       <CardHeader className="pb-3.5">
-        <CardTitle className="text-sm font-semibold">Security Verification</CardTitle>
+        <CardTitle className="text-sm font-semibold">
+          Security Verification
+        </CardTitle>
         <CardDescription className="text-[11px] leading-relaxed">
           We sent a 6-digit confirmation code to your registered device.
         </CardDescription>
@@ -46,22 +48,32 @@ export function VerificationCodeCard() {
         {isSuccess ? (
           <div className="flex flex-col items-center justify-center py-4 text-center space-y-1.5 min-h-[72px]">
             <div className="size-8 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-              <svg className="size-4 text-emerald-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              <svg
+                className="size-4 text-emerald-500"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 12.75l6 6 9-13.5"
+                />
               </svg>
             </div>
             <div className="space-y-0.5">
-              <p className="text-xs font-semibold text-foreground">Verification Successful</p>
-              <p className="text-[10px] text-muted-foreground">Your session is now secure.</p>
+              <p className="text-xs font-semibold text-foreground">
+                Verification Successful
+              </p>
+              <p className="text-[10px] text-muted-foreground">
+                Your session is now secure.
+              </p>
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
-            <InputOTP
-              maxLength={6}
-              value={otpValue}
-              onChange={setOtpValue}
-            >
+            <InputOTP maxLength={6} value={otpValue} onChange={setOtpValue}>
               <InputOTPGroup>
                 <InputOTPSlot index={0} className="size-9 text-xs" />
                 <InputOTPSlot index={1} className="size-9 text-xs" />

@@ -52,7 +52,7 @@ const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerProps>(
           {...props}
         >
           <ChartStyle id={chartId} config={config} />
-          <Recharts.ResponsiveContainer>
+          <Recharts.ResponsiveContainer width="100%" height="100%">
             {React.cloneElement(
               children as React.ReactElement<{ className?: string }>,
               {

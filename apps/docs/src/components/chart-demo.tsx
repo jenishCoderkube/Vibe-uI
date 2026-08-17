@@ -62,11 +62,11 @@ function AnimateOnReveal({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <div ref={ref} className="w-full min-h-[300px]">
+    <div ref={ref} className="w-full">
       {isIntersecting ? (
         children
       ) : (
-        <div className="h-[300px] w-full bg-zinc-50/50 dark:bg-zinc-950/40 border border-border rounded-xl animate-pulse" />
+        <div className="h-[200px] sm:h-[300px] w-full bg-zinc-50/50 dark:bg-zinc-950/40 border border-border rounded-xl animate-pulse" />
       )}
     </div>
   )

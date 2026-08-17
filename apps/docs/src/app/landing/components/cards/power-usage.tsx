@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Separator
+  Separator,
 } from 'vibe-ui'
 
 const chartData = [
@@ -64,7 +64,9 @@ export function PowerUsage() {
             <span className="text-[11px] text-muted-foreground font-medium">
               Solar Gen
             </span>
-            <span className="text-base font-semibold tabular-nums text-emerald-600 dark:text-emerald-500">+1.2 kW</span>
+            <span className="text-base font-semibold tabular-nums text-emerald-600 dark:text-emerald-500">
+              +1.2 kW
+            </span>
           </div>
         </div>
       </CardContent>

@@ -7,7 +7,7 @@ import {
   CardTitle,
   CardDescription,
   Badge,
-  Button
+  Button,
 } from 'vibe-ui'
 
 const areaPath = 'M0 52L18 40L36 46L54 70L72 50L100 49V86H0Z'
@@ -20,17 +20,21 @@ export function AnalyticsCard() {
         <div className="space-y-1.5 text-left">
           <CardTitle className="text-base font-semibold">Analytics</CardTitle>
           <CardDescription className="flex items-center gap-1.5 text-xs">
-            418.2K Visitors 
+            418.2K Visitors
             <Badge className="h-4 px-1.5 text-[9px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 border-none font-semibold">
               +10%
             </Badge>
           </CardDescription>
         </div>
-        <Button variant="outline" size="sm" className="h-7 text-xs font-semibold px-2.5">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-7 text-xs font-semibold px-2.5"
+        >
           View Analytics
         </Button>
       </CardHeader>
-      
+
       {/* Pure SVG Line Chart Mockup */}
       <svg
         viewBox="0 0 100 86"

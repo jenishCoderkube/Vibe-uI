@@ -7,9 +7,7 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": [
-    "utils"
-  ],
+  "registryDependencies": ["utils"],
   "files": [
     {
       "name": "context-menu.tsx",

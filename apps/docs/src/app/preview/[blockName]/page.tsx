@@ -3,14 +3,7 @@
 import React, { useEffect } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useTheme } from 'next-themes'
-import {
-  Dashboard01Block,
-  Sidebar07Block,
-  Sidebar03Block,
-  Login03Block,
-  Login04Block,
-} from '../../../components/vibe-blocks'
-import { DashboardBlock02 } from 'vibe-ui'
+import { Dashboard01Block } from '../../../components/vibe-blocks'
 
 export default function PreviewPage() {
   const params = useParams()
@@ -41,36 +34,6 @@ export default function PreviewPage() {
       return (
         <div className="w-full h-screen bg-background overflow-y-auto select-none">
           <Dashboard01Block />
-        </div>
-      )
-    case 'dashboard-02':
-      return (
-        <div className="w-full min-h-screen bg-background overflow-y-auto select-none">
-          <DashboardBlock02 />
-        </div>
-      )
-    case 'sidebar-07':
-      return (
-        <div className="w-full h-screen bg-background overflow-hidden select-none">
-          <Sidebar07Block />
-        </div>
-      )
-    case 'sidebar-03':
-      return (
-        <div className="w-full h-screen bg-background overflow-hidden select-none">
-          <Sidebar03Block />
-        </div>
-      )
-    case 'login-03':
-      return (
-        <div className="w-full h-screen bg-background overflow-y-auto select-none">
-          <Login03Block />
-        </div>
-      )
-    case 'login-04':
-      return (
-        <div className="w-full h-screen bg-background overflow-y-auto select-none">
-          <Login04Block />
         </div>
       )
     default:

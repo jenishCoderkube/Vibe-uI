@@ -6,12 +6,7 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": [
-    "utils",
-    "card",
-    "button",
-    "input"
-  ],
+  "registryDependencies": ["utils", "card", "button", "input"],
   "files": [
     {
       "name": "login-03/page.tsx",

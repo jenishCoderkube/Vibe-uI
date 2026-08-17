@@ -1,13 +1,7 @@
 {
   "name": "dashboard-02",
-  "dependencies": [
-    "tailwind-variants",
-    "clsx",
-    "tailwind-merge"
-  ],
-  "registryDependencies": [
-    "utils"
-  ],
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
   "files": [
     {
       "name": "dashboard-02.tsx",

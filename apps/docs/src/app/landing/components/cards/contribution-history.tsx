@@ -11,7 +11,7 @@ import {
   Button,
   Item,
   ItemContent,
-  ItemDescription
+  ItemDescription,
 } from 'vibe-ui'
 
 const chartData = [
@@ -40,11 +40,16 @@ export function ContributionHistory() {
         >
           {chartData.map((item, index) => {
             // Colors matching Vibe UI's theme structure (using Tailwind classes)
-            const colorClass = 
-              index === 0 ? 'bg-primary/40' :
-              index === 1 ? 'bg-primary/60' :
-              index === 2 ? 'bg-primary/80' :
-              index === 3 ? 'bg-primary' : 'bg-primary/50'
+            const colorClass =
+              index === 0
+                ? 'bg-primary/40'
+                : index === 1
+                  ? 'bg-primary/60'
+                  : index === 2
+                    ? 'bg-primary/80'
+                    : index === 3
+                      ? 'bg-primary'
+                      : 'bg-primary/50'
 
             return (
               <div
@@ -65,22 +70,32 @@ export function ContributionHistory() {
 
         {/* Detailed Stats */}
         <div className="grid w-full grid-cols-2 gap-3 pt-2">
-          <Item variant="muted" className="flex-col items-stretch p-3 text-left">
+          <Item
+            variant="muted"
+            className="flex-col items-stretch p-3 text-left"
+          >
             <ItemContent className="gap-1">
               <ItemDescription className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 Upcoming
               </ItemDescription>
               <span className="text-sm font-semibold">Aug 2026</span>
-              <span className="text-[10px] text-muted-foreground font-medium">Scheduled</span>
+              <span className="text-[10px] text-muted-foreground font-medium">
+                Scheduled
+              </span>
             </ItemContent>
           </Item>
-          <Item variant="muted" className="flex-col items-stretch p-3 text-left">
+          <Item
+            variant="muted"
+            className="flex-col items-stretch p-3 text-left"
+          >
             <ItemContent className="gap-1">
               <ItemDescription className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 Savings Plan
               </ItemDescription>
               <span className="text-sm font-semibold">Accelerated</span>
-              <span className="text-[10px] text-muted-foreground font-medium">Recurring</span>
+              <span className="text-[10px] text-muted-foreground font-medium">
+                Recurring
+              </span>
             </ItemContent>
           </Item>
         </div>

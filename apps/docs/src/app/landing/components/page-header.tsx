@@ -9,8 +9,8 @@ function PageHeader({
   ...props
 }: React.ComponentProps<'section'>) {
   return (
-    <section 
-      className={cn('border-b border-border/50 dark:border-border', className)} 
+    <section
+      className={cn('border-b border-border/50 dark:border-border', className)}
       {...props}
     >
       <div className="mx-auto w-full max-w-[1400px]">
@@ -30,7 +30,7 @@ function PageHeaderHeading({
     <h1
       className={cn(
         'leading-tighter max-w-3xl text-3xl font-bold tracking-tight text-balance text-foreground lg:leading-[1.1] xl:text-5xl xl:tracking-tighter',
-        className
+        className,
       )}
       {...props}
     />
@@ -45,7 +45,7 @@ function PageHeaderDescription({
     <p
       className={cn(
         'max-w-2xl text-base text-balance text-muted-foreground sm:text-lg',
-        className
+        className,
       )}
       {...props}
     />
@@ -57,7 +57,7 @@ function PageActions({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       className={cn(
         'flex w-full items-center justify-center gap-2 pt-2',
-        className
+        className,
       )}
       {...props}
     />

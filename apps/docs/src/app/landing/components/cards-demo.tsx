@@ -34,45 +34,99 @@ export function CardsDemo() {
   return (
     <section className="w-full border-t border-border/40 py-16 dark:bg-background">
       <div className="relative">
-        
         {/* Simple native CSS Masonry layout for auto-filling vertical space */}
         <div className="mx-auto w-full px-2 sm:px-4 md:px-8 columns-1 md:columns-2 lg:columns-3 2xl:columns-4 gap-8 pb-16">
-          
-          <div className="break-inside-avoid mb-8"><UIElements /></div>
-          <div className="break-inside-avoid mb-8"><SidebarNav /></div>
-          <div className="break-inside-avoid mb-8"><SavingsTargets /></div>
-          <div className="break-inside-avoid mb-8"><PayoutThreshold /></div>
-          <div className="break-inside-avoid mb-8"><AnalyticsCard /></div>
-          <div className="break-inside-avoid mb-8"><CommandPaletteCard /></div>
-          <div className="break-inside-avoid mb-8"><AccountAccess /></div>
-          
-          <div className="break-inside-avoid mb-8"><BookingCard /></div>
-          <div className="break-inside-avoid mb-8"><TeamMembers /></div>
-          <div className="break-inside-avoid mb-8"><ContributionHistory /></div>
-          <div className="break-inside-avoid mb-8"><DividendIncome /></div>
-          <div className="break-inside-avoid mb-8"><ClaimableBalance /></div>
-          
+          <div className="break-inside-avoid mb-8">
+            <UIElements />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <SidebarNav />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <SavingsTargets />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <PayoutThreshold />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <AnalyticsCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <CommandPaletteCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <AccountAccess />
+          </div>
+
+          <div className="break-inside-avoid mb-8">
+            <BookingCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <TeamMembers />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <ContributionHistory />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <DividendIncome />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <ClaimableBalance />
+          </div>
+
           {/* These will naturally fall into the later columns */}
-          <div className="break-inside-avoid mb-8"><QrConnect /></div>
-          <div className="break-inside-avoid mb-8"><NewChat /></div>
-          <div className="break-inside-avoid mb-8"><Payments /></div>
-          
-          <div className="break-inside-avoid mb-8"><FileUploadCard /></div>
-          <div className="break-inside-avoid mb-8"><AccordionDemoCard /></div>
-          <div className="break-inside-avoid mb-8"><SliderDemoCard /></div>
-          <div className="break-inside-avoid mb-8"><TabsDemoCard /></div>
-          
-          <div className="break-inside-avoid mb-8"><TransferFunds /></div>
-          <div className="break-inside-avoid mb-8"><NewMilestone /></div>
-          <div className="break-inside-avoid mb-8"><EmptyDistributeTrack /></div>
-          <div className="break-inside-avoid mb-8"><PowerUsage /></div>
-          <div className="break-inside-avoid mb-8"><VerificationCodeCard /></div>
-          <div className="break-inside-avoid mb-8"><NotificationSettings /></div>
+          <div className="break-inside-avoid mb-8">
+            <QrConnect />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <NewChat />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <Payments />
+          </div>
+
+          <div className="break-inside-avoid mb-8">
+            <FileUploadCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <AccordionDemoCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <SliderDemoCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <TabsDemoCard />
+          </div>
+
+          <div className="break-inside-avoid mb-8">
+            <TransferFunds />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <NewMilestone />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <EmptyDistributeTrack />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <PowerUsage />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <VerificationCodeCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <NotificationSettings />
+          </div>
 
           {/* Brand new additions */}
-          <div className="break-inside-avoid mb-8"><CarouselDemoCard /></div>
-          <div className="break-inside-avoid mb-8"><SparklesDemoCard /></div>
-          <div className="break-inside-avoid mb-8"><ProgressDemoCard /></div>
+          <div className="break-inside-avoid mb-8">
+            <CarouselDemoCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <SparklesDemoCard />
+          </div>
+          <div className="break-inside-avoid mb-8">
+            <ProgressDemoCard />
+          </div>
         </div>
       </div>
     </section>

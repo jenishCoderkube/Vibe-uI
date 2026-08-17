@@ -25,7 +25,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Navigation Header */}
       <Header />
-      
+
       {/* Main Content Area */}
       <main className="flex flex-1 flex-col">
         {/* Section 1: Hero PageHeader & Announcement */}
@@ -49,7 +49,7 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
-      
+
       {/* Site Footer */}
       <Footer />
     </div>

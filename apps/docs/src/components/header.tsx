@@ -161,7 +161,7 @@ export function Header() {
               href="/"
               className="flex items-center space-x-2 font-bold text-foreground text-lg group"
             >
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-background shadow-md group-hover:scale-105 transition-all duration-200">
+              <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-background shadow-md group-hover:scale-105 transition-all duration-200">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"

@@ -1,14 +1,7 @@
 {
   "name": "text-animate",
-  "dependencies": [
-    "motion",
-    "tailwind-variants",
-    "clsx",
-    "tailwind-merge"
-  ],
-  "registryDependencies": [
-    "utils"
-  ],
+  "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
   "files": [
     {
       "name": "text-animate.tsx",

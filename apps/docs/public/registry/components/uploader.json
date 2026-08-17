@@ -6,12 +6,7 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": [
-    "utils",
-    "button",
-    "progress",
-    "badge"
-  ],
+  "registryDependencies": ["utils", "button", "progress", "badge"],
   "files": [
     {
       "name": "uploader.tsx",

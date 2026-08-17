@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
   Input,
-  Label
+  Label,
 } from 'vibe-ui'
 
 export function NewMilestone() {
@@ -25,10 +25,7 @@ export function NewMilestone() {
       <CardContent className="space-y-4 text-left">
         <div className="space-y-2">
           <Label htmlFor="goal-name">Goal Name</Label>
-          <Input
-            id="goal-name"
-            placeholder="e.g. New Car, Home Downpayment"
-          />
+          <Input id="goal-name" placeholder="e.g. New Car, Home Downpayment" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">

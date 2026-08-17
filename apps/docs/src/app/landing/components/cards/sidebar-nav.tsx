@@ -20,7 +20,7 @@ import {
   User,
   Bell,
   Shield,
-  Palette
+  Palette,
 } from 'lucide-react'
 import { Card, cn } from 'vibe-ui'
 
@@ -37,7 +37,7 @@ function SidebarItem({ icon: Icon, label, isActive }: SidebarItemProps) {
         'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-[11px] font-medium select-none cursor-pointer transition-all duration-150 text-left',
         isActive
           ? 'bg-muted text-foreground font-semibold'
-          : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+          : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground',
       )}
     >
       <Icon className="size-3.5 shrink-0" />

@@ -1,14 +1,7 @@
 {
   "name": "blur-fade",
-  "dependencies": [
-    "motion",
-    "tailwind-variants",
-    "clsx",
-    "tailwind-merge"
-  ],
-  "registryDependencies": [
-    "utils"
-  ],
+  "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
   "files": [
     {
       "name": "blur-fade.tsx",

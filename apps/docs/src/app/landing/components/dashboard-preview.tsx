@@ -20,13 +20,22 @@ export function DashboardPreview() {
         {/* Dynamic switcher tabs */}
         <div className="flex justify-center mb-4">
           <TabsList className="h-9 px-1 bg-muted/60 border border-border/40 rounded-full">
-            <TabsTrigger value="analytics" className="text-[11px] px-3 py-1 rounded-full">
+            <TabsTrigger
+              value="analytics"
+              className="text-[11px] px-3 py-1 rounded-full"
+            >
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="saas" className="text-[11px] px-3 py-1 rounded-full">
+            <TabsTrigger
+              value="saas"
+              className="text-[11px] px-3 py-1 rounded-full"
+            >
               SaaS Panel
             </TabsTrigger>
-            <TabsTrigger value="ecom" className="text-[11px] px-3 py-1 rounded-full">
+            <TabsTrigger
+              value="ecom"
+              className="text-[11px] px-3 py-1 rounded-full"
+            >
               E-Commerce
             </TabsTrigger>
           </TabsList>

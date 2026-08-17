@@ -13,7 +13,9 @@ export function SliderDemoCard() {
     <Card className="w-full">
       <CardHeader className="pb-4">
         <CardTitle className="text-base">Volume Settings</CardTitle>
-        <CardDescription className="text-xs">Adjust your audio preferences.</CardDescription>
+        <CardDescription className="text-xs">
+          Adjust your audio preferences.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">

@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  HyperText
+  HyperText,
 } from 'vibe-ui'
 
 const qrCells = [
@@ -50,16 +50,26 @@ export function QrConnect() {
             {qrCells.map((row, y) =>
               [...row].map((cell, x) =>
                 cell === '1' ? (
-                  <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill="currentColor" />
-                ) : null
-              )
+                  <rect
+                    key={`${x}-${y}`}
+                    x={x}
+                    y={y}
+                    width="1"
+                    height="1"
+                    fill="currentColor"
+                  />
+                ) : null,
+              ),
             )}
           </svg>
         </div>
       </CardContent>
       <CardHeader className="text-center pt-2">
         <CardTitle className="text-sm font-semibold justify-center flex">
-          <HyperText className="text-sm font-semibold tracking-normal text-foreground cursor-default" animateOnHover>
+          <HyperText
+            className="text-sm font-semibold tracking-normal text-foreground cursor-default"
+            animateOnHover
+          >
             Pair Mobile Device
           </HyperText>
         </CardTitle>

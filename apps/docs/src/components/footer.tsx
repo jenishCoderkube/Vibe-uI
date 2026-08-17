@@ -12,7 +12,7 @@ export function Footer() {
               href="/"
               className="flex items-center space-x-2 font-bold text-foreground text-lg group"
             >
-            <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-background shadow-md">
+              <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-background shadow-md">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"

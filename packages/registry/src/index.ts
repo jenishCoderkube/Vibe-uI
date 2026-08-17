@@ -237,15 +237,11 @@ const blockDeps: Record<string, string[]> = {
     'clsx',
     'tailwind-merge',
   ],
-  'sidebar-07': ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'sidebar-03': ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'login-03': ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'login-04': ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
 }
 
 const blockRegistryDeps: Record<string, string[]> = {
   'dashboard-01': [
-    'layout-shell',
+    'sidebar',
     'card',
     'badge',
     'button',
@@ -255,11 +251,10 @@ const blockRegistryDeps: Record<string, string[]> = {
     'checkbox',
     'select',
     'dropdown-menu',
+    'drawer',
+    'uploader',
+    'progress',
   ],
-  'sidebar-07': ['layout-shell', 'avatar', 'card', 'dropdown-menu'],
-  'sidebar-03': ['layout-shell', 'avatar', 'dropdown-menu'],
-  'login-03': ['card', 'button', 'input'],
-  'login-04': ['card', 'button', 'input'],
 }
 
 function getBlockFiles(dir: string, baseDir: string): RegistryFile[] {
@@ -353,10 +348,13 @@ function buildRegistry() {
     }
 
     if (name === 'sidebar') {
-      const hookContent = fs.readFileSync(path.resolve(__dirname, '../../ui/src/hooks/use-mobile.ts'), 'utf8')
+      const hookContent = fs.readFileSync(
+        path.resolve(__dirname, '../../ui/src/hooks/use-mobile.ts'),
+        'utf8',
+      )
       entry.files.push({
         name: 'hooks/use-mobile.ts',
-        content: hookContent
+        content: hookContent,
       })
     }
 
@@ -368,7 +366,10 @@ function buildRegistry() {
 
     registryEntries.push({
       name,
-      files: name === 'sidebar' ? [`${name}.tsx`, 'hooks/use-mobile.ts'] : [`${name}.tsx`],
+      files:
+        name === 'sidebar'
+          ? [`${name}.tsx`, 'hooks/use-mobile.ts']
+          : [`${name}.tsx`],
       dependencies: deps,
       registryDependencies: regDeps,
     })

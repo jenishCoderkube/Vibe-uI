@@ -1,7 +1,17 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Paintbrush, X, Check, Copy, Sliders, Sparkles, Palette, ShieldAlert, Terminal } from 'lucide-react'
+import {
+  Paintbrush,
+  X,
+  Check,
+  Copy,
+  Sliders,
+  Sparkles,
+  Palette,
+  ShieldAlert,
+  Terminal,
+} from 'lucide-react'
 import { cn } from '../lib/utils'
 
 const THEME_STYLES = [
@@ -59,7 +69,7 @@ export function Customizer() {
     if (typeof window === 'undefined') return
     const root = document.documentElement
     const found = ['glass', 'retro', 'glow', 'cyberpunk'].find((t) =>
-      root.classList.contains(`theme-${t}`)
+      root.classList.contains(`theme-${t}`),
     )
     if (found) {
       setActiveTheme(found)
@@ -171,7 +181,7 @@ export function Customizer() {
                         'group flex flex-col items-center justify-center p-2 rounded-lg border text-center cursor-pointer transition-all duration-300 relative',
                         isActive
                           ? 'border-primary bg-primary/10 shadow-[0_0_10px_rgba(168,85,247,0.1)] ring-1 ring-primary/40'
-                          : 'border-border/60 bg-muted/20 hover:border-border hover:bg-muted/50'
+                          : 'border-border/60 bg-muted/20 hover:border-border hover:bg-muted/50',
                       )}
                     >
                       {/* Active Indicator Dot */}
@@ -182,10 +192,12 @@ export function Customizer() {
                         </div>
                       )}
 
-                      <div className={cn(
-                        'flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-tr text-white mb-1 shadow-sm shrink-0',
-                        style.gradient
-                      )}>
+                      <div
+                        className={cn(
+                          'flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-tr text-white mb-1 shadow-sm shrink-0',
+                          style.gradient,
+                        )}
+                      >
                         <Icon className="size-3" />
                       </div>
 
@@ -212,7 +224,7 @@ export function Customizer() {
                       'flex-1 py-1.5 text-center text-[10px] font-bold rounded-lg transition-all cursor-pointer',
                       radius === opt.value
                         ? 'bg-background border border-border/50 text-foreground shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground'
+                        : 'text-muted-foreground hover:text-foreground',
                     )}
                   >
                     {opt.label}

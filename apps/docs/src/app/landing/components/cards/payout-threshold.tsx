@@ -17,7 +17,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Label
+  Label,
 } from 'vibe-ui'
 
 const CURRENCIES = [
@@ -32,7 +32,9 @@ export function PayoutThreshold() {
     <Card className="w-full">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 p-3.5 pb-2">
         <div className="space-y-1">
-          <CardTitle className="text-xs font-semibold">Payout Configurations</CardTitle>
+          <CardTitle className="text-xs font-semibold">
+            Payout Configurations
+          </CardTitle>
           <CardDescription className="text-[10px]">
             Set the minimum balance required before a payout is triggered.
           </CardDescription>
@@ -48,15 +50,27 @@ export function PayoutThreshold() {
       </CardHeader>
       <CardContent className="space-y-3.5 text-left p-3.5 pt-0">
         <div className="space-y-1">
-          <Label htmlFor="preferred-currency" className="text-[11px] font-semibold">Preferred Currency</Label>
+          <Label
+            htmlFor="preferred-currency"
+            className="text-[11px] font-semibold"
+          >
+            Preferred Currency
+          </Label>
           <Select defaultValue="usd">
-            <SelectTrigger id="preferred-currency" className="w-full h-8 text-xs">
+            <SelectTrigger
+              id="preferred-currency"
+              className="w-full h-8 text-xs"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 {CURRENCIES.map((item) => (
-                  <SelectItem key={item.value} value={item.value} className="text-xs">
+                  <SelectItem
+                    key={item.value}
+                    value={item.value}
+                    className="text-xs"
+                  >
                     {item.label}
                   </SelectItem>
                 ))}
@@ -67,8 +81,12 @@ export function PayoutThreshold() {
 
         <div className="space-y-1">
           <div className="flex items-baseline justify-between">
-            <Label id="min-payout-label" className="text-[11px] font-semibold">Minimum Payout Amount</Label>
-            <span className="text-xl font-semibold tabular-nums">$2,500.00</span>
+            <Label id="min-payout-label" className="text-[11px] font-semibold">
+              Minimum Payout Amount
+            </Label>
+            <span className="text-xl font-semibold tabular-nums">
+              $2,500.00
+            </span>
           </div>
           <Progress
             value={25}
@@ -83,7 +101,9 @@ export function PayoutThreshold() {
         </div>
       </CardContent>
       <CardFooter className="p-3.5 pt-0">
-        <Button className="w-full h-8 text-xs font-semibold">Save Threshold</Button>
+        <Button className="w-full h-8 text-xs font-semibold">
+          Save Threshold
+        </Button>
       </CardFooter>
     </Card>
   )

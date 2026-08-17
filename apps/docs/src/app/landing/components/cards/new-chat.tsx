@@ -1,7 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { RotateCw, Send, Paperclip, MessageSquareDashed, Image, FileText, MapPin } from 'lucide-react'
+import {
+  RotateCw,
+  Send,
+  Paperclip,
+  MessageSquareDashed,
+  Image,
+  FileText,
+  MapPin,
+} from 'lucide-react'
 import {
   Card,
   CardHeader,
@@ -21,11 +29,13 @@ import {
   MessageScrollerViewport,
   MessageScrollerContent,
   MessageScrollerItem,
-  MessageScrollerButton
+  MessageScrollerButton,
 } from 'vibe-ui'
 
 export function NewChat() {
-  const [messages, setMessages] = useState<Array<{ id: number; role: 'user' | 'ai'; text: string; time: string }>>([
+  const [messages, setMessages] = useState<
+    Array<{ id: number; role: 'user' | 'ai'; text: string; time: string }>
+  >([
     {
       id: 1,
       role: 'user',
@@ -35,9 +45,9 @@ export function NewChat() {
     {
       id: 2,
       role: 'ai',
-      text: "Try using our MessageScroller component—it anchors scroll and handles streaming views smoothly.",
+      text: 'Try using our MessageScroller component—it anchors scroll and handles streaming views smoothly.',
       time: '10:46 AM',
-    }
+    },
   ])
   const [inputValue, setInputValue] = useState('')
   // Scroll managed by MessageScroller component
@@ -51,8 +61,11 @@ export function NewChat() {
         id: Date.now(),
         role: 'user',
         text: inputValue.trim(),
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      }
+        time: new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      },
     ])
     setInputValue('')
   }
@@ -85,7 +98,10 @@ export function NewChat() {
         </Button>
       </CardHeader>
 
-      <MessageScroller className="flex-1 min-h-0 border-none bg-transparent" threshold={20}>
+      <MessageScroller
+        className="flex-1 min-h-0 border-none bg-transparent"
+        threshold={20}
+      >
         <MessageScrollerViewport className="p-3.5 select-text overflow-y-auto scrollbar-none flex flex-col">
           <MessageScrollerContent className="gap-3 flex flex-col w-full h-fit">
             {messages.length === 0 ? (
@@ -96,7 +112,8 @@ export function NewChat() {
                 <div className="space-y-0.5">
                   <p className="text-[11px] font-semibold">Morning, friend!</p>
                   <p className="text-[9px] text-muted-foreground max-w-[180px] leading-relaxed">
-                    What are we working on today? Press send to start a new conversation.
+                    What are we working on today? Press send to start a new
+                    conversation.
                   </p>
                 </div>
               </div>
@@ -140,10 +157,18 @@ export function NewChat() {
       </MessageScroller>
 
       <CardFooter className="p-2.5 border-t border-border/40 bg-muted/20">
-        <form onSubmit={handleSend} className="flex w-full items-center gap-1.5">
+        <form
+          onSubmit={handleSend}
+          className="flex w-full items-center gap-1.5"
+        >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button type="button" variant="ghost" size="icon" className="size-6.5 text-muted-foreground shrink-0 p-0 rounded-md">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-6.5 text-muted-foreground shrink-0 p-0 rounded-md"
+              >
                 <Paperclip className="size-3.5" />
               </Button>
             </DropdownMenuTrigger>
@@ -168,7 +193,11 @@ export function NewChat() {
             placeholder="Type a message..."
             className="h-7 text-[11px] flex-grow px-2"
           />
-          <Button type="submit" size="icon" className="size-7 shrink-0 rounded-md">
+          <Button
+            type="submit"
+            size="icon"
+            className="size-7 shrink-0 rounded-md"
+          >
             <Send className="size-3" />
           </Button>
         </form>

@@ -274,35 +274,17 @@ export function BlockCard({
         )}
       </div>
 
-      {/* Mock Browser Container */}
-      <div className="flex flex-col rounded-xl border border-border bg-card shadow-lg overflow-hidden">
-        {/* Mock Browser Window Header Bar */}
-        <div className="flex h-11 items-center justify-between bg-muted/40 border-b border-border px-4 select-none shrink-0">
-          {/* OS Dots */}
-          <div className="flex items-center gap-1.5 w-[70px]">
-            <span className="h-3.5 w-3.5 rounded-full bg-[#ff5f56]" />
-            <span className="h-3.5 w-3.5 rounded-full bg-[#ffbd2e]" />
-            <span className="h-3.5 w-3.5 rounded-full bg-[#27c93f]" />
-          </div>
-
-          {/* URL Address Bar */}
-          <div className="flex items-center gap-1.5 rounded bg-background border border-border/60 px-4 py-1 text-[11px] font-medium text-muted-foreground font-mono w-[200px] sm:w-[350px] justify-center truncate">
-            <span className="text-muted-foreground/50 font-sans">
-              localhost:3000/
-            </span>
-            <span className="text-muted-foreground">
-              {urlPath}
-              {selectedFile !== 'page.tsx' ? `/${selectedFile}` : ''}
-            </span>
-          </div>
-
-          {/* Tab Actions */}
-          <div className="flex items-center gap-2">
-            <div className="flex bg-muted/60 rounded p-0.5 text-xs font-semibold">
+      {/* Block Viewer Container */}
+      <div className="flex flex-col rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+        {/* Toolbar Header Bar */}
+        <div className="flex h-12 items-center justify-between bg-muted/20 border-b border-border px-4 select-none shrink-0 gap-4">
+          <div className="flex items-center gap-4">
+            {/* Tab Selector */}
+            <div className="flex bg-muted/60 rounded p-0.5 text-xs font-semibold border border-border/45">
               <button
                 onClick={() => setTab('preview')}
                 className={cn(
-                  'px-2.5 py-1 rounded-sm cursor-pointer transition-all text-xs font-medium',
+                  'px-3 py-1 rounded-sm cursor-pointer transition-all text-xs font-medium',
                   tab === 'preview'
                     ? 'bg-card text-foreground shadow-sm font-semibold'
                     : 'text-muted-foreground hover:text-foreground',
@@ -316,7 +298,7 @@ export function BlockCard({
                   setIsExpanded(false)
                 }}
                 className={cn(
-                  'px-2.5 py-1 rounded-sm cursor-pointer transition-all text-xs font-medium',
+                  'px-3 py-1 rounded-sm cursor-pointer transition-all text-xs font-medium',
                   tab === 'code'
                     ? 'bg-card text-foreground shadow-sm font-semibold'
                     : 'text-muted-foreground hover:text-foreground',
@@ -326,21 +308,10 @@ export function BlockCard({
               </button>
             </div>
 
-            <a
-              href={`/preview/${urlPath}?theme=${mounted ? resolvedTheme : 'dark'}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground text-xs font-medium transition-all cursor-pointer"
-              title="Open Fullscreen Block View"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Fullscreen</span>
-            </a>
-
             {/* Quick Actions (TS/JS & Copy if in Code Tab) */}
             {tab === 'code' && (
               <div className="flex items-center gap-2">
-                <div className="flex bg-muted/60 rounded p-0.5 text-[10px] font-semibold">
+                <div className="flex bg-muted/60 rounded p-0.5 text-[10px] font-semibold border border-border/45">
                   <button
                     onClick={() => handleLangChange('ts')}
                     className={cn(
@@ -378,16 +349,75 @@ export function BlockCard({
               </div>
             )}
           </div>
+
+          <span className="hidden lg:block text-xs text-muted-foreground/80 font-medium truncate max-w-[200px] xl:max-w-[400px]">
+            {description}
+          </span>
+
+          <div className="flex items-center gap-3 ml-auto">
+            {/* Device Selector (If in Preview Tab) */}
+            {tab === 'preview' && (
+              <div className="flex items-center gap-1 bg-muted/60 p-0.5 rounded border border-border/45">
+                <button
+                  onClick={() => setDeviceMode('desktop')}
+                  className={cn(
+                    'p-1.5 rounded transition-all cursor-pointer',
+                    deviceMode === 'desktop'
+                      ? 'bg-card text-primary shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                  title="Desktop view"
+                >
+                  <Monitor className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  onClick={() => setDeviceMode('tablet')}
+                  className={cn(
+                    'p-1.5 rounded transition-all cursor-pointer',
+                    deviceMode === 'tablet'
+                      ? 'bg-card text-primary shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                  title="Tablet view"
+                >
+                  <Tablet className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  onClick={() => setDeviceMode('mobile')}
+                  className={cn(
+                    'p-1.5 rounded transition-all cursor-pointer',
+                    deviceMode === 'mobile'
+                      ? 'bg-card text-primary shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                  title="Mobile view"
+                >
+                  <Smartphone className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+
+            <a
+              href={`/preview/${urlPath}?theme=${mounted ? resolvedTheme : 'dark'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground text-xs font-medium border border-border/45 transition-all cursor-pointer"
+              title="Open Fullscreen Block View"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Fullscreen</span>
+            </a>
+          </div>
         </div>
 
-        {/* Browser Content Area */}
+        {/* Content Area */}
         <div className="relative bg-background flex-1 flex flex-col">
           {tab === 'preview' && (
             <div className="flex flex-col flex-1">
               {/* Responsive Device Control Bar */}
-              <div className="flex items-center justify-between border-b border-border bg-muted/10 px-4 py-2 select-none shrink-0">
+              <div className="flex items-center justify-between border-b border-border bg-muted/10 px-4 py-2 select-none shrink-0 gap-4 flex-wrap">
                 {/* CLI command display with package manager switcher */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <div className="flex bg-background rounded border border-border p-0.5 text-[9px] font-bold text-muted-foreground">
                     {(['pnpm', 'npx', 'yarn', 'bun'] as const).map((pm) => (
                       <button
@@ -422,48 +452,8 @@ export function BlockCard({
                   </button>
                 </div>
 
-                {/* Device Selector */}
-                <div className="flex items-center gap-1 bg-background p-0.5 rounded border border-border">
-                  <button
-                    onClick={() => setDeviceMode('desktop')}
-                    className={cn(
-                      'p-1.5 rounded transition-all cursor-pointer',
-                      deviceMode === 'desktop'
-                        ? 'bg-muted text-primary shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground',
-                    )}
-                    title="Desktop view"
-                  >
-                    <Monitor className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setDeviceMode('tablet')}
-                    className={cn(
-                      'p-1.5 rounded transition-all cursor-pointer',
-                      deviceMode === 'tablet'
-                        ? 'bg-muted text-primary shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground',
-                    )}
-                    title="Tablet view"
-                  >
-                    <Tablet className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setDeviceMode('mobile')}
-                    className={cn(
-                      'p-1.5 rounded transition-all cursor-pointer',
-                      deviceMode === 'mobile'
-                        ? 'bg-muted text-primary shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground',
-                    )}
-                    title="Mobile view"
-                  >
-                    <Smartphone className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-
                 {/* Device Mode label indicator */}
-                <div className="text-[10px] text-muted-foreground font-mono font-bold uppercase tracking-wider hidden sm:block">
+                <div className="text-[10px] text-muted-foreground font-mono font-bold uppercase tracking-wider">
                   {deviceMode === 'desktop'
                     ? 'Responsive Desktop'
                     : deviceMode === 'tablet'
@@ -473,7 +463,12 @@ export function BlockCard({
               </div>
 
               {/* Centered responsive frame viewport */}
-              <div className="p-6 bg-muted/20 flex items-center justify-center min-h-[400px] overflow-x-auto w-full border-t border-border">
+              <div
+                className={cn(
+                  'bg-muted/20 flex items-center justify-center min-h-[400px] overflow-x-auto w-full border-t border-border',
+                  urlPath.startsWith('dashboard') ? 'p-0' : 'p-6',
+                )}
+              >
                 <div
                   className={cn(
                     'transition-all duration-300 ease-in-out w-full',
@@ -486,11 +481,17 @@ export function BlockCard({
                 >
                   <iframe
                     src={`/preview/${urlPath}`}
-                    className="w-full border border-border rounded-xl overflow-hidden bg-background block shadow-[0_0_50px_-12px_rgba(255,255,255,0.05)]"
+                    className={cn(
+                      'w-full overflow-hidden bg-background block shadow-[0_0_50px_-12px_rgba(255,255,255,0.05)]',
+                      urlPath.startsWith('dashboard') &&
+                        deviceMode === 'desktop'
+                        ? 'border-0 rounded-none'
+                        : 'border border-border rounded-xl',
+                    )}
                     style={{
-                      height:
-                        urlPath.startsWith('dashboard') ||
-                        urlPath.startsWith('login')
+                      height: urlPath.startsWith('dashboard')
+                        ? '720px'
+                        : urlPath.startsWith('login')
                           ? '620px'
                           : '580px',
                     }}

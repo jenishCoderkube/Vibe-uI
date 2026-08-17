@@ -13,7 +13,7 @@ import {
   ItemContent,
   ItemGroup,
   ItemTitle,
-  ItemDescription
+  ItemDescription,
 } from 'vibe-ui'
 
 const HOLDINGS = [
@@ -46,7 +46,9 @@ export function DividendIncome() {
     <Card className="w-full">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 p-3.5 pb-2">
         <div className="space-y-1">
-          <CardTitle className="text-xs font-semibold">Dividends Portfolio</CardTitle>
+          <CardTitle className="text-xs font-semibold">
+            Dividends Portfolio
+          </CardTitle>
           <CardDescription className="text-[10px]">
             Quarterly dividend payouts across holdings.
           </CardDescription>
@@ -63,10 +65,17 @@ export function DividendIncome() {
       <CardContent className="p-3.5 pt-0">
         <ItemGroup>
           {HOLDINGS.map((holding) => (
-            <Item key={holding.name} role="listitem" variant="muted" className="flex items-center justify-between p-2 px-3">
+            <Item
+              key={holding.name}
+              role="listitem"
+              variant="muted"
+              className="flex items-center justify-between p-2 px-3"
+            >
               <ItemContent>
                 <ItemTitle className="text-xs">{holding.name}</ItemTitle>
-                <ItemDescription className="text-[10px]">{holding.shares}</ItemDescription>
+                <ItemDescription className="text-[10px]">
+                  {holding.shares}
+                </ItemDescription>
               </ItemContent>
               <div
                 className="flex h-6 w-16 items-end gap-1"

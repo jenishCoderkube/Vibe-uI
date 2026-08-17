@@ -183,8 +183,12 @@ function TeamSwitcher({ teams }: { teams: typeof data.teams }) {
                 {activeTeam && <activeTeam.logo className="size-4" />}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{activeTeam?.name}</span>
-                <span className="truncate text-xs text-muted-foreground">{activeTeam?.plan}</span>
+                <span className="truncate font-semibold">
+                  {activeTeam?.name}
+                </span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {activeTeam?.plan}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
             </SidebarMenuButton>
@@ -216,7 +220,9 @@ function TeamSwitcher({ teams }: { teams: typeof data.teams }) {
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground text-sm">Add team</div>
+              <div className="font-medium text-muted-foreground text-sm">
+                Add team
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -243,7 +249,9 @@ function UserMenu({ user }: { user: typeof data.user }) {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {user.email}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
             </SidebarMenuButton>
@@ -262,7 +270,9 @@ function UserMenu({ user }: { user: typeof data.user }) {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user.email}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -333,7 +343,10 @@ export function SidebarDemo() {
                           {item.items?.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton asChild>
-                                <a href={subItem.url} className="text-muted-foreground hover:text-foreground">
+                                <a
+                                  href={subItem.url}
+                                  className="text-muted-foreground hover:text-foreground"
+                                >
                                   <span>{subItem.title}</span>
                                 </a>
                               </SidebarMenuSubButton>

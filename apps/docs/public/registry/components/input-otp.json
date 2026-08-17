@@ -1,13 +1,7 @@
 {
   "name": "input-otp",
-  "dependencies": [
-    "tailwind-variants",
-    "clsx",
-    "tailwind-merge"
-  ],
-  "registryDependencies": [
-    "utils"
-  ],
+  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+  "registryDependencies": ["utils"],
   "files": [
     {
       "name": "input-otp.tsx",

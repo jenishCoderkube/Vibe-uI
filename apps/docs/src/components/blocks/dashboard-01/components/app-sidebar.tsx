@@ -2,12 +2,6 @@
 
 import React from 'react'
 import {
-  LayoutShellSidebar,
-  LayoutShellBrand,
-  LayoutShellNav,
-  LayoutShellNavItem,
-} from '@/components/ui/layout-shell'
-import {
   GalleryVerticalEnd,
   Layers,
   Users,
@@ -18,6 +12,7 @@ import {
   CreditCard,
   Bell,
   LogOut,
+  Activity,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -27,51 +22,235 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
+} from '@/components/ui/sidebar'
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from '@/components/ui/collapsible'
+import { ChevronRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const LayersIcon = Layers as any
 const UsersIcon = Users as any
 const DatabaseIcon = Database as any
 const FolderIcon = Folder as any
+const ActivityIcon = Activity as any
 
-export function AppSidebar() {
+export function AppSidebar({
+  activeTab = 'Dashboard',
+  setActiveTab,
+}: {
+  activeTab?: string
+  setActiveTab?: (tab: string) => void
+}) {
+  const { isMobile, state, setOpenMobile } = useSidebar()
+  const isCollapsed = state === 'collapsed'
+
+  const navItems = [
+    { title: 'Dashboard', icon: LayersIcon },
+    { title: 'Lifecycle', icon: ActivityIcon },
+    { title: 'Analytics', icon: DatabaseIcon },
+    { title: 'Projects', icon: FolderIcon },
+    { title: 'Team', icon: UsersIcon },
+  ]
+
   return (
-    <LayoutShellSidebar className="border-r border-border bg-muted/60 backdrop-blur-md">
-      <LayoutShellBrand className="border-b border-border">
+    <Sidebar
+      className="border-r border-border bg-muted/60 backdrop-blur-md"
+      collapsible="icon"
+    >
+      <SidebarHeader
+        className={cn(
+          'border-b border-border h-12 flex items-center',
+          isCollapsed ? 'justify-center px-2' : 'justify-between px-4',
+        )}
+      >
         <div className="flex items-center gap-2">
-          <div className="flex size-6 items-center justify-center rounded bg-primary text-primary-foreground">
+          <div className="flex size-6 items-center justify-center rounded bg-primary text-primary-foreground shrink-0">
             <GalleryVerticalEnd className="size-3.5" />
           </div>
-          <span className="text-sm font-bold tracking-tight text-foreground font-mono">
-            Vibe Inc.
-          </span>
+          {!isCollapsed && (
+            <span className="text-sm font-bold tracking-tight text-foreground font-mono">
+              Vibe Inc.
+            </span>
+          )}
         </div>
-      </LayoutShellBrand>
-      <LayoutShellNav>
-        <LayoutShellNavItem active className="text-primary bg-primary/10">
-          <LayersIcon className="h-4 w-4 shrink-0" />
-          <span>Dashboard</span>
-        </LayoutShellNavItem>
-        <LayoutShellNavItem>
-          <UsersIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span>Lifecycle</span>
-        </LayoutShellNavItem>
-        <LayoutShellNavItem>
-          <DatabaseIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span>Analytics</span>
-        </LayoutShellNavItem>
-        <LayoutShellNavItem>
-          <FolderIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span>Projects</span>
-        </LayoutShellNavItem>
-        <LayoutShellNavItem>
-          <UsersIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span>Team</span>
-        </LayoutShellNavItem>
-      </LayoutShellNav>
-      <div className="mt-auto p-4 border-t border-border/40 shrink-0">
+      </SidebarHeader>
+
+      <SidebarContent className="p-2">
+        <SidebarMenu className="flex flex-col gap-1.5 items-center">
+          {navItems.map((item) => (
+            <SidebarMenuItem
+              key={item.title}
+              className="w-full flex justify-center"
+            >
+              <SidebarMenuButton
+                isActive={activeTab === item.title}
+                onClick={() => {
+                  setActiveTab?.(item.title)
+                  if (isMobile) setOpenMobile(false)
+                }}
+                className={cn(
+                  'cursor-pointer transition-all',
+                  activeTab === item.title
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted-foreground',
+                  isCollapsed ? 'justify-center w-full size-12! p-0 gap-0' : '',
+                )}
+              >
+                <item.icon
+                  className={cn(
+                    'shrink-0',
+                    isCollapsed ? 'h-6 w-6' : 'h-4 w-4',
+                  )}
+                />
+                {!isCollapsed && <span>{item.title}</span>}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+
+          {/* Collapsible Dropdown Option for User Settings */}
+          {isCollapsed ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuItem className="w-full flex justify-center">
+                  <SidebarMenuButton className="text-muted-foreground cursor-pointer flex items-center justify-center w-full size-12! p-0 gap-0">
+                    <User className="h-6 w-6 shrink-0" />
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="right"
+                align="start"
+                sideOffset={12}
+                className="w-48 bg-background border-border text-muted-foreground"
+              >
+                <div className="px-2.5 py-2 text-[10px] font-bold text-foreground font-mono uppercase tracking-wider">
+                  User Settings
+                </div>
+                <DropdownMenuSeparator className="bg-muted-foreground/10" />
+                <DropdownMenuItem
+                  onClick={() => {
+                    setActiveTab?.('Profile')
+                    if (isMobile) setOpenMobile(false)
+                  }}
+                  className={cn(
+                    'flex items-center gap-2 px-2.5 py-2 hover:bg-muted focus:bg-muted focus:text-foreground rounded-md cursor-pointer transition-colors text-xs border-0 bg-transparent',
+                    activeTab === 'Profile'
+                      ? 'text-primary font-bold bg-primary/5'
+                      : 'text-muted-foreground',
+                  )}
+                >
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    alert('Navigating to Billing Settings')
+                    if (isMobile) setOpenMobile(false)
+                  }}
+                  className="flex items-center gap-2 px-2.5 py-2 hover:bg-muted focus:bg-muted focus:text-foreground rounded-md cursor-pointer transition-colors text-xs text-muted-foreground border-0 bg-transparent"
+                >
+                  Billing
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    alert('Navigating to Notification Preferences')
+                    if (isMobile) setOpenMobile(false)
+                  }}
+                  className="flex items-center gap-2 px-2.5 py-2 hover:bg-muted focus:bg-muted focus:text-foreground rounded-md cursor-pointer transition-colors text-xs text-muted-foreground border-0 bg-transparent"
+                >
+                  Notifications
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Collapsible className="group/collapsible w-full">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton className="text-muted-foreground cursor-pointer flex items-center justify-between w-full">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 shrink-0" />
+                      <span>User</span>
+                    </div>
+                    <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton
+                        asChild
+                        isActive={activeTab === 'Profile'}
+                      >
+                        <button
+                          onClick={() => {
+                            setActiveTab?.('Profile')
+                            if (isMobile) setOpenMobile(false)
+                          }}
+                          className="text-xs text-muted-foreground hover:text-foreground cursor-pointer w-full text-left py-1.5 pl-4 block bg-transparent border-0 outline-none"
+                        >
+                          Profile
+                        </button>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <button
+                          onClick={() => {
+                            alert('Navigating to Billing Settings')
+                            if (isMobile) setOpenMobile(false)
+                          }}
+                          className="text-xs text-muted-foreground hover:text-foreground cursor-pointer w-full text-left py-1.5 pl-4 block bg-transparent border-0 outline-none"
+                        >
+                          Billing
+                        </button>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <button
+                          onClick={() => {
+                            alert('Navigating to Notification Preferences')
+                            if (isMobile) setOpenMobile(false)
+                          }}
+                          className="text-xs text-muted-foreground hover:text-foreground cursor-pointer w-full text-left py-1.5 pl-4 block bg-transparent border-0 outline-none"
+                        >
+                          Notifications
+                        </button>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+          )}
+        </SidebarMenu>
+      </SidebarContent>
+
+      <SidebarFooter className="p-2 border-t border-border/40 shrink-0 flex justify-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="w-full flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-muted-foreground/5 text-left cursor-pointer transition-colors outline-none border-0 bg-transparent">
+            <button
+              className={cn(
+                'w-full flex items-center gap-3 rounded-lg hover:bg-muted-foreground/5 cursor-pointer transition-colors outline-none border-0 bg-transparent',
+                isCollapsed
+                  ? 'justify-center p-0 size-12! h-12'
+                  : 'p-2 justify-between text-left',
+              )}
+            >
               <div className="flex items-center gap-3 min-w-0">
                 <Avatar className="h-8 w-8 shrink-0">
                   <AvatarImage
@@ -82,21 +261,25 @@ export function AppSidebar() {
                     VU
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col min-w-0 leading-tight">
-                  <span className="text-xs font-bold text-foreground truncate">
-                    vibe ui
-                  </span>
-                  <span className="text-[10px] text-muted-foreground truncate">
-                    m@example.com
-                  </span>
-                </div>
+                {!isCollapsed && (
+                  <div className="flex flex-col min-w-0 leading-tight">
+                    <span className="text-xs font-bold text-foreground truncate">
+                      vibe ui
+                    </span>
+                    <span className="text-[10px] text-muted-foreground truncate">
+                      m@example.com
+                    </span>
+                  </div>
+                )}
               </div>
-              <MoreVertical className="h-4 w-4 shrink-0 text-muted-foreground hover:text-foreground transition-colors" />
+              {!isCollapsed && (
+                <MoreVertical className="h-4 w-4 shrink-0 text-muted-foreground hover:text-foreground transition-colors" />
+              )}
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-56 bg-background border-border text-muted-foreground"
-            side="top"
+            side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={12}
           >
@@ -139,7 +322,7 @@ export function AppSidebar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
-    </LayoutShellSidebar>
+      </SidebarFooter>
+    </Sidebar>
   )
 }

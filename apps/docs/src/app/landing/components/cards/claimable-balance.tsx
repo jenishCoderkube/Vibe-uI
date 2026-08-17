@@ -11,7 +11,7 @@ import {
   Badge,
   Item,
   ItemContent,
-  Separator
+  Separator,
 } from 'vibe-ui'
 
 const netRoyalties = 1248.75
@@ -33,7 +33,10 @@ export function ClaimableBalance() {
           ${formatCurrency(totalClaimable)}
         </CardTitle>
         <div className="flex">
-          <Badge variant="outline" className="gap-1.5 py-0.5 border-amber-500/20 text-amber-600 dark:text-amber-500">
+          <Badge
+            variant="outline"
+            className="gap-1.5 py-0.5 border-amber-500/20 text-amber-600 dark:text-amber-500"
+          >
             <span className="size-1.5 rounded-full bg-amber-500" />
             Pending Setup
           </Badge>
@@ -56,7 +59,9 @@ export function ClaimableBalance() {
             </div>
             <Separator className="bg-border/60" />
             <div className="flex items-center justify-between text-xs sm:text-sm">
-              <span className="text-muted-foreground">Total Ready to Claim</span>
+              <span className="text-muted-foreground">
+                Total Ready to Claim
+              </span>
               <span className="font-bold tabular-nums">
                 ${formatCurrency(totalClaimable)} USD
               </span>
@@ -66,7 +71,8 @@ export function ClaimableBalance() {
       </CardContent>
       <CardFooter>
         <CardDescription className="text-xs leading-relaxed">
-          Once your bank is connected, balances over $10.00 are automatically eligible for monthly distribution on the 15th of each month.
+          Once your bank is connected, balances over $10.00 are automatically
+          eligible for monthly distribution on the 15th of each month.
         </CardDescription>
       </CardFooter>
     </Card>
