@@ -32,11 +32,11 @@ import { ProgressDemoCard } from './cards/progress-card'
 
 export function CardsDemo() {
   return (
-    <section className="hidden md:block w-full border-t border-border/40 py-16 dark:bg-background">
+    <section className="w-full border-t border-border/40 py-16 dark:bg-background">
       <div className="relative">
         
         {/* Simple native CSS Masonry layout for auto-filling vertical space */}
-        <div className="mx-auto w-full px-4 md:px-8 columns-1 md:columns-2 lg:columns-3 2xl:columns-4 gap-8 pb-16">
+        <div className="mx-auto w-full px-2 sm:px-4 md:px-8 columns-1 md:columns-2 lg:columns-3 2xl:columns-4 gap-8 pb-16">
           
           <div className="break-inside-avoid mb-8"><UIElements /></div>
           <div className="break-inside-avoid mb-8"><SidebarNav /></div>

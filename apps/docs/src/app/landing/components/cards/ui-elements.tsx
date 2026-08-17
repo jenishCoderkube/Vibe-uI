@@ -69,7 +69,7 @@ export function UIElements() {
         </div>
 
         {/* Dialogs and actions */}
-        <div className="flex items-center justify-between border-t border-border/40 pt-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/40 pt-3">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="sm" className="h-8 text-xs px-3">Alert Dialog</Button>
@@ -92,7 +92,7 @@ export function UIElements() {
             <Button variant="outline" size="sm" className="h-8 text-xs px-3">Group</Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="size-8">
+                <Button variant="outline" size="icon" className="size-8 !w-8 !px-0">
                   <ChevronDown className="size-3.5" />
                 </Button>
               </DropdownMenuTrigger>
