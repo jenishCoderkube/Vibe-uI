@@ -223,7 +223,7 @@ export function ItemHoverable() {
       <ItemContent>
         <ItemTitle>Explore Components</ItemTitle>
         <ItemDescription>
-          Read our 38+ production-ready component sheets.
+          Read our 75+ production-ready component sheets.
         </ItemDescription>
       </ItemContent>
       <ItemActions>

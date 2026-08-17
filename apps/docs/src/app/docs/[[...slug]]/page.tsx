@@ -429,25 +429,36 @@ export async function generateMetadata({ params }: PageProps) {
     .join(' ')
 
   const isComponent = slug[0] === 'components'
-  const categoryName = isComponent ? 'Component' : 'Documentation Guide'
+  const isAnimation = slug[0] === 'animations'
   const descriptionText = isComponent
     ? `Explore visual styles, responsive console layouts, CLI setup instructions, API properties reference, and implementation codes for the custom ${pageTitle} component in Vibe UI.`
-    : `Learn how to configure, style, install, and optimize the Vibe UI framework for the ${pageTitle} page with modern React best practices.`
+    : isAnimation
+      ? `Learn how to integrate the dynamic, hardware-accelerated Vibe UI ${pageTitle} animation into your React and Next.js applications.`
+      : `Learn how to configure, style, install, and optimize the Vibe UI framework for the ${pageTitle} page with modern React best practices.`
 
   return {
     title: pageTitle,
     description: descriptionText,
     openGraph: {
-      title: `${pageTitle} ${isComponent ? 'Component' : 'Guide'} | Vibe UI`,
+      title: `${pageTitle} ${isComponent ? 'Component' : isAnimation ? 'Animation' : 'Guide'} | Vibe UI`,
       description: descriptionText,
       url: `https://vibe-ui-kit.vercel.app/docs/${slug.join('/')}`,
       type: 'article',
       siteName: 'Vibe UI',
+      images: [
+        {
+          url: 'https://vibe-ui-kit.vercel.app/og-image.jpg',
+          width: 512,
+          height: 512,
+          alt: 'Vibe UI Logo',
+        },
+      ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'summary',
       title: `${pageTitle} | Vibe UI`,
       description: descriptionText,
+      images: ['https://vibe-ui-kit.vercel.app/og-image.jpg'],
     },
   }
 }

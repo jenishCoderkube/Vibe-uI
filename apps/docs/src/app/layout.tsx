@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   },
   title: {
     default:
-      'Vibe UI - Premium React Component Library | 38+ Themed Components',
+      'Vibe UI - Premium React Component Library | 75+ Themed Components',
     template: '%s | Vibe UI',
   },
   description:
-    'Vibe UI is a premium, production-ready React and Next.js component library with 38+ accessible components. Supports Glassmorphism, Neon Glow, Retro Brutalist, and Minimalist themes. Built on Radix UI primitives and Tailwind CSS v4.',
+    'Vibe UI is a premium, production-ready React and Next.js component library with 75+ accessible components. Supports Glassmorphism, Neon Glow, Retro Brutalist, and Minimalist themes. Built on Radix UI primitives and Tailwind CSS v4.',
   keywords: [
     'react component library',
     'nextjs components',
@@ -67,18 +67,27 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Vibe UI - Premium React Component Library',
     description:
-      'Build stunning interfaces with 38+ premium themed components. Supports Glassmorphism, Neon Glow, Retro Brutalist, and Minimalist visual presets.',
+      'Build stunning interfaces with 75+ premium themed components. Supports Glassmorphism, Neon Glow, Retro Brutalist, and Minimalist visual presets.',
     url: SITE_URL,
     siteName: 'Vibe UI',
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 512,
+        height: 512,
+        alt: 'Vibe UI Logo',
+      },
+    ],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: 'Vibe UI - Premium React Component Library',
     description:
-      '38+ production-ready themed React components built on Radix UI and Tailwind CSS v4.',
+      '75+ production-ready themed React components built on Radix UI and Tailwind CSS v4.',
     creator: '@vibeui',
+    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
@@ -103,12 +112,12 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'WebSite',
       '@id': `${SITE_URL}/#website`,
+      '@type': 'WebSite',
       url: SITE_URL,
       name: 'Vibe UI',
       description:
-        'A premium, production-ready React component library with 38+ themed components.',
+        'A premium, production-ready React component library with 75+ themed components.',
       publisher: { '@id': `${SITE_URL}/#organization` },
       potentialAction: {
         '@type': 'SearchAction',
@@ -120,8 +129,8 @@ const jsonLd = {
       },
     },
     {
-      '@type': 'Organization',
       '@id': `${SITE_URL}/#organization`,
+      '@type': 'Organization',
       name: 'Vibe UI',
       url: SITE_URL,
       sameAs: ['https://github.com/jenishCoderkube/Vibe-uI'],
@@ -137,7 +146,7 @@ const jsonLd = {
         priceCurrency: 'USD',
       },
       description:
-        'Premium React component library with 38+ themed, accessible components for modern web applications.',
+        'Premium React component library with 75+ themed, accessible components for modern web applications.',
     },
   ],
 }

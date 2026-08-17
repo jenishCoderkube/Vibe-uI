@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Vibe UI - Premium React Component Library',
     short_name: 'Vibe UI',
     description:
-      '38+ production-ready themed React components built on Radix UI primitives and Tailwind CSS v4.',
+      '75+ production-ready themed React components built on Radix UI primitives and Tailwind CSS v4.',
     start_url: '/',
     display: 'standalone',
     background_color: '#09090b',

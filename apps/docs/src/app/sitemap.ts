@@ -5,13 +5,25 @@ import path from 'path'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://vibe-ui-kit.vercel.app'
 
-  // Core landing pages
+  // Core pages
   const routes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/blocks`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/charts`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/contact`,
@@ -47,11 +59,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const docPaths = getMdxFiles(docsDir)
     for (const docPath of docPaths) {
+      const isComponent = docPath.startsWith('/docs/components/')
+      const isAnimation = docPath.startsWith('/docs/animations/')
       routes.push({
         url: `${baseUrl}${docPath}`,
         lastModified: new Date(),
         changeFrequency: 'weekly',
-        priority: docPath.startsWith('/docs/components/') ? 0.8 : 0.7,
+        priority: isComponent ? 0.8 : isAnimation ? 0.8 : 0.7,
       })
     }
   } catch (error) {
