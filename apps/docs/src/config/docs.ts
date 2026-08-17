@@ -277,6 +277,10 @@ export const docsConfig: DocsConfig = {
           title: 'Infinite Scroll',
           href: '/docs/components/infinite-scroll',
         },
+        {
+          title: 'Sidebar',
+          href: '/docs/components/sidebar',
+        },
       ],
     },
     {

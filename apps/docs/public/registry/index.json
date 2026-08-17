@@ -857,6 +857,29 @@
     ]
   },
   {
+    "name": "sidebar",
+    "files": [
+      "sidebar.tsx",
+      "hooks/use-mobile.ts"
+    ],
+    "dependencies": [
+      "@radix-ui/react-slot",
+      "lucide-react",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils",
+      "button",
+      "input",
+      "separator",
+      "drawer",
+      "skeleton",
+      "tooltip"
+    ]
+  },
+  {
     "name": "skeleton",
     "files": [
       "skeleton.tsx"

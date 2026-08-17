@@ -384,6 +384,7 @@ import {
   TextAnimateDemo,
   VideoTextDemo,
 } from '../../../components/text-animations-demo'
+import { SidebarDemo } from '../../../components/sidebar-demo'
 import { CodeBlockPre } from '../../../components/code-block'
 import {
   ArrowUp,
@@ -2386,6 +2387,7 @@ const mdxComponents = {
   TextAnimateDemo,
   VideoText,
   VideoTextDemo,
+  SidebarDemo,
   h1: ({
     children,
     id,

@@ -209,6 +209,13 @@ const componentDeps: Record<string, string[]> = {
   'text-3d-flip': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   'text-animate': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   'video-text': ['tailwind-variants', 'clsx', 'tailwind-merge'],
+  sidebar: [
+    '@radix-ui/react-slot',
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
 }
 
 const componentRegistryDeps: Record<string, string[]> = {
@@ -220,6 +227,7 @@ const componentRegistryDeps: Record<string, string[]> = {
   combobox: ['popover', 'command', 'button'],
   'date-picker': ['popover', 'calendar', 'button'],
   empty: ['button'],
+  sidebar: ['button', 'input', 'separator', 'drawer', 'skeleton', 'tooltip'],
 }
 
 const blockDeps: Record<string, string[]> = {
@@ -344,6 +352,14 @@ function buildRegistry() {
       ],
     }
 
+    if (name === 'sidebar') {
+      const hookContent = fs.readFileSync(path.resolve(__dirname, '../../ui/src/hooks/use-mobile.ts'), 'utf8')
+      entry.files.push({
+        name: 'hooks/use-mobile.ts',
+        content: hookContent
+      })
+    }
+
     fs.writeFileSync(
       path.join(COMP_OUTPUT_DIR, `${name}.json`),
       JSON.stringify(entry, null, 2),
@@ -352,7 +368,7 @@ function buildRegistry() {
 
     registryEntries.push({
       name,
-      files: [`${name}.tsx`],
+      files: name === 'sidebar' ? [`${name}.tsx`, 'hooks/use-mobile.ts'] : [`${name}.tsx`],
       dependencies: deps,
       registryDependencies: regDeps,
     })
