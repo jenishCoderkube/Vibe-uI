@@ -33,7 +33,25 @@ const componentDeps: Record<string, string[]> = {
   input: ['tailwind-variants', 'clsx', 'tailwind-merge'],
   card: ['tailwind-variants', 'clsx', 'tailwind-merge'],
   label: ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  checkbox: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  checkbox: [
+    '@radix-ui/react-checkbox',
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  avatar: [
+    '@radix-ui/react-avatar',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  tooltip: [
+    '@radix-ui/react-tooltip',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
   accordion: [
     '@radix-ui/react-accordion',
     'lucide-react',
@@ -82,7 +100,13 @@ const componentDeps: Record<string, string[]> = {
     'tailwind-merge',
   ],
   skeleton: ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  select: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  select: [
+    '@radix-ui/react-select',
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
   command: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   'multi-select': [
     'lucide-react',
@@ -90,13 +114,7 @@ const componentDeps: Record<string, string[]> = {
     'clsx',
     'tailwind-merge',
   ],
-  drawer: [
-    '@radix-ui/react-dialog',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
+  drawer: ['vaul', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   table: ['tailwind-variants', 'clsx', 'tailwind-merge'],
   breadcrumb: [
     'lucide-react',
@@ -356,6 +374,22 @@ function buildRegistry() {
         name: 'hooks/use-mobile.ts',
         content: hookContent,
       })
+      // Adjust import path in sidebar.tsx
+      entry.files[0].content = entry.files[0].content.replace(
+        /'\.\.\/hooks\/use-mobile'/g,
+        "'./hooks/use-mobile'",
+      )
+    }
+
+    if (name === 'button') {
+      const groupContent = fs.readFileSync(
+        path.resolve(COMPONENTS_DIR, 'button-group.tsx'),
+        'utf8',
+      )
+      entry.files.push({
+        name: 'button-group.tsx',
+        content: groupContent,
+      })
     }
 
     fs.writeFileSync(
@@ -369,7 +403,9 @@ function buildRegistry() {
       files:
         name === 'sidebar'
           ? [`${name}.tsx`, 'hooks/use-mobile.ts']
-          : [`${name}.tsx`],
+          : name === 'button'
+            ? [`${name}.tsx`, 'button-group.tsx']
+            : [`${name}.tsx`],
       dependencies: deps,
       registryDependencies: regDeps,
     })

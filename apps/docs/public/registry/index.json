@@ -60,7 +60,12 @@
   {
     "name": "avatar",
     "files": ["avatar.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+    "dependencies": [
+      "@radix-ui/react-avatar",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
     "registryDependencies": ["utils"]
   },
   {
@@ -95,7 +100,7 @@
   },
   {
     "name": "button",
-    "files": ["button.tsx"],
+    "files": ["button.tsx", "button-group.tsx"],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
@@ -146,6 +151,7 @@
     "name": "checkbox",
     "files": ["checkbox.tsx"],
     "dependencies": [
+      "@radix-ui/react-checkbox",
       "lucide-react",
       "tailwind-variants",
       "clsx",
@@ -243,13 +249,7 @@
   {
     "name": "drawer",
     "files": ["drawer.tsx"],
-    "dependencies": [
-      "@radix-ui/react-dialog",
-      "lucide-react",
-      "tailwind-variants",
-      "clsx",
-      "tailwind-merge"
-    ],
+    "dependencies": ["vaul", "tailwind-variants", "clsx", "tailwind-merge"],
     "registryDependencies": ["utils"]
   },
   {
@@ -481,6 +481,7 @@
     "name": "select",
     "files": ["select.tsx"],
     "dependencies": [
+      "@radix-ui/react-select",
       "lucide-react",
       "tailwind-variants",
       "clsx",
@@ -624,7 +625,12 @@
   {
     "name": "tooltip",
     "files": ["tooltip.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
+    "dependencies": [
+      "@radix-ui/react-tooltip",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
     "registryDependencies": ["utils"]
   },
   {
@@ -664,6 +670,8 @@
       "dashboard-01/components/chart-area-interactive.tsx",
       "dashboard-01/components/data-table-analytics.tsx",
       "dashboard-01/components/data-table.tsx",
+      "dashboard-01/components/lifecycle-directory.tsx",
+      "dashboard-01/components/profile-directory.tsx",
       "dashboard-01/components/projects-directory.tsx",
       "dashboard-01/components/team-directory.tsx",
       "dashboard-01/page.tsx"
@@ -687,7 +695,8 @@
       "select",
       "dropdown-menu",
       "drawer",
-      "uploader"
+      "uploader",
+      "progress"
     ]
   }
 ]

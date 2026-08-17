@@ -1,12 +1,6 @@
 {
   "name": "drawer",
-  "dependencies": [
-    "@radix-ui/react-dialog",
-    "lucide-react",
-    "tailwind-variants",
-    "clsx",
-    "tailwind-merge"
-  ],
+  "dependencies": ["vaul", "tailwind-variants", "clsx", "tailwind-merge"],
   "registryDependencies": ["utils"],
   "files": [
     {

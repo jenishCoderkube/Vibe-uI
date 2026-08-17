@@ -1,6 +1,7 @@
 {
   "name": "select",
   "dependencies": [
+    "@radix-ui/react-select",
     "lucide-react",
     "tailwind-variants",
     "clsx",
