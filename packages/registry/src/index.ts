@@ -93,7 +93,7 @@ const componentDeps: Record<string, string[]> = {
     'tailwind-merge',
   ],
   dialog: [
-    '@radix-ui/react-slot',
+    '@radix-ui/react-dialog',
     'lucide-react',
     'tailwind-variants',
     'clsx',
@@ -192,7 +192,7 @@ const componentDeps: Record<string, string[]> = {
     'tailwind-merge',
   ],
   collapsible: [
-    '@radix-ui/react-slot',
+    '@radix-ui/react-collapsible',
     'tailwind-variants',
     'clsx',
     'tailwind-merge',
@@ -272,6 +272,8 @@ const blockRegistryDeps: Record<string, string[]> = {
     'drawer',
     'uploader',
     'progress',
+    'collapsible',
+    'dialog',
   ],
 }
 

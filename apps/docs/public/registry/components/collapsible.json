@@ -1,7 +1,7 @@
 {
   "name": "collapsible",
   "dependencies": [
-    "@radix-ui/react-slot",
+    "@radix-ui/react-collapsible",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

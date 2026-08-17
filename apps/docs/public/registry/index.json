@@ -163,7 +163,7 @@
     "name": "collapsible",
     "files": ["collapsible.tsx"],
     "dependencies": [
-      "@radix-ui/react-slot",
+      "@radix-ui/react-collapsible",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -238,7 +238,7 @@
     "name": "dialog",
     "files": ["dialog.tsx"],
     "dependencies": [
-      "@radix-ui/react-slot",
+      "@radix-ui/react-dialog",
       "lucide-react",
       "tailwind-variants",
       "clsx",
@@ -696,7 +696,9 @@
       "dropdown-menu",
       "drawer",
       "uploader",
-      "progress"
+      "progress",
+      "collapsible",
+      "dialog"
     ]
   }
 ]

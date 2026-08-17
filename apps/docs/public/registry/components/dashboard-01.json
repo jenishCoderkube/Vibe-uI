@@ -20,7 +20,9 @@
     "dropdown-menu",
     "drawer",
     "uploader",
-    "progress"
+    "progress",
+    "collapsible",
+    "dialog"
   ],
   "files": [
     {
