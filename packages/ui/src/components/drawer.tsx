@@ -60,8 +60,8 @@ const drawerContentVariants = tv({
     side: {
       top: 'inset-x-0 top-0 mb-24 max-h-[80vh]',
       bottom: 'inset-x-0 bottom-0 mt-24 max-h-[80vh]',
-      left: 'inset-y-0 left-0 h-full w-3/4 sm:max-w-sm',
-      right: 'inset-y-0 right-0 h-full w-3/4 sm:max-w-sm',
+      left: 'inset-y-0 left-0 h-full w-full sm:max-w-sm',
+      right: 'inset-y-0 right-0 h-full w-full sm:max-w-sm',
     },
     variant: {
       default: 'bg-background border-border text-foreground',

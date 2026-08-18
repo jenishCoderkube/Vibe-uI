@@ -6,7 +6,9 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": ["utils"],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "command.tsx",

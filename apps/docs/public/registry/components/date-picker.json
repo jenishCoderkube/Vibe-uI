@@ -7,7 +7,12 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": ["utils", "popover", "calendar", "button"],
+  "registryDependencies": [
+    "utils",
+    "popover",
+    "calendar",
+    "button"
+  ],
   "files": [
     {
       "name": "date-picker.tsx",

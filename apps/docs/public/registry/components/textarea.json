@@ -1,7 +1,13 @@
 {
   "name": "textarea",
-  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-  "registryDependencies": ["utils"],
+  "dependencies": [
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "textarea.tsx",

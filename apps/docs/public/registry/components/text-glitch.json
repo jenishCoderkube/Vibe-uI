@@ -1,7 +1,13 @@
 {
   "name": "text-glitch",
-  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-  "registryDependencies": ["utils"],
+  "dependencies": [
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "text-glitch.tsx",

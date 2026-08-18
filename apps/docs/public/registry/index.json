@@ -1,7 +1,9 @@
 [
   {
     "name": "accordion",
-    "files": ["accordion.tsx"],
+    "files": [
+      "accordion.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-accordion",
       "lucide-react",
@@ -9,80 +11,146 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "alert-dialog",
-    "files": ["alert-dialog.tsx"],
+    "files": [
+      "alert-dialog.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-alert-dialog",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils", "button"]
+    "registryDependencies": [
+      "utils",
+      "button"
+    ]
   },
   {
     "name": "alert",
-    "files": ["alert.tsx"],
+    "files": [
+      "alert.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "animated-gradient-text",
-    "files": ["animated-gradient-text.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "animated-gradient-text.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "animated-shiny-text",
-    "files": ["animated-shiny-text.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "animated-shiny-text.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "aspect-ratio",
-    "files": ["aspect-ratio.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "aspect-ratio.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "aurora-text",
-    "files": ["aurora-text.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "aurora-text.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "avatar",
-    "files": ["avatar.tsx"],
+    "files": [
+      "avatar.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-avatar",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "badge",
-    "files": ["badge.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "badge.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "blur-fade",
-    "files": ["blur-fade.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "blur-fade.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "breadcrumb",
-    "files": ["breadcrumb.tsx"],
+    "files": [
+      "breadcrumb.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
@@ -90,17 +158,30 @@
       "tailwind-merge",
       "@radix-ui/react-slot"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "button-group",
-    "files": ["button-group.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "button-group.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "button",
-    "files": ["button.tsx", "button-group.tsx"],
+    "files": [
+      "button.tsx",
+      "button-group.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
@@ -108,11 +189,15 @@
       "tailwind-merge",
       "@radix-ui/react-slot"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "calendar",
-    "files": ["calendar.tsx"],
+    "files": [
+      "calendar.tsx"
+    ],
     "dependencies": [
       "react-day-picker",
       "date-fns",
@@ -121,17 +206,30 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils", "button"]
+    "registryDependencies": [
+      "utils",
+      "button"
+    ]
   },
   {
     "name": "card",
-    "files": ["card.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "card.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "carousel",
-    "files": ["carousel.tsx"],
+    "files": [
+      "carousel.tsx"
+    ],
     "dependencies": [
       "embla-carousel-react",
       "lucide-react",
@@ -139,17 +237,31 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils", "button"]
+    "registryDependencies": [
+      "utils",
+      "button"
+    ]
   },
   {
     "name": "chart",
-    "files": ["chart.tsx"],
-    "dependencies": ["recharts", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "chart.tsx"
+    ],
+    "dependencies": [
+      "recharts",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "checkbox",
-    "files": ["checkbox.tsx"],
+    "files": [
+      "checkbox.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-checkbox",
       "lucide-react",
@@ -157,50 +269,78 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "collapsible",
-    "files": ["collapsible.tsx"],
+    "files": [
+      "collapsible.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-collapsible",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "combobox",
-    "files": ["combobox.tsx"],
+    "files": [
+      "combobox.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils", "popover", "command", "button"]
+    "registryDependencies": [
+      "utils",
+      "popover",
+      "command",
+      "button"
+    ]
   },
   {
     "name": "comic-text",
-    "files": ["comic-text.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "comic-text.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "command",
-    "files": ["command.tsx"],
+    "files": [
+      "command.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "context-menu",
-    "files": ["context-menu.tsx"],
+    "files": [
+      "context-menu.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-context-menu",
       "lucide-react",
@@ -208,17 +348,29 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "dashboard-02",
-    "files": ["dashboard-02.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "dashboard-02.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "date-picker",
-    "files": ["date-picker.tsx"],
+    "files": [
+      "date-picker.tsx"
+    ],
     "dependencies": [
       "date-fns",
       "lucide-react",
@@ -226,17 +378,33 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils", "popover", "calendar", "button"]
+    "registryDependencies": [
+      "utils",
+      "popover",
+      "calendar",
+      "button"
+    ]
   },
   {
     "name": "dia-text-reveal",
-    "files": ["dia-text-reveal.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "dia-text-reveal.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "dialog",
-    "files": ["dialog.tsx"],
+    "files": [
+      "dialog.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-dialog",
       "lucide-react",
@@ -244,17 +412,30 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "drawer",
-    "files": ["drawer.tsx"],
-    "dependencies": ["vaul", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "drawer.tsx"
+    ],
+    "dependencies": [
+      "vaul",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "dropdown-menu",
-    "files": ["dropdown-menu.tsx"],
+    "files": [
+      "dropdown-menu.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-dropdown-menu",
       "lucide-react",
@@ -262,115 +443,217 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "empty",
-    "files": ["empty.tsx"],
+    "files": [
+      "empty.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils", "button"]
+    "registryDependencies": [
+      "utils",
+      "button"
+    ]
   },
   {
     "name": "hover-card",
-    "files": ["hover-card.tsx"],
+    "files": [
+      "hover-card.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-hover-card",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "hyper-text",
-    "files": ["hyper-text.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "hyper-text.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "infinite-scroll",
-    "files": ["infinite-scroll.tsx"],
+    "files": [
+      "infinite-scroll.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "input-otp",
-    "files": ["input-otp.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "input-otp.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "input",
-    "files": ["input.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "input.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "item",
-    "files": ["item.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "item.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "kbd",
-    "files": ["kbd.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "kbd.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "kinetic-text",
-    "files": ["kinetic-text.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "kinetic-text.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "label",
-    "files": ["label.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "label.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "layout-shell",
-    "files": ["layout-shell.tsx"],
+    "files": [
+      "layout-shell.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "line-shadow-text",
-    "files": ["line-shadow-text.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "line-shadow-text.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "marker",
-    "files": ["marker.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "marker.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "marquee",
-    "files": ["marquee.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "marquee.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "menubar",
-    "files": ["menubar.tsx"],
+    "files": [
+      "menubar.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-menubar",
       "lucide-react",
@@ -378,79 +661,133 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "message-scroller",
-    "files": ["message-scroller.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "message-scroller.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "message",
-    "files": ["message.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "message.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "morphing-text",
-    "files": ["morphing-text.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "morphing-text.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "multi-select",
-    "files": ["multi-select.tsx"],
+    "files": [
+      "multi-select.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "number-ticker",
-    "files": ["number-ticker.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "number-ticker.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "pagination",
-    "files": ["pagination.tsx"],
+    "files": [
+      "pagination.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils", "button"]
+    "registryDependencies": [
+      "utils",
+      "button"
+    ]
   },
   {
     "name": "popover",
-    "files": ["popover.tsx"],
+    "files": [
+      "popover.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-popover",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "progress",
-    "files": ["progress.tsx"],
+    "files": [
+      "progress.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-progress",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "radio-group",
-    "files": ["radio-group.tsx"],
+    "files": [
+      "radio-group.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-radio-group",
       "lucide-react",
@@ -458,28 +795,45 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "scroll-area",
-    "files": ["scroll-area.tsx"],
+    "files": [
+      "scroll-area.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-scroll-area",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "scroll-based-velocity",
-    "files": ["scroll-based-velocity.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "scroll-based-velocity.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "select",
-    "files": ["select.tsx"],
+    "files": [
+      "select.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-select",
       "lucide-react",
@@ -487,17 +841,30 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "separator",
-    "files": ["separator.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "separator.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "sidebar",
-    "files": ["sidebar.tsx", "hooks/use-mobile.ts"],
+    "files": [
+      "sidebar.tsx",
+      "hooks/use-mobile.ts"
+    ],
     "dependencies": [
       "@radix-ui/react-slot",
       "lucide-react",
@@ -517,96 +884,209 @@
   },
   {
     "name": "skeleton",
-    "files": ["skeleton.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "skeleton.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "slider",
-    "files": ["slider.tsx"],
+    "files": [
+      "slider.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-slider",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "sparkles-text",
-    "files": ["sparkles-text.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "sparkles-text.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "spinner",
-    "files": ["spinner.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "spinner.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "spinning-text",
-    "files": ["spinning-text.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "spinning-text.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "switch",
-    "files": ["switch.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "switch.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "table",
-    "files": ["table.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "table.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "tabs",
-    "files": ["tabs.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "tabs.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "text-3d-flip",
-    "files": ["text-3d-flip.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "text-3d-flip.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "text-animate",
-    "files": ["text-animate.tsx"],
-    "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "text-animate.tsx"
+    ],
+    "dependencies": [
+      "motion",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "text-glitch",
-    "files": ["text-glitch.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "text-glitch.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "text-reveal",
-    "files": ["text-reveal.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "text-reveal.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "textarea",
-    "files": ["textarea.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "textarea.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "theme-switcher",
-    "files": ["theme-switcher.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "theme-switcher.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "toast",
-    "files": ["toast.tsx"],
+    "files": [
+      "toast.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-toast",
       "lucide-react",
@@ -614,53 +1094,98 @@
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "toggle",
-    "files": ["toggle.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "toggle.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "tooltip",
-    "files": ["tooltip.tsx"],
+    "files": [
+      "tooltip.tsx"
+    ],
     "dependencies": [
       "@radix-ui/react-tooltip",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils"]
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "typing-animation",
-    "files": ["typing-animation.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "typing-animation.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "uploader",
-    "files": ["uploader.tsx"],
+    "files": [
+      "uploader.tsx"
+    ],
     "dependencies": [
       "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
-    "registryDependencies": ["utils", "button", "progress", "badge"]
+    "registryDependencies": [
+      "utils",
+      "button",
+      "progress",
+      "badge"
+    ]
   },
   {
     "name": "video-text",
-    "files": ["video-text.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "video-text.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "word-rotate",
-    "files": ["word-rotate.tsx"],
-    "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-    "registryDependencies": ["utils"]
+    "files": [
+      "word-rotate.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
   },
   {
     "name": "dashboard-01",

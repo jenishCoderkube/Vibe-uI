@@ -1,7 +1,13 @@
 {
   "name": "switch",
-  "dependencies": ["tailwind-variants", "clsx", "tailwind-merge"],
-  "registryDependencies": ["utils"],
+  "dependencies": [
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "switch.tsx",

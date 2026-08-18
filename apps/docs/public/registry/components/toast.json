@@ -7,7 +7,9 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": ["utils"],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "toast.tsx",

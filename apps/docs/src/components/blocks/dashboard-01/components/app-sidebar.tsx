@@ -74,7 +74,7 @@ export function AppSidebar({
     >
       <SidebarHeader
         className={cn(
-          'border-b border-border h-12 flex items-center',
+          'border-b border-border h-12 flex flex-row items-center',
           isCollapsed ? 'justify-center px-2' : 'justify-between px-4',
         )}
       >
@@ -91,7 +91,7 @@ export function AppSidebar({
       </SidebarHeader>
 
       <SidebarContent className="p-2">
-        <SidebarMenu className="flex flex-col gap-1.5 items-center">
+        <SidebarMenu className={cn('flex flex-col items-center', isCollapsed ? 'gap-3' : 'gap-1.5')}>
           {navItems.map((item) => (
             <SidebarMenuItem
               key={item.title}
@@ -104,20 +104,33 @@ export function AppSidebar({
                   if (isMobile) setOpenMobile(false)
                 }}
                 className={cn(
-                  'cursor-pointer transition-all',
+                  'relative w-full cursor-pointer overflow-hidden transition-all duration-500',
                   activeTab === item.title
-                    ? 'text-primary bg-primary/10'
-                    : 'text-muted-foreground',
-                  isCollapsed ? 'justify-center w-full size-12! p-0 gap-0' : '',
+                    ? 'text-primary bg-primary/10 font-bold'
+                    : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground',
+                  isCollapsed ? 'group-data-[collapsible=icon]:h-14! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:p-0!' : 'h-10 px-3',
                 )}
               >
-                <item.icon
+                <div
                   className={cn(
-                    'shrink-0',
-                    isCollapsed ? 'h-6 w-6' : 'h-4 w-4',
+                    'absolute transition-all duration-500 ease-in-out flex items-center justify-center',
+                    isCollapsed
+                      ? 'left-1/2 -translate-x-1/2 top-[9px] h-5 w-5 scale-110'
+                      : 'left-3 top-1/2 -translate-y-1/2 h-4 w-4 scale-100',
                   )}
-                />
-                {!isCollapsed && <span>{item.title}</span>}
+                >
+                  <item.icon className="h-full w-full shrink-0" />
+                </div>
+                <span
+                  className={cn(
+                    'absolute transition-all duration-500 ease-in-out whitespace-nowrap origin-center',
+                    isCollapsed
+                      ? 'left-1/2 -translate-x-1/2 top-[34px] text-[9px] font-medium opacity-80'
+                      : 'left-9 top-1/2 -translate-y-1/2 text-xs font-semibold opacity-100',
+                  )}
+                >
+                  {item.title}
+                </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -127,8 +140,13 @@ export function AppSidebar({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuItem className="w-full flex justify-center">
-                  <SidebarMenuButton className="text-muted-foreground cursor-pointer flex items-center justify-center w-full size-12! p-0 gap-0">
-                    <User className="h-6 w-6 shrink-0" />
+                  <SidebarMenuButton className="relative w-full text-muted-foreground cursor-pointer overflow-hidden transition-all duration-500 group-data-[collapsible=icon]:h-14! group-data-[collapsible=icon]:w-full! group-data-[collapsible=icon]:p-0! hover:bg-muted/40 hover:text-foreground">
+                    <div className="absolute left-1/2 -translate-x-1/2 top-[9px] h-5 w-5 scale-110 flex items-center justify-center">
+                      <User className="h-full w-full shrink-0" />
+                    </div>
+                    <span className="absolute left-1/2 -translate-x-1/2 top-[34px] text-[9px] font-medium opacity-80 whitespace-nowrap">
+                      User
+                    </span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </DropdownMenuTrigger>
@@ -180,7 +198,7 @@ export function AppSidebar({
             <Collapsible className="group/collapsible w-full">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton className="text-muted-foreground cursor-pointer flex items-center justify-between w-full">
+                  <SidebarMenuButton className="text-muted-foreground cursor-pointer flex items-center justify-between w-full h-10 px-3 hover:bg-muted/40 hover:text-foreground transition-all duration-300">
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 shrink-0" />
                       <span>User</span>

@@ -21,6 +21,7 @@ import {
   CreditCard,
   Bell,
   LogOut,
+  X,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -719,9 +720,9 @@ export default function Dashboard01Page() {
         onOpenChange={setIsDrawerOpen}
         direction="right"
       >
-        <DrawerContent className="h-full flex flex-col justify-between w-3/4 sm:max-w-sm border-l border-border bg-background">
+        <DrawerContent className="h-full flex flex-col justify-between w-full sm:max-w-sm border-l border-border bg-background">
           <div className="flex flex-col flex-1 overflow-hidden">
-            <DrawerHeader className="border-b border-border/40 pb-4 shrink-0">
+            <DrawerHeader className="border-b border-border/40 pb-4 shrink-0 relative text-left">
               <DrawerTitle className="text-sm font-bold text-foreground">
                 Add New Product
               </DrawerTitle>
@@ -729,6 +730,15 @@ export default function Dashboard01Page() {
                 Fill in the product details and save it to add it to the table
                 list.
               </DrawerDescription>
+              <DrawerClose asChild>
+                <Button
+                  variant="ghost"
+                  className="absolute right-4 top-4 h-6 w-6 p-0 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
+                >
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Close</span>
+                </Button>
+              </DrawerClose>
             </DrawerHeader>
             <div className="p-4 space-y-4 overflow-y-auto flex-1 text-left">
               {/* Product Image Uploader first */}

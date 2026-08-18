@@ -1,7 +1,14 @@
 {
   "name": "spinning-text",
-  "dependencies": ["motion", "tailwind-variants", "clsx", "tailwind-merge"],
-  "registryDependencies": ["utils"],
+  "dependencies": [
+    "motion",
+    "tailwind-variants",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
   "files": [
     {
       "name": "spinning-text.tsx",
