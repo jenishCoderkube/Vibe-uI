@@ -607,6 +607,21 @@
     ]
   },
   {
+    "name": "light-tunnel",
+    "files": [
+      "light-tunnel.tsx"
+    ],
+    "dependencies": [
+      "ogl",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "line-shadow-text",
     "files": [
       "line-shadow-text.tsx"
@@ -897,6 +912,21 @@
     ]
   },
   {
+    "name": "sliced-waves",
+    "files": [
+      "sliced-waves.tsx"
+    ],
+    "dependencies": [
+      "ogl",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "slider",
     "files": [
       "slider.tsx"
@@ -1165,6 +1195,21 @@
       "video-text.tsx"
     ],
     "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
+    "name": "web-threads",
+    "files": [
+      "web-threads.tsx"
+    ],
+    "dependencies": [
+      "ogl",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"

@@ -227,6 +227,9 @@ const componentDeps: Record<string, string[]> = {
   'text-3d-flip': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   'text-animate': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   'video-text': ['tailwind-variants', 'clsx', 'tailwind-merge'],
+  'light-tunnel': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  'web-threads': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  'sliced-waves': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   sidebar: [
     '@radix-ui/react-slot',
     'lucide-react',

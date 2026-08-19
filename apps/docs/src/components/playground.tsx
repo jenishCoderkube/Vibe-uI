@@ -45,8 +45,11 @@ import {
   Text3DFlip,
   TextAnimate,
   VideoText,
+  LightTunnel,
+  WebThreads,
+  SlicedWaves,
 } from 'vibe-ui'
-import type { AnimationVariant } from 'vibe-ui'
+import type { AnimationVariant, SlicedWavesOrientation } from 'vibe-ui'
 import { Copy, Check, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Highlight, themes } from 'prism-react-renderer'
@@ -84,6 +87,8 @@ type ComponentType =
   | 'text-3d-flip'
   | 'text-animate'
   | 'video-text'
+  | 'light-tunnel'
+  | 'web-threads'
 
 interface ComponentPlaygroundProps {
   component?: ComponentType
@@ -293,6 +298,29 @@ export function ComponentPlayground({ component }: ComponentPlaygroundProps) {
   const [vtSrc, setVtSrc] = useState(
     'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
   )
+
+  // Light Tunnel
+  const [ltCableColor, setLtCableColor] = useState('#8b5cf6')
+  const [ltPulseColor, setLtPulseColor] = useState('#c084fc')
+  const [ltSpeed, setLtSpeed] = useState(0.15)
+  const [ltFlowDirection, setLtFlowDirection] = useState<'inward' | 'outward'>('outward')
+
+  // Web Threads
+  const [wtColor1, setWtColor1] = useState('#5227FF')
+  const [wtColor2, setWtColor2] = useState('#FF9FFC')
+  const [wtSpeed, setWtSpeed] = useState(0.2)
+  const [wtThreadCount, setWtThreadCount] = useState(6)
+  const [wtFanMode, setWtFanMode] = useState<FanMode>('center')
+
+  // Sliced Waves
+  const [swColor1, setSwColor1] = useState('#FF9FFC')
+  const [swColor2, setSwColor2] = useState('#5227FF')
+  const [swColor3, setSwColor3] = useState('#B497CF')
+  const [swColumns, setSwColumns] = useState(14)
+  const [swRows, setSwRows] = useState(8)
+  const [swBarThickness, setSwBarThickness] = useState(0.1)
+  const [swSpeed, setSwSpeed] = useState(0.35)
+  const [swOrientation, setSwOrientation] = useState<SlicedWavesOrientation>('horizontal')
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -706,6 +734,73 @@ export default function VideoTextDemo() {
     </div>
   )
 }`
+      case 'light-tunnel':
+        return `import { LightTunnel } from '@/components/ui/light-tunnel'
+
+export default function LightTunnelDemo() {
+  return (
+    <div className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
+      <div className="absolute inset-0 z-0">
+        <LightTunnel
+          cableColor="${ltCableColor}"
+          pulseColor="${ltPulseColor}"
+          speed={${ltSpeed}}
+          flowDirection="${ltFlowDirection}"
+        />
+      </div>
+      <div className="relative z-10 text-white font-extrabold text-xl">
+        Vibe UI
+      </div>
+    </div>
+  )
+}`
+      case 'web-threads':
+        return `import { WebThreads } from '@/components/ui/web-threads'
+
+export default function WebThreadsDemo() {
+  return (
+    <div className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
+      <div className="absolute inset-0 z-0">
+        <WebThreads
+          color1="${wtColor1}"
+          color2="${wtColor2}"
+          speed={${wtSpeed}}
+          threadCount={${wtThreadCount}}
+          fanMode="${wtFanMode}"
+        />
+      </div>
+      <div className="relative z-10 text-white font-extrabold text-xl">
+        Vibe UI
+      </div>
+    </div>
+  )
+}`
+      case 'sliced-waves':
+        return `import { SlicedWaves } from '@/components/ui/sliced-waves'
+
+export default function SlicedWavesDemo() {
+  return (
+    <div className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
+      <div className="absolute inset-0 z-0">
+        <SlicedWaves
+          color1="${swColor1}"
+          color2="${swColor2}"
+          color3="${swColor3}"
+          columns={${swColumns}}
+          rows={${swRows}}
+          barThickness={${swBarThickness}}
+          speed={${swSpeed}}
+          orientation="${swOrientation}"
+        />
+      </div>
+      <div className="relative z-10 text-white font-extrabold text-xl">
+        Vibe UI
+      </div>
+    </div>
+  )
+}`
+      default:
+        return ''
     }
   }
 
@@ -1189,6 +1284,65 @@ export default function VideoTextDemo() {
                   <VideoText key={`${vtText}-${vtSrc}`} src={vtSrc}>
                     {vtText}
                   </VideoText>
+                </div>
+              </div>
+            )}
+            {activeComponent === 'light-tunnel' && (
+              <div className="w-full text-center flex justify-center">
+                <div className="relative h-[250px] w-full overflow-hidden rounded-xl border border-white/10 bg-zinc-950 flex items-center justify-center">
+                  <div className="absolute inset-0 z-0">
+                    <LightTunnel
+                      key={`${ltCableColor}-${ltPulseColor}-${ltSpeed}-${ltFlowDirection}`}
+                      cableColor={ltCableColor}
+                      pulseColor={ltPulseColor}
+                      speed={ltSpeed}
+                      flowDirection={ltFlowDirection}
+                    />
+                  </div>
+                  <div className="relative z-10 text-white font-extrabold text-xl select-none">
+                    Vibe UI
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeComponent === 'web-threads' && (
+              <div className="w-full text-center flex justify-center">
+                <div className="relative h-[250px] w-full overflow-hidden rounded-xl border border-white/10 bg-zinc-950 flex items-center justify-center">
+                  <div className="absolute inset-0 z-0">
+                    <WebThreads
+                      key={`${wtColor1}-${wtColor2}-${wtSpeed}-${wtThreadCount}-${wtFanMode}`}
+                      color1={wtColor1}
+                      color2={wtColor2}
+                      speed={wtSpeed}
+                      threadCount={wtThreadCount}
+                      fanMode={wtFanMode}
+                    />
+                  </div>
+                  <div className="relative z-10 text-white font-extrabold text-xl select-none">
+                    Vibe UI
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeComponent === 'sliced-waves' && (
+              <div className="w-full text-center flex justify-center">
+                <div className="relative h-[250px] w-full overflow-hidden rounded-xl border border-white/10 bg-zinc-950 flex items-center justify-center">
+                  <div className="absolute inset-0 z-0">
+                    <SlicedWaves
+                      key={`${swColor1}-${swColor2}-${swColor3}-${swColumns}-${swRows}-${swBarThickness}-${swSpeed}-${swOrientation}`}
+                      color1={swColor1}
+                      color2={swColor2}
+                      color3={swColor3}
+                      columns={swColumns}
+                      rows={swRows}
+                      barThickness={swBarThickness}
+                      speed={swSpeed}
+                      orientation={swOrientation}
+                    />
+                  </div>
+                  <div className="relative z-10 text-white font-extrabold text-xl select-none">
+                    Vibe UI
+                  </div>
                 </div>
               </div>
             )}
@@ -2462,6 +2616,270 @@ export default function VideoTextDemo() {
                   onChange={(e) => setVtSrc(e.target.value)}
                   className="w-full text-xs bg-background border border-border rounded-lg px-3 py-2 text-foreground outline-none focus:border-primary/50 transition-colors font-mono"
                 />
+              </div>
+            </div>
+          )}
+
+          {/* LIGHT TUNNEL CONTROLS */}
+          {activeComponent === 'light-tunnel' && (
+            <div className="space-y-4">
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Cable Color</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={ltCableColor}
+                    onChange={(e) => setLtCableColor(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{ltCableColor}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Pulse Color</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={ltPulseColor}
+                    onChange={(e) => setLtPulseColor(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{ltPulseColor}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Flow Speed</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {ltSpeed}
+                  </span>
+                </div>
+                <Slider
+                  max={0.5}
+                  min={0.01}
+                  step={0.01}
+                  value={[ltSpeed]}
+                  onValueChange={(val) => setLtSpeed(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Flow Direction</Label>
+                <div className="flex gap-2">
+                  {(['outward', 'inward'] as const).map((dir) => (
+                    <button
+                      key={dir}
+                      type="button"
+                      onClick={() => setLtFlowDirection(dir)}
+                      className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
+                        ltFlowDirection === dir
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background text-foreground border-border hover:bg-muted'
+                      }`}
+                    >
+                      {dir}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* WEB THREADS CONTROLS */}
+          {activeComponent === 'web-threads' && (
+            <div className="space-y-4">
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Color 1</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={wtColor1}
+                    onChange={(e) => setWtColor1(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{wtColor1}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Color 2</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={wtColor2}
+                    onChange={(e) => setWtColor2(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{wtColor2}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Flow Speed</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {wtSpeed}
+                  </span>
+                </div>
+                <Slider
+                  max={1.0}
+                  min={0.01}
+                  step={0.01}
+                  value={[wtSpeed]}
+                  onValueChange={(val) => setWtSpeed(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Thread Count</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {wtThreadCount}
+                  </span>
+                </div>
+                <Slider
+                  max={10}
+                  min={1}
+                  step={1}
+                  value={[wtThreadCount]}
+                  onValueChange={(val) => setWtThreadCount(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Fan Mode</Label>
+                <div className="flex gap-2">
+                  {(['center', 'left', 'right'] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setWtFanMode(mode)}
+                      className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
+                        wtFanMode === mode
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background text-foreground border-border hover:bg-muted'
+                      }`}
+                    >
+                      {mode}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SLICED WAVES CONTROLS */}
+          {activeComponent === 'sliced-waves' && (
+            <div className="space-y-4">
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Color 1</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={swColor1}
+                    onChange={(e) => setSwColor1(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{swColor1}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Color 2</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={swColor2}
+                    onChange={(e) => setSwColor2(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{swColor2}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Color 3</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={swColor3}
+                    onChange={(e) => setSwColor3(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{swColor3}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Columns</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {swColumns}
+                  </span>
+                </div>
+                <Slider
+                  max={30}
+                  min={1}
+                  step={1}
+                  value={[swColumns]}
+                  onValueChange={(val) => setSwColumns(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Rows</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {swRows}
+                  </span>
+                </div>
+                <Slider
+                  max={30}
+                  min={1}
+                  step={1}
+                  value={[swRows]}
+                  onValueChange={(val) => setSwRows(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Bar Thickness</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {swBarThickness}
+                  </span>
+                </div>
+                <Slider
+                  max={0.5}
+                  min={0.01}
+                  step={0.01}
+                  value={[swBarThickness]}
+                  onValueChange={(val) => setSwBarThickness(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Flow Speed</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {swSpeed}
+                  </span>
+                </div>
+                <Slider
+                  max={1.5}
+                  min={0.01}
+                  step={0.01}
+                  value={[swSpeed]}
+                  onValueChange={(val) => setSwSpeed(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Orientation</Label>
+                <div className="flex gap-2">
+                  {(['horizontal', 'vertical'] as const).map((dir) => (
+                    <button
+                      key={dir}
+                      type="button"
+                      onClick={() => setSwOrientation(dir)}
+                      className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
+                        swOrientation === dir
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background text-foreground border-border hover:bg-muted'
+                      }`}
+                    >
+                      {dir}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}

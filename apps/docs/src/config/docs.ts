@@ -368,5 +368,22 @@ export const docsConfig: DocsConfig = {
         },
       ],
     },
+    {
+      title: 'Backgrounds',
+      items: [
+        {
+          title: 'Light Tunnel',
+          href: '/docs/backgrounds/light-tunnel',
+        },
+        {
+          title: 'Web Threads',
+          href: '/docs/backgrounds/web-threads',
+        },
+        {
+          title: 'Sliced Waves',
+          href: '/docs/backgrounds/sliced-waves',
+        },
+      ],
+    },
   ],
 }

@@ -18,6 +18,7 @@ interface ComponentPreviewProps {
   vibeDeps?: string
   npmDeps?: string
   noBorder?: boolean
+  noPadding?: boolean
 }
 
 function getTextFromChildren(children: React.ReactNode): string {
@@ -46,6 +47,7 @@ export function ComponentPreview({
   vibeDeps,
   npmDeps,
   noBorder = false,
+  noPadding = false,
 }: ComponentPreviewProps) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -248,7 +250,8 @@ export function ComponentPreview({
         {tab === 'preview' && (
           <div
             className={cn(
-              'relative flex min-h-[220px] sm:min-h-[350px] w-full items-center justify-center p-2 sm:p-6 md:p-10 bg-background not-typeset not-prose',
+              'relative flex min-h-[220px] sm:min-h-[350px] w-full items-center justify-center bg-background not-typeset not-prose',
+              noPadding ? 'p-0' : 'p-2 sm:p-6 md:p-10',
               className?.includes('overflow-visible')
                 ? 'overflow-visible z-20'
                 : 'overflow-hidden',
@@ -262,7 +265,8 @@ export function ComponentPreview({
             <div
               key={previewKey}
               className={cn(
-                'relative z-10 flex gap-4 flex-wrap w-full max-w-full not-typeset not-prose py-2 px-1 sm:py-4 sm:px-2',
+                'relative z-10 flex gap-4 flex-wrap w-full max-w-full not-typeset not-prose',
+                noPadding ? 'p-0' : 'py-2 px-1 sm:py-4 sm:px-2',
                 className?.includes('overflow-visible')
                   ? 'overflow-visible items-center justify-center z-20'
                   : 'items-center justify-center overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]',

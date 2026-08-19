@@ -384,6 +384,21 @@ import {
   TextAnimateDemo,
   VideoTextDemo,
 } from '../../../components/text-animations-demo'
+import {
+  LightTunnelBasicDemo,
+  LightTunnelCyberDemo,
+  LightTunnelSunsetDemo,
+} from '../../../components/light-tunnel-demo'
+import {
+  WebThreadsBasicDemo,
+  WebThreadsMatrixDemo,
+  WebThreadsFlameDemo,
+} from '../../../components/web-threads-demo'
+import {
+  SlicedWavesBasicDemo,
+  SlicedWavesCyberDemo,
+  SlicedWavesOceanDemo,
+} from '../../../components/sliced-waves-demo'
 import { SidebarDemo } from '../../../components/sidebar-demo'
 import { CodeBlockPre } from '../../../components/code-block'
 import {
@@ -430,17 +445,20 @@ export async function generateMetadata({ params }: PageProps) {
 
   const isComponent = slug[0] === 'components'
   const isAnimation = slug[0] === 'animations'
+  const isBackground = slug[0] === 'backgrounds'
   const descriptionText = isComponent
     ? `Explore visual styles, responsive console layouts, CLI setup instructions, API properties reference, and implementation codes for the custom ${pageTitle} component in Vibe UI.`
     : isAnimation
       ? `Learn how to integrate the dynamic, hardware-accelerated Vibe UI ${pageTitle} animation into your React and Next.js applications.`
-      : `Learn how to configure, style, install, and optimize the Vibe UI framework for the ${pageTitle} page with modern React best practices.`
+      : isBackground
+        ? `Learn how to configure, style, install, and optimize the hardware-accelerated Vibe UI ${pageTitle} background effect into your React and Next.js applications.`
+        : `Learn how to configure, style, install, and optimize the Vibe UI framework for the ${pageTitle} page with modern React best practices.`
 
   return {
     title: pageTitle,
     description: descriptionText,
     openGraph: {
-      title: `${pageTitle} ${isComponent ? 'Component' : isAnimation ? 'Animation' : 'Guide'} | Vibe UI`,
+      title: `${pageTitle} ${isComponent ? 'Component' : isAnimation ? 'Animation' : isBackground ? 'Background' : 'Guide'} | Vibe UI`,
       description: descriptionText,
       url: `https://vibe-ui-kit.vercel.app/docs/${slug.join('/')}`,
       type: 'article',
@@ -1872,6 +1890,15 @@ function HeadingAnchor({
 
 const mdxComponents = {
   ...NewDemos,
+  LightTunnelBasicDemo,
+  LightTunnelCyberDemo,
+  LightTunnelSunsetDemo,
+  WebThreadsBasicDemo,
+  WebThreadsMatrixDemo,
+  WebThreadsFlameDemo,
+  SlicedWavesBasicDemo,
+  SlicedWavesCyberDemo,
+  SlicedWavesOceanDemo,
   DrawerDemoBasic,
   DrawerDemoGlassCart,
   DrawerDemoRetroSettings,
