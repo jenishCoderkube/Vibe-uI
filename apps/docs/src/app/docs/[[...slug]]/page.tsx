@@ -399,6 +399,11 @@ import {
   SlicedWavesCyberDemo,
   SlicedWavesOceanDemo,
 } from '../../../components/sliced-waves-demo'
+import {
+  ScannerBasicDemo,
+  ScannerGreenRadarDemo,
+  ScannerSunsetDemo,
+} from '../../../components/scanner-demo'
 import { SidebarDemo } from '../../../components/sidebar-demo'
 import { CodeBlockPre } from '../../../components/code-block'
 import {
@@ -1899,6 +1904,9 @@ const mdxComponents = {
   SlicedWavesBasicDemo,
   SlicedWavesCyberDemo,
   SlicedWavesOceanDemo,
+  ScannerBasicDemo,
+  ScannerGreenRadarDemo,
+  ScannerSunsetDemo,
   DrawerDemoBasic,
   DrawerDemoGlassCart,
   DrawerDemoRetroSettings,

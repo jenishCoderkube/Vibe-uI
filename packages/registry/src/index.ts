@@ -230,6 +230,7 @@ const componentDeps: Record<string, string[]> = {
   'light-tunnel': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   'web-threads': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   'sliced-waves': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  'scanner': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
   sidebar: [
     '@radix-ui/react-slot',
     'lucide-react',

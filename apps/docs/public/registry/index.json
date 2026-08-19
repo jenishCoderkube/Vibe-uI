@@ -815,6 +815,21 @@
     ]
   },
   {
+    "name": "scanner",
+    "files": [
+      "scanner.tsx"
+    ],
+    "dependencies": [
+      "ogl",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "scroll-area",
     "files": [
       "scroll-area.tsx"

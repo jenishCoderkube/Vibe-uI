@@ -48,8 +48,9 @@ import {
   LightTunnel,
   WebThreads,
   SlicedWaves,
+  Scanner,
 } from 'vibe-ui'
-import type { AnimationVariant, SlicedWavesOrientation } from 'vibe-ui'
+import type { AnimationVariant, SlicedWavesOrientation, ScanDirection } from 'vibe-ui'
 import { Copy, Check, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Highlight, themes } from 'prism-react-renderer'
@@ -89,6 +90,8 @@ type ComponentType =
   | 'video-text'
   | 'light-tunnel'
   | 'web-threads'
+  | 'sliced-waves'
+  | 'scanner'
 
 interface ComponentPlaygroundProps {
   component?: ComponentType
@@ -321,6 +324,18 @@ export function ComponentPlayground({ component }: ComponentPlaygroundProps) {
   const [swBarThickness, setSwBarThickness] = useState(0.1)
   const [swSpeed, setSwSpeed] = useState(0.35)
   const [swOrientation, setSwOrientation] = useState<SlicedWavesOrientation>('horizontal')
+
+  // Scanner
+  const [scColor1, setScColor1] = useState('#5227FF')
+  const [scColor2, setScColor2] = useState('#FF9FFC')
+  const [scColor3, setScColor3] = useState('#FFFFFF')
+  const [scSpeed, setScSpeed] = useState(0.5)
+  const [scSweepSpeed, setScSweepSpeed] = useState(0.25)
+  const [scSweepWidth, setScSweepWidth] = useState(1.6)
+  const [scSweepFalloff, setScSweepFalloff] = useState(6)
+  const [scBandDensity, setScBandDensity] = useState(11)
+  const [scLineSharpness, setScLineSharpness] = useState(5.5)
+  const [scScanDirection, setScScanDirection] = useState<ScanDirection>('vertical')
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -791,6 +806,32 @@ export default function SlicedWavesDemo() {
           barThickness={${swBarThickness}}
           speed={${swSpeed}}
           orientation="${swOrientation}"
+        />
+      </div>
+      <div className="relative z-10 text-white font-extrabold text-xl">
+        Vibe UI
+      </div>
+    </div>
+  )
+}`
+      case 'scanner':
+        return `import { Scanner } from '@/components/ui/scanner'
+
+export default function ScannerDemo() {
+  return (
+    <div className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
+      <div className="absolute inset-0 z-0">
+        <Scanner
+          color1="${scColor1}"
+          color2="${scColor2}"
+          color3="${scColor3}"
+          speed={${scSpeed}}
+          sweepSpeed={${scSweepSpeed}}
+          sweepWidth={${scSweepWidth}}
+          sweepFalloff={${scSweepFalloff}}
+          bandDensity={${scBandDensity}}
+          lineSharpness={${scLineSharpness}}
+          scanDirection="${scScanDirection}"
         />
       </div>
       <div className="relative z-10 text-white font-extrabold text-xl">
@@ -1338,6 +1379,30 @@ export default function SlicedWavesDemo() {
                       barThickness={swBarThickness}
                       speed={swSpeed}
                       orientation={swOrientation}
+                    />
+                  </div>
+                  <div className="relative z-10 text-white font-extrabold text-xl select-none">
+                    Vibe UI
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeComponent === 'scanner' && (
+              <div className="w-full text-center flex justify-center">
+                <div className="relative h-[250px] w-full overflow-hidden rounded-xl border border-white/10 bg-zinc-950 flex items-center justify-center">
+                  <div className="absolute inset-0 z-0">
+                    <Scanner
+                      key={`${scColor1}-${scColor2}-${scColor3}-${scSpeed}-${scSweepSpeed}-${scSweepWidth}-${scSweepFalloff}-${scBandDensity}-${scLineSharpness}-${scScanDirection}`}
+                      color1={scColor1}
+                      color2={scColor2}
+                      color3={scColor3}
+                      speed={scSpeed}
+                      sweepSpeed={scSweepSpeed}
+                      sweepWidth={scSweepWidth}
+                      sweepFalloff={scSweepFalloff}
+                      bandDensity={scBandDensity}
+                      lineSharpness={scLineSharpness}
+                      scanDirection={scScanDirection}
                     />
                   </div>
                   <div className="relative z-10 text-white font-extrabold text-xl select-none">
@@ -2872,6 +2937,157 @@ export default function SlicedWavesDemo() {
                       onClick={() => setSwOrientation(dir)}
                       className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
                         swOrientation === dir
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background text-foreground border-border hover:bg-muted'
+                      }`}
+                    >
+                      {dir}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SCANNER CONTROLS */}
+          {activeComponent === 'scanner' && (
+            <div className="space-y-4">
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Color 1</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={scColor1}
+                    onChange={(e) => setScColor1(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{scColor1}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Color 2</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={scColor2}
+                    onChange={(e) => setScColor2(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{scColor2}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Color 3</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    value={scColor3}
+                    onChange={(e) => setScColor3(e.target.value)}
+                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
+                  />
+                  <span className="text-xs font-mono text-foreground">{scColor3}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Noise Speed</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {scSpeed}
+                  </span>
+                </div>
+                <Slider
+                  max={2.0}
+                  min={0.01}
+                  step={0.01}
+                  value={[scSpeed]}
+                  onValueChange={(val) => setScSpeed(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Sweep Speed</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {scSweepSpeed}
+                  </span>
+                </div>
+                <Slider
+                  max={1.0}
+                  min={0.01}
+                  step={0.01}
+                  value={[scSweepSpeed]}
+                  onValueChange={(val) => setScSweepSpeed(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Sweep Width</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {scSweepWidth}
+                  </span>
+                </div>
+                <Slider
+                  max={3.0}
+                  min={0.1}
+                  step={0.1}
+                  value={[scSweepWidth]}
+                  onValueChange={(val) => setScSweepWidth(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Sweep Falloff</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {scSweepFalloff}
+                  </span>
+                </div>
+                <Slider
+                  max={12}
+                  min={1}
+                  step={1}
+                  value={[scSweepFalloff]}
+                  onValueChange={(val) => setScSweepFalloff(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Band Density</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {scBandDensity}
+                  </span>
+                </div>
+                <Slider
+                  max={30}
+                  min={1}
+                  step={1}
+                  value={[scBandDensity]}
+                  onValueChange={(val) => setScBandDensity(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between text-xs">
+                  <Label className="font-semibold">Line Sharpness</Label>
+                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                    {scLineSharpness}
+                  </span>
+                </div>
+                <Slider
+                  max={15}
+                  min={0.5}
+                  step={0.5}
+                  value={[scLineSharpness]}
+                  onValueChange={(val) => setScLineSharpness(val[0])}
+                />
+              </div>
+              <div className="space-y-2 text-left">
+                <Label className="text-xs font-semibold">Direction</Label>
+                <div className="flex gap-2">
+                  {(['vertical', 'horizontal', 'diagonal'] as const).map((dir) => (
+                    <button
+                      key={dir}
+                      type="button"
+                      onClick={() => setScScanDirection(dir)}
+                      className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
+                        scScanDirection === dir
                           ? 'bg-primary text-primary-foreground border-primary'
                           : 'bg-background text-foreground border-border hover:bg-muted'
                       }`}

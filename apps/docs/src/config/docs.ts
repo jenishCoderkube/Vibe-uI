@@ -383,6 +383,10 @@ export const docsConfig: DocsConfig = {
           title: 'Sliced Waves',
           href: '/docs/backgrounds/sliced-waves',
         },
+        {
+          title: 'Scanner',
+          href: '/docs/backgrounds/scanner',
+        },
       ],
     },
   ],
