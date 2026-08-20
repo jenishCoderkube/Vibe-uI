@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Star, ShieldCheck, ThumbsUp, Camera, PenTool, Dialog as DialogIcon } from 'lucide-react'
+import { Star, ShieldCheck, ThumbsUp, Camera, PenTool } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
