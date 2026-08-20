@@ -226,7 +226,7 @@ export function BlockCard({
     'desktop',
   )
 
-  const filesMap = typeof code === 'string' ? { 'page.tsx': code } : code
+  const filesMap = typeof code === 'string' ? { 'page.tsx': code } : (code || {})
   const filePaths = Object.keys(filesMap)
   const [selectedFile, setSelectedFile] = useState(filePaths[0] || '')
 

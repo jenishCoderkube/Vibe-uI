@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { useTheme } from 'next-themes'
-import { Dashboard01Block } from '../../../components/vibe-blocks'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block } from '../../../components/vibe-blocks'
 
 export default function PreviewPage() {
   const params = useParams()
@@ -34,6 +34,18 @@ export default function PreviewPage() {
       return (
         <div className="w-full h-screen bg-background overflow-y-auto select-none">
           <Dashboard01Block />
+        </div>
+      )
+    case 'ecommerce-01':
+      return (
+        <div className="w-full h-screen bg-background overflow-y-auto">
+          <Ecommerce01Block />
+        </div>
+      )
+    case 'ecommerce-02':
+      return (
+        <div className="w-full h-screen bg-background overflow-y-auto">
+          <Ecommerce02Block />
         </div>
       )
     default:

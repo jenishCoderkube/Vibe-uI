@@ -267,6 +267,20 @@ const blockDeps: Record<string, string[]> = {
     'clsx',
     'tailwind-merge',
   ],
+  'ecommerce-01': [
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+    'motion',
+  ],
+  'ecommerce-02': [
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+    'motion',
+  ],
 }
 
 const blockRegistryDeps: Record<string, string[]> = {
@@ -286,6 +300,31 @@ const blockRegistryDeps: Record<string, string[]> = {
     'progress',
     'collapsible',
     'dialog',
+  ],
+  'ecommerce-01': [
+    'button',
+    'badge',
+    'card',
+    'input',
+    'avatar',
+    'sheet',
+    'dropdown-menu',
+    'dialog',
+    'tooltip',
+    'blur-fade',
+  ],
+  'ecommerce-02': [
+    'button',
+    'badge',
+    'card',
+    'input',
+    'avatar',
+    'sheet',
+    'dropdown-menu',
+    'dialog',
+    'tooltip',
+    'accordion',
+    'blur-fade',
   ],
 }
 

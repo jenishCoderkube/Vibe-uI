@@ -1316,5 +1316,64 @@
       "collapsible",
       "dialog"
     ]
+  },
+  {
+    "name": "ecommerce-01",
+    "files": [
+      "ecommerce-01/components/ecommerce-footer.tsx",
+      "ecommerce-01/components/ecommerce-hero.tsx",
+      "ecommerce-01/components/ecommerce-navbar.tsx",
+      "ecommerce-01/page.tsx"
+    ],
+    "dependencies": [
+      "lucide-react",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge",
+      "motion"
+    ],
+    "registryDependencies": [
+      "utils",
+      "button",
+      "badge",
+      "card",
+      "input",
+      "avatar",
+      "sheet",
+      "dropdown-menu",
+      "dialog",
+      "tooltip",
+      "blur-fade"
+    ]
+  },
+  {
+    "name": "ecommerce-02",
+    "files": [
+      "ecommerce-02/components/product-gallery.tsx",
+      "ecommerce-02/components/product-info.tsx",
+      "ecommerce-02/components/product-reviews.tsx",
+      "ecommerce-02/page.tsx"
+    ],
+    "dependencies": [
+      "lucide-react",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge",
+      "motion"
+    ],
+    "registryDependencies": [
+      "utils",
+      "button",
+      "badge",
+      "card",
+      "input",
+      "avatar",
+      "sheet",
+      "dropdown-menu",
+      "dialog",
+      "tooltip",
+      "accordion",
+      "blur-fade"
+    ]
   }
 ]
