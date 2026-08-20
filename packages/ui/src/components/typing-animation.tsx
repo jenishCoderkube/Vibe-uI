@@ -42,7 +42,7 @@ type TypingAnimationMotionComponent = ComponentType<
   Omit<HTMLMotionProps<'span'>, 'ref'> & RefAttributes<HTMLElement>
 >
 
-interface TypingAnimationProps extends Omit<MotionProps, 'children'> {
+export interface TypingAnimationProps extends Omit<MotionProps, 'children'> {
   children?: string
   words?: string[]
   className?: string

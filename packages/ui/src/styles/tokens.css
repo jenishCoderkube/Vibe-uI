@@ -67,6 +67,16 @@
   --animate-marquee-vertical: marquee-vertical var(--duration, 30s) linear infinite;
   --animate-marquee-vertical-reverse: marquee-vertical-reverse var(--duration, 30s) linear infinite;
   --animate-text-glitch: text-glitch var(--glitch-duration, 1.5s) infinite linear alternate-reverse;
+  --animate-blink-cursor: blink-cursor 0.8s step-end infinite;
+  --animate-aurora: aurora 8s ease-in-out infinite alternate;
+  --animate-shiny-text: shiny-text 8s infinite;
+  --animate-gradient: gradient 8s linear infinite;
+  --animate-line-shadow: line-shadow 15s linear infinite;
+  --animate-shimmer: shimmer var(--shimmer-duration, 2.5s) infinite linear;
+  --animate-shine: shine var(--shine-duration, 0.75s) ease-in-out;
+  --animate-progress: progress var(--progress-duration, 2s) ease-in-out infinite;
+  --animate-caret-blink: caret-blink 1.25s ease-out infinite;
+
 
   @keyframes accordion-down {
     from { height: 0; }
@@ -162,7 +172,62 @@
       transform: skew(0.5deg);
     }
   }
+  @keyframes blink-cursor {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-150%) skewX(-25deg); }
+    100% { transform: translateX(150%) skewX(-25deg); }
+  }
+  @keyframes shine {
+    100% { left: 125%; }
+  }
+  @keyframes progress {
+    0% { width: 0%; left: 0%; }
+    50% { width: 100%; left: 0%; }
+    100% { width: 0%; left: 100%; }
+  }
+  @keyframes aurora {
+    0% { background-position: 0% 50%; transform: rotate(-5deg) scale(0.9); }
+    25% { background-position: 50% 100%; transform: rotate(5deg) scale(1.1); }
+    50% { background-position: 100% 50%; transform: rotate(-3deg) scale(0.95); }
+    75% { background-position: 50% 0%; transform: rotate(3deg) scale(1.05); }
+    100% { background-position: 0% 50%; transform: rotate(-5deg) scale(0.9); }
+  }
+  @keyframes shiny-text {
+    0%, 90%, 100% { background-position: calc(-100% - var(--shiny-width)) 0; }
+    30%, 60% { background-position: calc(100% + var(--shiny-width)) 0; }
+  }
+  @keyframes gradient {
+    to { background-position: var(--bg-size, 300%) 0; }
+  }
+  @keyframes line-shadow {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% -100%; }
+  }
+  @keyframes caret-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  @keyframes page-item-pop {
+    from { opacity: 0; transform: scale(0.9) translateY(4px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  @keyframes enter {
+    from {
+      opacity: var(--tw-enter-opacity, 1);
+      transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), 1) rotate(var(--tw-enter-rotate, 0));
+    }
+  }
+  @keyframes exit {
+    to {
+      opacity: var(--tw-exit-opacity, 1);
+      transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), 1) rotate(var(--tw-exit-rotate, 0));
+    }
+  }
 }
+
 
 @layer base {
   :root {
@@ -250,3 +315,65 @@
     color: var(--foreground);
   }
 }
+
+@utility animate-in {
+  animation-name: enter;
+  animation-duration: 150ms;
+  --tw-enter-opacity: initial;
+  --tw-enter-scale: initial;
+  --tw-enter-translate-x: initial;
+  --tw-enter-translate-y: initial;
+  --tw-enter-rotate: initial;
+}
+@utility animate-out {
+  animation-name: exit;
+  animation-duration: 150ms;
+  --tw-exit-opacity: initial;
+  --tw-exit-scale: initial;
+  --tw-exit-translate-x: initial;
+  --tw-exit-translate-y: initial;
+  --tw-exit-rotate: initial;
+}
+
+@utility fade-in-0 {
+  --tw-enter-opacity: 0;
+}
+@utility fade-out-0 {
+  --tw-exit-opacity: 0;
+}
+@utility zoom-in-95 {
+  --tw-enter-scale: 0.95;
+}
+@utility zoom-out-95 {
+  --tw-exit-scale: 0.95;
+}
+
+@utility slide-in-from-top-2 {
+  --tw-enter-translate-y: -0.5rem;
+}
+@utility slide-in-from-bottom-2 {
+  --tw-enter-translate-y: 0.5rem;
+}
+@utility slide-in-from-left-2 {
+  --tw-enter-translate-x: -0.5rem;
+}
+@utility slide-in-from-right-2 {
+  --tw-enter-translate-x: 0.5rem;
+}
+@utility slide-out-to-top-2 {
+  --tw-exit-translate-y: -0.5rem;
+}
+@utility slide-out-to-bottom-2 {
+  --tw-exit-translate-y: 0.5rem;
+}
+@utility slide-out-to-left-2 {
+  --tw-exit-translate-x: -0.5rem;
+}
+@utility slide-out-to-right-2 {
+  --tw-exit-translate-x: 0.5rem;
+}
+
+@utility animate-page-item {
+  animation: page-item-pop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
