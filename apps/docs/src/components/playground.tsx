@@ -50,7 +50,7 @@ import {
   SlicedWaves,
   Scanner,
 } from 'vibe-ui'
-import type { AnimationVariant, SlicedWavesOrientation, ScanDirection } from 'vibe-ui'
+import type { AnimationVariant, SlicedWavesOrientation, ScanDirection, FanMode } from 'vibe-ui'
 import { Copy, Check, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Highlight, themes } from 'prism-react-renderer'

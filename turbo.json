@@ -3,7 +3,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**", "build/**"]
+      "outputs": [".next/**", "dist/**", "build/**"],
+      "env": ["CONTACT_RECEIVER_EMAIL", "RESEND_API_KEY"]
     },
     "dev": {
       "cache": false,
