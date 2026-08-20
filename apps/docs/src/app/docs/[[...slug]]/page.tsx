@@ -318,6 +318,7 @@ import * as AspectRatioDemos from '../../../components/aspect-ratio-demo'
 import * as CollapsibleDemos from '../../../components/collapsible-demo'
 import * as ToggleDemos from '../../../components/toggle-demo'
 import * as SpinnerDemos from '../../../components/spinner-demo'
+import * as SheetDemos from '../../../components/sheet-demo'
 import * as InputOTPDemos from '../../../components/input-otp-demo'
 import * as ItemDemos from '../../../components/item-demo'
 import * as MenubarDemos from '../../../components/menubar-demo'
@@ -2243,6 +2244,9 @@ const mdxComponents = {
   ToggleLike: ToggleDemos.ToggleLike,
   SpinnerDemo: SpinnerDemos.SpinnerGlow,
   SpinnerVariantsDemo: SpinnerDemos.SpinnerVariantsDemo,
+  SheetBasicDemo: SheetDemos.SheetBasicDemo,
+  SheetSidesDemo: SheetDemos.SheetSidesDemo,
+  SheetVariantsDemo: SheetDemos.SheetVariantsDemo,
   SpinnerDefault: SpinnerDemos.SpinnerDefault,
   SpinnerGlass: SpinnerDemos.SpinnerGlass,
   SpinnerRetro: SpinnerDemos.SpinnerRetro,
@@ -2605,10 +2609,15 @@ export default async function DocsPage({ params }: PageProps) {
       }
     }
 
-    // Component Navigation calculation
-    const isComponentPage = slug[0] === 'components'
+    // Component/Animation/Background Navigation & Header calculation
+    const isComponentPage = ['components', 'animations', 'backgrounds'].includes(slug[0])
+    
+    let groupTitle = 'Components'
+    if (slug[0] === 'animations') groupTitle = 'Animations'
+    else if (slug[0] === 'backgrounds') groupTitle = 'Backgrounds'
+
     const componentNavItems =
-      docsConfig.sidebarNav.find((group) => group.title === 'Components')
+      docsConfig.sidebarNav.find((group) => group.title === groupTitle)
         ?.items || []
     const flatItems = componentNavItems.filter((item) => item.href) as {
       title: string
@@ -2641,6 +2650,7 @@ export default async function DocsPage({ params }: PageProps) {
                 {isComponentPage && (
                   <ComponentHeader
                     name={slug[1]}
+                    category={slug[0]}
                     title={title}
                     description={description}
                     prevItem={prevItem}

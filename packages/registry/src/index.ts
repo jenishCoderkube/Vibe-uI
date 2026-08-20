@@ -99,6 +99,13 @@ const componentDeps: Record<string, string[]> = {
     'clsx',
     'tailwind-merge',
   ],
+  sheet: [
+    '@radix-ui/react-dialog',
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
   skeleton: ['tailwind-variants', 'clsx', 'tailwind-merge'],
   select: [
     '@radix-ui/react-select',

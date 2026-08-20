@@ -1,0 +1,371 @@
+# Sheet
+
+An extensible drawer component that slides out from any edge of the viewport, supporting multiple design themes.
+
+<ComponentPreview>
+  <SheetBasicDemo />
+  ```tsx
+  import {
+    Sheet,
+    SheetTrigger,
+    SheetContent,
+    SheetHeader,
+    SheetFooter,
+    SheetTitle,
+    SheetDescription,
+    SheetClose,
+  } from '@/components/ui/sheet'
+  import { Button } from '@/components/ui/button'
+
+  export function SheetBasicDemo() {
+    return (
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="default">Open Sheet (Right)</Button>
+        </SheetTrigger>
+        <SheetContent side="right" variant="default" className="sm:max-w-md">
+          <SheetHeader className="text-left border-b border-border pb-4">
+            <SheetTitle>User Profile Configuration</SheetTitle>
+            <SheetDescription>
+              Configure your workspace preferences and credentials below. Click save when finished.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="flex-1 py-6 space-y-4">
+            <div className="space-y-1.5 text-left">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Name</label>
+              <input
+                type="text"
+                defaultValue="Sarah Connor"
+                className="w-full px-3 py-2 text-sm bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200 dark:border-white/5 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+              />
+            </div>
+            <div className="space-y-1.5 text-left">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Username</label>
+              <input
+                type="text"
+                defaultValue="sconnor_rebel"
+                className="w-full px-3 py-2 text-sm bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200 dark:border-white/5 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+              />
+            </div>
+            <div className="space-y-1.5 text-left">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Role</label>
+              <input
+                type="text"
+                defaultValue="System Administrator"
+                className="w-full px-3 py-2 text-sm bg-zinc-100 dark:bg-zinc-950/60 border border-zinc-200 dark:border-white/5 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-foreground"
+              />
+            </div>
+          </div>
+          <SheetFooter className="border-t border-border pt-4 mt-auto">
+            <SheetClose asChild>
+              <Button variant="default">Cancel</Button>
+            </SheetClose>
+            <SheetClose asChild>
+              <Button variant="glow">Save changes</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    )
+  }
+  ```
+</ComponentPreview>
+
+<Installation name="sheet" vibeDeps="button" npmDeps="@radix-ui/react-dialog tailwind-variants lucide-react">
+
+```tsx
+'use client'
+
+import * as React from 'react'
+import * as SheetPrimitive from '@radix-ui/react-dialog'
+import { X } from 'lucide-react'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const Sheet = SheetPrimitive.Root
+
+const SheetTrigger = SheetPrimitive.Trigger
+
+const SheetClose = SheetPrimitive.Close
+
+const SheetPortal = SheetPrimitive.Portal
+
+const SheetOverlay = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Overlay
+    ref={ref}
+    data-slot="sheet-overlay"
+    className={cn(
+      'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out',
+      className,
+    )}
+    {...props}
+  />
+))
+SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
+
+const sheetContentVariants = tv({
+  base: 'fixed z-50 gap-4 bg-background p-6 shadow-lg flex flex-col justify-start',
+  variants: {
+    side: {
+      top: 'inset-x-0 top-0 border-b data-[state=open]:animate-slide-in-from-top data-[state=closed]:animate-slide-out-to-top',
+      bottom: 'inset-x-0 bottom-0 border-t data-[state=open]:animate-slide-in-from-bottom data-[state=closed]:animate-slide-out-to-bottom',
+      left: 'inset-y-0 left-0 h-full w-3/4 border-r data-[state=open]:animate-slide-in-from-left data-[state=closed]:animate-slide-out-to-left sm:max-w-sm',
+      right: 'inset-y-0 right-0 h-full w-3/4 border-l data-[state=open]:animate-slide-in-from-right data-[state=closed]:animate-slide-out-to-right sm:max-w-sm',
+    },
+    variant: {
+      default: 'bg-background border-border text-foreground',
+      glass:
+        'bg-background/80 dark:bg-zinc-900/40 backdrop-blur-md border-black/10 dark:border-white/10 text-foreground shadow-[0_8px_32px_0_rgba(0,0,0,0.08)]',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] rounded-none',
+      glow: 'border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.15)] dark:shadow-[0_0_30px_rgba(168,85,247,0.25)] bg-card/95 dark:bg-zinc-950/95 text-foreground',
+    },
+  },
+  defaultVariants: {
+    side: 'right',
+    variant: 'default',
+  },
+})
+
+export interface SheetContentProps
+  extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
+    VariantProps<typeof sheetContentVariants> {
+  showCloseButton?: boolean
+}
+
+const SheetContent = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Content>,
+  SheetContentProps
+>(({ side, variant, className, children, showCloseButton = true, ...props }, ref) => (
+  <SheetPortal data-slot="sheet-portal">
+    <SheetOverlay />
+    <SheetPrimitive.Content
+      ref={ref}
+      data-slot="sheet-content"
+      className={sheetContentVariants({ side, variant, className })}
+      {...props}
+    >
+      {children}
+      {showCloseButton && (
+        <SheetPrimitive.Close className="absolute right-4 top-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </SheetPrimitive.Close>
+      )}
+    </SheetPrimitive.Content>
+  </SheetPortal>
+))
+SheetContent.displayName = SheetPrimitive.Content.displayName
+
+const SheetHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    data-slot="sheet-header"
+    className={cn(
+      'flex flex-col space-y-2 text-center sm:text-left',
+      className,
+    )}
+    {...props}
+  />
+)
+SheetHeader.displayName = 'SheetHeader'
+
+const SheetFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    data-slot="sheet-footer"
+    className={cn(
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
+      className,
+    )}
+    {...props}
+  />
+)
+SheetFooter.displayName = 'SheetFooter'
+
+const SheetTitle = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Title
+    ref={ref}
+    data-slot="sheet-title"
+    className={cn('text-lg font-semibold text-foreground', className)}
+    {...props}
+  />
+))
+SheetTitle.displayName = SheetPrimitive.Title.displayName
+
+const SheetDescription = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Description
+    ref={ref}
+    data-slot="sheet-description"
+    className={cn('text-sm text-muted-foreground', className)}
+    {...props}
+  />
+))
+SheetDescription.displayName = SheetPrimitive.Description.displayName
+
+export {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetPortal,
+  SheetOverlay,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+}
+```
+
+</Installation>
+
+
+### Edge Alignments
+
+You can trigger the Sheet to slide from `top`, `bottom`, `left`, or `right` by setting the `side` prop on the content wrapper.
+
+<ComponentPreview>
+  <SheetSidesDemo />
+  ```tsx
+  import {
+    Sheet,
+    SheetTrigger,
+    SheetContent,
+    SheetHeader,
+    SheetFooter,
+    SheetTitle,
+    SheetDescription,
+    SheetClose,
+  } from '@/components/ui/sheet'
+  import { Button } from '@/components/ui/button'
+
+  export function SheetSidesDemo() {
+    const sides = ['top', 'right', 'bottom', 'left'] as const
+
+    return (
+      <div className="flex flex-wrap gap-4 items-center justify-center">
+        {sides.map((side) => (
+          <Sheet key={side}>
+            <SheetTrigger asChild>
+              <Button variant="default" className="capitalize w-32">
+                Side: {side}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side={side}>
+              <SheetHeader className="text-left border-b border-border pb-4">
+                <SheetTitle className="capitalize">Sheet Side: {side}</SheetTitle>
+                <SheetDescription>
+                  This panel slides in from the {side} edge of the screen.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="flex-1 py-8 flex items-center justify-center text-sm text-muted-foreground font-mono">
+                [Panel Content Container - {side.toUpperCase()}]
+              </div>
+              <SheetFooter className="border-t border-border pt-4">
+                <SheetClose asChild>
+                  <Button variant="default" className="w-full sm:w-auto">Close Panel</Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        ))}
+      </div>
+    )
+  }
+  ```
+</ComponentPreview>
+
+### Visual Themes
+
+Showcases the custom design variants (`default`, `glass`, `retro`, `glow`) integrated directly into the Sheet.
+
+<ComponentPreview>
+  <SheetVariantsDemo />
+  ```tsx
+  import {
+    Sheet,
+    SheetTrigger,
+    SheetContent,
+    SheetHeader,
+    SheetFooter,
+    SheetTitle,
+    SheetDescription,
+    SheetClose,
+  } from '@/components/ui/sheet'
+  import { Button } from '@/components/ui/button'
+
+  export function SheetVariantsDemo() {
+    const variants = ['default', 'glass', 'retro', 'glow'] as const
+
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
+        {variants.map((v) => (
+          <Sheet key={v}>
+            <SheetTrigger asChild>
+              <Button variant={v === 'default' ? 'default' : v} className="w-full capitalize">
+                {v}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" variant={v} className="sm:max-w-md">
+              <SheetHeader className="text-left border-b border-border/10 pb-4">
+                <SheetTitle className="capitalize">{v} Visual Variant</SheetTitle>
+                <SheetDescription>
+                  Experience the customized styling and shadow themes applied.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="flex-1 py-8 space-y-4">
+                <div className="rounded-lg p-4 border border-border/10 bg-muted/40 text-xs text-foreground leading-relaxed">
+                  This card utilizes the <code className="font-mono bg-black/20 px-1 py-0.5 rounded">{v}</code> variant styling configurations, transforming overlays and borders.
+                </div>
+              </div>
+              <SheetFooter className="border-t border-border/10 pt-4">
+                <SheetClose asChild>
+                  <Button variant={v === 'default' ? 'default' : v} className="w-full sm:w-auto">Dismiss</Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        ))}
+      </div>
+    )
+  }
+  ```
+</ComponentPreview>
+
+---
+
+## API Reference
+
+<PropsTable>
+  <PropRow
+    name="side"
+    type="'top' | 'right' | 'bottom' | 'left'"
+    defaultValue="'right'"
+    description="The edge of the viewport from which the sheet content slides in."
+  />
+  <PropRow
+    name="variant"
+    type="'default' | 'glass' | 'retro' | 'glow'"
+    defaultValue="'default'"
+    description="The visual theme styling variant applied to the sheet panel."
+  />
+  <PropRow
+    name="showCloseButton"
+    type="boolean"
+    defaultValue="true"
+    description="Determines whether to show the close cross icon in the top-right corner."
+  />
+</PropsTable>

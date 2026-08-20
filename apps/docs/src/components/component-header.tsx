@@ -26,6 +26,7 @@ import {
 
 export interface ComponentHeaderProps {
   name: string
+  category?: string
   title?: string
   description: string
   radixUrl?: string
@@ -35,6 +36,7 @@ export interface ComponentHeaderProps {
 
 export function ComponentHeader({
   name,
+  category,
   title,
   description,
   radixUrl,
@@ -77,7 +79,8 @@ export function ComponentHeader({
       (process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`
         : 'http://localhost:3000')
-    return `${envUrl}/docs/components/${name}`
+    const activeCategory = category || 'components'
+    return `${envUrl}/docs/${activeCategory}/${name}`
   }
 
   const handleAIAction = async (provider: 'chatgpt' | 'claude' | 'v0') => {
@@ -226,12 +229,13 @@ export function ComponentHeader({
               className="w-56 bg-popover border border-border rounded-xl p-1 shadow-lg z-50"
             >
               <DropdownMenuItem
-                onClick={() =>
+                onClick={() => {
+                  const activeCategory = category || 'components'
                   window.open(
-                    `/docs/components/${cleanNameForUrl(name)}.md`,
+                    `/docs/${activeCategory}/${cleanNameForUrl(name)}.md`,
                     '_blank',
                   )
-                }
+                }}
                 className="flex items-center gap-2 px-3 py-2 text-xs text-foreground hover:bg-muted rounded-lg cursor-pointer"
               >
                 <FileText className="h-3.5 w-3.5 text-muted-foreground" />

@@ -134,6 +134,10 @@ export const docsConfig: DocsConfig = {
           href: '/docs/components/drawer',
         },
         {
+          title: 'Sheet',
+          href: '/docs/components/sheet',
+        },
+        {
           title: 'Dropdown Menu',
           href: '/docs/components/dropdown-menu',
         },

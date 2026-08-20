@@ -99,7 +99,7 @@ export const PlaygroundColorPicker = ({
   )
 }
 
-// Premium Dial Slider Widget using the entire card box as the track (Theme-aware, matching React Bits)
+// Premium Dial Slider Widget using the entire card box as the track (Theme-aware, matching Vibe UI dial)
 export const DialSlider = ({
   min,
   max,

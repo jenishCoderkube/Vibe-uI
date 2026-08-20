@@ -38,7 +38,7 @@ function AvatarPlaceholder({ text }: { text: string }) {
   )
 }
 
-// Main Interactive Preview Demo (shadcn style)
+// Main Interactive Preview Demo (Vibe UI style)
 export function ScrollerDemo() {
   const [messages, setMessages] = useState<
     Array<{ id: number; sender: 'user' | 'ai'; text: string; time: string }>

@@ -13,11 +13,27 @@ export async function GET(
     // Remove any trailing extensions if present
     const cleanName = name.replace(/\.md$/, '')
 
-    const filePath = path.join(
+    let filePath = path.join(
       process.cwd(),
       'src/content/docs/components',
       `${cleanName}.mdx`,
     )
+
+    if (!fs.existsSync(filePath)) {
+      filePath = path.join(
+        process.cwd(),
+        'src/content/docs/animations',
+        `${cleanName}.mdx`,
+      )
+    }
+
+    if (!fs.existsSync(filePath)) {
+      filePath = path.join(
+        process.cwd(),
+        'src/content/docs/backgrounds',
+        `${cleanName}.mdx`,
+      )
+    }
 
     if (!fs.existsSync(filePath)) {
       return new NextResponse('Component not found', { status: 404 })
@@ -77,10 +93,17 @@ export async function GET(
     }
 
     // Compose final unified markdown document
+    let typeKey = 'component'
+    if (filePath.includes('animations')) {
+      typeKey = 'animation'
+    } else if (filePath.includes('backgrounds')) {
+      typeKey = 'background'
+    }
+
     const markdown = `---
 title: ${title}
 description: ${description}
-component: true
+${typeKey}: true
 ---
 
 ${cleanedMarkdown}

@@ -126,7 +126,7 @@ const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
             variant: baseVariant,
             size,
           }),
-          // Active state contrast for standard shadcn default theme
+          // Active state contrast for standard Vibe UI default theme
           !isCustomTheme &&
             isActive &&
             'bg-accent text-accent-foreground border border-input font-bold shadow-xs',

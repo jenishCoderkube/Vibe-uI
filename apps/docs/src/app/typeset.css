@@ -1,6 +1,6 @@
 /*
  * Vibe UI Typeset System
- * Adapted from shadcn/ui typeset.css
+ * Adapted from Vibe UI typeset.css
  * Provides consistent typography rhythm for documentation content.
  */
 
@@ -301,7 +301,7 @@
       caption-side: bottom;
     }
 
-    /* Modern Shadcn & Magic UI Tables. */
+    /* Modern Vibe UI & Magic UI Tables. */
     &:where(table) {
       width: 100%;
       max-width: 100%;

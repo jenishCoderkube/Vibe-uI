@@ -905,6 +905,22 @@
     ]
   },
   {
+    "name": "sheet",
+    "files": [
+      "sheet.tsx"
+    ],
+    "dependencies": [
+      "@radix-ui/react-dialog",
+      "lucide-react",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "sidebar",
     "files": [
       "sidebar.tsx",

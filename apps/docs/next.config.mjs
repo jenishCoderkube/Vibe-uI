@@ -10,6 +10,14 @@ const nextConfig = {
         source: '/docs/components/:name.md',
         destination: '/api/components/:name',
       },
+      {
+        source: '/docs/animations/:name.md',
+        destination: '/api/components/:name',
+      },
+      {
+        source: '/docs/backgrounds/:name.md',
+        destination: '/api/components/:name',
+      },
     ]
   },
   async redirects() {
