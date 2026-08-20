@@ -26,6 +26,7 @@ import {
   Button,
   ButtonGroup,
   ButtonGroupItem,
+  Lightfall,
 } from 'vibe-ui'
 
 // Reusable card element for parameters inside the Studio sidebar (Theme-aware)
@@ -46,32 +47,70 @@ const ParameterCard = ({
   </div>
 )
 
-// Reusable Color picker widget (Theme-aware)
+// Custom React hook to debounce callbacks inline
+function useDebouncedCallback<T extends (...args: any[]) => void>(
+  callback: T,
+  delay: number
+): T {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const callbackRef = useRef(callback)
+  callbackRef.current = callback
+
+  return useCallback(
+    (...args: any[]) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      timeoutRef.current = setTimeout(() => {
+        callbackRef.current(...args)
+      }, delay)
+    },
+    [delay]
+  ) as unknown as T
+}
+
+// Reusable Color picker widget (Theme-aware with debounced parent state updates)
 const ColorPicker = ({
   value,
   onChange,
 }: {
   value: string
   onChange: (val: string) => void
-}) => (
-  <div className="relative flex items-center gap-1.5 border border-zinc-200 dark:border-white/5 bg-zinc-200/50 dark:bg-zinc-950/60 hover:border-zinc-300 dark:hover:border-white/20 text-zinc-800 dark:text-zinc-300 rounded-lg px-2 py-1 transition-all shrink-0 cursor-pointer">
-    <div
-      className="w-3.5 h-3.5 rounded border border-black/10 dark:border-white/10 shrink-0"
-      style={{ backgroundColor: value }}
-    />
-    <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
-      {value}
-    </span>
-    <input
-      type="color"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-    />
-  </div>
-)
+}) => {
+  const [localVal, setLocalVal] = useState(value)
 
-// Premium Dial Slider Widget using the entire card box as the track (Theme-aware, matching React Bits)
+  useEffect(() => {
+    setLocalVal(value)
+  }, [value])
+
+  const debouncedOnChange = useDebouncedCallback(onChange, 80)
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setLocalVal(val)
+    debouncedOnChange(val)
+  }
+
+  return (
+    <div className="relative flex items-center gap-1.5 border border-zinc-200 dark:border-white/5 bg-zinc-200/50 dark:bg-zinc-950/60 hover:border-zinc-300 dark:hover:border-white/20 text-zinc-800 dark:text-zinc-300 rounded-lg px-2 py-1 transition-all shrink-0 cursor-pointer">
+      <div
+        className="w-3.5 h-3.5 rounded border border-black/10 dark:border-white/10 shrink-0"
+        style={{ backgroundColor: localVal }}
+      />
+      <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+        {localVal}
+      </span>
+      <input
+        type="color"
+        value={localVal}
+        onChange={handleColorChange}
+        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+      />
+    </div>
+  )
+}
+
+// Premium Dial Slider Widget using the entire card box as the track (Theme-aware, with debounced updates)
 const StudioSlider = ({
   min,
   max,
@@ -93,8 +132,22 @@ const StudioSlider = ({
     return v.toFixed(2)
   }
 
+  const [localVal, setLocalVal] = useState(value)
+
+  useEffect(() => {
+    setLocalVal(value)
+  }, [value])
+
+  const debouncedOnChange = useDebouncedCallback(onChange, 80)
+
+  const handleValueChange = (vals: number[]) => {
+    const val = vals[0]
+    setLocalVal(val)
+    debouncedOnChange(val)
+  }
+
   const range = max - min
-  const percentage = range > 0 ? ((value - min) / range) * 100 : 0
+  const percentage = range > 0 ? ((localVal - min) / range) * 100 : 0
   const ticks = 9
 
   return (
@@ -103,10 +156,16 @@ const StudioSlider = ({
         min={min}
         max={max}
         step={step}
-        value={[value]}
-        onValueChange={(vals) => onChange(vals[0])}
-        className="group relative flex items-center justify-between px-3.5 py-1.5 rounded-xl border border-zinc-200 dark:border-white/5 bg-zinc-100 dark:bg-zinc-900/30 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:border-zinc-300 dark:hover:border-white/10 shadow-sm dark:shadow-none transition-all select-none w-full min-h-[46px] cursor-pointer overflow-hidden outline-none"
+        value={[localVal]}
+        onValueChange={handleValueChange}
+        className="group/slider relative flex items-center justify-between px-3.5 py-1.5 rounded-xl border border-zinc-200 dark:border-white/5 bg-zinc-100 dark:bg-zinc-900/30 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:border-zinc-300 dark:hover:border-white/10 shadow-sm dark:shadow-none transition-all select-none w-full min-h-[46px] cursor-pointer overflow-hidden outline-none"
       >
+        {/* Progress fill block representing the value track */}
+        <div 
+          className="absolute inset-y-0 left-0 bg-zinc-200/60 dark:bg-zinc-800/50 pointer-events-none"
+          style={{ width: `${percentage}%` }}
+        />
+
         {/* Ticks inside the track */}
         <div className="absolute inset-0 flex items-center justify-between pointer-events-none px-4 opacity-[0.05]">
           {[...Array(ticks)].map((_, i) => (
@@ -119,7 +178,7 @@ const StudioSlider = ({
 
         {/* Capsule Thumb */}
         <SliderPrimitive.Thumb 
-          className="block w-[5px] h-[26px] bg-black/95 dark:bg-white/95 rounded-full transition-all focus:outline-none cursor-grab active:cursor-grabbing shadow-[0_0_8px_rgba(0,0,0,0.15)] dark:shadow-[0_0_10px_rgba(255,255,255,0.4)] opacity-30 group-hover:opacity-90 group-focus-within:opacity-90"
+          className="block w-[5px] h-[26px] bg-black/95 dark:bg-white/95 rounded-full transition-all focus:outline-none cursor-grab active:cursor-grabbing shadow-[0_0_8px_rgba(0,0,0,0.15)] dark:shadow-[0_0_10px_rgba(255,255,255,0.4)] opacity-30 group-hover/slider:opacity-90 group-focus-within:opacity-90"
           style={{ transform: 'translateX(-2.5px)' }}
         />
 
@@ -132,7 +191,7 @@ const StudioSlider = ({
 
         <div className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none z-10 select-none">
           <span className="text-[11px] font-bold font-mono text-zinc-900 dark:text-white tracking-wider">
-            {formatVal(value)}
+            {formatVal(localVal)}
           </span>
         </div>
       </SliderPrimitive.Root>
@@ -145,12 +204,13 @@ const BG_IDS = [
   { id: 'web-threads', name: 'Web Threads' },
   { id: 'sliced-waves', name: 'Sliced Waves' },
   { id: 'scanner', name: 'Scanner' },
+  { id: 'lightfall', name: 'Lightfall' },
 ]
 
 export default function BackgroundStudio() {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [activeBg, setActiveBg] = useState<'light-tunnel' | 'web-threads' | 'sliced-waves' | 'scanner'>('light-tunnel')
+  const [activeBg, setActiveBg] = useState<'light-tunnel' | 'web-threads' | 'sliced-waves' | 'scanner' | 'lightfall'>('light-tunnel')
   const [showDemoContent, setShowDemoContent] = useState(true)
   const [copied, setCopied] = useState(false)
   const [showCodeModal, setShowCodeModal] = useState(false)
@@ -180,6 +240,21 @@ export default function BackgroundStudio() {
   const [ltPulseSpeed, setLtPulseSpeed] = useState(2.0)
   const [ltPulseLength, setLtPulseLength] = useState(0.28)
   const [ltGlow, setLtGlow] = useState(1.0)
+
+  // ── 5. LIGHTFALL PARAMETERS ──
+  const [lfCanvasBg, setLfCanvasBg] = useState('#080515')
+  const [lfColor1, setLfColor1] = useState('#A6C8FF')
+  const [lfColor2, setLfColor2] = useState('#5227FF')
+  const [lfColor3, setLfColor3] = useState('#FF9FFC')
+  const [lfSpeed, setLfSpeed] = useState(0.4)
+  const [lfStreakCount, setLfStreakCount] = useState(3)
+  const [lfStreakWidth, setLfStreakWidth] = useState(1.5)
+  const [lfStreakLength, setLfStreakLength] = useState(1.2)
+  const [lfDensity, setLfDensity] = useState(0.5)
+  const [lfGlow, setLfGlow] = useState(1.2)
+  const [lfTwinkle, setLfTwinkle] = useState(1.0)
+  const [lfZoom, setLfZoom] = useState(3.5)
+  const [lfBackgroundGlow, setLfBackgroundGlow] = useState(0.6)
 
   // ── 2. WEB THREADS PARAMETERS ──
   const [wtCanvasBg, setWtCanvasBg] = useState('#120f17')
@@ -251,6 +326,12 @@ export default function BackgroundStudio() {
       if (scColor1 === '#5227FF') setScColor1('#4f46e5')
       if (scColor2 === '#FF9FFC') setScColor2('#ef4444')
       if (scColor3 === '#FFFFFF') setScColor3('#000000')
+
+      // Lightfall
+      if (lfCanvasBg === '#080515') setLfCanvasBg('#fcfcfd')
+      if (lfColor1 === '#A6C8FF') setLfColor1('#2563eb')
+      if (lfColor2 === '#5227FF') setLfColor2('#7c3aed')
+      if (lfColor3 === '#FF9FFC') setLfColor3('#db2777')
     } else {
       // Light Tunnel
       if (ltCanvasBg === '#ffffff') setLtCanvasBg('#120f17')
@@ -274,6 +355,12 @@ export default function BackgroundStudio() {
       if (scColor1 === '#4f46e5') setScColor1('#5227FF')
       if (scColor2 === '#ef4444') setScColor2('#FF9FFC')
       if (scColor3 === '#000000') setScColor3('#FFFFFF')
+
+      // Lightfall
+      if (lfCanvasBg === '#fcfcfd') setLfCanvasBg('#080515')
+      if (lfColor1 === '#2563eb') setLfColor1('#A6C8FF')
+      if (lfColor2 === '#7c3aed') setLfColor2('#5227FF')
+      if (lfColor3 === '#db2777') setLfColor3('#FF9FFC')
     }
   }, [resolvedTheme, mounted])
 
@@ -333,6 +420,20 @@ export default function BackgroundStudio() {
       setScScale(1.5)
       setScRipple(0.22)
       setScGlow(0.22)
+    } else if (activeBg === 'lightfall') {
+      setLfCanvasBg(isLight ? '#fcfcfd' : '#080515')
+      setLfColor1(isLight ? '#2563eb' : '#A6C8FF')
+      setLfColor2(isLight ? '#7c3aed' : '#5227FF')
+      setLfColor3(isLight ? '#db2777' : '#FF9FFC')
+      setLfSpeed(0.4)
+      setLfStreakCount(3)
+      setLfStreakWidth(1.5)
+      setLfStreakLength(1.2)
+      setLfDensity(0.5)
+      setLfGlow(1.2)
+      setLfTwinkle(1.0)
+      setLfZoom(3.5)
+      setLfBackgroundGlow(0.6)
     }
   }
 
@@ -341,8 +442,9 @@ export default function BackgroundStudio() {
     if (activeBg === 'light-tunnel') return ltCanvasBg
     if (activeBg === 'web-threads') return wtCanvasBg
     if (activeBg === 'sliced-waves') return swCanvasBg
+    if (activeBg === 'lightfall') return lfCanvasBg
     return scCanvasBg
-  }, [activeBg, ltCanvasBg, wtCanvasBg, swCanvasBg, scCanvasBg])
+  }, [activeBg, ltCanvasBg, wtCanvasBg, swCanvasBg, lfCanvasBg, scCanvasBg])
 
   // Screenshot handler
   const downloadImage = () => {
@@ -494,8 +596,8 @@ export default function SlicedWavesDemo() {
 }`
     }
 
-    // Scanner
-    return `import { Scanner } from '@/components/ui/scanner'
+    if (activeBg === 'scanner') {
+      return `import { Scanner } from '@/components/ui/scanner'
 
 export default function ScannerDemo() {
   return (
@@ -530,6 +632,45 @@ export default function ScannerDemo() {
     </div>
   )
 }`
+    }
+
+    if (activeBg === 'lightfall') {
+      return `import { Lightfall } from '@/components/ui/lightfall'
+
+export default function LightfallDemo() {
+  return (
+    <div
+      className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden border border-white/10"
+      style={{ backgroundColor: '${lfCanvasBg}' }}
+    >
+      <div className="absolute inset-0 z-0">
+        <Lightfall
+          colors={['${lfColor1}', '${lfColor2}', '${lfColor3}']}
+          backgroundColor="${lfCanvasBg}"
+          speed={${lfSpeed}}
+          streakCount={${lfStreakCount}}
+          streakWidth={${lfStreakWidth}}
+          streakLength={${lfStreakLength}}
+          density={${lfDensity}}
+          glow={${lfGlow}}
+          twinkle={${lfTwinkle}}
+          zoom={${lfZoom}}
+          backgroundGlow={${lfBackgroundGlow}}
+        />
+      </div>
+      ${
+        showDemoContent
+          ? `<div className="relative z-10 text-white font-extrabold text-xl">
+        Vibe UI
+      </div>`
+          : ''
+      }
+    </div>
+  )
+}`
+    }
+
+    return ''
   }, [
     activeBg,
     showDemoContent,
@@ -1043,6 +1184,95 @@ export default function ScannerDemo() {
                   </ParameterCard>
                 </div>
               )}
+
+              {activeBg === 'lightfall' && (
+                <div className="space-y-2 pb-6">
+                  <ParameterCard label="Canvas BG">
+                    <ColorPicker value={lfCanvasBg} onChange={setLfCanvasBg} />
+                  </ParameterCard>
+                  <ParameterCard label="Color 1">
+                    <ColorPicker value={lfColor1} onChange={setLfColor1} />
+                  </ParameterCard>
+                  <ParameterCard label="Color 2">
+                    <ColorPicker value={lfColor2} onChange={setLfColor2} />
+                  </ParameterCard>
+                  <ParameterCard label="Color 3">
+                    <ColorPicker value={lfColor3} onChange={setLfColor3} />
+                  </ParameterCard>
+                  <StudioSlider
+                    label="Speed"
+                    min={0.05}
+                    max={2.0}
+                    step={0.05}
+                    value={lfSpeed}
+                    onChange={setLfSpeed}
+                  />
+                  <StudioSlider
+                    label="Streaks"
+                    min={1}
+                    max={16}
+                    step={1}
+                    value={lfStreakCount}
+                    onChange={setLfStreakCount}
+                  />
+                  <StudioSlider
+                    label="Width"
+                    min={0.1}
+                    max={5.0}
+                    step={0.1}
+                    value={lfStreakWidth}
+                    onChange={setLfStreakWidth}
+                  />
+                  <StudioSlider
+                    label="Length"
+                    min={0.1}
+                    max={5.0}
+                    step={0.1}
+                    value={lfStreakLength}
+                    onChange={setLfStreakLength}
+                  />
+                  <StudioSlider
+                    label="Density"
+                    min={0.05}
+                    max={2.0}
+                    step={0.05}
+                    value={lfDensity}
+                    onChange={setLfDensity}
+                  />
+                  <StudioSlider
+                    label="Glow"
+                    min={0.1}
+                    max={3.0}
+                    step={0.1}
+                    value={lfGlow}
+                    onChange={setLfGlow}
+                  />
+                  <StudioSlider
+                    label="Twinkle"
+                    min={0.0}
+                    max={2.0}
+                    step={0.1}
+                    value={lfTwinkle}
+                    onChange={setLfTwinkle}
+                  />
+                  <StudioSlider
+                    label="Zoom"
+                    min={0.5}
+                    max={8.0}
+                    step={0.1}
+                    value={lfZoom}
+                    onChange={setLfZoom}
+                  />
+                  <StudioSlider
+                    label="Bg Glow"
+                    min={0.0}
+                    max={2.0}
+                    step={0.1}
+                    value={lfBackgroundGlow}
+                    onChange={setLfBackgroundGlow}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -1124,22 +1354,20 @@ export default function ScannerDemo() {
                 softness={swSoftness}
               />
             )}
-            {activeBg === 'scanner' && (
-              <Scanner
-                key={`${scColor1}-${scColor2}-${scColor3}-${scSpeed}-${scSweepSpeed}-${scSweepWidth}-${scSweepFalloff}-${scBandDensity}-${scLineSharpness}-${scScanDirection}-${scScale}-${scRipple}-${scGlow}`}
-                color1={scColor1}
-                color2={scColor2}
-                color3={scColor3}
-                speed={scSpeed}
-                sweepSpeed={scSweepSpeed}
-                sweepWidth={scSweepWidth}
-                sweepFalloff={scSweepFalloff}
-                bandDensity={scBandDensity}
-                lineSharpness={scLineSharpness}
-                scanDirection={scScanDirection}
-                scale={scScale}
-                ripple={scRipple}
-                glow={scGlow}
+            {activeBg === 'lightfall' && (
+              <Lightfall
+                key={`${lfCanvasBg}-${lfColor1}-${lfColor2}-${lfColor3}-${lfSpeed}-${lfStreakCount}-${lfStreakWidth}-${lfStreakLength}-${lfDensity}-${lfGlow}-${lfTwinkle}-${lfZoom}-${lfBackgroundGlow}`}
+                colors={[lfColor1, lfColor2, lfColor3]}
+                backgroundColor={lfCanvasBg}
+                speed={lfSpeed}
+                streakCount={lfStreakCount}
+                streakWidth={lfStreakWidth}
+                streakLength={lfStreakLength}
+                density={lfDensity}
+                glow={lfGlow}
+                twinkle={lfTwinkle}
+                zoom={lfZoom}
+                backgroundGlow={lfBackgroundGlow}
               />
             )}
           </div>

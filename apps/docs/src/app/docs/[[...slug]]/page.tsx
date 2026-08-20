@@ -409,7 +409,13 @@ import {
   WebThreadsCustomizer,
   SlicedWavesCustomizer,
   ScannerCustomizer,
+  LightfallCustomizer,
 } from '../../../components/background-customizers'
+import {
+  LightfallBasicDemo,
+  LightfallNeonDemo,
+  LightfallSunsetDemo,
+} from '../../../components/lightfall-demo'
 import { SidebarDemo } from '../../../components/sidebar-demo'
 import { CodeBlockPre } from '../../../components/code-block'
 import {
@@ -1917,6 +1923,10 @@ const mdxComponents = {
   WebThreadsCustomizer,
   SlicedWavesCustomizer,
   ScannerCustomizer,
+  LightfallCustomizer,
+  LightfallBasicDemo,
+  LightfallNeonDemo,
+  LightfallSunsetDemo,
   DrawerDemoBasic,
   DrawerDemoGlassCart,
   DrawerDemoRetroSettings,

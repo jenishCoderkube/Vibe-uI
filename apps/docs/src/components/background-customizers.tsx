@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { cn } from '../lib/utils'
 import { Check, Copy, ExternalLink } from 'lucide-react'
 import { Highlight, themes } from 'prism-react-renderer'
@@ -11,6 +11,7 @@ import {
   WebThreads,
   SlicedWaves,
   Scanner,
+  Lightfall,
   Switch,
   Button,
   ButtonGroup,
@@ -36,31 +37,68 @@ export const PlaygroundParameterCard = ({
 )
 
 // Reusable Color picker widget
+// Custom React hook to debounce callbacks inline
+function useDebouncedCallback<T extends (...args: any[]) => void>(
+  callback: T,
+  delay: number
+): T {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const callbackRef = useRef(callback)
+  callbackRef.current = callback
+
+  return useCallback(
+    (...args: any[]) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      timeoutRef.current = setTimeout(() => {
+        callbackRef.current(...args)
+      }, delay)
+    },
+    [delay]
+  ) as unknown as T
+}
+
 export const PlaygroundColorPicker = ({
   value,
   onChange,
 }: {
   value: string
   onChange: (val: string) => void
-}) => (
-  <div className="relative flex items-center gap-1.5 border border-zinc-200 dark:border-white/5 bg-zinc-100 dark:bg-zinc-950/60 hover:border-zinc-300 dark:hover:border-white/20 text-zinc-800 dark:text-zinc-300 rounded-lg px-2 py-1 transition-all shrink-0 cursor-pointer">
-    <div
-      className="w-3.5 h-3.5 rounded border border-white/10 shrink-0"
-      style={{ backgroundColor: value }}
-    />
-    <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
-      {value}
-    </span>
-    <input
-      type="color"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-    />
-  </div>
-)
+}) => {
+  const [localVal, setLocalVal] = useState(value)
 
-// Premium Dial Slider Widget using the entire card box as the track (Theme-aware)
+  useEffect(() => {
+    setLocalVal(value)
+  }, [value])
+
+  const debouncedOnChange = useDebouncedCallback(onChange, 80)
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setLocalVal(val)
+    debouncedOnChange(val)
+  }
+
+  return (
+    <div className="relative flex items-center gap-1.5 border border-zinc-200 dark:border-white/5 bg-zinc-100 dark:bg-zinc-950/60 hover:border-zinc-300 dark:hover:border-white/20 text-zinc-800 dark:text-zinc-300 rounded-lg px-2 py-1 transition-all shrink-0 cursor-pointer">
+      <div
+        className="w-3.5 h-3.5 rounded border border-white/10 shrink-0"
+        style={{ backgroundColor: localVal }}
+      />
+      <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+        {localVal}
+      </span>
+      <input
+        type="color"
+        value={localVal}
+        onChange={handleColorChange}
+        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+      />
+    </div>
+  )
+}
+
 // Premium Dial Slider Widget using the entire card box as the track (Theme-aware, matching React Bits)
 export const DialSlider = ({
   min,
@@ -83,8 +121,22 @@ export const DialSlider = ({
     return v.toFixed(2)
   }
 
+  const [localVal, setLocalVal] = useState(value)
+
+  useEffect(() => {
+    setLocalVal(value)
+  }, [value])
+
+  const debouncedOnChange = useDebouncedCallback(onChange, 80)
+
+  const handleValueChange = (vals: number[]) => {
+    const val = vals[0]
+    setLocalVal(val)
+    debouncedOnChange(val)
+  }
+
   const range = max - min
-  const percentage = range > 0 ? ((value - min) / range) * 100 : 0
+  const percentage = range > 0 ? ((localVal - min) / range) * 100 : 0
   const ticks = 9
 
   return (
@@ -93,10 +145,15 @@ export const DialSlider = ({
         min={min}
         max={max}
         step={step}
-        value={[value]}
-        onValueChange={(vals) => onChange(vals[0])}
-        className="group relative flex items-center justify-between px-3.5 py-1.5 rounded-xl border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-900/30 hover:bg-zinc-50 hover:border-zinc-300 dark:hover:bg-zinc-900/50 dark:hover:border-white/10 shadow-sm dark:shadow-none transition-all select-none w-full min-h-[46px] cursor-pointer overflow-hidden outline-none"
+        value={[localVal]}
+        onValueChange={handleValueChange}
+        className="group/slider relative flex items-center justify-between px-3.5 py-1.5 rounded-xl border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-900/30 hover:bg-zinc-50 hover:border-zinc-300 dark:hover:bg-zinc-900/50 dark:hover:border-white/10 shadow-sm dark:shadow-none transition-all select-none w-full min-h-[46px] cursor-pointer overflow-hidden outline-none"
       >
+        {/* Progress fill block representing the value track */}
+        <div 
+          className="absolute inset-y-0 left-0 bg-zinc-200/60 dark:bg-zinc-800/50 pointer-events-none"
+          style={{ width: `${percentage}%` }}
+        />
         {/* Ticks inside the track */}
         <div className="absolute inset-0 flex items-center justify-between pointer-events-none px-4 opacity-[0.05]">
           {[...Array(ticks)].map((_, i) => (
@@ -109,7 +166,7 @@ export const DialSlider = ({
 
         {/* Capsule Thumb */}
         <SliderPrimitive.Thumb 
-          className="block w-[5px] h-[26px] bg-black/95 dark:bg-white/95 rounded-full transition-all focus:outline-none cursor-grab active:cursor-grabbing shadow-[0_0_8px_rgba(0,0,0,0.15)] dark:shadow-[0_0_10px_rgba(255,255,255,0.4)] opacity-30 group-hover:opacity-90 group-focus-within:opacity-90"
+          className="block w-[5px] h-[26px] bg-black/95 dark:bg-white/95 rounded-full transition-all focus:outline-none cursor-grab active:cursor-grabbing shadow-[0_0_8px_rgba(0,0,0,0.15)] dark:shadow-[0_0_10px_rgba(255,255,255,0.4)] opacity-30 group-hover/slider:opacity-90 group-focus-within:opacity-90"
           style={{ transform: 'translateX(-2.5px)' }}
         />
 
@@ -122,7 +179,7 @@ export const DialSlider = ({
 
         <div className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none z-10 select-none">
           <span className="text-[11px] font-bold font-mono text-zinc-900 dark:text-white tracking-wider">
-            {formatVal(value)}
+            {formatVal(localVal)}
           </span>
         </div>
       </SliderPrimitive.Root>
@@ -876,3 +933,187 @@ export default function ScannerDemo() {
     </CustomizerWrapper>
   )
 }
+
+// ── 5. LIGHTFALL CUSTOMIZER ──
+export function LightfallCustomizer() {
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const [canvasBg, setCanvasBg] = useState('#080515')
+  const [color1, setColor1] = useState('#A6C8FF')
+  const [color2, setColor2] = useState('#5227FF')
+  const [color3, setColor3] = useState('#FF9FFC')
+  
+  const [speed, setSpeed] = useState(0.4)
+  const [streakCount, setStreakCount] = useState(3)
+  const [streakWidth, setStreakWidth] = useState(1.5)
+  const [streakLength, setStreakLength] = useState(1.2)
+  const [density, setDensity] = useState(0.5)
+  const [glow, setGlow] = useState(1.2)
+  const [twinkle, setTwinkle] = useState(1.0)
+  const [zoom, setZoom] = useState(3.5)
+  const [backgroundGlow, setBackgroundGlow] = useState(0.6)
+
+  // Auto transition defaults between light and dark themes
+  useEffect(() => {
+    if (!mounted) return
+    if (resolvedTheme === 'light') {
+      if (canvasBg === '#080515') setCanvasBg('#fcfcfd')
+      if (color1 === '#A6C8FF') setColor1('#2563eb')
+      if (color2 === '#5227FF') setColor2('#7c3aed')
+      if (color3 === '#FF9FFC') setColor3('#db2777')
+    } else {
+      if (canvasBg === '#fcfcfd') setCanvasBg('#080515')
+      if (color1 === '#2563eb') setColor1('#A6C8FF')
+      if (color2 === '#7c3aed') setColor2('#5227FF')
+      if (color3 === '#db2777') setColor3('#FF9FFC')
+    }
+  }, [resolvedTheme, mounted])
+
+  const code = (showDemo: boolean) => `import { Lightfall } from '@/components/ui/lightfall'
+
+export default function LightfallDemo() {
+  return (
+    <div
+      className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden"
+      style={{ backgroundColor: '${canvasBg}' }}
+    >
+      <div className="absolute inset-0 z-0">
+        <Lightfall
+          colors={['${color1}', '${color2}', '${color3}']}
+          backgroundColor="${canvasBg}"
+          speed={${speed}}
+          streakCount={${streakCount}}
+          streakWidth={${streakWidth}}
+          streakLength={${streakLength}}
+          density={${density}}
+          glow={${glow}}
+          twinkle={${twinkle}}
+          zoom={${zoom}}
+          backgroundGlow={${backgroundGlow}}
+        />
+      </div>
+      ${
+        showDemo
+          ? `<div className="relative z-10 text-white font-extrabold text-xl">
+        Vibe UI
+      </div>`
+          : ''
+      }
+    </div>
+  )
+}`
+
+  return (
+    <CustomizerWrapper
+      canvasBg={canvasBg}
+      bgId="lightfall"
+      code={code}
+      preview={
+        <Lightfall
+          key={`${canvasBg}-${color1}-${color2}-${color3}-${speed}-${streakCount}-${streakWidth}-${streakLength}-${density}-${glow}-${twinkle}-${zoom}-${backgroundGlow}`}
+          colors={[color1, color2, color3]}
+          backgroundColor={canvasBg}
+          speed={speed}
+          streakCount={streakCount}
+          streakWidth={streakWidth}
+          streakLength={streakLength}
+          density={density}
+          glow={glow}
+          twinkle={twinkle}
+          zoom={zoom}
+          backgroundGlow={backgroundGlow}
+        />
+      }
+    >
+      <PlaygroundParameterCard label="Canvas BG">
+        <PlaygroundColorPicker value={canvasBg} onChange={setCanvasBg} />
+      </PlaygroundParameterCard>
+      <PlaygroundParameterCard label="Color 1">
+        <PlaygroundColorPicker value={color1} onChange={setColor1} />
+      </PlaygroundParameterCard>
+      <PlaygroundParameterCard label="Color 2">
+        <PlaygroundColorPicker value={color2} onChange={setColor2} />
+      </PlaygroundParameterCard>
+      <PlaygroundParameterCard label="Color 3">
+        <PlaygroundColorPicker value={color3} onChange={setColor3} />
+      </PlaygroundParameterCard>
+      <DialSlider
+        label="Speed"
+        min={0.05}
+        max={2.0}
+        step={0.05}
+        value={speed}
+        onChange={setSpeed}
+      />
+      <DialSlider
+        label="Streaks"
+        min={1}
+        max={16}
+        step={1}
+        value={streakCount}
+        onChange={setStreakCount}
+      />
+      <DialSlider
+        label="Width"
+        min={0.1}
+        max={5.0}
+        step={0.1}
+        value={streakWidth}
+        onChange={setStreakWidth}
+      />
+      <DialSlider
+        label="Length"
+        min={0.1}
+        max={5.0}
+        step={0.1}
+        value={streakLength}
+        onChange={setStreakLength}
+      />
+      <DialSlider
+        label="Density"
+        min={0.05}
+        max={2.0}
+        step={0.05}
+        value={density}
+        onChange={setDensity}
+      />
+      <DialSlider
+        label="Glow"
+        min={0.1}
+        max={3.0}
+        step={0.1}
+        value={glow}
+        onChange={setGlow}
+      />
+      <DialSlider
+        label="Twinkle"
+        min={0.0}
+        max={2.0}
+        step={0.1}
+        value={twinkle}
+        onChange={setTwinkle}
+      />
+      <DialSlider
+        label="Zoom"
+        min={0.5}
+        max={8.0}
+        step={0.1}
+        value={zoom}
+        onChange={setZoom}
+      />
+      <DialSlider
+        label="Bg Glow"
+        min={0.0}
+        max={2.0}
+        step={0.1}
+        value={backgroundGlow}
+        onChange={setBackgroundGlow}
+      />
+    </CustomizerWrapper>
+  )
+}
+

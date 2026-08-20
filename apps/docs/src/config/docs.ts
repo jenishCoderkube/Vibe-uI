@@ -387,6 +387,10 @@ export const docsConfig: DocsConfig = {
           title: 'Scanner',
           href: '/docs/backgrounds/scanner',
         },
+        {
+          title: 'Lightfall',
+          href: '/docs/backgrounds/lightfall',
+        },
       ],
     },
   ],

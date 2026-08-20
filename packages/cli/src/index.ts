@@ -99,7 +99,7 @@ async function installDependencies(
 }
 
 program
-  .name('vibe-ui')
+  .name('vibe-ui-kit')
   .description('CLI to add Vibe UI components to your project')
   .version(pkg.version)
 

@@ -34,7 +34,7 @@
   },
   "main": "./dist/index.js",
   "bin": {
-    "vibe-ui": "dist/index.js"
+    "vibe-ui-kit": "dist/index.js"
   },
   "files": [
     "dist",
