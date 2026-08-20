@@ -93,6 +93,46 @@ type ComponentType =
   | 'sliced-waves'
   | 'scanner'
 
+const PlaygroundParameterCard = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div className="flex items-center justify-between gap-3 p-2.5 rounded-xl border border-white/5 bg-zinc-900/30 hover:bg-zinc-900/50 hover:border-white/10 transition-all select-none w-full">
+    <span className="text-xs font-bold text-zinc-300 tracking-wide truncate max-w-[120px]">
+      {label}
+    </span>
+    <div className="flex items-center justify-end flex-1 min-w-0">
+      {children}
+    </div>
+  </div>
+)
+
+const PlaygroundColorPicker = ({ value, onChange }: { value: string; onChange: (val: string) => void }) => (
+  <div className="relative flex items-center gap-1.5 bg-zinc-950/60 border border-white/5 rounded-lg px-2 py-1 hover:border-white/20 transition-all shrink-0 cursor-pointer">
+    <div className="w-3.5 h-3.5 rounded border border-white/10 shrink-0" style={{ backgroundColor: value }} />
+    <span className="text-[10px] font-mono font-bold text-zinc-300 uppercase tracking-wider">{value}</span>
+    <input
+      type="color"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+    />
+  </div>
+)
+
+const PlaygroundSlider = ({ min, max, step, value, onChange }: { min: number; max: number; step: number; value: number; onChange: (val: number) => void }) => (
+  <div className="flex items-center gap-2.5 w-full max-w-[140px]">
+    <Slider
+      min={min}
+      max={max}
+      step={step}
+      value={[value]}
+      onValueChange={(vals) => onChange(vals[0])}
+      className="flex-1 cursor-pointer"
+    />
+    <span className="shrink-0 text-[10px] font-bold font-mono text-zinc-400 bg-zinc-950/40 border border-white/5 rounded px-1.5 py-0.5 text-center min-w-[28px]">
+      {value}
+    </span>
+  </div>
+)
+
 interface ComponentPlaygroundProps {
   component?: ComponentType
 }
@@ -116,6 +156,7 @@ export function ComponentPlayground({ component }: ComponentPlaygroundProps) {
   }, [component])
 
   const isDark = mounted ? resolvedTheme === 'dark' : true
+  const isBackground = ['light-tunnel', 'web-threads', 'sliced-waves', 'scanner'].includes(activeComponent)
 
   // Common copy action state
   const [copied, setCopied] = useState(false)
@@ -946,9 +987,9 @@ export default function ScannerDemo() {
       )}
 
       {/* Main Sandbox Workspace */}
-      <div className="grid md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-white/5 items-stretch min-h-[350px]">
-        {/* Visual Live Preview (3/5 columns) */}
-        <div className="md:col-span-3 flex flex-col justify-between p-6 sm:p-8 py-10 bg-zinc-50/50 dark:bg-zinc-950/20 relative">
+      <div className={isBackground ? "flex flex-col divide-y divide-white/5 items-stretch min-h-[350px]" : "grid md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-white/5 items-stretch min-h-[350px]"}>
+        {/* Visual Live Preview */}
+        <div className={isBackground ? "w-full flex flex-col justify-between p-6 sm:p-8 py-10 bg-zinc-50/50 dark:bg-zinc-950/20 relative" : "md:col-span-3 flex flex-col justify-between p-6 sm:p-8 py-10 bg-zinc-50/50 dark:bg-zinc-950/20 relative"}>
           <div className="absolute inset-0 bg-radial-glow pointer-events-none opacity-40" />
           <div className="relative z-10 flex-1 flex items-center justify-center min-h-[240px] w-full p-4 overflow-visible">
             {activeComponent === 'button' && (
@@ -1417,8 +1458,8 @@ export default function ScannerDemo() {
           </div>
         </div>
 
-        {/* Options Controller Panel (2/5 columns) */}
-        <div className="md:col-span-2 p-6 flex flex-col gap-5 bg-card">
+        {/* Options Controller Panel */}
+        <div className={isBackground ? "w-full p-6 flex flex-col gap-5 bg-card" : "md:col-span-2 p-6 flex flex-col gap-5 bg-card"}>
           <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest pl-0.5">
             Configurator Options
           </h3>
@@ -2687,416 +2728,166 @@ export default function ScannerDemo() {
 
           {/* LIGHT TUNNEL CONTROLS */}
           {activeComponent === 'light-tunnel' && (
-            <div className="space-y-4">
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Cable Color</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={ltCableColor}
-                    onChange={(e) => setLtCableColor(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{ltCableColor}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Pulse Color</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={ltPulseColor}
-                    onChange={(e) => setLtPulseColor(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{ltPulseColor}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Flow Speed</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {ltSpeed}
-                  </span>
-                </div>
-                <Slider
-                  max={0.5}
-                  min={0.01}
-                  step={0.01}
-                  value={[ltSpeed]}
-                  onValueChange={(val) => setLtSpeed(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Flow Direction</Label>
-                <div className="flex gap-2">
+            <div className="grid grid-cols-1 gap-2.5">
+              <PlaygroundParameterCard label="Cable Color">
+                <PlaygroundColorPicker value={ltCableColor} onChange={setLtCableColor} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Pulse Color">
+                <PlaygroundColorPicker value={ltPulseColor} onChange={setLtPulseColor} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Flow Speed">
+                <PlaygroundSlider min={0.01} max={0.5} step={0.01} value={ltSpeed} onChange={setLtSpeed} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Direction">
+                <div className="flex gap-1 bg-zinc-950/60 p-0.5 border border-white/5 rounded-lg">
                   {(['outward', 'inward'] as const).map((dir) => (
                     <button
                       key={dir}
                       type="button"
                       onClick={() => setLtFlowDirection(dir)}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
+                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-colors cursor-pointer capitalize ${
                         ltFlowDirection === dir
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-background text-foreground border-border hover:bg-muted'
+                          ? 'bg-zinc-800 text-white shadow-sm'
+                          : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       {dir}
                     </button>
                   ))}
                 </div>
-              </div>
+              </PlaygroundParameterCard>
             </div>
           )}
 
           {/* WEB THREADS CONTROLS */}
           {activeComponent === 'web-threads' && (
-            <div className="space-y-4">
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Color 1</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={wtColor1}
-                    onChange={(e) => setWtColor1(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{wtColor1}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Color 2</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={wtColor2}
-                    onChange={(e) => setWtColor2(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{wtColor2}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Flow Speed</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {wtSpeed}
-                  </span>
-                </div>
-                <Slider
-                  max={1.0}
-                  min={0.01}
-                  step={0.01}
-                  value={[wtSpeed]}
-                  onValueChange={(val) => setWtSpeed(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Thread Count</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {wtThreadCount}
-                  </span>
-                </div>
-                <Slider
-                  max={10}
-                  min={1}
-                  step={1}
-                  value={[wtThreadCount]}
-                  onValueChange={(val) => setWtThreadCount(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Fan Mode</Label>
-                <div className="flex gap-2">
+            <div className="grid grid-cols-1 gap-2.5">
+              <PlaygroundParameterCard label="Color 1">
+                <PlaygroundColorPicker value={wtColor1} onChange={setWtColor1} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Color 2">
+                <PlaygroundColorPicker value={wtColor2} onChange={setWtColor2} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Flow Speed">
+                <PlaygroundSlider min={0.01} max={1.0} step={0.01} value={wtSpeed} onChange={setWtSpeed} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Thread Count">
+                <PlaygroundSlider min={1} max={10} step={1} value={wtThreadCount} onChange={setWtThreadCount} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Fan Mode">
+                <div className="flex gap-1 bg-zinc-950/60 p-0.5 border border-white/5 rounded-lg">
                   {(['center', 'left', 'right'] as const).map((mode) => (
                     <button
                       key={mode}
                       type="button"
                       onClick={() => setWtFanMode(mode)}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
+                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-colors cursor-pointer capitalize ${
                         wtFanMode === mode
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-background text-foreground border-border hover:bg-muted'
+                          ? 'bg-zinc-800 text-white shadow-sm'
+                          : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       {mode}
                     </button>
                   ))}
                 </div>
-              </div>
+              </PlaygroundParameterCard>
             </div>
           )}
 
           {/* SLICED WAVES CONTROLS */}
           {activeComponent === 'sliced-waves' && (
-            <div className="space-y-4">
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Color 1</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={swColor1}
-                    onChange={(e) => setSwColor1(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{swColor1}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Color 2</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={swColor2}
-                    onChange={(e) => setSwColor2(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{swColor2}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Color 3</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={swColor3}
-                    onChange={(e) => setSwColor3(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{swColor3}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Columns</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {swColumns}
-                  </span>
-                </div>
-                <Slider
-                  max={30}
-                  min={1}
-                  step={1}
-                  value={[swColumns]}
-                  onValueChange={(val) => setSwColumns(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Rows</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {swRows}
-                  </span>
-                </div>
-                <Slider
-                  max={30}
-                  min={1}
-                  step={1}
-                  value={[swRows]}
-                  onValueChange={(val) => setSwRows(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Bar Thickness</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {swBarThickness}
-                  </span>
-                </div>
-                <Slider
-                  max={0.5}
-                  min={0.01}
-                  step={0.01}
-                  value={[swBarThickness]}
-                  onValueChange={(val) => setSwBarThickness(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Flow Speed</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {swSpeed}
-                  </span>
-                </div>
-                <Slider
-                  max={1.5}
-                  min={0.01}
-                  step={0.01}
-                  value={[swSpeed]}
-                  onValueChange={(val) => setSwSpeed(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Orientation</Label>
-                <div className="flex gap-2">
+            <div className="grid grid-cols-1 gap-2.5">
+              <PlaygroundParameterCard label="Color 1">
+                <PlaygroundColorPicker value={swColor1} onChange={setSwColor1} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Color 2">
+                <PlaygroundColorPicker value={swColor2} onChange={setSwColor2} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Color 3">
+                <PlaygroundColorPicker value={swColor3} onChange={setSwColor3} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Columns">
+                <PlaygroundSlider min={1} max={30} step={1} value={swColumns} onChange={setSwColumns} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Rows">
+                <PlaygroundSlider min={1} max={30} step={1} value={swRows} onChange={setSwRows} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Thickness">
+                <PlaygroundSlider min={0.01} max={0.5} step={0.01} value={swBarThickness} onChange={setSwBarThickness} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Flow Speed">
+                <PlaygroundSlider min={0.01} max={1.5} step={0.01} value={swSpeed} onChange={setSwSpeed} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Orientation">
+                <div className="flex gap-1 bg-zinc-950/60 p-0.5 border border-white/5 rounded-lg">
                   {(['horizontal', 'vertical'] as const).map((dir) => (
                     <button
                       key={dir}
                       type="button"
                       onClick={() => setSwOrientation(dir)}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
+                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-colors cursor-pointer capitalize ${
                         swOrientation === dir
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-background text-foreground border-border hover:bg-muted'
+                          ? 'bg-zinc-800 text-white shadow-sm'
+                          : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       {dir}
                     </button>
                   ))}
                 </div>
-              </div>
+              </PlaygroundParameterCard>
             </div>
           )}
 
           {/* SCANNER CONTROLS */}
           {activeComponent === 'scanner' && (
-            <div className="space-y-4">
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Color 1</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={scColor1}
-                    onChange={(e) => setScColor1(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{scColor1}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Color 2</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={scColor2}
-                    onChange={(e) => setScColor2(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{scColor2}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Color 3</Label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="color"
-                    value={scColor3}
-                    onChange={(e) => setScColor3(e.target.value)}
-                    className="w-8 h-8 rounded cursor-pointer border border-border bg-background"
-                  />
-                  <span className="text-xs font-mono text-foreground">{scColor3}</span>
-                </div>
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Noise Speed</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {scSpeed}
-                  </span>
-                </div>
-                <Slider
-                  max={2.0}
-                  min={0.01}
-                  step={0.01}
-                  value={[scSpeed]}
-                  onValueChange={(val) => setScSpeed(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Sweep Speed</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {scSweepSpeed}
-                  </span>
-                </div>
-                <Slider
-                  max={1.0}
-                  min={0.01}
-                  step={0.01}
-                  value={[scSweepSpeed]}
-                  onValueChange={(val) => setScSweepSpeed(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Sweep Width</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {scSweepWidth}
-                  </span>
-                </div>
-                <Slider
-                  max={3.0}
-                  min={0.1}
-                  step={0.1}
-                  value={[scSweepWidth]}
-                  onValueChange={(val) => setScSweepWidth(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Sweep Falloff</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {scSweepFalloff}
-                  </span>
-                </div>
-                <Slider
-                  max={12}
-                  min={1}
-                  step={1}
-                  value={[scSweepFalloff]}
-                  onValueChange={(val) => setScSweepFalloff(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Band Density</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {scBandDensity}
-                  </span>
-                </div>
-                <Slider
-                  max={30}
-                  min={1}
-                  step={1}
-                  value={[scBandDensity]}
-                  onValueChange={(val) => setScBandDensity(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <Label className="font-semibold">Line Sharpness</Label>
-                  <span className="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
-                    {scLineSharpness}
-                  </span>
-                </div>
-                <Slider
-                  max={15}
-                  min={0.5}
-                  step={0.5}
-                  value={[scLineSharpness]}
-                  onValueChange={(val) => setScLineSharpness(val[0])}
-                />
-              </div>
-              <div className="space-y-2 text-left">
-                <Label className="text-xs font-semibold">Direction</Label>
-                <div className="flex gap-2">
+            <div className="grid grid-cols-1 gap-2.5">
+              <PlaygroundParameterCard label="Color 1">
+                <PlaygroundColorPicker value={scColor1} onChange={setScColor1} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Color 2">
+                <PlaygroundColorPicker value={scColor2} onChange={setScColor2} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Color 3">
+                <PlaygroundColorPicker value={scColor3} onChange={setScColor3} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Noise Speed">
+                <PlaygroundSlider min={0.01} max={2.0} step={0.01} value={scSpeed} onChange={setScSpeed} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Sweep Speed">
+                <PlaygroundSlider min={0.01} max={1.0} step={0.01} value={scSweepSpeed} onChange={setScSweepSpeed} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Sweep Width">
+                <PlaygroundSlider min={0.1} max={3.0} step={0.1} value={scSweepWidth} onChange={setScSweepWidth} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Sweep Falloff">
+                <PlaygroundSlider min={1} max={12} step={1} value={scSweepFalloff} onChange={setScSweepFalloff} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Band Density">
+                <PlaygroundSlider min={1} max={30} step={1} value={scBandDensity} onChange={setScBandDensity} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Line Sharpness">
+                <PlaygroundSlider min={0.5} max={15} step={0.5} value={scLineSharpness} onChange={setScLineSharpness} />
+              </PlaygroundParameterCard>
+              <PlaygroundParameterCard label="Direction">
+                <div className="flex gap-1 bg-zinc-950/60 p-0.5 border border-white/5 rounded-lg">
                   {(['vertical', 'horizontal', 'diagonal'] as const).map((dir) => (
                     <button
                       key={dir}
                       type="button"
                       onClick={() => setScScanDirection(dir)}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md border cursor-pointer transition-colors ${
+                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-colors cursor-pointer capitalize ${
                         scScanDirection === dir
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-background text-foreground border-border hover:bg-muted'
+                          ? 'bg-zinc-800 text-white shadow-sm'
+                          : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       {dir}
                     </button>
                   ))}
                 </div>
-              </div>
+              </PlaygroundParameterCard>
             </div>
           )}
         </div>

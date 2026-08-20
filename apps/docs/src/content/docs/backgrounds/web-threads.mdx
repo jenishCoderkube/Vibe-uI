@@ -4,56 +4,12 @@ A hardware-accelerated WebGL animated background component rendering a custom mu
 
 ## Preview
 
-<ComponentPreview sandbox="web-threads" noPadding>
-  <WebThreadsBasicDemo />
+<WebThreadsCustomizer />
 
-```tsx
-import { WebThreads } from '@/components/ui/web-threads'
-
-export default function WebThreadsDemo() {
-  return (
-    <div className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
-      <div className="absolute inset-0 z-0">
-        <WebThreads
-          color1="#8b5cf6"
-          color2="#ec4899"
-          color3="#ffffff"
-          speed={0.25}
-          threadCount={8}
-          frequency={4.5}
-          spread={0.2}
-          position={0.5}
-          fanMode="center"
-          glow={0.03}
-          thickness={1.2}
-          brightness={0.8}
-          shimmer={true}
-          mouseInteraction={true}
-          mouseStrength={0.4}
-        />
-      </div>
-
-      <div className="relative z-10 max-w-sm p-6 mx-4 rounded-2xl border border-white/10 bg-zinc-950/40 backdrop-blur-xl shadow-2xl text-center select-none">
-        <span className="text-[10px] text-pink-300 bg-pink-500/10 border border-pink-500/30 px-3 py-1 rounded-full font-semibold uppercase tracking-wider mb-4 inline-block">
-          ✨ Web Threads Glow
-        </span>
-        <h3 className="text-xl font-extrabold text-white tracking-tight mb-2">
-          Fluid Web Wave
-        </h3>
-        <p className="text-xs text-zinc-300 leading-relaxed">
-          A customizable multi-thread WebGL strand waving gently in 3D space with high performance and interactive cursor tracking.
-        </p>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
 
 ## Installation
 
-<Installation>
+<Installation name="web-threads" npmDeps="ogl">
 
 <Tabs defaultValue="cli">
 

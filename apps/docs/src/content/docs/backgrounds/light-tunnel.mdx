@@ -4,40 +4,8 @@ A hardware-accelerated WebGL animated background component creating a customizab
 
 ## Preview
 
-<ComponentPreview sandbox="light-tunnel" noPadding>
-  <LightTunnelBasicDemo />
+<LightTunnelCustomizer />
 
-```tsx
-import { LightTunnel } from '@/components/ui/light-tunnel'
-
-export default function LightTunnelDemo() {
-  return (
-    <div className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
-      <div className="absolute inset-0 z-0">
-        <LightTunnel
-          cableColor="#8b5cf6"
-          pulseColor="#c084fc"
-          tunnelColor="#1e1b4b"
-          tunnelOpacity={0.2}
-          speed={0.15}
-          flowDirection="outward"
-          cableCount={24}
-          thickness={0.35}
-          rimWidth={0.15}
-          glow={1.5}
-          sway={0.4}
-        />
-      </div>
-      
-      <div className="relative z-10 text-center text-white">
-        <h3 className="text-xl font-extrabold">Vibe UI Motion</h3>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
 
 <Installation name="light-tunnel" npmDeps="ogl">
 

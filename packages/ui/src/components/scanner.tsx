@@ -220,6 +220,7 @@ export const Scanner: React.FC<ScannerProps> = ({
       alpha: true,
       premultipliedAlpha: true,
       antialias: false,
+      preserveDrawingBuffer: true,
       dpr: Math.min(window.devicePixelRatio || 1, 2),
     })
 

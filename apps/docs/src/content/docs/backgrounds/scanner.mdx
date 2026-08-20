@@ -4,62 +4,12 @@ An advanced hardware-accelerated WebGL animated scanner background rendering pro
 
 ## Preview
 
-<ComponentPreview sandbox="scanner" noPadding>
-  <ScannerBasicDemo />
+<ScannerCustomizer />
 
-```tsx
-import { Scanner } from '@/components/ui/scanner'
-
-export default function ScannerDemo() {
-  return (
-    <div className="relative w-full h-[400px] flex items-center justify-center rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
-      <div className="absolute inset-0 z-0">
-        <Scanner
-          color1="#00f3ff"
-          color2="#5227FF"
-          color3="#FFFFFF"
-          speed={0.5}
-          sweepSpeed={0.25}
-          sweepWidth={1.6}
-          sweepFalloff={6}
-          scale={1.5}
-          frequency={2}
-          ripple={0.22}
-          bandDensity={11}
-          lineSharpness={5.5}
-          glow={0.22}
-          scanDirection="vertical"
-          colorSpread={0.7}
-          brightness={1.0}
-          contrast={1.15}
-          softness={1.4}
-          vignette={0.45}
-          scanline={true}
-          mouseInteraction={true}
-        />
-      </div>
-
-      <div className="relative z-10 max-w-sm p-6 mx-4 rounded-2xl border border-cyan-500/20 bg-zinc-950/50 backdrop-blur-xl shadow-2xl text-center select-none font-mono">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-[10px] font-semibold uppercase tracking-wider mb-4">
-          📡 SYSTEM SCAN ACTIVE
-        </span>
-        <h3 className="text-lg font-bold text-white tracking-widest uppercase mb-2">
-          Grid Sector #02
-        </h3>
-        <p className="text-xs text-zinc-300 leading-relaxed">
-          Hardware-accelerated coordinate radar scanning. Generates procedural sweep bands with dynamic color shifts.
-        </p>
-      </div>
-    </div>
-  )
-}
-```
-
-</ComponentPreview>
 
 ## Installation
 
-<Installation>
+<Installation name="scanner" npmDeps="ogl">
 
 <Tabs defaultValue="cli">
 

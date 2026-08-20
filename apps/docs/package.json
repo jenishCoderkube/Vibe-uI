@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "vibe-ui": "workspace:^",
+    "@radix-ui/react-slider": "^1.2.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.24.0",
     "next": "^15.0.0-rc.0 || ^15.0.0",

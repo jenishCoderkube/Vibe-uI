@@ -404,6 +404,12 @@ import {
   ScannerGreenRadarDemo,
   ScannerSunsetDemo,
 } from '../../../components/scanner-demo'
+import {
+  LightTunnelCustomizer,
+  WebThreadsCustomizer,
+  SlicedWavesCustomizer,
+  ScannerCustomizer,
+} from '../../../components/background-customizers'
 import { SidebarDemo } from '../../../components/sidebar-demo'
 import { CodeBlockPre } from '../../../components/code-block'
 import {
@@ -1907,6 +1913,10 @@ const mdxComponents = {
   ScannerBasicDemo,
   ScannerGreenRadarDemo,
   ScannerSunsetDemo,
+  LightTunnelCustomizer,
+  WebThreadsCustomizer,
+  SlicedWavesCustomizer,
+  ScannerCustomizer,
   DrawerDemoBasic,
   DrawerDemoGlassCart,
   DrawerDemoRetroSettings,
