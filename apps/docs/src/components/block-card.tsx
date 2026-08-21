@@ -464,27 +464,23 @@ export function BlockCard({
 
               {/* Centered responsive frame viewport */}
               <div
-                className={cn(
-                  'bg-muted/20 flex items-center justify-center min-h-[400px] overflow-x-auto w-full border-t border-border',
-                  urlPath.startsWith('dashboard') ? 'p-0' : 'p-6',
-                )}
+                className="bg-muted/20 flex items-center justify-center min-h-[400px] overflow-x-auto w-full border-t border-border p-0"
               >
                 <div
                   className={cn(
                     'transition-all duration-300 ease-in-out w-full',
                     deviceMode === 'desktop' && 'max-w-full',
                     deviceMode === 'tablet' &&
-                      'max-w-[768px] border-x border-dashed border-border p-2 bg-background rounded-xl shadow-lg',
+                      'max-w-[768px] border-x border-dashed border-border bg-background rounded-xl shadow-lg',
                     deviceMode === 'mobile' &&
-                      'max-w-[375px] border-x border-dashed border-border p-2 bg-background rounded-2xl shadow-xl',
+                      'max-w-[375px] border-x border-dashed border-border bg-background rounded-2xl shadow-xl',
                   )}
                 >
                   <iframe
                     src={`/preview/${urlPath}`}
                     className={cn(
                       'w-full overflow-hidden bg-background block shadow-[0_0_50px_-12px_rgba(255,255,255,0.05)]',
-                      urlPath.startsWith('dashboard') &&
-                        deviceMode === 'desktop'
+                      deviceMode === 'desktop'
                         ? 'border-0 rounded-none'
                         : 'border border-border rounded-xl',
                     )}

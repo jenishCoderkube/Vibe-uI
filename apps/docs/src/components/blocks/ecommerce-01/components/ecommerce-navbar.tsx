@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -71,7 +70,13 @@ export function EcommerceNavbar({
   onClearCart,
   onToggleWishlist,
 }: EcommerceNavbarProps) {
-  const router = useRouter()
+  const router = {
+    push: (url: string) => {
+      if (typeof window !== 'undefined') {
+        window.location.href = url
+      }
+    },
+  }
   const [searchQuery, setSearchQuery] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -210,7 +215,7 @@ export function EcommerceNavbar({
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-black text-xl transition-transform group-hover:scale-105 shadow-sm">
               V
             </div>
-            <span className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
+            <span className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary hidden sm:inline">
               Vibe <span className="text-xs font-semibold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary align-middle ml-1">SHOP</span>
             </span>
           </a>

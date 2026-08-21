@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { EcommerceNavbar } from './components/ecommerce-navbar'
 import { EcommerceHero } from './components/ecommerce-hero'
 import { EcommerceFooter } from './components/ecommerce-footer'
@@ -41,7 +40,13 @@ interface CartItem {
 }
 
 export default function Ecommerce01Page() {
-  const router = useRouter()
+  const router = {
+    push: (url: string) => {
+      if (typeof window !== 'undefined') {
+        window.location.href = url
+      }
+    },
+  }
   const [cart, setCart] = useState<CartItem[]>([])
   const [wishlist, setWishlist] = useState<string[]>([])
   const [newsletterEmail, setNewsletterEmail] = useState('')
@@ -150,19 +155,17 @@ export default function Ecommerce01Page() {
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-20 space-y-16">
         {/* Hero Product Feature */}
-        <BlurFade delay={0.1} duration={0.5}>
-          <EcommerceHero
-            wishlist={wishlist}
-            onAddToCart={handleAddToCart}
-            onToggleWishlist={handleToggleWishlist}
-          />
-        </BlurFade>
+        <EcommerceHero
+          wishlist={wishlist}
+          onAddToCart={handleAddToCart}
+          onToggleWishlist={handleToggleWishlist}
+        />
 
         {/* Acoustic Engineering Specs Section */}
         <BlurFade delay={0.15} duration={0.5}>
           <div id="specs" className="space-y-8 scroll-mt-20">
             <div className="text-left max-w-xl">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
+              <h2 className="text-sm sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
                 High-Fidelity Engineering
               </h2>
               <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
@@ -222,7 +225,7 @@ export default function Ecommerce01Page() {
                 <Badge variant="glow" className="text-[10px] uppercase font-bold tracking-wider mb-2">
                   Just Released
                 </Badge>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
+                <h2 className="text-sm sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
                   New Arrivals
                 </h2>
                 <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
@@ -231,7 +234,7 @@ export default function Ecommerce01Page() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {[
                 {
                   id: 'vibe-beam-soundbar',
@@ -264,7 +267,7 @@ export default function Ecommerce01Page() {
                     className="aspect-[4/3] bg-muted/40 flex items-center justify-center overflow-hidden relative border-b border-border/50 cursor-pointer"
                     title="Click to view details"
                   >
-                    <Badge variant="glass" className="absolute left-3 top-3 z-10 text-[9px] font-bold uppercase tracking-wider">
+                    <Badge variant="glass" className="absolute left-2 top-2 z-10 text-[7px] sm:text-[9px] font-bold uppercase tracking-wider px-1.2 py-0.2 rounded">
                       {product.badge}
                     </Badge>
                     <img
@@ -273,18 +276,18 @@ export default function Ecommerce01Page() {
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <CardContent className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-start gap-2">
+                  <CardContent className="p-2 sm:p-6 flex-1 flex flex-col justify-between space-y-2 sm:space-y-4">
+                    <div className="space-y-1">
+                      <div className="flex flex-col justify-between items-start gap-0.5">
                         <CardTitle
                           onClick={() => router.push('/preview/ecommerce-02')}
-                          className="text-base font-extrabold tracking-tight truncate hover:text-primary transition-colors cursor-pointer"
+                          className="text-[11px] sm:text-base font-bold tracking-tight hover:text-primary transition-colors cursor-pointer truncate w-full text-left"
                         >
                           {product.name}
                         </CardTitle>
-                        <span className="text-base font-black text-foreground">${product.price}</span>
+                        <span className="text-xs sm:text-base font-black text-foreground">${product.price}</span>
                       </div>
-                      <CardDescription className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                      <CardDescription className="text-[9px] sm:text-xs text-muted-foreground leading-snug line-clamp-1 sm:line-clamp-2">
                         {product.desc}
                       </CardDescription>
                     </div>
@@ -299,7 +302,7 @@ export default function Ecommerce01Page() {
                         size: 'Standard',
                         image: product.image,
                       })}
-                      className="w-full text-xs font-bold h-9 mt-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer"
+                      className="w-full text-[9px] sm:text-xs font-bold h-8 sm:h-9 mt-1 sm:mt-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer"
                     >
                       Quick Add to Cart
                     </Button>
@@ -314,7 +317,7 @@ export default function Ecommerce01Page() {
         <BlurFade delay={0.2} duration={0.5}>
           <div id="categories" className="space-y-8 scroll-mt-20">
             <div className="text-left max-w-xl">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
+              <h2 className="text-sm sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
                 Explore Sound Categories
               </h2>
               <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
@@ -380,7 +383,7 @@ export default function Ecommerce01Page() {
         <BlurFade delay={0.25} duration={0.5}>
           <div id="related-products" className="space-y-8 scroll-mt-20">
             <div className="text-left max-w-xl">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
+              <h2 className="text-sm sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
                 Complete Your Setup
               </h2>
               <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
@@ -388,7 +391,7 @@ export default function Ecommerce01Page() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {[
                 {
                   id: 'vibe-sound-budz',
@@ -430,29 +433,29 @@ export default function Ecommerce01Page() {
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <CardContent className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-start gap-2">
+                  <CardContent className="p-2 sm:p-6 flex-1 flex flex-col justify-between space-y-2 sm:space-y-4">
+                    <div className="space-y-1">
+                      <div className="flex flex-col justify-between items-start gap-0.5">
                         <CardTitle
                           onClick={() => router.push('/preview/ecommerce-02')}
-                          className="text-base font-extrabold tracking-tight truncate hover:text-primary transition-colors cursor-pointer"
+                          className="text-[11px] sm:text-base font-bold tracking-tight hover:text-primary transition-colors cursor-pointer truncate w-full text-left"
                         >
                           {product.name}
                         </CardTitle>
-                        <span className="text-base font-black text-foreground">${product.price}</span>
+                        <span className="text-xs sm:text-base font-black text-foreground">${product.price}</span>
                       </div>
                       
                       <div className="flex items-center gap-1">
                         <div className="flex text-amber-500">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="h-3 w-3 fill-current" />
+                            <Star key={i} className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
                           ))}
                         </div>
-                        <span className="text-[10px] font-bold text-foreground">{product.rating}</span>
-                        <span className="text-[9px] text-muted-foreground">({product.reviews})</span>
+                        <span className="text-[9px] sm:text-[10px] font-bold text-foreground">{product.rating}</span>
+                        <span className="text-[8px] sm:text-[9px] text-muted-foreground">({product.reviews})</span>
                       </div>
 
-                      <CardDescription className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                      <CardDescription className="text-[9px] sm:text-xs text-muted-foreground leading-snug line-clamp-1 sm:line-clamp-2">
                         {product.desc}
                       </CardDescription>
                     </div>
@@ -467,7 +470,7 @@ export default function Ecommerce01Page() {
                         size: 'Standard',
                         image: product.image,
                       })}
-                      className="w-full text-xs font-bold h-9 mt-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer"
+                      className="w-full text-[9px] sm:text-xs font-bold h-8 sm:h-9 mt-1 sm:mt-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer"
                     >
                       Quick Add to Cart
                     </Button>
@@ -486,7 +489,7 @@ export default function Ecommerce01Page() {
                 <Badge variant="glow" className="text-[10px] uppercase font-bold tracking-wider mb-2 bg-red-500/10 text-red-600 dark:text-red-400 dark:bg-red-500/20 border-red-500/30">
                   Special Discounts
                 </Badge>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
+                <h2 className="text-sm sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
                   Limited Time Deals
                 </h2>
                 <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
@@ -495,7 +498,7 @@ export default function Ecommerce01Page() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {[
                 {
                   id: 'vibe-go-speaker',
@@ -531,7 +534,7 @@ export default function Ecommerce01Page() {
                     className="aspect-[4/3] bg-muted/40 flex items-center justify-center overflow-hidden relative border-b border-border/50 cursor-pointer"
                     title="Click to view details"
                   >
-                    <Badge variant="default" className="absolute left-3 top-3 z-10 text-[9px] font-bold uppercase tracking-wider bg-red-600 text-white border-transparent">
+                    <Badge variant="default" className="absolute left-2 top-2 z-10 text-[7px] sm:text-[9px] font-bold uppercase tracking-wider bg-red-600 text-white border-transparent px-1.2 py-0.2 rounded">
                       {product.badge}
                     </Badge>
                     <img
@@ -540,21 +543,21 @@ export default function Ecommerce01Page() {
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <CardContent className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-start gap-2">
+                  <CardContent className="p-2 sm:p-6 flex-1 flex flex-col justify-between space-y-2 sm:space-y-4">
+                    <div className="space-y-1">
+                      <div className="flex flex-col justify-between items-start gap-0.5">
                         <CardTitle
                           onClick={() => router.push('/preview/ecommerce-02')}
-                          className="text-base font-extrabold tracking-tight truncate hover:text-primary transition-colors cursor-pointer"
+                          className="text-[11px] sm:text-base font-bold tracking-tight hover:text-primary transition-colors cursor-pointer truncate w-full text-left"
                         >
                           {product.name}
                         </CardTitle>
-                        <div className="flex items-center gap-1.5 flex-row">
-                          <span className="text-xs text-muted-foreground line-through">${product.originalPrice}</span>
-                          <span className="text-base font-black text-red-600 dark:text-red-400">${product.price}</span>
+                        <div className="flex items-center gap-1 flex-row">
+                          <span className="text-[9px] sm:text-xs text-muted-foreground line-through">${product.originalPrice}</span>
+                          <span className="text-xs sm:text-base font-black text-red-600 dark:text-red-400">${product.price}</span>
                         </div>
                       </div>
-                      <CardDescription className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                      <CardDescription className="text-[9px] sm:text-xs text-muted-foreground leading-snug line-clamp-1 sm:line-clamp-2">
                         {product.desc}
                       </CardDescription>
                     </div>
@@ -569,7 +572,7 @@ export default function Ecommerce01Page() {
                         size: 'Standard',
                         image: product.image,
                       })}
-                      className="w-full text-xs font-bold h-9 mt-2 hover:bg-red-600 hover:text-white hover:border-transparent transition-all cursor-pointer"
+                      className="w-full text-[9px] sm:text-xs font-bold h-8 sm:h-9 mt-1 sm:mt-2 hover:bg-red-600 hover:text-white hover:border-transparent transition-all cursor-pointer"
                     >
                       Quick Add to Cart
                     </Button>

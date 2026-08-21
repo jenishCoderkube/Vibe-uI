@@ -78,7 +78,7 @@ export function ProductInfo({
   }
 
   return (
-    <div className="flex flex-col space-y-6 text-left">
+    <div className="flex flex-col space-y-4 sm:space-y-6 text-left px-2 sm:px-0">
       {/* Category & Badge */}
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant="glow" className="text-[10px] uppercase font-bold tracking-wider">
@@ -89,13 +89,13 @@ export function ProductInfo({
 
       {/* Title & Price */}
       <div className="space-y-2">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground leading-[1.2]">
           {product.name}
         </h1>
         <div className="flex items-center gap-3">
-          <span className="text-2xl font-black text-foreground">${product.price}.00</span>
-          <span className="text-base text-muted-foreground line-through">${product.originalPrice}.00</span>
-          <Badge className="bg-red-500/10 text-red-600 dark:text-red-400 dark:bg-red-500/20 border-red-500/20 text-[10px] font-bold">
+          <span className="text-xl sm:text-2xl font-black text-foreground">${product.price}.00</span>
+          <span className="text-sm sm:text-base text-muted-foreground line-through">${product.originalPrice}.00</span>
+          <Badge className="bg-red-500/10 text-red-600 dark:text-red-400 dark:bg-red-500/20 border-red-500/20 text-[9px] sm:text-[10px] font-bold">
             Save ${(product.originalPrice - product.price)}.00
           </Badge>
         </div>
@@ -107,41 +107,41 @@ export function ProductInfo({
           {[...Array(5)].map((_, i) => {
             const ratingValue = i + 1
             if (ratingValue <= Math.floor(product.rating)) {
-              return <Star key={i} className="h-4 w-4 fill-current" />
+              return <Star key={i} className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-current" />
             } else if (ratingValue === Math.ceil(product.rating)) {
               const fractionPercent = Math.round((product.rating % 1) * 100)
               return (
-                <div key={i} className="relative h-4 w-4 shrink-0">
+                <div key={i} className="relative h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0">
                   <Star className="absolute inset-0 h-full w-full text-muted-foreground/30 fill-current" />
                   <div className="absolute inset-0 overflow-hidden" style={{ width: `${fractionPercent}%` }}>
-                    <Star className="h-4 w-4 fill-current" />
+                    <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-current" />
                   </div>
                 </div>
               )
             } else {
-              return <Star key={i} className="h-4 w-4 text-muted-foreground/30 fill-current" />
+              return <Star key={i} className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground/30 fill-current" />
             }
           })}
         </div>
-        <span className="text-xs font-bold text-foreground">{product.rating}</span>
+        <span className="text-[10px] sm:text-xs font-bold text-foreground">{product.rating}</span>
         <span className="text-xs text-muted-foreground">•</span>
         <a
           href="#reviews-section"
           onClick={handleScrollToReviews}
-          className="text-xs text-primary hover:underline font-semibold"
+          className="text-[10px] sm:text-xs text-primary hover:underline font-semibold"
         >
           {product.reviewsCount} customer reviews
         </a>
       </div>
 
       {/* Description */}
-      <p className="text-sm text-muted-foreground leading-relaxed">
+      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
         {product.description}
       </p>
 
       {/* Configurations Color selection */}
       <div className="space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground">
           Color: <span className="text-foreground capitalize">{currentColor.name}</span>
         </span>
         <div className="flex gap-2.5 pt-1.5">
@@ -149,7 +149,7 @@ export function ProductInfo({
             <button
               key={c.name}
               onClick={() => onSelectColor(idx)}
-              className={`h-8 w-8 rounded-full border transition-all flex items-center justify-center cursor-pointer ${
+              className={`h-7 w-7 sm:h-8 sm:w-8 rounded-full border transition-all flex items-center justify-center cursor-pointer ${
                 selectedColorIndex === idx
                   ? 'border-foreground ring-2 ring-primary/30 ring-offset-2 ring-offset-background scale-105'
                   : 'border-border/80 hover:border-foreground/50'
@@ -164,7 +164,7 @@ export function ProductInfo({
 
       {/* Configurations Size selection */}
       <div className="space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground">
           Ear Cushion Style
         </span>
         <div className="flex flex-wrap gap-2">
@@ -173,7 +173,7 @@ export function ProductInfo({
               key={size}
               variant={selectedSize === size ? 'default' : 'outline'}
               onClick={() => setSelectedSize(size)}
-              className={`text-xs h-9 px-4 font-semibold rounded-lg cursor-pointer ${
+              className={`text-[11px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 font-semibold rounded-lg cursor-pointer ${
                 selectedSize === size
                   ? ''
                   : 'border-border/85 text-foreground hover:bg-muted/30'

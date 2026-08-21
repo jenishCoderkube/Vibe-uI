@@ -1,6 +1,7 @@
 {
   "name": "label",
   "dependencies": [
+    "@radix-ui/react-label",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

@@ -32,7 +32,12 @@ const componentDeps: Record<string, string[]> = {
   ],
   input: ['tailwind-variants', 'clsx', 'tailwind-merge'],
   card: ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  label: ['tailwind-variants', 'clsx', 'tailwind-merge'],
+  label: [
+    '@radix-ui/react-label',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
   checkbox: [
     '@radix-ui/react-checkbox',
     'lucide-react',
@@ -325,6 +330,9 @@ const blockRegistryDeps: Record<string, string[]> = {
     'tooltip',
     'accordion',
     'blur-fade',
+    'textarea',
+    'label',
+    'ecommerce-01',
   ],
 }
 

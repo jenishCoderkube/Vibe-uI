@@ -134,45 +134,45 @@ export function ProductReviews() {
     <div id="reviews-section" className="space-y-10 text-left pt-6 border-t border-border/85">
       
       {/* Reviews Summary Section */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start bg-muted/10 border border-border/60 p-6 sm:p-8 rounded-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-start bg-muted/10 border border-border/60 p-4 sm:p-8 rounded-2xl">
         
         {/* Left Score Card */}
-        <div className="md:col-span-3 flex flex-col items-center md:items-start space-y-3 text-center md:text-left">
-          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider text-muted-foreground/90">Customer Reviews</h3>
-          <div className="flex items-baseline gap-2 flex-row justify-center md:justify-start pt-1">
-            <span className="text-5xl font-black text-foreground">4.8</span>
-            <span className="text-muted-foreground text-xs font-semibold">out of 5</span>
+        <div className="md:col-span-3 flex flex-col items-center md:items-start space-y-2 sm:space-y-3 text-center md:text-left">
+          <h3 className="text-[10px] sm:text-sm font-bold text-foreground uppercase tracking-wider text-muted-foreground/90">Customer Reviews</h3>
+          <div className="flex items-baseline gap-1.5 flex-row justify-center md:justify-start pt-0.5">
+            <span className="text-4xl sm:text-5xl font-black text-foreground">4.8</span>
+            <span className="text-muted-foreground text-[10px] sm:text-xs font-semibold">out of 5</span>
           </div>
           <div className="flex items-center gap-0.5 text-amber-500">
             {[...Array(5)].map((_, i) => {
               const ratingValue = i + 1
               if (ratingValue <= Math.floor(4.8)) {
-                return <Star key={i} className="h-4.5 w-4.5 fill-current" />
+                return <Star key={i} className="h-4 w-4 sm:h-4.5 sm:w-4.5 fill-current" />
               } else if (ratingValue === Math.ceil(4.8)) {
                 return (
-                  <div key={i} className="relative h-4.5 w-4.5 shrink-0">
+                  <div key={i} className="relative h-4 w-4 sm:h-4.5 sm:w-4.5 shrink-0">
                     <Star className="absolute inset-0 h-full w-full text-muted-foreground/30 fill-current" />
                     <div className="absolute inset-0 overflow-hidden" style={{ width: '80%' }}>
-                      <Star className="h-4.5 w-4.5 fill-current" />
+                      <Star className="h-4 w-4 sm:h-4.5 sm:w-4.5 fill-current" />
                     </div>
                   </div>
                 )
               } else {
-                return <Star key={i} className="h-4.5 w-4.5 text-muted-foreground/30 fill-current" />
+                return <Star key={i} className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-muted-foreground/30 fill-current" />
               }
             })}
           </div>
-          <p className="text-[11px] text-muted-foreground font-medium">Based on 182 product ratings</p>
+          <p className="text-[10px] sm:text-[11px] text-muted-foreground font-medium">Based on 182 product ratings</p>
         </div>
 
         {/* Middle Stars Distribution Bars */}
-        <div className="md:col-span-5 w-full space-y-2.5">
+        <div className="md:col-span-5 w-full space-y-2">
           {ratingDistribution.map((dist) => (
-            <div key={dist.stars} className="flex items-center gap-3 text-xs">
+            <div key={dist.stars} className="flex items-center gap-3 text-[11px] sm:text-xs">
               <button className="w-12 text-left font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-1.5">
                 <span>{dist.stars} star</span>
               </button>
-              <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden relative">
+              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden relative">
                 <div
                   className="absolute left-0 top-0 bottom-0 bg-primary rounded-full transition-all duration-500"
                   style={{ width: `${dist.percentage}%` }}
@@ -184,17 +184,17 @@ export function ProductReviews() {
         </div>
 
         {/* Right Write a Review Card */}
-        <div className="md:col-span-4 flex flex-col space-y-3 text-left">
-          <h3 className="text-sm font-bold text-foreground uppercase tracking-wider text-muted-foreground/90">Share your feedback</h3>
-          <p className="text-xs text-muted-foreground leading-relaxed pt-1">
+        <div className="md:col-span-4 flex flex-col space-y-2 sm:space-y-3 text-left">
+          <h3 className="text-[10px] sm:text-sm font-bold text-foreground uppercase tracking-wider text-muted-foreground/90">Share your feedback</h3>
+          <p className="text-[11px] sm:text-xs text-muted-foreground leading-relaxed pt-0.5">
             Have you purchased this product? Let other customers know about your experience!
           </p>
           <Button
             variant="outline"
             onClick={() => setIsWriteReviewOpen(true)}
-            className="w-full text-xs font-bold h-9 gap-1.5 cursor-pointer hover:bg-muted/40 mt-1"
+            className="w-full text-[11px] sm:text-xs font-bold h-8.5 sm:h-9 gap-1.5 cursor-pointer hover:bg-muted/40 mt-1"
           >
-            <PenTool className="h-3.5 w-3.5" />
+            <PenTool className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             <span>Write a Customer Review</span>
           </Button>
         </div>
@@ -203,7 +203,7 @@ export function ProductReviews() {
 
       {/* Reviews Cards List */}
       <div className="space-y-6">
-        <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground border-b border-border/40 pb-2">
+        <h4 className="text-[10px] sm:text-sm font-bold uppercase tracking-wider text-muted-foreground border-b border-border/40 pb-2">
           Featured Feedback
         </h4>
 
@@ -214,26 +214,26 @@ export function ProductReviews() {
 
             return (
               <Card key={review.id} className="border-border/70 bg-card/20 shadow-xs">
-                <CardContent className="p-6 space-y-4">
+                <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                   {/* Reviewer Header */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-9 w-9 border border-border">
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
-                          {review.avatar}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+                    <div className="flex items-center gap-2.5 sm:gap-3">
+                      <Avatar className="h-8 w-8 sm:h-9 sm:w-9 border border-border">
+                        <AvatarFallback className="bg-primary/10 text-primary font-bold text-[10px] sm:text-xs">
+                           {review.avatar}
                         </AvatarFallback>
                       </Avatar>
                       <div className="text-left">
-                        <div className="flex items-center gap-2 flex-row">
-                          <span className="text-xs font-bold text-foreground">{review.author}</span>
+                        <div className="flex items-center gap-1.5 sm:gap-2 flex-row">
+                          <span className="text-[11px] sm:text-xs font-bold text-foreground">{review.author}</span>
                           {review.verified && (
-                            <Badge variant="glow" className="text-[8px] font-extrabold uppercase px-1 py-0 border-primary/20 bg-primary/5 text-primary flex items-center gap-0.5 select-none shrink-0">
+                            <Badge variant="glow" className="text-[7px] sm:text-[8px] font-extrabold uppercase px-1 py-0 border-primary/20 bg-primary/5 text-primary flex items-center gap-0.5 select-none shrink-0">
                               <ShieldCheck className="h-2 w-2 inline" />
                               <span>Verified</span>
                             </Badge>
                           )}
                         </div>
-                        <p className="text-[10px] text-muted-foreground">{review.date}</p>
+                        <p className="text-[9px] sm:text-[10px] text-muted-foreground">{review.date}</p>
                       </div>
                     </div>
 
@@ -241,7 +241,7 @@ export function ProductReviews() {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`h-3.5 w-3.5 ${
+                          className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${
                             i < review.rating ? 'fill-current' : 'text-muted/50'
                           }`}
                         />
@@ -250,19 +250,19 @@ export function ProductReviews() {
                   </div>
 
                   {/* Review Title & Content */}
-                  <div className="space-y-2 text-left">
-                    <h5 className="text-sm font-bold text-foreground">{review.title}</h5>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{review.content}</p>
+                  <div className="space-y-1 sm:space-y-2 text-left">
+                    <h5 className="text-xs sm:text-sm font-bold text-foreground">{review.title}</h5>
+                    <p className="text-[11px] sm:text-xs text-muted-foreground leading-relaxed">{review.content}</p>
                   </div>
 
                   {/* Customer Uploaded Image Attachments */}
                   {review.images && review.images.length > 0 && (
-                    <div className="flex flex-wrap gap-2.5 pt-1">
+                    <div className="flex flex-wrap gap-2 pt-1">
                       {review.images.map((img, i) => (
                         <div
                           key={i}
                           onClick={() => setSelectedImage(img)}
-                          className="h-16 w-16 rounded-md overflow-hidden bg-muted/40 border border-border/80 relative cursor-pointer group shrink-0"
+                          className="h-14 w-14 sm:h-16 sm:w-16 rounded-md overflow-hidden bg-muted/40 border border-border/80 relative cursor-pointer group shrink-0"
                           title="Click to enlarge"
                         >
                           <img
@@ -271,7 +271,7 @@ export function ProductReviews() {
                             className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
-                            <Camera className="h-3.5 w-3.5" />
+                            <Camera className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                           </div>
                         </div>
                       ))}
@@ -284,11 +284,11 @@ export function ProductReviews() {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleLike(review.id)}
-                      className={`h-7 px-2.5 text-[10px] font-bold gap-1.5 rounded-md cursor-pointer ${
+                      className={`h-6.5 px-2 text-[9px] sm:text-[10px] font-bold gap-1 sm:gap-1.5 rounded-md cursor-pointer ${
                         isLiked ? 'text-primary hover:bg-primary/10' : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      <ThumbsUp className={`h-3 w-3 ${isLiked ? 'fill-current' : ''}`} />
+                      <ThumbsUp className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${isLiked ? 'fill-current' : ''}`} />
                       <span>Helpful ({totalLikes})</span>
                     </Button>
                   </div>

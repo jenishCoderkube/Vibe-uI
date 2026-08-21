@@ -583,6 +583,7 @@
       "label.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-label",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -1373,7 +1374,10 @@
       "dialog",
       "tooltip",
       "accordion",
-      "blur-fade"
+      "blur-fade",
+      "textarea",
+      "label",
+      "ecommerce-01"
     ]
   }
 ]

@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -62,7 +61,13 @@ export function EcommerceHero({
   onAddToCart,
   onToggleWishlist,
 }: EcommerceHeroProps) {
-  const router = useRouter()
+  const router = {
+    push: (url: string) => {
+      if (typeof window !== 'undefined') {
+        window.location.href = url
+      }
+    },
+  }
   const [selectedColor, setSelectedColor] = useState(PRODUCTS_COLOR_MAP[0])
   const [selectedSize, setSelectedSize] = useState(SIZES[0])
   const [isAdding, setIsAdding] = useState(false)
@@ -103,7 +108,7 @@ export function EcommerceHero({
             </div>
 
             <div className="space-y-4">
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1]">
+              <h1 className="text-2xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1]">
                 Sound Engineered <br />
                 <span className="bg-gradient-to-r from-primary via-indigo-500 to-purple-600 bg-clip-text text-transparent">
                   For Pure Vibration
@@ -173,7 +178,7 @@ export function EcommerceHero({
               {/* Product Visual Frame */}
               <div
                 onClick={() => router.push('/preview/ecommerce-02')}
-                className="relative aspect-square w-full bg-muted/40 dark:bg-zinc-900/50 flex items-center justify-center p-8 group cursor-pointer"
+                className="relative aspect-square w-full bg-muted/40 dark:bg-zinc-900/50 flex items-center justify-center p-2 sm:p-8 group cursor-pointer"
                 title="Click to view details"
               >
                 <Badge variant="glass" className="absolute left-4 top-4 font-bold text-[10px] uppercase shadow-xs select-none">
@@ -184,13 +189,20 @@ export function EcommerceHero({
                 <Button
                   variant="glass"
                   size="icon"
-                  className={`absolute right-4 top-4 h-9 w-9 rounded-full cursor-pointer transition-colors ${
-                    isWishlisted ? 'text-destructive hover:bg-destructive/10' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  onClick={() => onToggleWishlist('vibe-sound-pro-x')}
+                  className="absolute right-4 top-4 h-9 w-9 rounded-full cursor-pointer transition-all border border-black/10 dark:border-white/20 bg-white/70 dark:bg-zinc-800/70 hover:scale-105 active:scale-95 shadow-md flex items-center justify-center z-10"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleWishlist('vibe-sound-pro-x');
+                  }}
                   aria-label="Add to Wishlist"
                 >
-                  <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
+                  <Heart
+                    className={`h-4 w-4 transition-colors ${
+                      isWishlisted
+                        ? 'fill-red-500 text-red-500'
+                        : 'text-zinc-600 dark:text-zinc-300'
+                    }`}
+                  />
                 </Button>
 
                 {/* Animated Image Wrapper */}
@@ -199,25 +211,25 @@ export function EcommerceHero({
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3 }}
-                  className="h-full w-full flex items-center justify-center"
+                  className="h-full w-full flex items-center justify-center p-4 sm:p-0"
                 >
                   <img
                     src={selectedColor.image}
                     alt="Vibe Sound Pro X Headphone"
-                    className="h-64 sm:h-76 md:h-80 w-auto object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full max-h-[85%] sm:max-h-full sm:h-76 md:h-80 w-auto object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
                   />
                 </motion.div>
               </div>
 
               {/* Product Context / Options Area */}
-              <div className="p-6 space-y-6 text-left">
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 text-left">
                 
                 {/* Header Info */}
                 <div className="flex justify-between items-start gap-4">
                   <div className="space-y-1">
                     <h3
                       onClick={() => router.push('/preview/ecommerce-02')}
-                      className="text-xl font-extrabold tracking-tight text-foreground hover:text-primary transition-colors cursor-pointer"
+                      className="text-lg sm:text-xl font-extrabold tracking-tight text-foreground hover:text-primary transition-colors cursor-pointer"
                     >
                       Vibe Sound Pro X
                     </h3>
@@ -226,22 +238,22 @@ export function EcommerceHero({
                     <div className="flex items-center gap-1.5 select-none">
                       <div className="flex text-amber-500">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-3.5 w-3.5 fill-current" />
+                          <Star key={i} className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-current" />
                         ))}
                       </div>
-                      <span className="text-xs font-bold text-foreground">4.9</span>
-                      <span className="text-[10px] text-muted-foreground font-medium">(124 reviews)</span>
+                      <span className="text-[10px] sm:text-xs font-bold text-foreground">4.9</span>
+                      <span className="text-[9px] sm:text-[10px] text-muted-foreground font-medium">(124 reviews)</span>
                     </div>
                   </div>
 
                   <div className="text-right flex flex-col items-end">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground line-through">$399.00</span>
-                      <Badge variant="destructive" className="text-[9px] font-extrabold px-1.5 py-0.2 rounded">
+                      <span className="text-[10px] sm:text-xs text-muted-foreground line-through">$399.00</span>
+                      <Badge variant="destructive" className="text-[8px] sm:text-[9px] font-extrabold px-1.2 py-0.2 rounded">
                         -25%
                       </Badge>
                     </div>
-                    <span className="text-2xl font-black text-foreground">$299.00</span>
+                    <span className="text-xl sm:text-2xl font-black text-foreground">$299.00</span>
                   </div>
                 </div>
 
@@ -251,22 +263,22 @@ export function EcommerceHero({
                 {/* Option 1: Swatches */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Select Color</span>
-                    <span className="text-xs text-foreground font-semibold">{selectedColor.name}</span>
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground">Select Color</span>
+                    <span className="text-[11px] sm:text-xs text-foreground font-semibold">{selectedColor.name}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     {PRODUCTS_COLOR_MAP.map((color) => (
                       <button
                         key={color.id}
                         onClick={() => setSelectedColor(color)}
-                        className={`h-7 w-7 rounded-full border-2 transition-all cursor-pointer flex items-center justify-center ${
+                        className={`h-6 w-6 sm:h-7 sm:w-7 rounded-full border-2 transition-all cursor-pointer flex items-center justify-center ${
                           selectedColor.id === color.id
                             ? 'border-primary scale-110 shadow-sm'
                             : 'border-transparent hover:border-muted-foreground/30 hover:scale-105'
                         }`}
                         title={color.name}
                       >
-                        <span className={`h-4 w-4 rounded-full ${color.colorCode}`} />
+                        <span className={`h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full ${color.colorCode}`} />
                       </button>
                     ))}
                   </div>
@@ -275,22 +287,22 @@ export function EcommerceHero({
                 {/* Option 2: Sizes */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                       <span>Choose Variant</span>
                       <Tooltip content="Pro Fit includes extra plush memory foam earcups and wider dynamic spectrum nodes.">
                         <button className="text-muted-foreground hover:text-foreground cursor-pointer">
-                          <Info className="h-3.5 w-3.5 stroke-2" />
+                          <Info className="h-3 sm:h-3.5 sm:w-3.5 stroke-2" />
                         </button>
                       </Tooltip>
                     </span>
-                    <span className="text-xs text-foreground font-semibold">{selectedSize}</span>
+                    <span className="text-[11px] sm:text-xs text-foreground font-semibold">{selectedSize}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     {SIZES.map((size) => (
                       <Button
                         key={size}
                         variant={selectedSize === size ? 'default' : 'outline'}
-                        className={`text-xs h-9 px-4 font-semibold rounded-lg cursor-pointer ${
+                        className={`text-[11px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 font-semibold rounded-lg cursor-pointer ${
                           selectedSize === size
                             ? 'shadow-xs'
                             : 'border-border/80 text-foreground hover:bg-muted/30'
@@ -308,7 +320,7 @@ export function EcommerceHero({
                   onClick={handleAddToCart}
                   disabled={isAdding}
                   variant={isAdding ? 'glow' : 'shine'}
-                  className="w-full font-bold h-10 sm:h-11 shadow-sm mt-2 transition-all cursor-pointer disabled:opacity-90 flex justify-center items-center gap-2 text-xs sm:text-sm"
+                  className="w-full font-bold h-9 sm:h-11 shadow-sm mt-1 sm:mt-2 transition-all cursor-pointer disabled:opacity-90 flex justify-center items-center gap-2 text-xs sm:text-sm"
                 >
                   {isAdding ? (
                     <>

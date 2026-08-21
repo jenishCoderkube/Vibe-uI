@@ -133,7 +133,7 @@ export function Header() {
       )
     })
   }
-
+  
   const navItems = [
     { name: 'Docs', href: '/docs/introduction' },
     { name: 'Blocks', href: '/blocks' },

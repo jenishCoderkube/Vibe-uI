@@ -15,11 +15,22 @@ export default function PreviewPage() {
 
   useEffect(() => {
     if (themeParam) {
-      setTheme(themeParam)
+      // Manually toggle theme classes to avoid writing to shared localStorage
+      // which would conflict with other open tabs like /blocks/dashboard-01
+      const isDark = themeParam === 'dark'
+      if (isDark) {
+        document.documentElement.classList.add('dark')
+        document.documentElement.style.colorScheme = 'dark'
+      } else {
+        document.documentElement.classList.remove('dark')
+        document.documentElement.style.colorScheme = 'light'
+      }
     }
-  }, [themeParam, setTheme])
+  }, [themeParam])
 
   useEffect(() => {
+    if (themeParam) return // Ignore postMessage if URL theme is forced
+
     const handleMessage = (e: MessageEvent) => {
       if (e.data?.type === 'vibe-theme-change' && e.data?.theme) {
         setTheme(e.data.theme)
@@ -27,7 +38,7 @@ export default function PreviewPage() {
     }
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [setTheme])
+  }, [themeParam, setTheme])
 
   switch (blockName) {
     case 'dashboard-01':

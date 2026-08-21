@@ -130,7 +130,7 @@ export function Ecommerce02Page() {
       />
 
       {/* Main Core Layout grid */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 md:py-16 space-y-16">
+      <main className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 py-6 sm:py-10 md:py-16 space-y-8 sm:space-y-16">
         
         {/* Gallery / Info main split */}
         <BlurFade delay={0.1} duration={0.5}>
@@ -161,7 +161,7 @@ export function Ecommerce02Page() {
         <BlurFade delay={0.2} duration={0.5}>
           <div className="space-y-8 pt-4 border-t border-border/80 text-left">
             <div>
-              <h2 className="text-2xl font-extrabold tracking-tight text-foreground">
+              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
                 Complete Your Acoustic Setup
               </h2>
               <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground">
@@ -169,7 +169,7 @@ export function Ecommerce02Page() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {[
                 {
                   id: 'vibe-sound-budz',
@@ -207,24 +207,24 @@ export function Ecommerce02Page() {
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  <CardContent className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-start gap-2">
-                        <CardTitle className="text-sm font-extrabold tracking-tight truncate">{product.name}</CardTitle>
-                        <span className="text-sm font-black text-foreground">${product.price}</span>
+                  <CardContent className="p-2 sm:p-6 flex-1 flex flex-col justify-between space-y-2 sm:space-y-4">
+                    <div className="space-y-1">
+                      <div className="flex flex-col justify-between items-start gap-0.5">
+                        <CardTitle className="text-[11px] sm:text-base font-bold tracking-tight hover:text-primary transition-colors cursor-pointer truncate w-full text-left">{product.name}</CardTitle>
+                        <span className="text-xs sm:text-base font-black text-foreground">${product.price}</span>
                       </div>
                       
                       <div className="flex items-center gap-1">
                         <div className="flex text-amber-500">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="h-3 w-3 fill-current" />
+                            <Star key={i} className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
                           ))}
                         </div>
-                        <span className="text-[10px] font-bold text-foreground">{product.rating}</span>
-                        <span className="text-[9px] text-muted-foreground">({product.reviews})</span>
+                        <span className="text-[9px] sm:text-[10px] font-bold text-foreground">{product.rating}</span>
+                        <span className="text-[8px] sm:text-[9px] text-muted-foreground">({product.reviews})</span>
                       </div>
 
-                      <CardDescription className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                      <CardDescription className="text-[9px] sm:text-xs text-muted-foreground leading-snug line-clamp-1 sm:line-clamp-2">
                         {product.desc}
                       </CardDescription>
                     </div>
@@ -240,7 +240,7 @@ export function Ecommerce02Page() {
                         image: product.image,
                         quantity: 1,
                       })}
-                      className="w-full text-xs font-bold h-9 mt-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer"
+                      className="w-full text-[9px] sm:text-xs font-bold h-8 sm:h-9 mt-1 sm:mt-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer"
                     >
                       Quick Add to Cart
                     </Button>
