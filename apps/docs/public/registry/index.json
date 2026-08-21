@@ -1280,6 +1280,38 @@
     ]
   },
   {
+    "name": "chat-01",
+    "files": [
+      "chat-01/components/chat-composer.tsx",
+      "chat-01/components/chat-message-item.tsx",
+      "chat-01/components/chat-sidebar.tsx",
+      "chat-01/components/chat-welcome.tsx",
+      "chat-01/page.tsx"
+    ],
+    "dependencies": [
+      "lucide-react",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge",
+      "motion"
+    ],
+    "registryDependencies": [
+      "utils",
+      "button",
+      "input",
+      "scroll-area",
+      "sheet",
+      "dropdown-menu",
+      "dialog",
+      "avatar",
+      "tooltip",
+      "theme-switcher",
+      "textarea",
+      "badge",
+      "card"
+    ]
+  },
+  {
     "name": "dashboard-01",
     "files": [
       "dashboard-01/components/app-sidebar.tsx",

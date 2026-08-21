@@ -286,6 +286,13 @@ const blockDeps: Record<string, string[]> = {
     'tailwind-merge',
     'motion',
   ],
+  'chat-01': [
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+    'motion',
+  ],
 }
 
 const blockRegistryDeps: Record<string, string[]> = {
@@ -333,6 +340,20 @@ const blockRegistryDeps: Record<string, string[]> = {
     'textarea',
     'label',
     'ecommerce-01',
+  ],
+  'chat-01': [
+    'button',
+    'input',
+    'scroll-area',
+    'sheet',
+    'dropdown-menu',
+    'dialog',
+    'avatar',
+    'tooltip',
+    'theme-switcher',
+    'textarea',
+    'badge',
+    'card',
   ],
 }
 

@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Header } from '../../components/header'
 import { Footer } from '../../components/footer'
 import { BlockCard } from '../../components/block-card'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block } from '../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code } from '../../components/vibe-blocks-code'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block } from '../../components/vibe-blocks'
+import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code } from '../../components/vibe-blocks-code'
 import { Sparkles, Layout } from 'lucide-react'
 
 const BLOCKS = [
@@ -156,6 +156,51 @@ const BLOCKS = [
             <div className="flex gap-1 pt-1">
               <div className="h-3 flex-1 rounded bg-primary/60" />
               <div className="h-3 w-3 rounded bg-zinc-900 border border-zinc-800" />
+            </div>
+          </div>
+        </div>
+        {/* Glow Overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(120px_circle_at_50%_50%,rgba(168,85,247,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      </div>
+    )
+  },
+  {
+    id: 'chat-01',
+    title: 'Vibe Chat Assistant',
+    description: 'A premium, responsive AI chat assistant layout featuring collapsible sidebars, streaming response states, prompt suggestion cards, file attachments, and rate inputs.',
+    vibeDeps: 'button, input, scroll-area, sheet, dropdown-menu, dialog, avatar, tooltip, theme-switcher, textarea, badge, card',
+    code: chat01Code,
+    previewComponent: <Chat01Block />,
+    category: 'Chat',
+    mockup: (
+      <div className="w-full h-full bg-zinc-950 dark:bg-zinc-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
+        {/* Mockup Chat Header */}
+        <div className="h-3 border-b border-zinc-800/80 flex justify-between items-center pb-1">
+          <div className="h-1.5 w-8 rounded bg-primary/40" />
+          <div className="h-1.5 w-1.5 rounded-full bg-zinc-800" />
+        </div>
+        {/* Mockup Main Split */}
+        <div className="flex gap-2 h-full">
+          {/* Mock Sidebar */}
+          <div className="w-6 shrink-0 border-r border-zinc-800/80 flex flex-col gap-1 pt-0.5">
+            <div className="h-1 w-full rounded bg-zinc-850" />
+            <div className="h-1 w-4/5 rounded bg-zinc-850" />
+            <div className="h-1 w-5/6 rounded bg-zinc-850" />
+          </div>
+          {/* Mock Chat Area */}
+          <div className="flex-1 flex flex-col gap-1.5 relative">
+            <div className="space-y-1 flex-1 overflow-hidden">
+              <div className="flex gap-1 justify-end">
+                <div className="h-1.5 w-10 rounded-sm bg-primary/30 border border-primary/20" />
+              </div>
+              <div className="flex gap-1 justify-start">
+                <div className="h-2.5 w-16 rounded-sm bg-zinc-900 border border-zinc-850" />
+              </div>
+            </div>
+            {/* Mock Composer */}
+            <div className="h-3 border border-zinc-850 rounded bg-zinc-900/60 flex items-center justify-between px-1 shrink-0">
+              <div className="h-0.5 w-6 rounded bg-zinc-800" />
+              <div className="h-1 w-1 rounded bg-primary/60" />
             </div>
           </div>
         </div>

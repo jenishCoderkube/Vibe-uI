@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation'
 import { Header } from '../../../components/header'
 import { Footer } from '../../../components/footer'
 import { BlockCard } from '../../../components/block-card'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block } from '../../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code } from '../../../components/vibe-blocks-code'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block } from '../../../components/vibe-blocks'
+import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code } from '../../../components/vibe-blocks-code'
 
 const BLOCKS_MAP = {
   'dashboard-01': {
@@ -29,6 +29,13 @@ const BLOCKS_MAP = {
     vibeDeps: 'button, badge, card, input, avatar, sheet, dropdown-menu, dialog, tooltip, accordion, blur-fade',
     code: ecommerce02Code,
     previewComponent: <Ecommerce02Block />,
+  },
+  'chat-01': {
+    title: 'Vibe Chat Assistant',
+    description: 'A premium, responsive AI chat assistant layout featuring collapsible sidebars, streaming response states, prompt suggestion cards, file attachments, and rate inputs.',
+    vibeDeps: 'button, input, scroll-area, sheet, dropdown-menu, dialog, avatar, tooltip, theme-switcher, textarea, badge, card',
+    code: chat01Code,
+    previewComponent: <Chat01Block />,
   },
 }
 

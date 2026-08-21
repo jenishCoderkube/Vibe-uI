@@ -2018,7 +2018,7 @@ export function EcommerceNavbar({
                           </div>
                           <div className="text-left">
                             <p className="text-xs font-bold text-foreground">Vibe Sound Pro X</p>
-                            <p className="text-[10px] text-muted-foreground">\$299.00</p>
+                            <p className="text-[10px] text-muted-foreground">$299.00</p>
                           </div>
                         </div>
                         <Button
@@ -2408,7 +2408,7 @@ export function EcommerceHero({
                 onClick={handleAddToCart}
               >
                 <ShoppingBag className="h-4 w-4 shrink-0" />
-                <span>Shop Now — \$299</span>
+                <span>Shop Now — $299</span>
               </Button>
               <Button
                 variant="outline"
@@ -2522,12 +2522,12 @@ export function EcommerceHero({
 
                   <div className="text-right flex flex-col items-end">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground line-through">\$399.00</span>
+                      <span className="text-xs text-muted-foreground line-through">$399.00</span>
                       <Badge variant="destructive" className="text-[9px] font-extrabold px-1.5 py-0.2 rounded">
                         -25%
                       </Badge>
                     </div>
-                    <span className="text-2xl font-black text-foreground">\$299.00</span>
+                    <span className="text-2xl font-black text-foreground">$299.00</span>
                   </div>
                 </div>
 
@@ -3802,6 +3802,121 @@ export function ProductReviews() {
 
     </div>
   )
-}
 `,
 }
+
+export const chat01Code = {
+  'app/chat/page.tsx': `'use client'
+
+import React, { useState, useEffect, useRef } from 'react'
+import { Menu, Sparkles, Bot, Trash } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { ChatSidebar } from './components/chat-sidebar'
+import { ChatMessageItem } from './components/chat-message-item'
+import { ChatComposer } from './components/chat-composer'
+import { ChatWelcome } from './components/chat-welcome'
+import { Tooltip } from '@/components/ui/tooltip'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { motion, AnimatePresence } from 'framer-motion'
+
+export function Chat01Page() {
+  const [conversations, setConversations] = useState([
+    { id: 'chat-1', title: 'Explain React view transitions', model: 'Vibe Pro', updatedAt: new Date() }
+  ])
+  const [messages, setMessages] = useState({
+    'chat-1': [
+      { id: 'msg-1', role: 'user', content: 'Explain React view transitions', timestamp: new Date() },
+      { id: 'msg-2', role: 'assistant', content: 'React view transitions allow blending transitions during route switches.', timestamp: new Date() }
+    ]
+  })
+  const [activeId, setActiveId] = useState('chat-1')
+  const [input, setInput] = useState('')
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedModel, setSelectedModel] = useState('Vibe Pro')
+
+  return (
+    <div className="flex h-screen w-full overflow-hidden bg-background text-foreground font-sans relative">
+      <ChatSidebar
+        conversations={conversations}
+        activeId={activeId}
+        onSelectConversation={handleSelectConversation}
+        onNewChat={handleNewChat}
+        onRenameChat={handleRenameChat}
+        onDeleteChat={handleDeleteChat}
+        isCollapsed={isCollapsed}
+        onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+        selectedModel={selectedModel}
+        onSelectModel={setSelectedModel}
+      />
+      <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+        <header className="h-14 border-b border-border/50 flex items-center justify-between px-4 bg-background/95 backdrop-blur-md z-20 shrink-0">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)} className="lg:hidden">
+              <Menu className="h-4 w-4" />
+            </Button>
+            <span className="text-sm font-bold text-foreground">{activeChat?.title}</span>
+          </div>
+        </header>
+        <ScrollArea className="flex-1">
+          <div className="max-w-3xl mx-auto px-4 py-6">
+            {activeMessages.map((msg) => (
+              <ChatMessageItem key={msg.id} message={msg} />
+            ))}
+          </div>
+        </ScrollArea>
+        <div className="p-4 max-w-3xl mx-auto w-full">
+          <ChatComposer
+            input={input}
+            setInput={setInput}
+            onSend={handleSendMessage}
+            isGenerating={isGenerating}
+            onStop={handleStopGeneration}
+            selectedModel={selectedModel}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}`,
+  'components/chat-sidebar.tsx': `'use client'
+
+import React, { useState } from 'react'
+import { MessageSquare, Plus, Search, Settings } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Sheet, SheetContent } from '@/components/ui/sheet'
+import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu'
+
+export function ChatSidebar({ conversations, activeId, onSelectConversation, onNewChat }) {
+  return (
+    <div className="flex flex-col h-full bg-card border-r border-border/70 w-64">
+      <div className="p-4 border-b flex items-center justify-between">
+        <span className="font-extrabold text-base">Vibe CHAT</span>
+      </div>
+      <div className="p-3 space-y-3">
+        <Button onClick={onNewChat} variant="shine" className="w-full gap-1.5">
+          <Plus className="h-4 w-4" />
+          <span>New Chat</span>
+        </Button>
+      </div>
+      <ScrollArea className="flex-1 px-3">
+        {conversations.map((c) => (
+          <div key={c.id} onClick={() => onSelectConversation(c.id)} className="p-2.5 rounded-lg hover:bg-muted/40 cursor-pointer">
+            {c.title}
+          </div>
+        ))}
+      </ScrollArea>
+    </div>
+  )
+}`,
+}
+
