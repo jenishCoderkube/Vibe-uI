@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/ui/tooltip'
+import { Textarea } from '@/components/ui/textarea'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -29,6 +30,20 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
+
+const NextIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M7 17V7l10 10V7" />
+  </svg>
+)
 
 interface AttachedFile {
   id: string
@@ -59,15 +74,26 @@ export function ChatComposer({
   const [isRecording, setIsRecording] = useState(false)
   const [isThinkActive, setIsThinkActive] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Reset textarea height when input is cleared externally
+  const isExpanded = isFocused || !!input || attachments.length > 0 || isDropdownOpen || isRecording || isThinkActive
+
+  // Synchronize textarea height based on input and expansion states
   useEffect(() => {
-    if (!input && textareaRef.current) {
-      textareaRef.current.style.height = 'auto'
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    if (isExpanded) {
+      textarea.style.height = 'auto'
+      if (input) {
+        textarea.style.height = `${textarea.scrollHeight}px`
+      }
+    } else {
+      textarea.style.height = '34px'
     }
-  }, [input])
+  }, [input, isExpanded])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value)
@@ -147,11 +173,17 @@ export function ChatComposer({
   const hasContent = input.trim().length > 0 || attachments.length > 0
 
   return (
-    <div className="w-full bg-[#f4f4f4] dark:bg-[#232323] border border-zinc-200 dark:border-zinc-800 rounded-[26px] p-2 flex flex-col gap-1 focus-within:ring-0 transition-all text-left shadow-xs relative">
+    <div
+      className={`w-full bg-[#f4f4f4] dark:bg-[#232323] border border-zinc-200 dark:border-zinc-800 rounded-[24px] transition-all duration-200 ease-in-out text-left shadow-sm relative flex flex-col gap-1 ${
+        isExpanded
+          ? 'min-h-[92px] pt-2 px-2 pb-[46px]'
+          : 'min-h-[46px] py-1.5 px-2'
+      }`}
+    >
       
       {/* File Upload Attachment Previews Row */}
       {attachments.length > 0 && (
-        <div className="flex flex-wrap gap-2 px-3 pb-2 border-b border-zinc-200/50 dark:border-zinc-800/50 max-h-40 overflow-y-auto mb-2 select-none">
+        <div className="flex flex-wrap gap-2 px-3 pb-2 border-b border-zinc-200/50 dark:border-zinc-800/50 max-h-40 overflow-y-auto mb-1 select-none">
           {attachments.map((file) => (
             <div
               key={file.id}
@@ -182,108 +214,134 @@ export function ChatComposer({
         </div>
       )}
 
-      {/* Primary Input Composer Wrapper */}
-      <div className="relative w-full flex items-center min-h-[38px]">
-        
-        {/* Plus Button on left with Controlled Dropdown Menu */}
-        <div className="absolute left-1.5 bottom-0.5 z-10 select-none">
-          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8.5 w-8.5 rounded-full text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/40 cursor-pointer shrink-0"
-                aria-label="More plugins"
-              >
-                <Plus className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              className="w-[320px] bg-white dark:bg-[#171717] border border-zinc-200 dark:border-zinc-800/80 text-zinc-700 dark:text-zinc-200 p-2 rounded-2xl shadow-xl z-50 max-h-[420px] overflow-y-auto" 
-              align="start"
-              alignOffset={0}
-              sideOffset={8}
+      {/* Textarea Area */}
+      <div className="w-full">
+        <Textarea
+          ref={textareaRef}
+          value={input}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="Ask anything"
+          autoResize={isExpanded}
+          variant="bottom"
+          className={`w-full border-0 border-b-0 focus-visible:border-b-0 focus-visible:ring-0 focus-visible:border-transparent bg-transparent text-[15px] text-foreground placeholder-zinc-500 dark:placeholder-zinc-400 resize-none outline-none align-middle shadow-none focus:outline-none focus-visible:ring-offset-0 focus-visible:ring-transparent focus:ring-0 transition-all duration-200 ease-in-out ${
+            isExpanded
+              ? '!overflow-y-auto !min-h-[38px] !max-h-[200px] pl-3 pr-3 !pt-2 !pb-1'
+              : 'overflow-hidden pl-11 pr-[90px] sm:pr-[170px]'
+          }`}
+          style={
+            isExpanded
+              ? {}
+              : {
+                  paddingTop: '8px',
+                  paddingBottom: '6px',
+                  minHeight: '34px',
+                  height: '34px',
+                }
+          }
+        />
+      </div>
+
+      {/* Left actions: Plus button */}
+      <div className="absolute left-3 bottom-[6px] z-10">
+        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8.5 w-8.5 rounded-full bg-[#e4e4e4] hover:bg-[#d8d8d8] dark:bg-[#2f2f2f] dark:hover:bg-[#3f3f3f] text-zinc-700 dark:text-zinc-200 cursor-pointer shrink-0 flex items-center justify-center shadow-xs"
+              aria-label="More plugins"
             >
-              <DropdownMenuItem onClick={() => { triggerFileUpload(); setIsDropdownOpen(false); }} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <Paperclip className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Add photos & files</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Upload from computer</span>
-                </div>
-              </DropdownMenuItem>
-              
-              <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <Library className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Add from library</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Browse and search your files</span>
-                </div>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <ImageIcon className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Create image</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Visualize anything</span>
-                </div>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <Globe className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Web search</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Find real-time news and info</span>
-                </div>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <ShoppingBag className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Shopping</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Find products you'll love</span>
-                </div>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <Sparkles className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Deep research</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Get a detailed report</span>
-                </div>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <Palette className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Canva</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Create, review, edit designs</span>
-                </div>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <Key className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">OpenAI Platform</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Manage OpenAI API keys</span>
-                </div>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
-                <LineChart className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
-                <div className="flex items-baseline gap-2.5 truncate">
-                  <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Visualize</span>
-                  <span className="text-[11px] text-zinc-500 font-normal truncate">Create visualizations and tools</span>
-                </div>
-              </DropdownMenuItem>
-              
-              <DropdownMenuSeparator className="bg-zinc-200 dark:bg-zinc-800/60 my-1.5" />
-              <div className="px-3.5 py-2.5 flex items-center justify-between text-[12px] text-zinc-500 font-semibold cursor-default">
-                <span>Type to search plugins, files...</span>
-                <ChevronDown className="h-3.5 w-3.5" />
+              <Plus className="h-5 w-5 stroke-[2.5]" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent 
+            className="w-[320px] bg-white dark:bg-[#171717] border border-zinc-200 dark:border-zinc-800/80 text-zinc-700 dark:text-zinc-200 p-2 rounded-2xl shadow-xl z-50 max-h-[420px] overflow-y-auto" 
+            align="start"
+            alignOffset={0}
+            sideOffset={8}
+          >
+            <DropdownMenuItem onClick={() => { triggerFileUpload(); setIsDropdownOpen(false); }} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Paperclip className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Add photos & files</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Upload from computer</span>
               </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Library className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Add from library</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Browse and search your files</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <ImageIcon className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Create image</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Visualize anything</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-805/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Globe className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Web search</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Find real-time news and info</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <ShoppingBag className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Shopping</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Find products you'll love</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Sparkles className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Deep research</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Get a detailed report</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Palette className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Canva</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Create, review, edit designs</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Key className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">OpenAI Platform</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Manage OpenAI API keys</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <LineChart className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Visualize</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Create visualizations and tools</span>
+              </div>
+            </DropdownMenuItem>
+            
+            <DropdownMenuSeparator className="bg-zinc-200 dark:bg-zinc-800/60 my-1.5" />
+            <div className="px-3.5 py-2.5 flex items-center justify-between text-[12px] text-zinc-500 font-semibold cursor-default">
+              <span>Type to search plugins, files...</span>
+              <ChevronDown className="h-3.5 w-3.5" />
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <input
           type="file"
@@ -292,79 +350,68 @@ export function ChatComposer({
           className="hidden"
           multiple
         />
+      </div>
 
-        {/* Standard textarea element centered inside the flex wrapper */}
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask anything"
-          rows={1}
-          className="w-full min-h-[38px] max-h-48 border-0 bg-transparent focus:ring-0 focus-visible:ring-0 focus-visible:outline-none pl-12 pr-[172px] py-2 text-[14.5px] text-foreground placeholder-zinc-500 dark:placeholder-zinc-400 resize-none overflow-y-auto outline-none align-middle"
-        />
+      {/* Right actions: Think + Mic + Send */}
+      <div className="absolute right-3 bottom-[6px] z-10 flex items-center gap-2">
+        {/* Think toggle button */}
+        <Button
+          onClick={() => setIsThinkActive(!isThinkActive)}
+          variant="ghost"
+          className={`hidden sm:flex h-8.5 px-3 rounded-full text-xs font-semibold gap-1.5 transition-all cursor-pointer select-none border-0 ${
+            isThinkActive
+              ? 'bg-zinc-350 text-[#171717] dark:bg-zinc-700 dark:text-white'
+              : 'bg-[#e4e4e4] hover:bg-[#d8d8d8] text-zinc-750 dark:bg-[#2f2f2f] dark:hover:bg-[#3f3f3f] dark:text-zinc-200'
+          }`}
+        >
+          <Brain className="h-3.5 w-3.5" />
+          <span>Think</span>
+        </Button>
 
-        {/* Actions on the right (Absolutely Pinned) */}
-        <div className="absolute right-1.5 bottom-0.5 flex items-center gap-2 select-none z-10">
-          {/* Think toggle button */}
+        {/* Voice microphone button */}
+        <Tooltip content={isRecording ? 'Listening...' : 'Use voice input'}>
           <Button
-            onClick={() => setIsThinkActive(!isThinkActive)}
             variant="ghost"
-            className={`h-8 px-3 rounded-full text-xs font-semibold gap-1.5 transition-all cursor-pointer select-none ${
-              isThinkActive
-                ? 'bg-zinc-350 text-[#171717] dark:bg-zinc-700 dark:text-white'
-                : 'bg-zinc-200/60 text-zinc-650 hover:bg-zinc-300 dark:bg-zinc-800/80 dark:text-zinc-350 dark:hover:bg-zinc-750 dark:hover:text-white'
+            size="icon"
+            onClick={toggleRecording}
+            className={`h-8.5 w-8.5 rounded-full cursor-pointer shrink-0 transition-colors ${
+              isRecording
+                ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30 animate-pulse'
+                : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-[#303030]'
             }`}
+            aria-label="Voice input"
           >
-            <Brain className="h-3.5 w-3.5" />
-            <span>Think</span>
+            <Mic className="h-4.5 w-4.5" />
           </Button>
+        </Tooltip>
 
-          {/* Voice microphone button */}
-          <Tooltip content={isRecording ? 'Listening...' : 'Use voice input'}>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleRecording}
-              className={`h-8 w-8 rounded-full cursor-pointer shrink-0 transition-colors ${
-                isRecording
-                  ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30 animate-pulse'
-                  : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/85'
-              }`}
-              aria-label="Voice input"
-            >
-              <Mic className="h-4.5 w-4.5" />
-            </Button>
-          </Tooltip>
-
-          {/* Circular Send Button */}
-          {isGenerating ? (
-            <Button
-              variant="default"
-              size="icon"
-              onClick={onStop}
-              className="h-8 w-8 rounded-full bg-black dark:bg-white text-white dark:text-black hover:opacity-70 transition-opacity cursor-pointer shrink-0 flex items-center justify-center shadow-xs"
-              aria-label="Stop generation"
-            >
-              <Plus className="h-4 w-4 rotate-45 stroke-[2.5]" />
-            </Button>
-          ) : (
-            <Button
-              variant="default"
-              size="icon"
-              onClick={handleSend}
-              disabled={!hasContent}
-              className={`h-8 w-8 rounded-full cursor-pointer shrink-0 flex items-center justify-center transition-opacity shadow-xs ${
-                hasContent
-                  ? 'bg-black text-white hover:opacity-70 dark:bg-white dark:text-black'
-                  : 'bg-[#ececec] text-white dark:bg-[#303030] dark:text-zinc-500 cursor-not-allowed'
-              }`}
-              aria-label="Send message"
-            >
-              <ArrowUp className="h-4.5 w-4.5 stroke-[2.5]" />
-            </Button>
-          )}
-        </div>
+        {/* Circular Send Button */}
+        {isGenerating ? (
+          <Button
+            variant="default"
+            size="icon"
+            onClick={onStop}
+            className="h-8.5 w-8.5 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 hover:opacity-85 transition-opacity cursor-pointer shrink-0 flex items-center justify-center shadow-xs"
+            aria-label="Stop generation"
+          >
+            <Plus className="h-4 w-4 rotate-45 stroke-[2.5]" />
+          </Button>
+        ) : (
+          <Button
+            variant="default"
+            size="icon"
+            onClick={handleSend}
+            disabled={!hasContent}
+            className={`h-8.5 w-8.5 rounded-full cursor-pointer shrink-0 flex items-center justify-center transition-opacity shadow-xs border-0 ${
+              hasContent
+                ? 'bg-blue-600 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 text-white'
+                : 'bg-[#e4e4e4] text-zinc-400 dark:bg-[#2f2f2f] dark:text-zinc-600 cursor-not-allowed'
+            }`}
+            aria-label="Send message"
+          >
+            <ArrowUp className="h-4.5 w-4.5 stroke-[2.5]" />
+          </Button>
+        )}
       </div>
 
     </div>

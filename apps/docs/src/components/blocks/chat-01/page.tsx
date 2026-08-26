@@ -15,7 +15,8 @@ import {
   Archive,
   MoreHorizontal,
   FolderClosed,
-  Library
+  Library,
+  FolderPlus
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -24,6 +25,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu'
 import { ChatSidebar } from './components/chat-sidebar'
 import { ChatMessageItem, Message } from './components/chat-message-item'
@@ -481,9 +485,16 @@ export function Chat01Page() {
             {/* Model Selector Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-350 hover:text-foreground hover:bg-zinc-200/40 dark:hover:bg-zinc-800/40 transition-all font-semibold text-[14.5px] cursor-pointer focus:outline-none select-none">
-                  <span>{selectedModel}</span>
-                  <ChevronDown className="h-4 w-4 text-zinc-400" />
+                <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-350 hover:text-foreground hover:bg-zinc-200/40 dark:hover:bg-zinc-800/40 transition-all font-semibold text-[14.5px] cursor-pointer focus:outline-none select-none">
+                  <div className="flex items-center gap-1.5">
+                    {selectedModel === 'Vibe Pro' ? (
+                      <Sparkles className="h-4 w-4 text-primary shrink-0 animate-pulse" />
+                    ) : (
+                      <Bot className="h-4 w-4 text-indigo-500 shrink-0" />
+                    )}
+                    <span className="hidden sm:inline">{selectedModel}</span>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-zinc-400 shrink-0" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48 border-border bg-card" align="start">
@@ -516,7 +527,7 @@ export function Chat01Page() {
             <Button
               variant="outline"
               size="sm"
-              className="h-8.5 gap-1.5 px-3 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg text-xs font-semibold"
+              className="hidden sm:flex h-8.5 gap-1.5 px-3 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg text-xs font-semibold"
             >
               <Upload className="h-3.5 w-3.5" />
               <span>Share</span>
@@ -535,6 +546,12 @@ export function Chat01Page() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" align="end">
+                {/* Share option (visible only on mobile) */}
+                <DropdownMenuItem className="sm:hidden text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                  <Upload className="h-4 w-4 text-zinc-400" />
+                  <span>Share</span>
+                </DropdownMenuItem>
+
                 <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
                   <Library className="h-4 w-4 text-zinc-400" />
                   <span>View files in chat</span>
@@ -557,13 +574,33 @@ export function Chat01Page() {
                 
                 <DropdownMenuSeparator />
                 
-                <DropdownMenuItem className="text-xs flex items-center justify-between px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
-                  <div className="flex items-center gap-2.5">
-                    <FolderClosed className="h-4 w-4 text-zinc-400" />
-                    <span>Move to project</span>
-                  </div>
-                  <ChevronRight className="h-3.5 w-3.5 text-zinc-500" />
-                </DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-lg focus:bg-zinc-100 dark:focus:bg-zinc-800 data-[state=open]:bg-zinc-100 dark:data-[state=open]:bg-zinc-800">
+                    <div className="flex items-center gap-2.5">
+                      <FolderClosed className="h-4 w-4 text-zinc-400" />
+                      <span>Move to project</span>
+                    </div>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" sideOffset={8}>
+                    <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                      <FolderPlus className="h-4 w-4 text-zinc-400" />
+                      <span>New project</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                      <FolderClosed className="h-4 w-4 text-zinc-400" />
+                      <span>Money take</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                      <FolderClosed className="h-4 w-4 text-zinc-400" />
+                      <span>Liebrary for components</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                      <FolderClosed className="h-4 w-4 text-zinc-400" />
+                      <span>Renewable Energy</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

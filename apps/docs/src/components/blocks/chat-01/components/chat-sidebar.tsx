@@ -25,6 +25,11 @@ import {
   UserCircle,
   SlidersHorizontal,
   Crown,
+  Upload,
+  Trash,
+  FolderPlus,
+  Pencil,
+  Archive,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -43,6 +48,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
@@ -155,9 +163,11 @@ export function ChatSidebar({
     <div className="flex flex-col h-full bg-zinc-50 dark:bg-[#171717] text-zinc-700 dark:text-zinc-200 select-none border-r border-zinc-200 dark:border-zinc-800/40 text-left">
       {/* Sticky top header (Logo + Search button + Collapse button) */}
       <div className="h-14 flex items-center justify-between px-3 shrink-0 sticky top-0 z-10 bg-zinc-50 dark:bg-[#171717]">
-        <div className="flex items-center gap-1 select-none">
-          <span className="text-[17px] font-semibold tracking-tight text-zinc-900 dark:text-white">Vibe Chat</span>
-          <span className="text-zinc-400 dark:text-zinc-500 font-normal text-xs ml-0.5">Go</span>
+        <div className="flex items-center gap-2 select-none">
+          <div className="h-6 w-6 rounded-lg bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white shrink-0">
+            <Sparkles className="h-3.5 w-3.5 fill-white" />
+          </div>
+          <span className="text-[16px] font-semibold tracking-tight text-zinc-900 dark:text-white">Vibe Chat</span>
         </div>
         <div className="flex items-center gap-0.5">
           <Tooltip content="Search conversations">
@@ -291,15 +301,102 @@ export function ChatSidebar({
                       >
                         <Pin className="h-3.5 w-3.5" />
                       </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                        }}
-                        className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white p-0.5 rounded transition-colors focus:outline-none"
-                        title="Conversation options"
-                      >
-                        <MoreHorizontal className="h-3.5 w-3.5" />
-                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                            }}
+                            className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white p-0.5 rounded transition-colors focus:outline-none cursor-pointer"
+                            title="Conversation options"
+                          >
+                            <MoreHorizontal className="h-3.5 w-3.5" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" align="end" side="bottom">
+                          {/* Share */}
+                          <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                            <Upload className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            <span>Share</span>
+                          </DropdownMenuItem>
+
+                          {/* Rename */}
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newTitle = prompt("Rename conversation:", c.title);
+                              if (newTitle) onRenameChat(c.id, newTitle);
+                            }}
+                            className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg"
+                          >
+                            <Pencil className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            <span>Rename</span>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuSeparator />
+
+                          {/* Pin */}
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg"
+                          >
+                            <Pin className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            <span>Pin chat</span>
+                          </DropdownMenuItem>
+
+                          {/* Archive */}
+                          <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                            <Archive className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            <span>Archive</span>
+                          </DropdownMenuItem>
+
+                          {/* Delete */}
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm("Delete this conversation?")) onDeleteChat(c.id);
+                            }}
+                            variant="destructive"
+                            className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-lg font-medium"
+                          >
+                            <Trash className="h-4 w-4" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuSeparator />
+
+                          {/* Move to project Submenu */}
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-lg focus:bg-zinc-100 dark:focus:bg-zinc-800 data-[state=open]:bg-zinc-100 dark:data-[state=open]:bg-zinc-800">
+                              <div className="flex items-center gap-2.5">
+                                <FolderClosed className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                <span>Move to project</span>
+                              </div>
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuSubContent className="w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" sideOffset={8}>
+                              <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                                <FolderPlus className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                <span>New project</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                                <FolderClosed className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                <span>Money take</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                                <FolderClosed className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                <span>Liebrary for components</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                                <FolderClosed className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                <span>Renewable Energy</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuSubContent>
+                          </DropdownMenuSub>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                 )

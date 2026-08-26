@@ -67,25 +67,25 @@ export function ChatWelcome({ onSelectPrompt, selectedModel }: ChatWelcomeProps)
       </h2>
 
       {/* Suggestion Prompt Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mt-10">
+      <div className="grid grid-cols-2 gap-2.5 w-full mt-10">
         {prompts.map((p) => {
           const Icon = p.icon
           return (
             <Card
               key={p.title}
               onClick={() => onSelectPrompt(p.prompt)}
-              className="group text-left border border-zinc-200 dark:border-zinc-800 bg-[#f9f9f9]/30 dark:bg-[#171717]/20 hover:bg-[#f4f4f4] dark:hover:bg-[#2f2f2f] transition-all duration-200 cursor-pointer shadow-xs rounded-[16px] p-4 flex items-center justify-between"
+              className="group text-left border border-zinc-200 dark:border-zinc-800 bg-[#f9f9f9]/30 dark:bg-[#171717]/20 hover:bg-[#f4f4f4] dark:hover:bg-[#2f2f2f] transition-all duration-200 cursor-pointer shadow-xs rounded-[16px] p-2.5 sm:p-4 flex items-center justify-between"
             >
-              <div className="space-y-0.5 flex-1 pr-4">
-                <span className="block text-xs font-semibold text-foreground">
+              <div className="space-y-0.5 flex-1 pr-2 sm:pr-4 min-w-0">
+                <span className="block text-[12px] sm:text-xs font-semibold text-foreground truncate">
                   {p.title}
                 </span>
-                <span className="block text-[11px] text-zinc-500 truncate leading-relaxed">
+                <span className="block text-[9.5px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-1">
                   {p.desc}
                 </span>
               </div>
-              <div className="h-7 w-7 rounded-full bg-[#f4f4f4] dark:bg-[#2f2f2f] group-hover:bg-[#e4e4e4] dark:group-hover:bg-[#3f3f3f] flex items-center justify-center shrink-0 transition-colors">
-                <ArrowUpRight className="h-4 w-4 text-zinc-500 group-hover:text-foreground transition-colors" />
+              <div className="h-6 w-6 sm:h-7 sm:w-7 rounded-full bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center shrink-0 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-700 transition-colors">
+                <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-800 dark:group-hover:text-zinc-200 transition-colors" />
               </div>
             </Card>
           )

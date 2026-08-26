@@ -11,7 +11,8 @@ import {
   Pencil,
   Download,
   Maximize2,
-  Minimize2
+  Minimize2,
+  Store
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -173,11 +174,29 @@ export function ChatMessageItem({
   const isUser = message.role === 'user'
 
   if (isUser) {
-    // User Message: Light gray in light mode, Dark gray in dark mode (ChatGPT style)
+    // User Message: Styled as a premium block with Avatar, Name, Content, and Store Icon on the right
     return (
-      <div className="flex w-full justify-end py-2">
-        <div className="bg-zinc-100 dark:bg-[#2f2f2f] text-zinc-900 dark:text-zinc-100 px-4.5 py-3 rounded-[20px] rounded-tr-[4px] max-w-[75%] sm:max-w-[70%] text-[13.5px] sm:text-sm leading-relaxed text-left break-words shadow-sm">
-          {message.content}
+      <div className="flex w-full py-2">
+        <div className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50 dark:bg-[#171717] shadow-xs gap-3">
+          <div className="flex items-center gap-3">
+            {/* Blue Avatar with initials JE */}
+            <div className="h-9 w-9 rounded-full bg-[#1b72e8] text-white text-xs font-bold flex items-center justify-center shrink-0">
+              JE
+            </div>
+            {/* Column with username and content */}
+            <div className="flex flex-col text-left">
+              <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white leading-tight">
+                jenish
+              </span>
+              <span className="text-[13.5px] text-zinc-600 dark:text-zinc-300 mt-0.5">
+                {message.content}
+              </span>
+            </div>
+          </div>
+          {/* Store Icon on the right */}
+          <div className="p-1 text-zinc-400 dark:text-zinc-500 shrink-0">
+            <Store className="h-5 w-5" />
+          </div>
         </div>
       </div>
     )
