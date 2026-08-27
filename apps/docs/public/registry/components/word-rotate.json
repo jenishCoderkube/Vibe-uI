@@ -1,6 +1,7 @@
 {
   "name": "word-rotate",
   "dependencies": [
+    "motion",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

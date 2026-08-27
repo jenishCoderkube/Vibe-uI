@@ -28,6 +28,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from '@/components/ui/dropdown-menu'
 import { ChatSidebar } from './components/chat-sidebar'
 import { ChatMessageItem, Message } from './components/chat-message-item'
@@ -161,6 +162,17 @@ export function Chat01Page() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedModel, setSelectedModel] = useState('Vibe Pro')
+  const [sideOffset, setSideOffset] = useState(8)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSideOffset(window.innerWidth < 640 ? -190 : 8)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const streamTimeoutRef = useRef<any>(null)
@@ -485,7 +497,7 @@ export function Chat01Page() {
             {/* Model Selector Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-350 hover:text-foreground hover:bg-zinc-200/40 dark:hover:bg-zinc-800/40 transition-all font-semibold text-[14.5px] cursor-pointer focus:outline-none select-none">
+                <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-350 hover:text-foreground hover:bg-zinc-200/40 dark:hover:bg-zinc-800/40 transition-all font-semibold text-xs sm:text-[14.5px] cursor-pointer focus:outline-none select-none">
                   <div className="flex items-center gap-1.5">
                     {selectedModel === 'Vibe Pro' ? (
                       <Sparkles className="h-4 w-4 text-primary shrink-0 animate-pulse" />
@@ -581,25 +593,27 @@ export function Chat01Page() {
                       <span>Move to project</span>
                     </div>
                   </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent className="w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" sideOffset={8}>
-                    <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
-                      <FolderPlus className="h-4 w-4 text-zinc-400" />
-                      <span>New project</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
-                      <FolderClosed className="h-4 w-4 text-zinc-400" />
-                      <span>Money take</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
-                      <FolderClosed className="h-4 w-4 text-zinc-400" />
-                      <span>Liebrary for components</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
-                      <FolderClosed className="h-4 w-4 text-zinc-400" />
-                      <span>Renewable Energy</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="w-44 sm:w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" sideOffset={sideOffset}>
+                      <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                        <FolderPlus className="h-4 w-4 text-zinc-400" />
+                        <span>New project</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                        <FolderClosed className="h-4 w-4 text-zinc-400" />
+                        <span>Money take</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                        <FolderClosed className="h-4 w-4 text-zinc-400" />
+                        <span>Library for components</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                        <FolderClosed className="h-4 w-4 text-zinc-400" />
+                        <span>Renewable Energy</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
                 </DropdownMenuSub>
               </DropdownMenuContent>
             </DropdownMenu>

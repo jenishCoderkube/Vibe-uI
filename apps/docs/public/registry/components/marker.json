@@ -1,6 +1,7 @@
 {
   "name": "marker",
   "dependencies": [
+    "@radix-ui/react-slot",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

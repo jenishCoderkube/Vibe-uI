@@ -31,7 +31,12 @@ const componentDeps: Record<string, string[]> = {
     '@radix-ui/react-slot',
   ],
   input: ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  card: ['tailwind-variants', 'clsx', 'tailwind-merge'],
+  card: [
+    '@radix-ui/react-slot',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
   label: [
     '@radix-ui/react-label',
     'tailwind-variants',
@@ -251,6 +256,65 @@ const componentDeps: Record<string, string[]> = {
     'clsx',
     'tailwind-merge',
   ],
+  form: [
+    'react-hook-form',
+    '@hookform/resolvers',
+    'zod',
+    '@radix-ui/react-slot',
+  ],
+  switch: [
+    '@radix-ui/react-switch',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  toggle: [
+    '@radix-ui/react-toggle',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  'input-otp': [
+    'input-otp',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  'word-rotate': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  'typing-animation': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  'text-reveal': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  'sparkles-text': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  'hyper-text': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
+  separator: [
+    '@radix-ui/react-slot',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  badge: [
+    '@radix-ui/react-slot',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  kbd: [
+    '@radix-ui/react-slot',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  item: [
+    '@radix-ui/react-slot',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
+  marker: [
+    '@radix-ui/react-slot',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
 }
 
 const componentRegistryDeps: Record<string, string[]> = {
@@ -263,6 +327,7 @@ const componentRegistryDeps: Record<string, string[]> = {
   'date-picker': ['popover', 'calendar', 'button'],
   empty: ['button'],
   sidebar: ['button', 'input', 'separator', 'drawer', 'skeleton', 'tooltip'],
+  form: ['label'],
 }
 
 const blockDeps: Record<string, string[]> = {
@@ -287,6 +352,14 @@ const blockDeps: Record<string, string[]> = {
     'motion',
   ],
   'chat-01': [
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+    'motion',
+    'prism-react-renderer',
+  ],
+  'auth-01': [
     'lucide-react',
     'tailwind-variants',
     'clsx',
@@ -354,6 +427,13 @@ const blockRegistryDeps: Record<string, string[]> = {
     'textarea',
     'badge',
     'card',
+  ],
+  'auth-01': [
+    'button',
+    'input',
+    'card',
+    'checkbox',
+    'form',
   ],
 }
 

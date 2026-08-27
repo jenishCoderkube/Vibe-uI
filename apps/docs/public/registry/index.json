@@ -123,6 +123,7 @@
       "badge.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -217,6 +218,7 @@
       "card.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -464,6 +466,22 @@
     ]
   },
   {
+    "name": "form",
+    "files": [
+      "form.tsx"
+    ],
+    "dependencies": [
+      "react-hook-form",
+      "@hookform/resolvers",
+      "zod",
+      "@radix-ui/react-slot"
+    ],
+    "registryDependencies": [
+      "utils",
+      "label"
+    ]
+  },
+  {
     "name": "hover-card",
     "files": [
       "hover-card.tsx"
@@ -484,6 +502,7 @@
       "hyper-text.tsx"
     ],
     "dependencies": [
+      "motion",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -513,6 +532,7 @@
       "input-otp.tsx"
     ],
     "dependencies": [
+      "input-otp",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -541,6 +561,7 @@
       "item.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -555,6 +576,7 @@
       "kbd.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -658,6 +680,7 @@
       "marker.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -897,6 +920,7 @@
       "separator.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -994,6 +1018,7 @@
       "sparkles-text.tsx"
     ],
     "dependencies": [
+      "motion",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -1037,6 +1062,7 @@
       "switch.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-switch",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -1123,6 +1149,7 @@
       "text-reveal.tsx"
     ],
     "dependencies": [
+      "motion",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -1181,6 +1208,7 @@
       "toggle.tsx"
     ],
     "dependencies": [
+      "@radix-ui/react-toggle",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -1210,6 +1238,7 @@
       "typing-animation.tsx"
     ],
     "dependencies": [
+      "motion",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -1271,12 +1300,38 @@
       "word-rotate.tsx"
     ],
     "dependencies": [
+      "motion",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
     "registryDependencies": [
       "utils"
+    ]
+  },
+  {
+    "name": "auth-01",
+    "files": [
+      "auth-01/components/forgot-password-form.tsx",
+      "auth-01/components/login-form.tsx",
+      "auth-01/components/register-form.tsx",
+      "auth-01/components/reset-password-form.tsx",
+      "auth-01/page.tsx"
+    ],
+    "dependencies": [
+      "lucide-react",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge",
+      "motion"
+    ],
+    "registryDependencies": [
+      "utils",
+      "button",
+      "input",
+      "card",
+      "checkbox",
+      "form"
     ]
   },
   {
@@ -1293,7 +1348,8 @@
       "tailwind-variants",
       "clsx",
       "tailwind-merge",
-      "motion"
+      "motion",
+      "prism-react-renderer"
     ],
     "registryDependencies": [
       "utils",

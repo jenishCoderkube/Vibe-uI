@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation'
 import { Header } from '../../../components/header'
 import { Footer } from '../../../components/footer'
 import { BlockCard } from '../../../components/block-card'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block } from '../../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code } from '../../../components/vibe-blocks-code'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block } from '../../../components/vibe-blocks'
+import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code } from '../../../components/vibe-blocks-code'
 
 const BLOCKS_MAP = {
   'dashboard-01': {
@@ -36,6 +36,13 @@ const BLOCKS_MAP = {
     vibeDeps: 'button, input, scroll-area, sheet, dropdown-menu, dialog, avatar, tooltip, theme-switcher, textarea, badge, card',
     code: chat01Code,
     previewComponent: <Chat01Block />,
+  },
+  'auth-01': {
+    title: 'Vibe Modern Authentication',
+    description: 'A complete authentication system block with fluid Framer Motion animations. Handles Login, Register, Forgot Password, and Reset Password views in a fully validated, routes-agnostic single-page design.',
+    vibeDeps: 'button, card, input, checkbox, form, motion',
+    code: auth01Code,
+    previewComponent: <Auth01Block />,
   },
 }
 
