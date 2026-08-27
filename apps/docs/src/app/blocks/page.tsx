@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Header } from '../../components/header'
 import { Footer } from '../../components/footer'
 import { BlockCard } from '../../components/block-card'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block } from '../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code } from '../../components/vibe-blocks-code'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block } from '../../components/vibe-blocks'
+import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code } from '../../components/vibe-blocks-code'
 import { Sparkles, Layout } from 'lucide-react'
 
 const BLOCKS = [
@@ -201,6 +201,45 @@ const BLOCKS = [
             <div className="h-3 border border-zinc-850 rounded bg-zinc-900/60 flex items-center justify-between px-1 shrink-0">
               <div className="h-0.5 w-6 rounded bg-zinc-800" />
               <div className="h-1 w-1 rounded bg-primary/60" />
+            </div>
+          </div>
+        </div>
+        {/* Glow Overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(120px_circle_at_50%_50%,rgba(168,85,247,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      </div>
+    )
+  },
+  {
+    id: 'auth-01',
+    title: 'Vibe Modern Authentication',
+    description: 'A complete authentication system block with fluid Framer Motion animations. Handles Login, Register, Forgot Password, and Reset Password views in a fully validated, routes-agnostic single-page design.',
+    vibeDeps: 'button, card, input, checkbox, form, motion',
+    code: auth01Code,
+    previewComponent: <Auth01Block />,
+    category: 'Authentication',
+    mockup: (
+      <div className="w-full h-full bg-zinc-950 dark:bg-zinc-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
+        {/* Mockup split screen */}
+        <div className="flex gap-2 h-full">
+          {/* Mock Left Banner */}
+          <div className="w-2/5 shrink-0 bg-gradient-to-br from-violet-600/30 to-indigo-600/20 border border-zinc-800 rounded p-1.5 flex flex-col justify-between">
+            <div className="h-1.5 w-6 rounded bg-white/40" />
+            <div className="space-y-1">
+              <div className="h-1.5 w-10 rounded bg-white/70" />
+              <div className="h-1 w-12 rounded bg-white/40" />
+            </div>
+            <div className="h-1 w-full rounded bg-white/20" />
+          </div>
+          {/* Mock Right Form Card */}
+          <div className="flex-1 flex items-center justify-center p-1">
+            <div className="border border-zinc-800 bg-zinc-900/60 rounded-md p-2 w-full space-y-1.5 shadow-sm">
+              <div className="h-2 w-8 rounded bg-zinc-850 mx-auto" />
+              <div className="h-1 w-12 rounded bg-zinc-800 mx-auto" />
+              <div className="space-y-1 pt-1.5">
+                <div className="h-2 rounded bg-zinc-900 border border-zinc-850" />
+                <div className="h-2 rounded bg-zinc-900 border border-zinc-850" />
+              </div>
+              <div className="h-3 rounded bg-primary/70 mt-1" />
             </div>
           </div>
         </div>

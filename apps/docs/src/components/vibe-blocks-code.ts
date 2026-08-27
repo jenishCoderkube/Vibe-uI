@@ -3809,37 +3809,454 @@ export const chat01Code = {
   'app/chat/page.tsx': `'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Menu, Sparkles, Bot, Trash } from 'lucide-react'
+import {
+  Sparkles,
+  Bot,
+  Trash,
+  ChevronRight,
+  ChevronDown,
+  PanelLeft,
+  SquarePen,
+  Check,
+  Upload,
+  Pin,
+  Archive,
+  MoreHorizontal,
+  FolderClosed,
+  Library,
+  FolderPlus
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
+} from '@/components/ui/dropdown-menu'
 import { ChatSidebar } from './components/chat-sidebar'
-import { ChatMessageItem } from './components/chat-message-item'
+import { ChatMessageItem, Message } from './components/chat-message-item'
 import { ChatComposer } from './components/chat-composer'
 import { ChatWelcome } from './components/chat-welcome'
-import { Tooltip } from '@/components/ui/tooltip'
-import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
+
+interface Conversation {
+  id: string
+  title: string
+  model: string
+  updatedAt: Date
+  previewText?: string
+}
+
+interface AttachedFile {
+  id: string
+  name: string
+  type: 'image' | 'document'
+  size: string
+  url?: string
+}
 
 export function Chat01Page() {
-  const [conversations, setConversations] = useState([
-    { id: 'chat-1', title: 'Explain React view transitions', model: 'Vibe Pro', updatedAt: new Date() }
+  const [conversations, setConversations] = useState<Conversation[]>([
+    {
+      id: 'chat-1',
+      title: 'Greeting exchange',
+      model: 'Vibe Pro',
+      updatedAt: new Date(Date.now() - 600000), // 10 mins ago
+      previewText: 'Here is a welcoming email draft you can use to greet your new team member...',
+    },
+    {
+      id: 'chat-2',
+      title: 'Write Audit Prompt',
+      model: 'Vibe Ultra',
+      updatedAt: new Date(Date.now() - 3600000), // 1 hour ago
+      previewText: 'Audit prompts focus on identifying logic flaws and security vulnerabilities...',
+    },
+    {
+      id: 'chat-3',
+      title: 'How LLMs Work',
+      model: 'Vibe Pro',
+      updatedAt: new Date(Date.now() - 7200000), // 2 hours ago
+      previewText: 'Large Language Models process and predict tokens based on probability distributions...',
+    },
+    {
+      id: 'chat-4',
+      title: 'Deploy Next.js Netlify',
+      model: 'Vibe Pro',
+      updatedAt: new Date(Date.now() - 14400000), // 4 hours ago
+      previewText: 'Configuring custom netlify.toml headers for Next.js app deployments...',
+    },
+    {
+      id: 'chat-5',
+      title: 'CKEditor Issues Review',
+      model: 'Vibe Ultra',
+      updatedAt: new Date(Date.now() - 86400000), // 1 day ago
+      previewText: 'CKEditor custom build integrations might trigger focus leaks or styling conflicts...',
+    },
+    {
+      id: 'chat-6',
+      title: 'Next Steps After Git Pull',
+      model: 'Vibe Pro',
+      updatedAt: new Date(Date.now() - 172800000), // 2 days ago
+      previewText: 'Running package installations and clearing dev caches to sync your branch...',
+    },
+    {
+      id: 'chat-7',
+      title: 'HTML block formatting explanation',
+      model: 'Vibe Pro',
+      updatedAt: new Date(Date.now() - 259200000), // 3 days ago
+      previewText: 'To format code snippets in HTML block tags, use clean pre tags combined with class formatting...',
+    },
   ])
-  const [messages, setMessages] = useState({
+
+  const [messages, setMessages] = useState<Record<string, Message[]>>({
     'chat-1': [
-      { id: 'msg-1', role: 'user', content: 'Explain React view transitions', timestamp: new Date() },
-      { id: 'msg-2', role: 'assistant', content: 'React view transitions allow blending transitions during route switches.', timestamp: new Date() }
-    ]
+      {
+        id: 'msg-1-1',
+        role: 'user',
+        content: 'Hello! Can you help me write a quick email welcoming a new frontend developer to the team?',
+        timestamp: new Date(Date.now() - 700000),
+      },
+      {
+        id: 'msg-1-2',
+        role: 'assistant',
+        content: 'Here is a welcoming email draft you can use to greet your new team member:\\n\\n> **Subject:** Welcome to the team, [Name]!\\n>\\n> Hi [Name],\\n>\\n> We are thrilled to welcome you to the Vibe UI development team! Your background in responsive frontend styling and components is a fantastic fit, and we are excited to have you on board.\\n>\\n> We will get you set up with your development credentials and introduce you to the team later today. Let us know if you need anything in the meantime!\\n>\\n> Best regards,  \\n> [Your Name]\\n\\nLet me know if you would like to customize this with specific details!',
+        timestamp: new Date(Date.now() - 600000),
+      },
+    ],
+    'chat-2': [
+      {
+        id: 'msg-2-1',
+        role: 'user',
+        content: 'Write an audit prompt for code analysis.',
+        timestamp: new Date(Date.now() - 3700000),
+      },
+      {
+        id: 'msg-2-2',
+        role: 'assistant',
+        content: 'Here is a structured prompt for auditing code files:\\n\\n\`\`\`markdown\\nYou are an expert security auditor. Scan the following React component code block for potential issues, including memory leaks inside useEffect hooks, missing accessibility tags, and state synchronization leaks.\\n\`\`\`\\n\\nRun this against your codebase to identify quick architectural improvements!',
+        timestamp: new Date(Date.now() - 3600000),
+      },
+    ],
+    'chat-3': [
+      {
+        id: 'msg-3-1',
+        role: 'user',
+        content: 'Explain how Large Language Models work in simple terms.',
+        timestamp: new Date(Date.now() - 7300000),
+      },
+      {
+        id: 'msg-3-2',
+        role: 'assistant',
+        content: 'Large Language Models (LLMs) function like advanced autocomplete engines:\\n\\n* **Tokenization:** They split your sentences into smaller parts called tokens (words or syllables).\\n* **Probability:** They calculate which token is most likely to come next based on patterns learned from reading billions of web pages.\\n* **Attention mechanism:** They look at all the words in your prompt simultaneously to understand context and relationships.',
+        timestamp: new Date(Date.now() - 7200000),
+      },
+    ],
+    'chat-4': [],
+    'chat-5': [],
+    'chat-6': [],
+    'chat-7': [],
   })
-  const [activeId, setActiveId] = useState('chat-1')
+
+  const [activeId, setActiveId] = useState<string | null>('chat-1')
   const [input, setInput] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedModel, setSelectedModel] = useState('Vibe Pro')
+  const [sideOffset, setSideOffset] = useState(8)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSideOffset(window.innerWidth < 640 ? -190 : 8)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const streamTimeoutRef = useRef<any>(null)
+
+  // Scroll to bottom helper
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, activeId, isGenerating])
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (streamTimeoutRef.current) clearTimeout(streamTimeoutRef.current)
+    }
+  }, [])
+
+  // Start new conversation
+  const handleNewChat = () => {
+    const newId = \`chat-\${Date.now()}\`
+    const newChat: Conversation = {
+      id: newId,
+      title: 'New Conversation',
+      model: selectedModel,
+      updatedAt: new Date(),
+      previewText: 'Start writing your message below...',
+    }
+
+    setConversations((prev) => [newChat, ...prev])
+    setMessages((prev) => ({ ...prev, [newId]: [] }))
+    setActiveId(newId)
+    setInput('')
+    if (streamTimeoutRef.current) {
+      clearTimeout(streamTimeoutRef.current)
+      setIsGenerating(false)
+    }
+  }
+
+  // Switch active conversation
+  const handleSelectConversation = (id: string) => {
+    setActiveId(id)
+    const chat = conversations.find((c) => c.id === id)
+    if (chat) {
+      setSelectedModel(chat.model)
+    }
+    setInput('')
+    if (streamTimeoutRef.current) {
+      clearTimeout(streamTimeoutRef.current)
+      setIsGenerating(false)
+    }
+  }
+
+  // Rename conversation title
+  const handleRenameChat = (id: string, newTitle: string) => {
+    setConversations((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, title: newTitle } : c))
+    )
+  }
+
+  // Delete conversation
+  const handleDeleteChat = (id: string) => {
+    setConversations((prev) => prev.filter((c) => c.id !== id))
+    setMessages((prev) => {
+      const copy = { ...prev }
+      delete copy[id]
+      return copy
+    })
+
+    if (activeId === id) {
+      const remaining = conversations.filter((c) => c.id !== id)
+      if (remaining.length > 0) {
+        setActiveId(remaining[0].id)
+      } else {
+        setActiveId(null)
+      }
+    }
+  }
+
+  // Clear current active conversation history
+  const handleClearHistory = () => {
+    if (!activeId) return
+    setMessages((prev) => ({ ...prev, [activeId]: [] }))
+    setConversations((prev) =>
+      prev.map((c) => (c.id === activeId ? { ...c, previewText: '' } : c))
+    )
+  }
+
+  // Rate message thumbs feedback
+  const handleRateMessage = (id: string, rating: 'like' | 'dislike') => {
+    if (!activeId) return
+    setMessages((prev) => {
+      const currentMsgs = prev[activeId] || []
+      return {
+        ...prev,
+        [activeId]: currentMsgs.map((m) =>
+          m.id === id ? { ...m, rating: m.rating === rating ? null : rating } : m
+        ),
+      }
+    })
+  }
+
+  // Composer Send Message operation
+  const handleSendMessage = (text: string, attachments: AttachedFile[]) => {
+    if (!activeId) return
+    const userMsgText = text.trim()
+    if (!userMsgText && attachments.length === 0) return
+
+    const userMessage: Message = {
+      id: \`msg-usr-\${Date.now()}\`,
+      role: 'user',
+      content: userMsgText || \`Uploaded files: \${attachments.map(a => a.name).join(', ')}\`,
+      timestamp: new Date(),
+    }
+
+    // Update messages log
+    const updatedMessages = [...(messages[activeId] || []), userMessage]
+    setMessages((prev) => ({
+      ...prev,
+      [activeId]: updatedMessages,
+    }))
+
+    // Update conversation preview text
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === activeId
+          ? {
+              ...c,
+              previewText: userMsgText.substring(0, 60) + (userMsgText.length > 60 ? '...' : ''),
+              updatedAt: new Date(),
+            }
+          : c
+      )
+    )
+
+    // Trigger AI mock response
+    simulateAIResponse(userMsgText)
+  }
+
+  // Simulated AI responses based on prompt keywords
+  const simulateAIResponse = (promptText: string) => {
+    if (!activeId) return
+    setIsGenerating(true)
+
+    const responseTemplate = getMockResponseTemplate(promptText)
+    const newAiMsgId = \`msg-ai-\${Date.now()}\`
+
+    // Insert empty streaming assistant bubble
+    setMessages((prev) => ({
+      ...prev,
+      [activeId]: [
+        ...(prev[activeId] || []),
+        {
+          id: newAiMsgId,
+          role: 'assistant',
+          content: '',
+          timestamp: new Date(),
+          isStreaming: true,
+        },
+      ],
+    }))
+
+    let currentLength = 0
+    const words = responseTemplate.split(' ')
+    let currentContent = ''
+
+    const streamNextWord = () => {
+      if (currentLength >= words.length) {
+        // Complete stream
+        setMessages((prev) => {
+          const chatMsgs = prev[activeId] || []
+          return {
+            ...prev,
+            [activeId]: chatMsgs.map((m) =>
+              m.id === newAiMsgId
+                ? { ...m, content: responseTemplate, isStreaming: false }
+                : m
+            ),
+          }
+        })
+        setIsGenerating(false)
+        return
+      }
+
+      currentContent += (currentContent ? ' ' : '') + words[currentLength]
+      currentLength++
+
+      setMessages((prev) => {
+        const chatMsgs = prev[activeId] || []
+        return {
+          ...prev,
+          [activeId]: chatMsgs.map((m) =>
+            m.id === newAiMsgId ? { ...m, content: currentContent } : m
+          ),
+        }
+      })
+
+      // Schedule next word
+      streamTimeoutRef.current = setTimeout(streamNextWord, 45 + Math.random() * 25)
+    }
+
+    // Begin streaming
+    streamTimeoutRef.current = setTimeout(streamNextWord, 600)
+  }
+
+  const getMockResponseTemplate = (text: string): string => {
+    const query = text.toLowerCase()
+    if (query.includes('explain code') || query.includes('view transition') || query.includes('framer')) {
+      return 'React View Transitions allow snap animations between page elements. By integrating with \`framer-motion\`, you can synchronize the animation timing:\\n\\n\`\`\`javascript\\n// Transition block component hooks\\nimport { motion } from \\'framer-motion\\'\\n\\nexport function TransitionContainer({ children }) {\\n  return (\\n    <motion.div\\n      initial={{ opacity: 0, y: 10 }}\\n      animate={{ opacity: 1, y: 0 }}\\n      exit={{ opacity: 0, y: -10 }}\\n      transition={{ duration: 0.35, ease: \\'easeInOut\\' }}\\n    >\\n      {children}\\n    </motion.div>\\n  )\\n}\\n\`\`\`\\n\\nTo prevent text blurring, avoid active filter properties on the animated container and instead trigger transitions natively on route mounts.'
+    }
+    
+    if (query.includes('analyze layout') || query.includes('ecommerce') || query.includes('grid')) {
+      return 'For high-fidelity mobile grids, you should use the following layout rules:\\n\\n1. **2-Column Layout:** Use \`grid-cols-2\` on viewports below \`640px\` instead of single stacking. This lets you display more items above the fold.\\n2. **Paddings and Gaps:** Restrict card padding to \`p-2\` on mobile, and grids gaps to \`gap-3\` to avoid wasted screen area.\\n3. **Typography Scaling:** Shrink title text to \`text-[11px]\` and descriptions to \`text-[9px] line-clamp-1\` to avoid ugly text truncation inside narrow cards.'
+    }
+
+    if (query.includes('email') || query.includes('feedback') || query.includes('draft')) {
+      return 'Here is a professional draft requesting feedback on your components:\\n\\n> **Subject:** Feedback Requested: Vibe UI Library components release\\n>\\n> Hello team,\\n>\\n> We have just compiled the preview block packages for Vibe UI version \`0.1.12\`. Could you please review the responsive card grids and theme variants inside the docs?\\n>\\n> Best regards,\\n> Vibe Developer Team'
+    }
+
+    return 'Hello! I am Vibe Assistant, your coding companion. I am fully built with custom **Vibe UI React components**. How can I help you customize your developer layouts, style configurations, or component code snippets today?'
+  }
+
+  // Stop Generation trigger
+  const handleStopGeneration = () => {
+    if (streamTimeoutRef.current) {
+      clearTimeout(streamTimeoutRef.current)
+    }
+    setIsGenerating(false)
+    if (!activeId) return
+    setMessages((prev) => {
+      const chatMsgs = prev[activeId] || []
+      return {
+        ...prev,
+        [activeId]: chatMsgs.map((m) =>
+          m.isStreaming ? { ...m, isStreaming: false, content: m.content + ' [Generation Stopped]' } : m
+        ),
+      }
+    })
+  }
+
+  // Regenerate Response trigger
+  const handleRegenerateResponse = (msgId: string) => {
+    if (!activeId || isGenerating) return
+    
+    const chatMsgs = messages[activeId] || []
+    const targetIdx = chatMsgs.findIndex((m) => m.id === msgId)
+    if (targetIdx === -1) return
+
+    // Find the user query just preceding this response
+    let userQuery = ''
+    for (let i = targetIdx - 1; i >= 0; i--) {
+      if (chatMsgs[i].role === 'user') {
+        userQuery = chatMsgs[i].content
+        break
+      }
+    }
+
+    // Delete all messages from the target response onwards
+    const truncatedMsgs = chatMsgs.slice(0, targetIdx)
+    setMessages((prev) => ({
+      ...prev,
+      [activeId]: truncatedMsgs,
+    }))
+
+    // Re-simulate response
+    simulateAIResponse(userQuery || 'Hello')
+  }
+
+  const activeMessages = activeId ? messages[activeId] || [] : []
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-background text-foreground font-sans relative">
+    <div className="flex h-screen w-full overflow-hidden bg-white dark:bg-[#0d0d0d] text-foreground font-sans relative selection:bg-primary/10">
+      
+      {/* 1. Left Sidebar Navigation Panel */}
       <ChatSidebar
         conversations={conversations}
         activeId={activeId}
@@ -3856,67 +4273,2074 @@ export function Chat01Page() {
         selectedModel={selectedModel}
         onSelectModel={setSelectedModel}
       />
+
+      {/* 2. Main Conversation Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        <header className="h-14 border-b border-border/50 flex items-center justify-between px-4 bg-background/95 backdrop-blur-md z-20 shrink-0">
+        
+        {/* Top Header Controls bar */}
+        <header className="h-14 flex items-center justify-between px-4 bg-white/85 dark:bg-[#0d0d0d]/85 backdrop-blur-md z-20 shrink-0 select-none">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)} className="lg:hidden">
-              <Menu className="h-4 w-4" />
+            {/* Mobile Sidebar Toggle button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileOpen(true)}
+              className="lg:hidden h-9 w-9 text-zinc-500 hover:text-foreground hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg flex"
+              aria-label="Open sidebar"
+            >
+              <PanelLeft className="h-5 w-5" />
             </Button>
-            <span className="text-sm font-bold text-foreground">{activeChat?.title}</span>
+
+            {/* Mobile Show New Chat Button */}
+            <Button
+              onClick={handleNewChat}
+              variant="ghost"
+              size="icon"
+              className="lg:hidden h-9 w-9 text-zinc-500 hover:text-foreground hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg"
+              aria-label="New Chat"
+            >
+              <SquarePen className="h-5 w-5" />
+            </Button>
+            
+            {/* Model Selector Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-350 hover:text-foreground hover:bg-zinc-200/40 dark:hover:bg-zinc-800/40 transition-all font-semibold text-xs sm:text-[14.5px] cursor-pointer focus:outline-none select-none">
+                  <div className="flex items-center gap-1.5">
+                    {selectedModel === 'Vibe Pro' ? (
+                      <Sparkles className="h-4 w-4 text-primary shrink-0 animate-pulse" />
+                    ) : (
+                      <Bot className="h-4 w-4 text-indigo-500 shrink-0" />
+                    )}
+                    <span className="hidden sm:inline">{selectedModel}</span>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-zinc-400 shrink-0" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 border-border bg-card" align="start">
+                <DropdownMenuItem
+                  onClick={() => setSelectedModel('Vibe Pro')}
+                  className="text-xs flex items-center justify-between cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    <span>Vibe Pro (Default)</span>
+                  </div>
+                  {selectedModel === 'Vibe Pro' && <Check className="h-3.5 w-3.5 text-primary" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setSelectedModel('Vibe Ultra')}
+                  className="text-xs flex items-center justify-between cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <Bot className="h-3.5 w-3.5 text-indigo-500" />
+                    <span>Vibe Ultra</span>
+                  </div>
+                  {selectedModel === 'Vibe Ultra' && <Check className="h-3.5 w-3.5 text-indigo-500" />}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Share button */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden sm:flex h-8.5 gap-1.5 px-3 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg text-xs font-semibold"
+            >
+              <Upload className="h-3.5 w-3.5" />
+              <span>Share</span>
+            </Button>
+
+            {/* Menu options dropdown matching Image 3 */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8.5 w-8.5 text-zinc-500 hover:text-foreground cursor-pointer rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
+                  aria-label="More options"
+                >
+                  <MoreHorizontal className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" align="end">
+                {/* Share option (visible only on mobile) */}
+                <DropdownMenuItem className="sm:hidden text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                  <Upload className="h-4 w-4 text-zinc-400" />
+                  <span>Share</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                  <Library className="h-4 w-4 text-zinc-400" />
+                  <span>View files in chat</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                  <Pin className="h-4 w-4 text-zinc-400" />
+                  <span>Pin chat</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                  <Archive className="h-4 w-4 text-zinc-400" />
+                  <span>Archive</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleClearHistory}
+                  className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive rounded-lg font-medium"
+                >
+                  <Trash className="h-4 w-4" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator />
+                
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-lg focus:bg-zinc-100 dark:focus:bg-zinc-800 data-[state=open]:bg-zinc-100 dark:data-[state=open]:bg-zinc-800">
+                    <div className="flex items-center gap-2.5">
+                      <FolderClosed className="h-4 w-4 text-zinc-400" />
+                      <span>Move to project</span>
+                    </div>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="w-44 sm:w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" sideOffset={sideOffset}>
+                      <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                        <FolderPlus className="h-4 w-4 text-zinc-400" />
+                        <span>New project</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                        <FolderClosed className="h-4 w-4 text-zinc-400" />
+                        <span>Money take</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                        <FolderClosed className="h-4 w-4 text-zinc-400" />
+                        <span>Library for components</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                        <FolderClosed className="h-4 w-4 text-zinc-400" />
+                        <span>Renewable Energy</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
-        <ScrollArea className="flex-1">
-          <div className="max-w-3xl mx-auto px-4 py-6">
-            {activeMessages.map((msg) => (
-              <ChatMessageItem key={msg.id} message={msg} />
-            ))}
-          </div>
-        </ScrollArea>
-        <div className="p-4 max-w-3xl mx-auto w-full">
-          <ChatComposer
-            input={input}
-            setInput={setInput}
-            onSend={handleSendMessage}
-            isGenerating={isGenerating}
-            onStop={handleStopGeneration}
-            selectedModel={selectedModel}
-          />
+
+        {/* 3. Messages log area / Empty Welcome state panel */}
+        <div className="flex-1 overflow-hidden relative min-h-0">
+          {activeMessages.length === 0 ? (
+            <div className="h-full overflow-y-auto">
+              <ChatWelcome
+                onSelectPrompt={(prompt) => {
+                  setInput(prompt)
+                  // Auto submit
+                  setTimeout(() => {
+                    handleSendMessage(prompt, [])
+                  }, 150)
+                }}
+                selectedModel={selectedModel}
+              />
+            </div>
+          ) : (
+            <ScrollArea className="h-full w-full">
+              <div className="w-full max-w-4xl mx-auto px-4 md:px-6 pb-2">
+                <AnimatePresence initial={false}>
+                  {activeMessages.map((msg, idx) => (
+                    <motion.div
+                      key={msg.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.25, delay: idx === activeMessages.length - 1 ? 0 : 0.05 }}
+                    >
+                      <ChatMessageItem
+                        message={msg}
+                        onRegenerate={msg.role === 'assistant' ? handleRegenerateResponse : undefined}
+                        onRateMessage={msg.role === 'assistant' ? handleRateMessage : undefined}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                
+                {/* Disclaimer in the scroll flow */}
+                <div className="w-full text-center pt-14 pb-2">
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed select-none">
+                    Vibe AI can make mistakes. Please verify important design code snapshots, specifications, or parameters.
+                  </p>
+                </div>
+
+                {/* Scroll anchor */}
+                <div ref={messagesEndRef} className="h-0" />
+              </div>
+            </ScrollArea>
+          )}
         </div>
+
+        {/* 4. Chat Composer container at the bottom */}
+        <div className="w-full bg-gradient-to-t from-white via-white dark:from-[#0d0d0d] dark:via-[#0d0d0d] to-transparent pt-2 pb-6 shrink-0 z-20 pointer-events-none">
+          <div className="w-full max-w-4xl mx-auto px-4 md:px-6 pointer-events-auto">
+            <ChatComposer
+              input={input}
+              setInput={setInput}
+              onSend={handleSendMessage}
+              isGenerating={isGenerating}
+              onStop={handleStopGeneration}
+              selectedModel={selectedModel}
+            />
+          </div>
+        </div>
+
       </div>
     </div>
   )
-}`,
+}
+`,
   'components/chat-sidebar.tsx': `'use client'
 
-import React, { useState } from 'react'
-import { MessageSquare, Plus, Search, Settings } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import {
+  SquarePen,
+  Library,
+  FolderClosed,
+  Clock,
+  AtSign,
+  Code2,
+  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Bot,
+  LogOut,
+  Search,
+  Check,
+  PanelLeft,
+  ChevronDown,
+  Settings,
+  Pin,
+  Store,
+  CircleHelp,
+  UserCircle,
+  SlidersHorizontal,
+  Crown,
+  Upload,
+  Trash,
+  FolderPlus,
+  Pencil,
+  Archive,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Sheet, SheetContent } from '@/components/ui/sheet'
-import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Separator } from '@/components/ui/separator'
+import { Tooltip } from '@/components/ui/tooltip'
 
-export function ChatSidebar({ conversations, activeId, onSelectConversation, onNewChat }) {
-  return (
-    <div className="flex flex-col h-full bg-card border-r border-border/70 w-64">
-      <div className="p-4 border-b flex items-center justify-between">
-        <span className="font-extrabold text-base">Vibe CHAT</span>
-      </div>
-      <div className="p-3 space-y-3">
-        <Button onClick={onNewChat} variant="shine" className="w-full gap-1.5">
-          <Plus className="h-4 w-4" />
-          <span>New Chat</span>
-        </Button>
-      </div>
-      <ScrollArea className="flex-1 px-3">
-        {conversations.map((c) => (
-          <div key={c.id} onClick={() => onSelectConversation(c.id)} className="p-2.5 rounded-lg hover:bg-muted/40 cursor-pointer">
-            {c.title}
-          </div>
-        ))}
-      </ScrollArea>
-    </div>
-  )
-}`,
+interface Conversation {
+  id: string
+  title: string
+  model: string
+  updatedAt: Date
+  previewText?: string
 }
 
+interface ChatSidebarProps {
+  conversations: Conversation[]
+  activeId: string | null
+  onSelectConversation: (id: string) => void
+  onNewChat: () => void
+  onRenameChat: (id: string, newTitle: string) => void
+  onDeleteChat: (id: string) => void
+  isCollapsed: boolean
+  onToggleCollapse: () => void
+  searchQuery: string
+  setSearchQuery: (query: string) => void
+  mobileOpen: boolean
+  setMobileOpen: (open: boolean) => void
+  selectedModel: string
+  onSelectModel: (model: string) => void
+}
+
+export function ChatSidebar({
+  conversations,
+  activeId,
+  onSelectConversation,
+  onNewChat,
+  onRenameChat,
+  onDeleteChat,
+  isCollapsed,
+  onToggleCollapse,
+  searchQuery,
+  setSearchQuery,
+  mobileOpen,
+  setMobileOpen,
+  selectedModel,
+  onSelectModel,
+}: ChatSidebarProps) {
+
+
+  const [sideOffset, setSideOffset] = useState(8)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSideOffset(window.innerWidth < 640 ? -190 : 8)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const filteredConversations = conversations.filter((c) =>
+    c.title.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  const handleSelectRecent = (id: string) => {
+    onSelectConversation(id)
+    setMobileOpen(false)
+  }
+
+  // Shared dropdown menu content for profile (reused in expanded & collapsed)
+  const profileDropdownItems = (
+    <>
+      {/* Profile header */}
+      <div className="flex items-center justify-between px-2 py-2">
+        <div className="flex items-center gap-2.5">
+          <Avatar className="h-8 w-8 shrink-0">
+            <AvatarFallback className="bg-blue-600 text-white text-[11px] font-bold">JE</AvatarFallback>
+          </Avatar>
+          <div className="leading-tight">
+            <p className="text-[13px] font-semibold text-zinc-900 dark:text-white">jenish</p>
+            <p className="text-[11px] text-zinc-500">Go</p>
+          </div>
+        </div>
+        <ChevronRight className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+      </div>
+
+      <Separator className="bg-zinc-200 dark:bg-zinc-800 my-1" />
+
+      <DropdownMenuItem className="text-[13px] cursor-pointer gap-2.5 py-2 px-2 rounded-md focus:bg-zinc-100 dark:focus:bg-zinc-800 focus:text-zinc-900 dark:focus:text-white">
+        <Crown className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <span>Upgrade plan</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem className="text-[13px] cursor-pointer gap-2.5 py-2 px-2 rounded-md focus:bg-zinc-100 dark:focus:bg-zinc-800 focus:text-zinc-900 dark:focus:text-white">
+        <SlidersHorizontal className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <span>Personalization</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem className="text-[13px] cursor-pointer gap-2.5 py-2 px-2 rounded-md focus:bg-zinc-100 dark:focus:bg-zinc-800 focus:text-zinc-900 dark:focus:text-white">
+        <UserCircle className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <span>Profile</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem className="text-[13px] cursor-pointer gap-2.5 py-2 px-2 rounded-md focus:bg-zinc-100 dark:focus:bg-zinc-800 focus:text-zinc-900 dark:focus:text-white">
+        <Settings className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <span>Settings</span>
+      </DropdownMenuItem>
+
+      <Separator className="bg-zinc-200 dark:bg-zinc-800 my-1" />
+
+      <DropdownMenuItem className="text-[13px] cursor-pointer gap-2.5 py-2 px-2 rounded-md focus:bg-zinc-100 dark:focus:bg-zinc-800 focus:text-zinc-900 dark:focus:text-white flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <CircleHelp className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+          <span>Help</span>
+        </div>
+        <ChevronRight className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
+      </DropdownMenuItem>
+      <DropdownMenuItem className="text-[13px] cursor-pointer gap-2.5 py-2 px-2 rounded-md focus:bg-zinc-100 dark:focus:bg-zinc-800 focus:text-zinc-900 dark:focus:text-white">
+        <LogOut className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <span>Log out</span>
+      </DropdownMenuItem>
+    </>
+  )
+
+  // Expanded sidebar content panel
+  const sidebarContent = (
+    <div className="flex flex-col h-full bg-zinc-50 dark:bg-[#171717] text-zinc-700 dark:text-zinc-200 select-none border-r border-zinc-200 dark:border-zinc-800/40 text-left">
+      {/* Sticky top header (Logo + Search button + Collapse button) */}
+      <div className="h-14 flex items-center justify-between px-3 shrink-0 sticky top-0 z-10 bg-zinc-50 dark:bg-[#171717]">
+        <div className="flex items-center gap-2 select-none">
+          <div className="h-6 w-6 rounded-lg bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white shrink-0">
+            <Sparkles className="h-3.5 w-3.5 fill-white" />
+          </div>
+          <span className="text-[16px] font-semibold tracking-tight text-zinc-900 dark:text-white">Vibe Chat</span>
+        </div>
+        <div className="flex items-center gap-0.5">
+          <Tooltip content="Search conversations">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8.5 w-8.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/40 rounded-lg cursor-pointer"
+            >
+              <Search className="h-4.5 w-4.5" />
+            </Button>
+          </Tooltip>
+          {!mobileOpen && (
+            <Tooltip content="Close sidebar">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggleCollapse}
+                className="hidden lg:flex h-8.5 w-8.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/40 rounded-lg cursor-pointer"
+                aria-label="Collapse sidebar"
+              >
+                <PanelLeft className="h-4.5 w-4.5" />
+              </Button>
+            </Tooltip>
+          )}
+        </div>
+      </div>
+
+      {/* Scrollable body: nav + recents + profile all scroll together */}
+      <ScrollArea className="flex-1 min-h-0">
+        <div className="flex flex-col">
+          {/* Main navigation list */}
+          <div className="px-2.5 space-y-0.5 select-none">
+            <button
+              onClick={() => {
+                onNewChat()
+                setMobileOpen(false)
+              }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-all text-left focus:outline-none"
+            >
+              <div className="flex items-center justify-center shrink-0 w-5 h-5 text-zinc-500 dark:text-zinc-400">
+                <SquarePen className="h-4.5 w-4.5" />
+              </div>
+              <span className="truncate flex-1">New chat</span>
+            </button>
+
+            <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-all text-left focus:outline-none">
+              <div className="flex items-center justify-center shrink-0 w-5 h-5 text-zinc-500 dark:text-zinc-400">
+                <Library className="h-4.5 w-4.5" />
+              </div>
+              <span className="truncate flex-1">Library</span>
+            </button>
+
+            <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-all text-left focus:outline-none">
+              <div className="flex items-center justify-center shrink-0 w-5 h-5 text-zinc-500 dark:text-zinc-400">
+                <FolderClosed className="h-4.5 w-4.5" />
+              </div>
+              <span className="truncate flex-1">Projects</span>
+            </button>
+
+            <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-all text-left focus:outline-none">
+              <div className="flex items-center justify-center shrink-0 w-5 h-5 text-zinc-500 dark:text-zinc-400">
+                <Clock className="h-4.5 w-4.5" />
+              </div>
+              <span className="truncate flex-1">Scheduled</span>
+            </button>
+
+            <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-all text-left focus:outline-none">
+              <div className="flex items-center justify-center shrink-0 w-5 h-5 text-zinc-500 dark:text-zinc-400">
+                <AtSign className="h-4.5 w-4.5" />
+              </div>
+              <span className="truncate flex-1">Plugins</span>
+            </button>
+
+            <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-all text-left focus:outline-none">
+              <div className="flex items-center justify-center shrink-0 w-5 h-5 text-zinc-500 dark:text-zinc-400">
+                <Code2 className="h-4.5 w-4.5" />
+              </div>
+              <span className="truncate flex-1">Codex</span>
+            </button>
+
+            <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-all text-left focus:outline-none">
+              <div className="flex items-center justify-center shrink-0 w-5 h-5 text-zinc-500 dark:text-zinc-400">
+                <MoreHorizontal className="h-4.5 w-4.5" />
+              </div>
+              <span className="truncate flex-1">More</span>
+            </button>
+          </div>
+
+          {/* Recents header */}
+          <div className="px-3.5 pt-4 pb-1.5 flex items-center justify-between group/recents-header">
+            <button className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400 hover:text-zinc-900 dark:hover:text-white uppercase tracking-wider select-none transition-colors focus:outline-none">
+              <span>Recents</span>
+              <ChevronDown className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-550 group-hover/recents-header:text-zinc-600 dark:group-hover/recents-header:text-zinc-350 transition-colors" />
+            </button>
+            
+            <div className="flex items-center gap-1.5">
+              <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white p-0.5 rounded transition-colors cursor-pointer focus:outline-none" title="New chat">
+                <SquarePen className="h-3.5 w-3.5" />
+              </button>
+              <button className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white p-0.5 rounded transition-colors cursor-pointer focus:outline-none" title="Recents options">
+                <MoreHorizontal className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Recents logs area */}
+          <div className="px-2 py-1.5">
+            <div className="space-y-px">
+              {filteredConversations.map((c) => {
+                const isActive = c.id === activeId
+                return (
+                  <div
+                    key={c.id}
+                    onClick={() => handleSelectRecent(c.id)}
+                    className={\`group w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13.5px] transition-all duration-150 text-left select-none relative cursor-pointer \${
+                      isActive
+                        ? 'bg-zinc-200/70 dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium'
+                        : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/40 hover:text-zinc-900 dark:hover:text-zinc-150'
+                    }\`}
+                  >
+                    <span className="truncate flex-1 pr-2">{c.title}</span>
+                    
+                    {/* Trailing actions on hover */}
+                    <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 shrink-0">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                        }}
+                        className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white p-0.5 rounded transition-colors focus:outline-none"
+                        title="Pin conversation"
+                      >
+                        <Pin className="h-3.5 w-3.5" />
+                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                            }}
+                            className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white p-0.5 rounded transition-colors focus:outline-none cursor-pointer"
+                            title="Conversation options"
+                          >
+                            <MoreHorizontal className="h-3.5 w-3.5" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-48 sm:w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" align="end" side="bottom">
+                          {/* Share */}
+                          <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                            <Upload className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            <span>Share</span>
+                          </DropdownMenuItem>
+
+                          {/* Rename */}
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newTitle = prompt("Rename conversation:", c.title);
+                              if (newTitle) onRenameChat(c.id, newTitle);
+                            }}
+                            className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg"
+                          >
+                            <Pencil className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            <span>Rename</span>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuSeparator />
+
+                          {/* Pin */}
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg"
+                          >
+                            <Pin className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            <span>Pin chat</span>
+                          </DropdownMenuItem>
+
+                          {/* Archive */}
+                          <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                            <Archive className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            <span>Archive</span>
+                          </DropdownMenuItem>
+
+                          {/* Delete */}
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm("Delete this conversation?")) onDeleteChat(c.id);
+                            }}
+                            variant="destructive"
+                            className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-lg font-medium"
+                          >
+                            <Trash className="h-4 w-4" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+
+                          <DropdownMenuSeparator />
+
+                          {/* Move to project Submenu */}
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-lg focus:bg-zinc-100 dark:focus:bg-zinc-800 data-[state=open]:bg-zinc-100 dark:data-[state=open]:bg-zinc-800">
+                              <div className="flex items-center gap-2.5">
+                                <FolderClosed className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                <span>Move to project</span>
+                              </div>
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <DropdownMenuSubContent className="w-44 sm:w-52 bg-card border-border text-foreground p-1.5 rounded-xl shadow-xl" sideOffset={sideOffset}>
+                                <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                                  <FolderPlus className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                  <span>New project</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                                  <FolderClosed className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                  <span>Money take</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                                  <FolderClosed className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                  <span>Library for components</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-xs flex items-center gap-2.5 px-3 py-2 cursor-pointer focus:bg-zinc-100 dark:focus:bg-zinc-800 rounded-lg">
+                                  <FolderClosed className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                                  <span>Renewable Energy</span>
+                                </DropdownMenuItem>
+                              </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </ScrollArea>
+
+      {/* Bottom Profile — pinned outside scroll */}
+      <div className="p-2 select-none border-t border-zinc-200 dark:border-zinc-800/40 bg-zinc-50 dark:bg-[#171717] shrink-0">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="w-full flex items-center justify-between p-1.5 rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/30 transition-colors text-left cursor-pointer focus:outline-none">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <Avatar className="h-7 w-7 shrink-0">
+                  <AvatarFallback className="bg-blue-600 text-white text-[10px] font-bold">JE</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 leading-tight">
+                  <p className="text-[13px] font-semibold text-zinc-900 dark:text-white truncate">jenish</p>
+                  <p className="text-[10px] text-zinc-500 truncate font-normal">Go</p>
+                </div>
+              </div>
+              <Store className="h-4 w-4 text-zinc-400 dark:text-zinc-500 shrink-0" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[240px] border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#171717] text-zinc-700 dark:text-zinc-200 p-1.5" side="top" align="start" sideOffset={8}>
+            {profileDropdownItems}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
+  )
+
+  // Render collapsible placeholder on desktop, and sheet trigger on mobile
+  return (
+    <>
+      {/* Mobile Drawer (Sheet) */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent side="left" className="p-0 w-64 border-r border-zinc-200 dark:border-zinc-800/50 bg-zinc-50 dark:bg-[#171717]">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Navigation Menu</SheetTitle>
+            <SheetDescription>Conversations log and settings switcher</SheetDescription>
+          </SheetHeader>
+          {sidebarContent}
+        </SheetContent>
+      </Sheet>
+
+      {/* Desktop Sidebar — single container, smooth width animation */}
+      <div
+        className={\`hidden lg:flex h-full shrink-0 bg-zinc-50 dark:bg-[#171717] border-r border-zinc-200 dark:border-zinc-800/40 transition-all duration-300 ease-in-out overflow-hidden \${
+          isCollapsed ? 'w-[52px]' : 'w-60'
+        }\`}
+      >
+        {/* Collapsed icon strip */}
+        <div
+          className={\`flex flex-col items-center justify-between py-3 w-[52px] shrink-0 h-full select-none transition-opacity duration-200 \${
+            isCollapsed ? 'opacity-100' : 'opacity-0 absolute pointer-events-none'
+          }\`}
+        >
+          {/* Top icons */}
+          <div className="flex flex-col items-center gap-1 w-full">
+            <Tooltip content="Open sidebar">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggleCollapse}
+                className="h-9 w-9 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg"
+              >
+                <PanelLeft className="h-5 w-5" />
+              </Button>
+            </Tooltip>
+
+            <Tooltip content="New chat">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onNewChat}
+                className="h-9 w-9 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg"
+              >
+                <SquarePen className="h-5 w-5" />
+              </Button>
+            </Tooltip>
+
+            <Tooltip content="Search">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg"
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+            </Tooltip>
+
+            <Tooltip content="Recents">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/50 cursor-pointer rounded-lg"
+              >
+                <Library className="h-5 w-5" />
+              </Button>
+            </Tooltip>
+          </div>
+
+          {/* Bottom profile avatar */}
+          <div className="flex items-center justify-center pb-1">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="cursor-pointer hover:ring-2 hover:ring-zinc-300 dark:hover:ring-zinc-600 active:scale-95 transition-all focus:outline-none rounded-full">
+                  <Avatar className="h-7 w-7">
+                    <AvatarFallback className="bg-blue-600 text-white text-[10px] font-bold">JE</AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[240px] border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#171717] text-zinc-700 dark:text-zinc-200 p-1.5" side="right" align="end" sideOffset={8}>
+                {profileDropdownItems}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Expanded sidebar content */}
+        <div
+          className={\`h-full w-60 shrink-0 transition-opacity duration-200 \${
+            isCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }\`}
+        >
+          {sidebarContent}
+        </div>
+      </div>
+    </>
+  )
+}
+`,
+  'components/chat-message-item.tsx': `'use client'
+
+import React, { useState, useEffect } from 'react'
+import {
+  Copy,
+  Check,
+  ThumbsUp,
+  ThumbsDown,
+  RefreshCw,
+  Sparkles,
+  Pencil,
+  Download,
+  Maximize2,
+  Minimize2,
+  Store,
+  Upload
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Highlight, themes } from 'prism-react-renderer'
+import { cn } from '@/lib/utils'
+
+export interface Message {
+  id: string
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
+  isStreaming?: boolean
+  rating?: 'like' | 'dislike' | null
+}
+
+interface ChatMessageItemProps {
+  message: Message
+  onRegenerate?: (id: string) => void
+  onRateMessage?: (id: string, rating: 'like' | 'dislike') => void
+}
+
+const mapLanguage = (lang: string): string => {
+  const mapped: Record<string, string> = {
+    js: 'javascript',
+    ts: 'typescript',
+    jsx: 'jsx',
+    tsx: 'tsx',
+    py: 'python',
+    rs: 'rust',
+    sh: 'bash',
+    shell: 'bash',
+    yml: 'yaml',
+    md: 'markdown',
+    html: 'html',
+    css: 'css',
+    json: 'json',
+    sql: 'sql',
+    go: 'go',
+  }
+  return mapped[lang.toLowerCase()] || lang.toLowerCase() || 'text'
+}
+
+interface HighlightedCodeBlockProps {
+  code: string
+  language: string
+  index: number
+  onCopy: (code: string, index: number) => void
+  copiedIndex: number | null
+}
+
+function HighlightedCodeBlock({
+  code,
+  language,
+  index,
+  onCopy,
+  copiedIndex,
+}: HighlightedCodeBlockProps) {
+  const cleanCode = code.replace(/\\n$/, '')
+  const langKey = mapLanguage(language)
+  
+  return (
+    <div className="my-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[#0d0d0d] text-zinc-100 overflow-hidden shadow-md text-left font-mono">
+      {/* Header bar: dark theme */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800/80 bg-zinc-100 dark:bg-[#1e1e1e] select-none text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <span className="uppercase font-bold tracking-wider font-sans">
+          {language || 'text'}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onCopy(cleanCode, index)}
+          className="h-6 px-2.5 text-[11px] font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-foreground hover:bg-zinc-200 dark:hover:bg-white/5 gap-1.5 cursor-pointer rounded-md transition-all border-none"
+        >
+          {copiedIndex === index ? (
+            <>
+              <Check className="h-3 w-3 text-emerald-500" />
+              <span className="text-emerald-500">Copied</span>
+            </>
+          ) : (
+            <>
+              <Copy className="h-3 w-3" />
+              <span>Copy code</span>
+            </>
+          )}
+        </Button>
+      </div>
+      
+      {/* Code body with styling and line numbers */}
+      <div className="relative overflow-x-auto select-text text-[11.5px] sm:text-[13px] leading-relaxed max-w-full bg-[#0d0d0d]">
+        <Highlight theme={themes.vsDark} code={cleanCode} language={langKey}>
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <pre
+              className={cn('p-4 font-mono overflow-x-auto m-0 bg-transparent w-full table', className)}
+              style={{ ...style, backgroundColor: 'transparent' }}
+            >
+              {tokens.map((line, i) => (
+                <div
+                  key={i}
+                  {...getLineProps({ line })}
+                  className="table-row hover:bg-black/[0.03] dark:hover:bg-white/[0.02] transition-colors"
+                >
+                  {/* Line number column */}
+                  <span className="table-cell select-none text-right pr-4 text-[10.5px] sm:text-xs w-8 align-top text-zinc-400/50 dark:text-zinc-650">
+                    {i + 1}
+                  </span>
+                  {/* Content column */}
+                  <span className="table-cell align-top whitespace-pre">
+                    {line.map((token, key) => (
+                      <span key={key} {...getTokenProps({ token })} />
+                    ))}
+                  </span>
+                </div>
+              ))}
+            </pre>
+          )}
+        </Highlight>
+      </div>
+    </div>
+  )
+}
+
+export function ChatMessageItem({
+  message,
+  onRegenerate,
+  onRateMessage,
+}: ChatMessageItemProps) {
+  const [copied, setCopied] = useState(false)
+  const [copiedCodeIndex, setCopiedCodeIndex] = useState<number | null>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(message.content)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const copyCodeToClipboard = (code: string, index: number) => {
+    navigator.clipboard.writeText(code)
+    setCopiedCodeIndex(index)
+    setTimeout(() => setCopiedCodeIndex(null), 2000)
+  }
+
+  const handleDownload = () => {
+    const element = document.createElement("a");
+    const file = new Blob([message.content], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = \`response-\${message.id.slice(-4)}.txt\`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
+  // Parse bold **text**, italics *text*, code \`code\`, and links [text](url)
+  const parseInlineMarkdown = (text: string) => {
+    if (!text) return []
+    const tokenRegex = /(\\*\\*.*?\\*\\*|__.*?__|\`.*?\`|\\[.*?\\]\\(.*?\\)|[*_].*?[*_])/g
+    const parts = text.split(tokenRegex)
+    
+    return parts.map((part, idx) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return (
+          <strong key={idx} className="font-bold text-zinc-900 dark:text-white">
+            {part.slice(2, -2)}
+          </strong>
+        )
+      }
+      if (part.startsWith('__') && part.endsWith('__')) {
+        return (
+          <strong key={idx} className="font-bold text-zinc-900 dark:text-white">
+            {part.slice(2, -2)}
+          </strong>
+        )
+      }
+      if (part.startsWith('\`') && part.endsWith('\`')) {
+        return (
+          <code
+            key={idx}
+            className="px-1.5 py-0.5 rounded bg-zinc-200/50 dark:bg-zinc-800/50 font-mono text-[11px] sm:text-[12px] text-pink-600 dark:text-pink-400 border border-zinc-200 dark:border-zinc-800/40"
+          >
+            {part.slice(1, -1)}
+          </code>
+        )
+      }
+      if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
+        const mid = part.indexOf('](')
+        const label = part.slice(1, mid)
+        const url = part.slice(mid + 2, -1)
+        return (
+          <a
+            key={idx}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:underline font-medium break-all"
+          >
+            {label}
+          </a>
+        )
+      }
+      if (
+        (part.startsWith('*') && part.endsWith('*')) ||
+        (part.startsWith('_') && part.endsWith('_'))
+      ) {
+        return (
+          <em key={idx} className="italic text-zinc-700 dark:text-zinc-300">
+            {part.slice(1, -1)}
+          </em>
+        )
+      }
+      return part
+    })
+  }
+
+  // Stateful Markdown-to-React parser that groups list items and handles streaming code blocks
+  const renderMessageContent = (content: string) => {
+    if (!content) return null
+
+    // Split content by triple backticks, capturing unclosed blocks for streaming
+    const parts = content.split(/(\`\`\`[\\s\\S]*?(?:\`\`\`|$))/g)
+    let codeBlockIndex = 0
+
+    return parts.map((part, index) => {
+      // Check if it's a code block
+      if (part.startsWith('\`\`\`')) {
+        const isClosed = part.endsWith('\`\`\`')
+        const rawCode = isClosed ? part.slice(3, -3) : part.slice(3)
+        
+        const lines = rawCode.split('\\n')
+        const firstLine = (lines[0] || '').trim()
+        
+        const knownLanguages = [
+          'javascript', 'typescript', 'python', 'html', 'css', 'json', 'bash', 
+          'rust', 'go', 'sql', 'yaml', 'markdown', 'js', 'ts', 'py', 'rs', 
+          'sh', 'yml', 'md', 'cpp', 'c', 'java'
+        ]
+        
+        const isLanguageDeclared = knownLanguages.includes(firstLine.toLowerCase())
+        const language = isLanguageDeclared ? firstLine : 'code'
+        const codeStartIdx = isLanguageDeclared ? 1 : 0
+        const codeString = lines.slice(codeStartIdx).join('\\n')
+        const currentCodeIdx = codeBlockIndex++
+
+        return (
+          <HighlightedCodeBlock
+            key={index}
+            code={codeString}
+            language={language}
+            index={currentCodeIdx}
+            onCopy={copyCodeToClipboard}
+            copiedIndex={copiedCodeIndex}
+          />
+        )
+      }
+
+      // Stateful parser for regular markdown lines to group lists and paragraphs
+      const lines = part.split('\\n')
+      const renderedBlocks: React.ReactNode[] = []
+      let currentList: { type: 'ul' | 'ol'; items: React.ReactNode[] } | null = null
+
+      const flushList = (key: string) => {
+        if (!currentList) return
+        const listClass = "list-inside pl-5 my-3 space-y-1.5 text-[12px] sm:text-[14px] leading-relaxed text-zinc-800 dark:text-zinc-200"
+        if (currentList.type === 'ul') {
+          renderedBlocks.push(
+            <ul key={key} className={\`list-disc \${listClass}\`}>
+              {currentList.items}
+            </ul>
+          )
+        } else {
+          renderedBlocks.push(
+            <ol key={key} className={\`list-decimal \${listClass}\`}>
+              {currentList.items}
+            </ol>
+          )
+        }
+        currentList = null
+      }
+
+      lines.forEach((line, lineIdx) => {
+        const trimmed = line.trim()
+
+        // 1. Lists: matches "- ", "* ", or "1. "
+        const bulletMatch = line.match(/^(\\s*)(?:[-*+]|\\d+\\.)\\s+(.*)/)
+        if (bulletMatch) {
+          const isNumbered = /^\\d+\\./.test(trimmed)
+          const listType = isNumbered ? 'ol' : 'ul'
+          const content = bulletMatch[2]
+
+          if (currentList && currentList.type !== listType) {
+            flushList(\`list-flush-\${lineIdx}\`)
+          }
+
+          if (!currentList) {
+            currentList = { type: listType, items: [] }
+          }
+
+          currentList.items.push(
+            <li key={\`li-\${lineIdx}\`} className="pl-1">
+              {parseInlineMarkdown(content)}
+            </li>
+          )
+          return
+        }
+
+        // Standard line: flush any pending list
+        if (currentList) {
+          flushList(\`list-flush-\${lineIdx}\`)
+        }
+
+        // 2. Blockquotes: matches ">"
+        if (trimmed.startsWith('>')) {
+          const content = line.replace(/^\\s*>\\s?/, '')
+          renderedBlocks.push(
+            <blockquote key={\`quote-\${lineIdx}\`} className="border-l-4 border-zinc-400 dark:border-zinc-700 pl-4 py-1 my-3 text-[12px] sm:text-[13.5px] italic text-zinc-500 bg-zinc-100/50 dark:bg-zinc-800/20 rounded-r-md">
+              {parseInlineMarkdown(content)}
+            </blockquote>
+          )
+          return
+        }
+
+        // 3. Headings: matches "# Heading"
+        const headingMatch = trimmed.match(/^(#{1,6})\\s+(.*)/)
+        if (headingMatch) {
+          const level = headingMatch[1].length
+          const content = headingMatch[2]
+          const HeadingTag = \`h\${level}\` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+          const headingClasses = [
+            'text-xl font-bold mt-5 mb-2.5 text-zinc-900 dark:text-white first:mt-0', // h1
+            'text-lg font-bold mt-4.5 mb-2 text-zinc-900 dark:text-white border-b border-zinc-200 dark:border-zinc-800 pb-1', // h2
+            'text-base font-semibold mt-4 mb-1.5 text-zinc-900 dark:text-white', // h3
+            'text-sm font-semibold mt-3.5 mb-1 text-zinc-900 dark:text-white', // h4
+            'text-xs font-semibold mt-3 mb-1 text-zinc-900 dark:text-white', // h5
+            'text-[10px] font-semibold mt-3 mb-1 text-zinc-500 dark:text-zinc-400 uppercase tracking-wider', // h6
+          ]
+          renderedBlocks.push(
+            <HeadingTag key={\`h-\${lineIdx}\`} className={headingClasses[level - 1]}>
+              {parseInlineMarkdown(content)}
+            </HeadingTag>
+          )
+          return
+        }
+
+        // 4. Paragraph
+        if (trimmed) {
+          renderedBlocks.push(
+            <p key={\`p-\${lineIdx}\`} className="text-[12px] sm:text-[14px] leading-relaxed text-zinc-750 dark:text-zinc-300 my-2 break-words">
+              {parseInlineMarkdown(line)}
+            </p>
+          )
+        }
+      })
+
+      // Flush list at the end of parts
+      if (currentList) {
+        flushList(\`list-flush-end-\${index}\`)
+      }
+
+      return <React.Fragment key={index}>{renderedBlocks}</React.Fragment>
+    })
+  }
+
+  const isUser = message.role === 'user'
+
+  if (isUser) {
+    // User Message: Styled as a right-aligned ChatGPT-style message bubble
+    // Dynamic copy, share, and edit action buttons only display on hover
+    return (
+      <div className="flex flex-col items-end w-full py-2 group select-none">
+        <div className="flex justify-end w-full">
+          <div className="relative min-w-0 overflow-hidden rounded-[22px] px-4 py-2.5 leading-6 bg-[#1b72e8] text-white max-w-[70%] text-[13.5px] sm:text-sm text-left break-words select-text font-sans">
+            <div className="max-w-full min-w-0 [overflow-wrap:anywhere] whitespace-pre-wrap">
+              {message.content}
+            </div>
+          </div>
+        </div>
+        
+        {/* Bottom hover action buttons */}
+        <div className="flex items-center gap-1.5 mt-1 mr-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <button
+            onClick={copyToClipboard}
+            className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors duration-150 cursor-pointer"
+            title={copied ? "Copied" : "Copy message"}
+          >
+            {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+          </button>
+          
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href)
+              alert('Copied link to clipboard!')
+            }}
+            className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors duration-150 cursor-pointer"
+            title="Share prompt"
+          >
+            <Upload className="h-4 w-4" />
+          </button>
+          
+          <button
+            onClick={() => {
+              const newContent = prompt('Edit message:', message.content)
+              if (newContent !== null && newContent.trim() !== '') {
+                alert('Successfully edited message to: ' + newContent)
+              }
+            }}
+            className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors duration-150 cursor-pointer"
+            title="Edit message"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // Assistant Message: Styled container block with top actions and bottom feedback row
+  return (
+    <div className={\`w-full py-2 text-left \${isFullscreen ? 'fixed inset-0 z-50 bg-background p-6 md:p-10 overflow-y-auto' : ''}\`}>
+      <div className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-[#fafafa] dark:bg-[#2a2a2a] overflow-hidden shadow-xs flex flex-col">
+        
+        {/* Top Header Bar Inside the Block */}
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100/50 dark:bg-[#1b1b1b]/50 select-none">
+          {/* Left edit trigger */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 gap-1 px-2.5 text-xs text-zinc-500 hover:text-foreground cursor-pointer rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 font-medium"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+            <span>Edit</span>
+          </Button>
+
+          {/* Right actions list */}
+          <div className="flex items-center gap-1">
+            {/* Copy button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={copyToClipboard}
+              className="h-7 w-7 text-zinc-500 hover:text-foreground cursor-pointer rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
+              title="Copy output text"
+            >
+              {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+            </Button>
+
+            {/* Download button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleDownload}
+              className="h-7 w-7 text-zinc-500 hover:text-foreground cursor-pointer rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
+              title="Download content"
+            >
+              <Download className="h-3.5 w-3.5" />
+            </Button>
+
+            {/* Maximize button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="h-7 w-7 text-zinc-500 hover:text-foreground cursor-pointer rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
+              title={isFullscreen ? "Exit Fullscreen" : "Maximize view"}
+            >
+              {isFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+            </Button>
+          </div>
+        </div>
+
+        {/* Card Body block content */}
+        <div className="p-4 sm:p-5 flex-1 min-h-[60px] text-foreground/90 select-text">
+          {renderMessageContent(message.content)}
+          
+          {/* Animated typing dots overlay */}
+          {message.isStreaming && (
+            <div className="flex items-center gap-1 py-2 select-none" aria-label="Thinking...">
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-600 dark:bg-zinc-400 animate-bounce [animation-delay:-0.3s]"></span>
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-600 dark:bg-zinc-400 animate-bounce [animation-delay:-0.15s]"></span>
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-600 dark:bg-zinc-400 animate-bounce"></span>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom Feedback Actions Row */}
+        {!message.isStreaming && (
+          <div className="flex items-center justify-between px-4 py-2 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-100/30 dark:bg-[#1b1b1b]/20 select-none">
+            <div className="flex items-center gap-1">
+              {onRateMessage && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onRateMessage(message.id, 'like')}
+                    className={\`h-7.5 w-7.5 cursor-pointer rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 \${message.rating === 'like' ? 'text-primary' : 'text-zinc-500 hover:text-foreground'}\`}
+                    title="Good response"
+                  >
+                    <ThumbsUp className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onRateMessage(message.id, 'dislike')}
+                    className={\`h-7.5 w-7.5 cursor-pointer rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 \${message.rating === 'dislike' ? 'text-destructive' : 'text-zinc-500 hover:text-foreground'}\`}
+                    title="Bad response"
+                  >
+                    <ThumbsDown className="h-3.5 w-3.5" />
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {onRegenerate && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onRegenerate(message.id)}
+                className="h-7.5 w-7.5 text-zinc-500 hover:text-foreground cursor-pointer rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
+                title="Regenerate response"
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+              </Button>
+            )}
+          </div>
+        )}
+
+      </div>
+    </div>
+  )
+}
+`,
+  'components/chat-composer.tsx': `'use client'
+
+import React, { useRef, useState, useEffect } from 'react'
+import {
+  Plus,
+  Paperclip,
+  Library,
+  Image as ImageIcon,
+  Globe,
+  ShoppingBag,
+  Sparkles,
+  Search,
+  Key,
+  Palette,
+  Mic,
+  Brain,
+  ChevronDown,
+  ArrowUp,
+  LineChart,
+  FileText,
+  X
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Tooltip } from '@/components/ui/tooltip'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+
+const NextIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M7 17V7l10 10V7" />
+  </svg>
+)
+
+interface AttachedFile {
+  id: string
+  name: string
+  type: 'image' | 'document'
+  size: string
+  url?: string
+}
+
+interface ChatComposerProps {
+  input: string
+  setInput: (value: string) => void
+  onSend: (text: string, attachments: AttachedFile[]) => void
+  isGenerating: boolean
+  onStop: () => void
+  selectedModel: string
+}
+
+export function ChatComposer({
+  input,
+  setInput,
+  onSend,
+  isGenerating,
+  onStop,
+  selectedModel,
+}: ChatComposerProps) {
+  const [attachments, setAttachments] = useState<AttachedFile[]>([])
+  const [isRecording, setIsRecording] = useState(false)
+  const [isThinkActive, setIsThinkActive] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const isExpanded = isFocused || !!input || attachments.length > 0 || isDropdownOpen || isRecording || isThinkActive
+
+  // Synchronize textarea height based on input and expansion states
+  useEffect(() => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    if (isExpanded) {
+      textarea.style.height = 'auto'
+      if (input) {
+        textarea.style.height = \`\${textarea.scrollHeight}px\`
+      }
+    } else {
+      textarea.style.height = '34px'
+    }
+  }, [input, isExpanded])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value)
+    
+    // Custom height resizing
+    const textarea = textareaRef.current
+    if (textarea) {
+      textarea.style.height = 'auto'
+      textarea.style.height = \`\${textarea.scrollHeight}px\`
+    }
+  }
+
+  const handleSend = () => {
+    if (!input.trim() && attachments.length === 0) return
+    onSend(input, attachments)
+    setInput('')
+    setAttachments([])
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    const newAttachments: AttachedFile[] = Array.from(files).map((file, idx) => {
+      const type = file.type.startsWith('image/') ? 'image' : 'document'
+      const url = type === 'image' ? URL.createObjectURL(file) : undefined
+      const sizeKB = Math.round(file.size / 1024)
+      const sizeStr = sizeKB > 1024 ? \`\${(sizeKB / 1024).toFixed(1)} MB\` : \`\${sizeKB} KB\`
+
+      return {
+        id: \`attach-\${Date.now()}-\${idx}\`,
+        name: file.name,
+        type,
+        size: sizeStr,
+        url,
+      }
+    })
+
+    setAttachments((prev) => [...prev, ...newAttachments])
+    e.target.value = ''
+  }
+
+  const removeAttachment = (id: string) => {
+    setAttachments((prev) => {
+      const target = prev.find((a) => a.id === id)
+      if (target?.url) {
+        URL.revokeObjectURL(target.url)
+      }
+      return prev.filter((a) => a.id !== id)
+    })
+  }
+
+  const toggleRecording = () => {
+    setIsRecording(!isRecording)
+    if (!isRecording) {
+      setTimeout(() => {
+        setInput(input ? input + ' ' + 'Show me a layout preview of a data dashboard component.' : 'Show me a layout preview of a data dashboard component.')
+        setIsRecording(false)
+      }, 3000)
+    }
+  }
+
+  const hasContent = input.trim().length > 0 || attachments.length > 0
+
+  return (
+    <div
+      className={\`w-full bg-[#f4f4f4] dark:bg-[#232323] border border-zinc-200 dark:border-zinc-800 rounded-[24px] transition-all duration-200 ease-in-out text-left shadow-sm relative flex flex-col gap-1 \${
+        isExpanded
+          ? 'min-h-[92px] pt-2 px-2 pb-[46px]'
+          : 'min-h-[46px] py-1.5 px-2'
+      }\`}
+    >
+      
+      {/* File Upload Attachment Previews Row */}
+      {attachments.length > 0 && (
+        <div className="flex flex-wrap gap-2 px-3 pb-2 border-b border-zinc-200/50 dark:border-zinc-800/50 max-h-40 overflow-y-auto mb-1 select-none">
+          {attachments.map((file) => (
+            <div
+              key={file.id}
+              className="relative flex items-center gap-2 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[#e4e4e4] dark:bg-zinc-800 group shrink-0"
+            >
+              {file.type === 'image' ? (
+                <div className="h-8 w-8 rounded overflow-hidden bg-muted">
+                  <img src={file.url} alt={file.name} className="h-full w-full object-cover" />
+                </div>
+              ) : (
+                <div className="h-8 w-8 rounded bg-zinc-300 dark:bg-zinc-700 flex items-center justify-center">
+                  <FileText className="h-4.5 w-4.5 text-foreground" />
+                </div>
+              )}
+              <div className="text-left max-w-[100px] select-none pr-1">
+                <p className="text-[10px] font-medium text-foreground truncate">{file.name}</p>
+                <p className="text-[8px] text-zinc-500">{file.size}</p>
+              </div>
+              <button
+                onClick={() => removeAttachment(file.id)}
+                className="absolute -top-1.5 -right-1.5 h-4 w-4 bg-[#ececec] dark:bg-zinc-700 hover:bg-destructive rounded-full border border-zinc-200 dark:border-zinc-800 hover:text-white flex items-center justify-center text-[9px] transition-colors cursor-pointer"
+                aria-label="Remove attachment"
+              >
+                <X className="h-2.5 w-2.5 text-zinc-300" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Textarea Area */}
+      <div className="w-full">
+        <Textarea
+          ref={textareaRef}
+          value={input}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="Ask anything"
+          autoResize={isExpanded}
+          variant="bottom"
+          className={\`w-full border-0 border-b-0 focus-visible:border-b-0 focus-visible:ring-0 focus-visible:border-transparent bg-transparent text-[15px] text-foreground placeholder-zinc-500 dark:placeholder-zinc-400 resize-none outline-none align-middle shadow-none focus:outline-none focus-visible:ring-offset-0 focus-visible:ring-transparent focus:ring-0 transition-all duration-200 ease-in-out \${
+            isExpanded
+              ? '!overflow-y-auto !min-h-[38px] !max-h-[200px] pl-3 pr-3 !pt-2 !pb-1'
+              : 'overflow-hidden pl-11 pr-[90px] sm:pr-[170px]'
+          }\`}
+          style={
+            isExpanded
+              ? {}
+              : {
+                  paddingTop: '8px',
+                  paddingBottom: '6px',
+                  minHeight: '34px',
+                  height: '34px',
+                }
+          }
+        />
+      </div>
+
+      {/* Left actions: Plus button */}
+      <div className="absolute left-3 bottom-[6px] z-10">
+        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8.5 w-8.5 rounded-full bg-[#e4e4e4] hover:bg-[#d8d8d8] dark:bg-[#2f2f2f] dark:hover:bg-[#3f3f3f] text-zinc-700 dark:text-zinc-200 cursor-pointer shrink-0 flex items-center justify-center shadow-xs"
+              aria-label="More plugins"
+            >
+              <Plus className="h-5 w-5 stroke-[2.5]" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent 
+            className="w-[320px] bg-white dark:bg-[#171717] border border-zinc-200 dark:border-zinc-800/80 text-zinc-700 dark:text-zinc-200 p-2 rounded-2xl shadow-xl z-50 max-h-[420px] overflow-y-auto" 
+            align="start"
+            alignOffset={0}
+            sideOffset={8}
+          >
+            <DropdownMenuItem onClick={() => { triggerFileUpload(); setIsDropdownOpen(false); }} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Paperclip className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Add photos & files</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Upload from computer</span>
+              </div>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Library className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Add from library</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Browse and search your files</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <ImageIcon className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Create image</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Visualize anything</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-805/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Globe className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Web search</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Find real-time news and info</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <ShoppingBag className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Shopping</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Find products you'll love</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Sparkles className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Deep research</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Get a detailed report</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Palette className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Canva</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Create, review, edit designs</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <Key className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">OpenAI Platform</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Manage OpenAI API keys</span>
+              </div>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 cursor-pointer rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/60 focus:bg-zinc-100 dark:focus:bg-zinc-800/60 text-left focus:text-zinc-900 dark:focus:text-white transition-colors">
+              <LineChart className="h-4 w-4 text-zinc-500 dark:text-zinc-400 shrink-0 font-bold" />
+              <div className="flex items-baseline gap-2.5 truncate">
+                <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white">Visualize</span>
+                <span className="text-[11px] text-zinc-500 font-normal truncate">Create visualizations and tools</span>
+              </div>
+            </DropdownMenuItem>
+            
+            <DropdownMenuSeparator className="bg-zinc-200 dark:bg-zinc-800/60 my-1.5" />
+            <div className="px-3.5 py-2.5 flex items-center justify-between text-[12px] text-zinc-500 font-semibold cursor-default">
+              <span>Type to search plugins, files...</span>
+              <ChevronDown className="h-3.5 w-3.5" />
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+          multiple
+        />
+      </div>
+
+      {/* Right actions: Think + Mic + Send */}
+      <div className="absolute right-3 bottom-[6px] z-10 flex items-center gap-2">
+        {/* Think toggle button */}
+        <Button
+          onClick={() => setIsThinkActive(!isThinkActive)}
+          variant="ghost"
+          className={\`hidden sm:flex h-8.5 px-3 rounded-full text-xs font-semibold gap-1.5 transition-all cursor-pointer select-none border-0 \${
+            isThinkActive
+              ? 'bg-zinc-350 text-[#171717] dark:bg-zinc-700 dark:text-white'
+              : 'bg-[#e4e4e4] hover:bg-[#d8d8d8] text-zinc-750 dark:bg-[#2f2f2f] dark:hover:bg-[#3f3f3f] dark:text-zinc-200'
+          }\`}
+        >
+          <Brain className="h-3.5 w-3.5" />
+          <span>Think</span>
+        </Button>
+
+        {/* Voice microphone button */}
+        <Tooltip content={isRecording ? 'Listening...' : 'Use voice input'}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleRecording}
+            className={\`h-8.5 w-8.5 rounded-full cursor-pointer shrink-0 transition-colors \${
+              isRecording
+                ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30 animate-pulse'
+                : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-[#303030]'
+            }\`}
+            aria-label="Voice input"
+          >
+            <Mic className="h-4.5 w-4.5" />
+          </Button>
+        </Tooltip>
+
+        {/* Circular Send Button */}
+        {isGenerating ? (
+          <Button
+            variant="default"
+            size="icon"
+            onClick={onStop}
+            className="h-8.5 w-8.5 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 hover:opacity-85 transition-opacity cursor-pointer shrink-0 flex items-center justify-center shadow-xs"
+            aria-label="Stop generation"
+          >
+            <Plus className="h-4 w-4 rotate-45 stroke-[2.5]" />
+          </Button>
+        ) : (
+          <Button
+            variant="default"
+            size="icon"
+            onClick={handleSend}
+            disabled={!hasContent}
+            className={\`h-8.5 w-8.5 rounded-full cursor-pointer shrink-0 flex items-center justify-center transition-opacity shadow-xs border-0 \${
+              hasContent
+                ? 'bg-blue-600 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 text-white'
+                : 'bg-[#e4e4e4] text-zinc-400 dark:bg-[#2f2f2f] dark:text-zinc-600 cursor-not-allowed'
+            }\`}
+            aria-label="Send message"
+          >
+            <ArrowUp className="h-4.5 w-4.5 stroke-[2.5]" />
+          </Button>
+        )}
+      </div>
+
+    </div>
+  )
+}
+`,
+  'components/chat-welcome.tsx': `'use client'
+
+import React from 'react'
+import {
+  Code,
+  FileText,
+  Lightbulb,
+  Compass,
+  ArrowUpRight
+} from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { Bot } from 'lucide-react'
+
+interface SuggestedPrompt {
+  title: string
+  prompt: string
+  desc: string
+  icon: any
+}
+
+interface ChatWelcomeProps {
+  onSelectPrompt: (prompt: string) => void
+  selectedModel: string
+}
+
+export function ChatWelcome({ onSelectPrompt, selectedModel }: ChatWelcomeProps) {
+  const prompts: SuggestedPrompt[] = [
+    {
+      title: 'Explain code',
+      prompt: 'Explain how React view transitions work with framer-motion.',
+      desc: 'Understand rendering hooks and transitions',
+      icon: Code,
+    },
+    {
+      title: 'Analyze layout',
+      prompt: 'Review the responsive rules for a 2-column e-commerce grid.',
+      desc: 'Check viewport sizes and padding rules',
+      icon: Compass,
+    },
+    {
+      title: 'Draft message',
+      prompt: 'Draft an email requesting feedback on a new React component library release.',
+      desc: 'Friendly update asking for design input',
+      icon: FileText,
+    },
+    {
+      title: 'Brainstorm layouts',
+      prompt: 'Brainstorm creative navigation menu ideas for a developer blog site.',
+      desc: 'Aesthetics suggestions using glassmorphism',
+      icon: Lightbulb,
+    },
+  ]
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto px-4 py-16 text-center select-none">
+      
+      {/* Centered ChatGPT-style logo symbol */}
+      <div className="mb-6 select-none">
+        <div className="h-12 w-12 rounded-full border border-border bg-[#f4f4f4] dark:bg-[#2f2f2f] flex items-center justify-center text-foreground shadow-xs animate-pulse">
+          <Bot className="h-7 w-7 text-zinc-800 dark:text-zinc-200" />
+        </div>
+      </div>
+
+      {/* Main welcoming header */}
+      <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
+        How can Vibe UI help you today?
+      </h2>
+
+      {/* Suggestion Prompt Cards Grid */}
+      <div className="grid grid-cols-2 gap-2.5 w-full mt-10">
+        {prompts.map((p) => {
+          const Icon = p.icon
+          return (
+            <Card
+              key={p.title}
+              onClick={() => onSelectPrompt(p.prompt)}
+              className="group text-left border border-zinc-200 dark:border-zinc-800 bg-[#f9f9f9]/30 dark:bg-[#171717]/20 hover:bg-[#f4f4f4] dark:hover:bg-[#2f2f2f] transition-all duration-200 cursor-pointer shadow-xs rounded-[16px] p-2.5 sm:p-4 flex items-center justify-between"
+            >
+              <div className="space-y-0.5 flex-1 pr-2 sm:pr-4 min-w-0">
+                <span className="block text-[12px] sm:text-xs font-semibold text-foreground truncate">
+                  {p.title}
+                </span>
+                <span className="block text-[9.5px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-1">
+                  {p.desc}
+                </span>
+              </div>
+              <div className="h-6 w-6 sm:h-7 sm:w-7 rounded-full bg-zinc-100 dark:bg-zinc-800/80 flex items-center justify-center shrink-0 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-700 transition-colors">
+                <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-800 dark:group-hover:text-zinc-200 transition-colors" />
+              </div>
+            </Card>
+          )
+        })}
+      </div>
+
+    </div>
+  )
+}
+`,
+}
+
+export const auth01Code = {
+  'app/auth/page.tsx': `'use client'
+
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
+import { LoginForm } from './components/login-form'
+import { RegisterForm } from './components/register-form'
+import { ForgotPasswordForm } from './components/forgot-password-form'
+import { ResetPasswordForm } from './components/reset-password-form'
+
+export default function AuthPage() {
+  const [view, setView] = useState<'login' | 'register' | 'forgot-password' | 'reset-password'>('login')
+
+  return (
+    <div className="relative min-h-screen w-full flex flex-col justify-center items-center py-16 px-6 bg-background text-foreground overflow-hidden font-sans">
+      {/* Premium background mesh and glowing radial orb */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[550px] sm:h-[550px] rounded-full bg-[radial-gradient(circle,hsl(var(--primary)/0.09)_0%,transparent_70%)] blur-[80px] sm:blur-[120px] pointer-events-none" />
+      {/* Dotted Grid Overlay */}
+      <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.25] bg-[radial-gradient(hsl(var(--foreground)/0.12)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+      {/* Animated Form Container */}
+      <div className="w-full max-w-md flex justify-center relative z-10">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={view}
+            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="w-full flex justify-center"
+          >
+            {view === 'login' && <LoginForm onViewChange={setView} />}
+            {view === 'register' && <RegisterForm onViewChange={setView} />}
+            {view === 'forgot-password' && <ForgotPasswordForm onViewChange={setView} />}
+            {view === 'reset-password' && <ResetPasswordForm onViewChange={setView} />}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
+`,
+  'app/auth/components/login-form.tsx': `'use client'
+
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
+
+const loginSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
+  rememberMe: z.boolean().default(false),
+})
+
+type LoginValues = z.infer<typeof loginSchema>
+
+export function LoginForm({ onViewChange }: { onViewChange: any }) {
+  const [showPassword, setShowPassword] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
+
+  const form = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '', rememberMe: false },
+  })
+
+  function onSubmit(values: LoginValues) {
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false)
+      alert("Login Success: " + values.email)
+    }, 1000)
+  }
+
+  return (
+    <Card className="border-zinc-200 dark:border-zinc-800 shadow-xl bg-card/70 backdrop-blur-md w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">Sign in</CardTitle>
+        <CardDescription className="text-center">Enter your credentials to access your account</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="name@example.com" type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="••••••••" type={showPassword ? 'text' : 'password'} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full" disabled={isLoading}>Sign In</Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  )
+}
+`,
+  'app/auth/components/register-form.tsx': `'use client'
+
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+
+const registerSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: 'You must accept the terms and conditions.',
+  }),
+})
+
+type RegisterValues = z.infer<typeof registerSchema>
+
+export function RegisterForm({ onViewChange }: { onViewChange: any }) {
+  const form = useForm<RegisterValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { name: '', email: '', password: '', acceptTerms: false },
+  })
+
+  function onSubmit(values: RegisterValues) {
+    alert("Register Success: " + values.email)
+  }
+
+  return (
+    <Card className="border-zinc-200 dark:border-zinc-800 shadow-xl bg-card/70 backdrop-blur-md w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">Create account</CardTitle>
+        <CardDescription className="text-center font-light">Create a free account to get started</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {/* Registration form markup */}
+      </CardContent>
+    </Card>
+  )
+}
+`,
+  'app/auth/components/forgot-password-form.tsx': `'use client'
+
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+})
+
+export function ForgotPasswordForm({ onViewChange }: { onViewChange: any }) {
+  return (
+    <Card className="border-zinc-200 dark:border-zinc-850 bg-card w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">Forgot Password</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {/* Recovery form markup */}
+      </CardContent>
+    </Card>
+  )
+}
+`,
+  'app/auth/components/reset-password-form.tsx': `'use client'
+
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+
+export function ResetPasswordForm({ onViewChange }: { onViewChange: any }) {
+  return (
+    <Card className="border-zinc-200 dark:border-zinc-855 bg-card w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">Reset Password</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {/* Reset form markup */}
+      </CardContent>
+    </Card>
+  )
+}
+`,
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Copy,
   Check,
@@ -12,9 +12,12 @@ import {
   Download,
   Maximize2,
   Minimize2,
-  Store
+  Store,
+  Upload
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Highlight, themes } from 'prism-react-renderer'
+import { cn } from '@/lib/utils'
 
 export interface Message {
   id: string
@@ -29,6 +32,106 @@ interface ChatMessageItemProps {
   message: Message
   onRegenerate?: (id: string) => void
   onRateMessage?: (id: string, rating: 'like' | 'dislike') => void
+}
+
+const mapLanguage = (lang: string): string => {
+  const mapped: Record<string, string> = {
+    js: 'javascript',
+    ts: 'typescript',
+    jsx: 'jsx',
+    tsx: 'tsx',
+    py: 'python',
+    rs: 'rust',
+    sh: 'bash',
+    shell: 'bash',
+    yml: 'yaml',
+    md: 'markdown',
+    html: 'html',
+    css: 'css',
+    json: 'json',
+    sql: 'sql',
+    go: 'go',
+  }
+  return mapped[lang.toLowerCase()] || lang.toLowerCase() || 'text'
+}
+
+interface HighlightedCodeBlockProps {
+  code: string
+  language: string
+  index: number
+  onCopy: (code: string, index: number) => void
+  copiedIndex: number | null
+}
+
+function HighlightedCodeBlock({
+  code,
+  language,
+  index,
+  onCopy,
+  copiedIndex,
+}: HighlightedCodeBlockProps) {
+  const cleanCode = code.replace(/\n$/, '')
+  const langKey = mapLanguage(language)
+  
+  return (
+    <div className="my-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-[#0d0d0d] text-zinc-100 overflow-hidden shadow-md text-left font-mono">
+      {/* Header bar: dark theme */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800/80 bg-zinc-100 dark:bg-[#1e1e1e] select-none text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <span className="uppercase font-bold tracking-wider font-sans">
+          {language || 'text'}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onCopy(cleanCode, index)}
+          className="h-6 px-2.5 text-[11px] font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-foreground hover:bg-zinc-200 dark:hover:bg-white/5 gap-1.5 cursor-pointer rounded-md transition-all border-none"
+        >
+          {copiedIndex === index ? (
+            <>
+              <Check className="h-3 w-3 text-emerald-500" />
+              <span className="text-emerald-500">Copied</span>
+            </>
+          ) : (
+            <>
+              <Copy className="h-3 w-3" />
+              <span>Copy code</span>
+            </>
+          )}
+        </Button>
+      </div>
+      
+      {/* Code body with styling and line numbers */}
+      <div className="relative overflow-x-auto select-text text-[11.5px] sm:text-[13px] leading-relaxed max-w-full bg-[#0d0d0d]">
+        <Highlight theme={themes.vsDark} code={cleanCode} language={langKey}>
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <pre
+              className={cn('p-4 font-mono overflow-x-auto m-0 bg-transparent w-full table', className)}
+              style={{ ...style, backgroundColor: 'transparent' }}
+            >
+              {tokens.map((line, i) => (
+                <div
+                  key={i}
+                  {...getLineProps({ line })}
+                  className="table-row hover:bg-black/[0.03] dark:hover:bg-white/[0.02] transition-colors"
+                >
+                  {/* Line number column */}
+                  <span className="table-cell select-none text-right pr-4 text-[10.5px] sm:text-xs w-8 align-top text-zinc-400/50 dark:text-zinc-650">
+                    {i + 1}
+                  </span>
+                  {/* Content column */}
+                  <span className="table-cell align-top whitespace-pre">
+                    {line.map((token, key) => (
+                      <span key={key} {...getTokenProps({ token })} />
+                    ))}
+                  </span>
+                </div>
+              ))}
+            </pre>
+          )}
+        </Highlight>
+      </div>
+    </div>
+  )
 }
 
 export function ChatMessageItem({
@@ -62,141 +165,263 @@ export function ChatMessageItem({
     document.body.removeChild(element);
   }
 
-  // Simple, robust Markdown parser that outputs rich React components
+  // Parse bold **text**, italics *text*, code `code`, and links [text](url)
+  const parseInlineMarkdown = (text: string) => {
+    if (!text) return []
+    const tokenRegex = /(\*\*.*?\*\*|__.*?__|`.*?`|\[.*?\]\(.*?\)|[*_].*?[*_])/g
+    const parts = text.split(tokenRegex)
+    
+    return parts.map((part, idx) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return (
+          <strong key={idx} className="font-bold text-zinc-900 dark:text-white">
+            {part.slice(2, -2)}
+          </strong>
+        )
+      }
+      if (part.startsWith('__') && part.endsWith('__')) {
+        return (
+          <strong key={idx} className="font-bold text-zinc-900 dark:text-white">
+            {part.slice(2, -2)}
+          </strong>
+        )
+      }
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return (
+          <code
+            key={idx}
+            className="px-1.5 py-0.5 rounded bg-zinc-200/50 dark:bg-zinc-800/50 font-mono text-[11px] sm:text-[12px] text-pink-600 dark:text-pink-400 border border-zinc-200 dark:border-zinc-800/40"
+          >
+            {part.slice(1, -1)}
+          </code>
+        )
+      }
+      if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
+        const mid = part.indexOf('](')
+        const label = part.slice(1, mid)
+        const url = part.slice(mid + 2, -1)
+        return (
+          <a
+            key={idx}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:underline font-medium break-all"
+          >
+            {label}
+          </a>
+        )
+      }
+      if (
+        (part.startsWith('*') && part.endsWith('*')) ||
+        (part.startsWith('_') && part.endsWith('_'))
+      ) {
+        return (
+          <em key={idx} className="italic text-zinc-700 dark:text-zinc-300">
+            {part.slice(1, -1)}
+          </em>
+        )
+      }
+      return part
+    })
+  }
+
+  // Stateful Markdown-to-React parser that groups list items and handles streaming code blocks
   const renderMessageContent = (content: string) => {
     if (!content) return null
 
-    // Split by code blocks: ```lang code ```
-    const parts = content.split(/(```[\s\S]*?```)/g)
-    let codeBlockCount = 0
+    // Split content by triple backticks, capturing unclosed blocks for streaming
+    const parts = content.split(/(```[\s\S]*?(?:```|$))/g)
+    let codeBlockIndex = 0
 
     return parts.map((part, index) => {
       // Check if it's a code block
-      if (part.startsWith('```') && part.endsWith('```')) {
-        const lines = part.slice(3, -3).trim().split('\n')
-        const firstLine = lines[0] || ''
-        const language = ['javascript', 'typescript', 'python', 'html', 'css', 'json', 'bash', 'rust'].includes(firstLine.toLowerCase())
-          ? firstLine
-          : 'code'
+      if (part.startsWith('```')) {
+        const isClosed = part.endsWith('```')
+        const rawCode = isClosed ? part.slice(3, -3) : part.slice(3)
         
-        const codeStartIdx = language === 'code' ? 0 : 1
+        const lines = rawCode.split('\n')
+        const firstLine = (lines[0] || '').trim()
+        
+        const knownLanguages = [
+          'javascript', 'typescript', 'python', 'html', 'css', 'json', 'bash', 
+          'rust', 'go', 'sql', 'yaml', 'markdown', 'js', 'ts', 'py', 'rs', 
+          'sh', 'yml', 'md', 'cpp', 'c', 'java'
+        ]
+        
+        const isLanguageDeclared = knownLanguages.includes(firstLine.toLowerCase())
+        const language = isLanguageDeclared ? firstLine : 'code'
+        const codeStartIdx = isLanguageDeclared ? 1 : 0
         const codeString = lines.slice(codeStartIdx).join('\n')
-        const currentCodeIdx = codeBlockCount++
+        const currentCodeIdx = codeBlockIndex++
 
         return (
-          <div key={index} className="my-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#0d0d0d] text-zinc-800 dark:text-zinc-100 overflow-hidden shadow-sm text-left font-mono">
-            {/* Code block header bar */}
-            <div className="flex items-center justify-between px-4 py-1.5 border-b border-zinc-200 dark:border-white/5 bg-zinc-100 dark:bg-zinc-900/60 select-none">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500 dark:text-zinc-400">
-                {language}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => copyCodeToClipboard(codeString, currentCodeIdx)}
-                className="h-6 px-2 text-[10px] font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-foreground hover:bg-zinc-200/50 dark:hover:bg-white/5 gap-1 cursor-pointer rounded-md"
-              >
-                {copiedCodeIndex === currentCodeIdx ? (
-                  <>
-                    <Check className="h-3 w-3 text-green-500" />
-                    <span>Copied</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-3 w-3" />
-                    <span>Copy code</span>
-                  </>
-                )}
-              </Button>
-            </div>
-            
-            {/* Preformatted code snippet block */}
-            <div className="p-4 overflow-x-auto text-[13px] leading-relaxed max-w-full">
-              <pre><code>{codeString}</code></pre>
-            </div>
-          </div>
+          <HighlightedCodeBlock
+            key={index}
+            code={codeString}
+            language={language}
+            index={currentCodeIdx}
+            onCopy={copyCodeToClipboard}
+            copiedIndex={copiedCodeIndex}
+          />
         )
       }
 
-      // Render inline styles: blockquotes, lists, tables, bold markdown
+      // Stateful parser for regular markdown lines to group lists and paragraphs
       const lines = part.split('\n')
-      const renderedLines: React.ReactNode[] = []
+      const renderedBlocks: React.ReactNode[] = []
+      let currentList: { type: 'ul' | 'ol'; items: React.ReactNode[] } | null = null
+
+      const flushList = (key: string) => {
+        if (!currentList) return
+        const listClass = "list-inside pl-5 my-3 space-y-1.5 text-[12px] sm:text-[14px] leading-relaxed text-zinc-800 dark:text-zinc-200"
+        if (currentList.type === 'ul') {
+          renderedBlocks.push(
+            <ul key={key} className={`list-disc ${listClass}`}>
+              {currentList.items}
+            </ul>
+          )
+        } else {
+          renderedBlocks.push(
+            <ol key={key} className={`list-decimal ${listClass}`}>
+              {currentList.items}
+            </ol>
+          )
+        }
+        currentList = null
+      }
 
       lines.forEach((line, lineIdx) => {
-        // 1. Blockquotes
-        if (line.startsWith('> ')) {
-          renderedLines.push(
-            <blockquote key={lineIdx} className="border-l-2 border-zinc-400 dark:border-zinc-700 pl-4 py-0.5 my-2 text-[13px] italic text-zinc-500 bg-muted/[0.02]">
-              {line.substring(2)}
+        const trimmed = line.trim()
+
+        // 1. Lists: matches "- ", "* ", or "1. "
+        const bulletMatch = line.match(/^(\s*)(?:[-*+]|\d+\.)\s+(.*)/)
+        if (bulletMatch) {
+          const isNumbered = /^\d+\./.test(trimmed)
+          const listType = isNumbered ? 'ol' : 'ul'
+          const content = bulletMatch[2]
+
+          if (currentList && currentList.type !== listType) {
+            flushList(`list-flush-${lineIdx}`)
+          }
+
+          if (!currentList) {
+            currentList = { type: listType, items: [] }
+          }
+
+          currentList.items.push(
+            <li key={`li-${lineIdx}`} className="pl-1">
+              {parseInlineMarkdown(content)}
+            </li>
+          )
+          return
+        }
+
+        // Standard line: flush any pending list
+        if (currentList) {
+          flushList(`list-flush-${lineIdx}`)
+        }
+
+        // 2. Blockquotes: matches ">"
+        if (trimmed.startsWith('>')) {
+          const content = line.replace(/^\s*>\s?/, '')
+          renderedBlocks.push(
+            <blockquote key={`quote-${lineIdx}`} className="border-l-4 border-zinc-400 dark:border-zinc-700 pl-4 py-1 my-3 text-[12px] sm:text-[13.5px] italic text-zinc-500 bg-zinc-100/50 dark:bg-zinc-800/20 rounded-r-md">
+              {parseInlineMarkdown(content)}
             </blockquote>
           )
           return
         }
 
-        // 2. Lists
-        if (line.startsWith('- ') || line.startsWith('* ')) {
-          renderedLines.push(
-            <ul key={lineIdx} className="list-disc pl-5 my-1 text-[13px] sm:text-[14px] leading-relaxed text-foreground/90">
-              <li>{parseInlineMarkdown(line.substring(2))}</li>
-            </ul>
+        // 3. Headings: matches "# Heading"
+        const headingMatch = trimmed.match(/^(#{1,6})\s+(.*)/)
+        if (headingMatch) {
+          const level = headingMatch[1].length
+          const content = headingMatch[2]
+          const HeadingTag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+          const headingClasses = [
+            'text-xl font-bold mt-5 mb-2.5 text-zinc-900 dark:text-white first:mt-0', // h1
+            'text-lg font-bold mt-4.5 mb-2 text-zinc-900 dark:text-white border-b border-zinc-200 dark:border-zinc-800 pb-1', // h2
+            'text-base font-semibold mt-4 mb-1.5 text-zinc-900 dark:text-white', // h3
+            'text-sm font-semibold mt-3.5 mb-1 text-zinc-900 dark:text-white', // h4
+            'text-xs font-semibold mt-3 mb-1 text-zinc-900 dark:text-white', // h5
+            'text-[10px] font-semibold mt-3 mb-1 text-zinc-500 dark:text-zinc-400 uppercase tracking-wider', // h6
+          ]
+          renderedBlocks.push(
+            <HeadingTag key={`h-${lineIdx}`} className={headingClasses[level - 1]}>
+              {parseInlineMarkdown(content)}
+            </HeadingTag>
           )
           return
         }
 
-        // Standard Paragraph
-        if (line.trim()) {
-          renderedLines.push(
-            <p key={lineIdx} className="text-[13px] sm:text-[14px] leading-relaxed text-foreground/90 my-2">
+        // 4. Paragraph
+        if (trimmed) {
+          renderedBlocks.push(
+            <p key={`p-${lineIdx}`} className="text-[12px] sm:text-[14px] leading-relaxed text-zinc-750 dark:text-zinc-300 my-2 break-words">
               {parseInlineMarkdown(line)}
             </p>
           )
         }
       })
 
-      return <React.Fragment key={index}>{renderedLines}</React.Fragment>
-    })
-  }
+      // Flush list at the end of parts
+      if (currentList) {
+        flushList(`list-flush-end-${index}`)
+      }
 
-  // Parse bold **text** and inline code `code`
-  const parseInlineMarkdown = (text: string) => {
-    const boldParts = text.split(/(\*\*.*?\*\*|`.*?`)/g)
-    return boldParts.map((bPart, idx) => {
-      if (bPart.startsWith('**') && bPart.endsWith('**')) {
-        return <strong key={idx} className="font-semibold text-foreground">{bPart.slice(2, -2)}</strong>
-      }
-      if (bPart.startsWith('`') && bPart.endsWith('`')) {
-        return <code key={idx} className="px-1 py-0.5 rounded bg-zinc-200/50 dark:bg-zinc-800/50 font-mono text-[12px] border border-border/40">{bPart.slice(1, -1)}</code>
-      }
-      return bPart
+      return <React.Fragment key={index}>{renderedBlocks}</React.Fragment>
     })
   }
 
   const isUser = message.role === 'user'
 
   if (isUser) {
-    // User Message: Styled as a premium block with Avatar, Name, Content, and Store Icon on the right
+    // User Message: Styled as a right-aligned ChatGPT-style message bubble
+    // Dynamic copy, share, and edit action buttons only display on hover
     return (
-      <div className="flex w-full py-2">
-        <div className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50 dark:bg-[#171717] shadow-xs gap-3">
-          <div className="flex items-center gap-3">
-            {/* Blue Avatar with initials JE */}
-            <div className="h-9 w-9 rounded-full bg-[#1b72e8] text-white text-xs font-bold flex items-center justify-center shrink-0">
-              JE
-            </div>
-            {/* Column with username and content */}
-            <div className="flex flex-col text-left">
-              <span className="text-[13.5px] font-bold text-zinc-900 dark:text-white leading-tight">
-                jenish
-              </span>
-              <span className="text-[13.5px] text-zinc-600 dark:text-zinc-300 mt-0.5">
-                {message.content}
-              </span>
+      <div className="flex flex-col items-end w-full py-2 group select-none">
+        <div className="flex justify-end w-full">
+          <div className="relative min-w-0 overflow-hidden rounded-[22px] px-4 py-2.5 leading-6 bg-[#1b72e8] text-white max-w-[70%] text-[13.5px] sm:text-sm text-left break-words select-text font-sans">
+            <div className="max-w-full min-w-0 [overflow-wrap:anywhere] whitespace-pre-wrap">
+              {message.content}
             </div>
           </div>
-          {/* Store Icon on the right */}
-          <div className="p-1 text-zinc-400 dark:text-zinc-500 shrink-0">
-            <Store className="h-5 w-5" />
-          </div>
+        </div>
+        
+        {/* Bottom hover action buttons */}
+        <div className="flex items-center gap-1.5 mt-1 mr-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <button
+            onClick={copyToClipboard}
+            className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors duration-150 cursor-pointer"
+            title={copied ? "Copied" : "Copy message"}
+          >
+            {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+          </button>
+          
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href)
+              alert('Copied link to clipboard!')
+            }}
+            className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors duration-150 cursor-pointer"
+            title="Share prompt"
+          >
+            <Upload className="h-4 w-4" />
+          </button>
+          
+          <button
+            onClick={() => {
+              const newContent = prompt('Edit message:', message.content)
+              if (newContent !== null && newContent.trim() !== '') {
+                alert('Successfully edited message to: ' + newContent)
+              }
+            }}
+            className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors duration-150 cursor-pointer"
+            title="Edit message"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
         </div>
       </div>
     )

@@ -1,6 +1,6 @@
 {
   "name": "@vibe-ui/docs",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -22,7 +22,10 @@
     "react-dom": "^19.0.0-rc.0 || ^19.0.0",
     "recharts": "^2.15.0",
     "tailwind-merge": "^3.6.0",
-    "vibe-ui": "workspace:^"
+    "vibe-ui": "workspace:^",
+    "react-hook-form": "^7.53.0",
+    "@hookform/resolvers": "^3.9.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.2",

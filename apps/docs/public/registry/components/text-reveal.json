@@ -1,6 +1,7 @@
 {
   "name": "text-reveal",
   "dependencies": [
+    "motion",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

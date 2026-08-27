@@ -134,6 +134,11 @@ export const docsConfig: DocsConfig = {
           href: '/docs/components/drawer',
         },
         {
+          title: 'Form',
+          href: '/docs/components/form',
+          isNew: true,
+        },
+        {
           title: 'Sheet',
           href: '/docs/components/sheet',
         },
@@ -218,6 +223,10 @@ export const docsConfig: DocsConfig = {
           href: '/docs/components/select',
         },
         {
+          title: 'Sidebar',
+          href: '/docs/components/sidebar',
+        },
+        {
           title: 'Skeleton',
           href: '/docs/components/skeleton',
         },
@@ -280,10 +289,6 @@ export const docsConfig: DocsConfig = {
         {
           title: 'Infinite Scroll',
           href: '/docs/components/infinite-scroll',
-        },
-        {
-          title: 'Sidebar',
-          href: '/docs/components/sidebar',
         },
       ],
     },

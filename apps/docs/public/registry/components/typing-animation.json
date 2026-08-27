@@ -1,6 +1,7 @@
 {
   "name": "typing-animation",
   "dependencies": [
+    "motion",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

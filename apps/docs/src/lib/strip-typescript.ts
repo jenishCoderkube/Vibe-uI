@@ -102,7 +102,7 @@ export function stripTypeScript(code: string): string {
   // 6. Remove generics from hooks / functions e.g. useState<string[]>(...), useRef<HTMLDivElement>(null), createContext<ContextValue>(...)
   while (true) {
     const match = js.match(
-      /(React\.)?(createContext|useRef|useState|useCallback|useMemo)\s*</,
+      /(React\.)?(createContext|useRef|useState|useCallback|useMemo|useForm)\s*</,
     )
     if (!match) break
     const startIdx = match.index! + match[0].length - 1
@@ -118,7 +118,7 @@ export function stripTypeScript(code: string): string {
 
   // 7. Remove inline object type annotations e.g. ({ text }: { text: string }) -> ({ text })
   while (true) {
-    const match = js.match(/(\w+|\}|\]|\))\s*:\s*\{/)
+    const match = js.match(/(\bconst\s+\w+|\blet\s+\w+|\bvar\s+\w+|\}|\])\s*:\s*\{/)
     if (!match) break
     const colonIdx = match.index! + match[1].length
     const braceStart = js.indexOf('{', colonIdx)

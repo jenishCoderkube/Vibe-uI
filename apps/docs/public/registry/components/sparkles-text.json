@@ -1,6 +1,7 @@
 {
   "name": "sparkles-text",
   "dependencies": [
+    "motion",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

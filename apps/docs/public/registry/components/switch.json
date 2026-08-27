@@ -1,6 +1,7 @@
 {
   "name": "switch",
   "dependencies": [
+    "@radix-ui/react-switch",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

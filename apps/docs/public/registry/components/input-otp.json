@@ -1,6 +1,7 @@
 {
   "name": "input-otp",
   "dependencies": [
+    "input-otp",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

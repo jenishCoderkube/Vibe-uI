@@ -339,6 +339,7 @@ import {
   CommandDemoThemes,
 } from '../../../components/command-demo'
 import * as NewDemos from '../../../components/new-components-demos'
+import { FormDemo, SignupFormDemo } from '../../../components/form-demo'
 import {
   TypingAnimationBasicDemo,
   TypingAnimationWordsDemo,
@@ -1908,6 +1909,8 @@ function HeadingAnchor({
 
 const mdxComponents = {
   ...NewDemos,
+  FormDemo,
+  SignupFormDemo,
   LightTunnelBasicDemo,
   LightTunnelCyberDemo,
   LightTunnelSunsetDemo,
