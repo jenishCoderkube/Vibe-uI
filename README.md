@@ -13,6 +13,8 @@
 
 ---
 
+<!-- Test commit: verifying GitHub push access. -->
+
 **Vibe UI** is a professional collection of **75+ high-fidelity React components** built on top of **Radix UI** primitives and **Tailwind CSS**. It is designed to give your applications a distinct, premium look with native support for multiple design styles.
 
 ## 🚀 Core Features
@@ -20,8 +22,6 @@
 - **Multi-Aesthetic Presets:** Switch between `glass` (translucent frosted), `glow` (neon drop-shadows), `retro` (flat hard shadows), or `cyberpunk` (monospace matrix) variants instantly.
 - **Hybrid API Architecture:** Prototype instantly with a simple, prop-driven API, or compose layout hierarchies using primitive subcomponents for advanced customization.
 - **Accessible & Type-Safe:** 100% WAI-ARIA compliant keyboard navigation out of the box, fully written in strict TypeScript.
-
----
 
 ## 📦 Installation & Quick Start
 
@@ -37,8 +37,6 @@ pnpm add vibe-ui-kit lucide-react tailwind-variants
 # yarn
 yarn add vibe-ui-kit lucide-react tailwind-variants
 ```
-
----
 
 ## 🛠️ Usage Examples
 
@@ -101,8 +99,6 @@ export default function Composed() {
 }
 ```
 
----
-
 ## 🧩 Component Library (75+ Presets)
 
 Vibe UI includes a wide range of components divided into category types:
@@ -111,8 +107,6 @@ Vibe UI includes a wide range of components divided into category types:
 - **Layout & Structure:** Card, Carousel, Tabs, Breadcrumb, Pagination, Table, Scroll-Area, Separator, Accordion, Collapsible
 - **Feedback & States:** Alert, Alert-Dialog, Progress, Slider, Toast, Tooltip, Skeleton, Empty, Spinner
 - **Motion & Typography:** WordRotate, TextGlitch, HyperText, SparklesText, Marquee, TypingAnimation, NumberTicker, AnimatedShinyText, SpinningText, ScrollBasedVelocity, BlurFade, AnimatedGradientText
-
----
 
 ## 💻 Local Development
 
@@ -131,8 +125,6 @@ pnpm test
 # Build files and compile registries
 pnpm build
 ```
-
----
 
 ## 📄 License
 
