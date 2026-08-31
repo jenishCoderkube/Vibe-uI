@@ -1368,6 +1368,35 @@
     ]
   },
   {
+    "name": "crypto-glass-01",
+    "files": [
+      "crypto-glass-01/AssetsRatesView.tsx",
+      "crypto-glass-01/DashboardView.tsx",
+      "crypto-glass-01/InstantSwapView.tsx",
+      "crypto-glass-01/page.tsx",
+      "crypto-glass-01/SettingsDrawer.tsx",
+      "crypto-glass-01/Sidebar.tsx",
+      "crypto-glass-01/YieldStakingView.tsx"
+    ],
+    "dependencies": [
+      "lucide-react",
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": [
+      "utils",
+      "button",
+      "card",
+      "input",
+      "badge",
+      "table",
+      "switch",
+      "slider",
+      "select"
+    ]
+  },
+  {
     "name": "dashboard-01",
     "files": [
       "dashboard-01/components/app-sidebar.tsx",

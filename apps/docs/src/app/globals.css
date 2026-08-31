@@ -460,20 +460,20 @@
   .theme-glass {
     --background: hsl(210 40% 98%);
     --foreground: hsl(222 47% 11%);
-    --card: hsl(0 0% 100% / 0.75);
+    --card: hsl(0 0% 100% / 0.25);
     --card-foreground: hsl(222 47% 11%);
-    --popover: hsl(0 0% 100% / 0.85);
+    --popover: hsl(0 0% 100% / 0.35);
     --popover-foreground: hsl(222 47% 11%);
     --primary: hsl(199 89% 48%);
     --primary-foreground: hsl(0 0% 100%);
-    --secondary: hsl(210 30% 92% / 0.8);
+    --secondary: hsl(210 30% 92% / 0.3);
     --secondary-foreground: hsl(222 47% 11%);
-    --muted: hsl(210 30% 94% / 0.7);
+    --muted: hsl(210 30% 94% / 0.25);
     --muted-foreground: hsl(215 20% 42%);
     --accent: hsl(199 89% 48% / 0.15);
     --accent-foreground: hsl(199 89% 45%);
-    --border: hsl(215 25% 82% / 0.7);
-    --input: hsl(215 25% 82% / 0.7);
+    --border: hsl(215 25% 82% / 0.3);
+    --input: hsl(215 25% 82% / 0.3);
     --ring: hsl(199 89% 48%);
     --radius: 0.85rem;
   }
@@ -483,20 +483,20 @@
   .dark .theme-glass {
     --background: hsl(222 47% 7%);
     --foreground: hsl(210 40% 98%);
-    --card: hsl(217 33% 12% / 0.65);
+    --card: hsl(217 33% 12% / 0.15);
     --card-foreground: hsl(210 40% 98%);
-    --popover: hsl(217 33% 12% / 0.8);
+    --popover: hsl(217 33% 12% / 0.25);
     --popover-foreground: hsl(210 40% 98%);
     --primary: hsl(199 89% 55%);
     --primary-foreground: hsl(0 0% 100%);
-    --secondary: hsl(217 33% 18% / 0.7);
+    --secondary: hsl(217 33% 18% / 0.2);
     --secondary-foreground: hsl(210 40% 98%);
-    --muted: hsl(217 33% 15% / 0.6);
+    --muted: hsl(217 33% 15% / 0.15);
     --muted-foreground: hsl(215 20% 70%);
     --accent: hsl(199 89% 55% / 0.2);
     --accent-foreground: hsl(210 40% 98%);
-    --border: hsl(215 25% 27% / 0.6);
-    --input: hsl(215 25% 27% / 0.6);
+    --border: hsl(215 25% 27% / 0.2);
+    --input: hsl(215 25% 27% / 0.2);
     --ring: hsl(199 89% 55%);
     --radius: 0.85rem;
   }
@@ -954,4 +954,60 @@ div[data-slot="chart"] {
   height: 200px !important;
   min-height: unset !important;
 }
+
+/* ==========================================================================
+   Liquid Glass Landing Page Blobs & Animations
+   ========================================================================== */
+.liquid-glass-blob {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+
+.theme-glass .liquid-glass-blob {
+  display: block;
+  opacity: 1;
+}
+
+/* Global glassmorphism effect on all cards when theme-glass is selected */
+.theme-glass div[data-slot="card"] {
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  background-color: var(--card) !important;
+  border-color: var(--border) !important;
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.08), 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3), 
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+@keyframes float-blob-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(60px, -80px) scale(1.15); }
+  66% { transform: translate(-40px, 30px) scale(0.9); }
+}
+
+@keyframes float-blob-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-80px, 90px) scale(1.1); }
+}
+
+@keyframes float-blob-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-30px, -60px) scale(0.95); }
+  66% { transform: translate(70px, -20px) scale(1.15); }
+}
+
+.animate-blob-1 {
+  animation: float-blob-1 25s infinite ease-in-out;
+}
+
+.animate-blob-2 {
+  animation: float-blob-2 30s infinite ease-in-out;
+}
+
+.animate-blob-3 {
+  animation: float-blob-3 28s infinite ease-in-out;
+}
+
 

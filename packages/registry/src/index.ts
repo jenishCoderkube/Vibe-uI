@@ -366,6 +366,12 @@ const blockDeps: Record<string, string[]> = {
     'tailwind-merge',
     'motion',
   ],
+  'crypto-glass-01': [
+    'lucide-react',
+    'tailwind-variants',
+    'clsx',
+    'tailwind-merge',
+  ],
 }
 
 const blockRegistryDeps: Record<string, string[]> = {
@@ -434,6 +440,16 @@ const blockRegistryDeps: Record<string, string[]> = {
     'card',
     'checkbox',
     'form',
+  ],
+  'crypto-glass-01': [
+    'button',
+    'card',
+    'input',
+    'badge',
+    'table',
+    'switch',
+    'slider',
+    'select',
   ],
 }
 

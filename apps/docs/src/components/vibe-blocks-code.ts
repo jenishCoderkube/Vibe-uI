@@ -6344,3 +6344,219 @@ export function ResetPasswordForm({ onViewChange }: { onViewChange: any }) {
 }
 `,
 }
+
+export const cryptoGlass01Code = {
+  'app/crypto-dashboard/page.tsx': `'use client'
+
+import React, { useState } from 'react'
+import {
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+  Wallet,
+  ArrowUpDown,
+  Settings,
+  Bell,
+  Search,
+  ChevronRight,
+  Info,
+  Layers,
+  Percent,
+  CheckCircle2,
+  Activity,
+  ArrowDown,
+  RefreshCw,
+  Gauge,
+  ShieldCheck,
+  LogOut
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
+import { Switch } from '@/components/ui/switch'
+import { Slider } from '@/components/ui/slider'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+
+interface CoinData {
+  name: string
+  symbol: string
+  price: string
+  change: string
+  isPositive: boolean
+  holdings: string
+  value: string
+  color: string
+}
+
+const COINS: CoinData[] = [
+  {
+    name: 'Bitcoin',
+    symbol: 'BTC',
+    price: '$64,281.50',
+    change: '+2.4%',
+    isPositive: true,
+    holdings: '0.24 BTC',
+    value: '$15,427.56',
+    color: 'from-amber-400 to-orange-500'
+  },
+  {
+    name: 'Ethereum',
+    symbol: 'ETH',
+    price: '$3,450.20',
+    change: '+4.1%',
+    isPositive: true,
+    holdings: '2.15 ETH',
+    value: '$7,417.93',
+    color: 'from-purple-400 to-indigo-500'
+  },
+  {
+    name: 'Solana',
+    symbol: 'SOL',
+    price: '$142.80',
+    change: '-1.2%',
+    isPositive: false,
+    holdings: '12.4 SOL',
+    value: '$1,770.72',
+    color: 'from-cyan-450 to-emerald-450'
+  }
+]
+
+interface StakingPool {
+  token: string;
+  apr: string;
+  staked: string;
+  rewards: string;
+  period: string;
+}
+
+const STAKING_POOLS: StakingPool[] = [
+  { token: 'SOL Liquid Staking', apr: '7.8% APR', staked: '45.2 SOL', rewards: '+2.14 SOL', period: 'Flexible' },
+  { token: 'ETH Validator Pool', apr: '5.2% APR', staked: '1.5 ETH', rewards: '+0.038 ETH', period: '30 Days Lock' },
+  { token: 'USDC High-Yield', apr: '9.4% APR', staked: '500.0 USDC', rewards: '+12.45 USDC', period: 'Flexible' }
+]
+
+export default function CryptoGlass01Page() {
+  const [activeTab, setActiveTab] = useState<'all' | 'gainers' | 'losers'>('all')
+  const [stakingTab, setStakingTab] = useState<'pools' | 'calculator'>('pools')
+  const [sidebarActive, setSidebarActive] = useState('Dashboard')
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
+  const [mobileSidebar, setMobileSidebar] = useState(false)
+  const [swapFrom, setSwapFrom] = useState('ETH')
+  const [swapTo, setSwapTo] = useState('USDC')
+  const [swapAmount, setSwapAmount] = useState('1.5')
+  const [isSwapping, setIsSwapping] = useState(false)
+  const [swapSuccess, setSwapSuccess] = useState(false)
+  const [calcAmount, setCalcAmount] = useState('1000')
+  const [calcPeriod, setCalcPeriod] = useState('365')
+  const [rpcNode, setRpcNode] = useState('solana-mainnet')
+  const [gasThreshold, setGasThreshold] = useState(30)
+  const [autoCompound, setAutoCompound] = useState(true)
+
+  const [notifications, setNotifications] = useState([
+    { id: '1', title: 'Staking Rewards Deposited', desc: 'Successfully claimed +2.14 SOL reward.', time: '5m ago', unread: true },
+    { id: '2', title: 'Solana Price Alert', desc: 'SOL price moved past resistance of $142.00.', time: '1h ago', unread: true }
+  ])
+
+  const notificationContainerRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    if (!showNotifications) return
+    function handleDocumentClick(e: MouseEvent) {
+      if (
+        notificationContainerRef.current && 
+        !notificationContainerRef.current.contains(e.target as Node)
+      ) {
+        setShowNotifications(false)
+      }
+    }
+    const timer = setTimeout(() => {
+      document.addEventListener('click', handleDocumentClick)
+    }, 0)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('click', handleDocumentClick)
+    }
+  }, [showNotifications])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    card.style.setProperty('--mouse-x', \`\${x}px\`)
+    card.style.setProperty('--mouse-y', \`\${y}px\`)
+  }
+
+  const getSwapOutput = () => {
+    const amt = parseFloat(swapAmount) || 0
+    if (swapFrom === 'ETH' && swapTo === 'USDC') return (amt * 3450.2).toFixed(2)
+    return (amt * 1.01).toFixed(2)
+  }
+
+  const handleSwapExecute = () => {
+    setIsSwapping(true)
+    setTimeout(() => {
+      setIsSwapping(false)
+      setSwapSuccess(true)
+    }, 1500)
+  }
+
+  const unreadCount = notifications.filter(n => n.unread).length
+
+  return (
+    <div className="relative w-full min-h-screen bg-slate-50 dark:bg-[#090b11] text-slate-900 dark:text-slate-100 font-sans flex flex-col transition-colors duration-300">
+      {/* Sidebar */}
+      <aside className={\`fixed inset-y-0 left-0 w-64 border-r border-slate-200/60 dark:border-white/10 bg-slate-100/40 dark:bg-white/[0.02] backdrop-blur-xl p-6 flex flex-col justify-between z-30 transition-all duration-300 \\\${mobileSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}\`}>
+        <div className="space-y-8">
+          <div className="flex items-center gap-3">
+            <Wallet className="size-5" />
+            <h2 className="text-sm font-bold">VIBE SYSTEM</h2>
+          </div>
+        </div>
+      </aside>
+
+      <div className="flex-1 min-w-0 flex flex-col relative z-10 lg:pl-64 w-full">
+        <header className="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 dark:border-white/10 relative z-20">
+          <h1 className="text-sm font-bold">VIBE CRYPTO</h1>
+          <div className="flex gap-2 relative" ref={notificationContainerRef}>
+            <div className="relative inline-block">
+              <Button variant="liquid-glass" size="icon" onClick={() => setShowNotifications(!showNotifications)}>
+                <Bell className="size-4" />
+              </Button>
+              {unreadCount > 0 && <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-sky-500 border border-[#090b11] text-[9px] font-extrabold text-white flex items-center justify-center animate-bounce z-10 pointer-events-none">{unreadCount}</span>}
+            </div>
+            <Button variant="liquid-glass" size="icon" onClick={() => setShowSettings(!showSettings)}>
+              <Settings className="size-4" />
+            </Button>
+          </div>
+        </header>
+
+        {showSettings && (
+          <div onClick={() => setShowSettings(false)} className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+            <Card onClick={(e) => e.stopPropagation()} variant="glass" className="w-full max-w-md p-6 relative">
+              <h3 className="text-sm font-bold">Workspace Settings</h3>
+              <div className="space-y-4 py-2">
+                <Switch checked={autoCompound} onCheckedChange={setAutoCompound} />
+              </div>
+            </Card>
+          </div>
+        )}
+
+        <main className="flex-1 p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 flex flex-col gap-6">
+              <Card variant="glass" onMouseMove={handleMouseMove} className="p-6 relative overflow-hidden group">
+                <h2 className="text-3xl font-extrabold">$24,616.21</h2>
+              </Card>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  )
+}
+`
+}

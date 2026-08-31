@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation'
 import { Header } from '../../../components/header'
 import { Footer } from '../../../components/footer'
 import { BlockCard } from '../../../components/block-card'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block } from '../../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code } from '../../../components/vibe-blocks-code'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block, CryptoGlass01Block } from '../../../components/vibe-blocks'
+import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code, cryptoGlass01Code } from '../../../components/vibe-blocks-code'
 
 const BLOCKS_MAP = {
   'dashboard-01': {
@@ -43,6 +43,13 @@ const BLOCKS_MAP = {
     vibeDeps: 'button, card, input, checkbox, form, motion',
     code: auth01Code,
     previewComponent: <Auth01Block />,
+  },
+  'crypto-glass-01': {
+    title: 'Liquid Glass Crypto Portfolio',
+    description: 'A premium, glassmorphic portfolio dashboard block featuring asset summaries, interactive transaction tables, asset search, and a vector trend chart.',
+    vibeDeps: 'button, card, input, badge, wallet, table, switch, slider, select',
+    code: cryptoGlass01Code,
+    previewComponent: <CryptoGlass01Block />,
   },
 }
 

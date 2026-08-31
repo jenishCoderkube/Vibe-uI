@@ -485,7 +485,7 @@ export function BlockCard({
                         : 'border border-border rounded-xl',
                     )}
                     style={{
-                      height: urlPath.startsWith('dashboard') || urlPath.startsWith('chat')
+                      height: urlPath.startsWith('dashboard') || urlPath.startsWith('chat') || urlPath.startsWith('crypto')
                         ? '720px'
                         : urlPath.startsWith('login')
                           ? '620px'

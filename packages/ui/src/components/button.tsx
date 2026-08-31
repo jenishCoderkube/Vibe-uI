@@ -22,6 +22,8 @@ export const buttonVariants = tv({
       link: 'text-primary underline-offset-4 hover:underline',
       glass:
         'bg-white/80 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/20 text-foreground hover:bg-white dark:hover:bg-white/20 shadow-sm',
+      'liquid-glass':
+        "bg-white/[0.07] dark:bg-white/[0.04] backdrop-blur-xl backdrop-saturate-[180%] border border-white/20 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.12),_inset_0_1px_1px_0_rgba(255,255,255,0.45),_inset_0_-1px_2px_0_rgba(0,0,0,0.25)] text-foreground hover:text-foreground/90 hover:bg-white/[0.12] dark:hover:bg-white/[0.08] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_0_rgba(0,0,0,0.18),_inset_0_1px_1px_0_rgba(255,255,255,0.5),_inset_0_-1px_2px_0_rgba(0,0,0,0.3)] relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:bg-[radial-gradient(100px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(255,255,255,0.25),transparent_80%)] before:z-0 after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-white/15 after:to-transparent after:opacity-100 after:pointer-events-none after:z-[-1]",
       glow: "bg-primary/10 border border-primary/40 text-primary shadow-[0_0_12px_rgba(168,85,247,0.2)] hover:border-primary/60 hover:shadow-[0_0_18px_rgba(168,85,247,0.4)] relative overflow-hidden before:content-[''] before:absolute before:inset-0 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:bg-[radial-gradient(150px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),rgba(168,85,247,0.2),transparent_80%)] before:z-0",
       retro:
         'border-2 border-foreground bg-background text-foreground shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] dark:active:shadow-[1px_1px_0px_0px_rgba(255,255,255,1)] transition-all duration-100',
@@ -135,7 +137,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         ref={setRef}
         onClick={handleClick}
-        onMouseMove={variant === 'glow' ? handleMouseMove : undefined}
+        onMouseMove={
+          variant === 'glow' || variant === 'liquid-glass'
+            ? handleMouseMove
+            : undefined
+        }
         {...props}
       />
     )

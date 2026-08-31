@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Header } from '../../components/header'
 import { Footer } from '../../components/footer'
 import { BlockCard } from '../../components/block-card'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block } from '../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code } from '../../components/vibe-blocks-code'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block, CryptoGlass01Block } from '../../components/vibe-blocks'
+import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code, cryptoGlass01Code } from '../../components/vibe-blocks-code'
 import { Sparkles, Layout } from 'lucide-react'
 
 const BLOCKS = [
@@ -245,6 +245,47 @@ const BLOCKS = [
         </div>
         {/* Glow Overlay */}
         <div className="absolute inset-0 bg-[radial-gradient(120px_circle_at_50%_50%,rgba(168,85,247,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      </div>
+    )
+  },
+  {
+    id: 'crypto-glass-01',
+    title: 'Liquid Glass Crypto Portfolio',
+    description: 'A premium, glassmorphic portfolio dashboard block featuring asset summaries, interactive transaction tables, asset search, and a vector trend chart.',
+    vibeDeps: 'button, card, input, badge, wallet, table, switch, slider, select',
+    code: cryptoGlass01Code,
+    previewComponent: <CryptoGlass01Block />,
+    category: 'Dashboard',
+    mockup: (
+      <div className="w-full h-full bg-slate-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
+        {/* Ambient blobs in mockup background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
+          <div className="absolute -top-4 -left-4 h-12 w-12 rounded-full bg-sky-500/20 blur-md" />
+          <div className="absolute -bottom-4 -right-4 h-14 w-14 rounded-full bg-emerald-500/20 blur-md" />
+        </div>
+        
+        {/* Mockup Header */}
+        <div className="h-4 border-b border-zinc-800/80 flex justify-between items-center pb-1 relative z-10">
+          <div className="h-1.5 w-12 rounded bg-zinc-800" />
+          <div className="h-2 w-2 rounded bg-zinc-800" />
+        </div>
+        
+        {/* Mockup Content Grid */}
+        <div className="flex gap-2 flex-1 relative z-10">
+          {/* Main Card */}
+          <div className="flex-1 rounded border border-white/10 bg-white/[0.03] p-1.5 flex flex-col justify-between">
+            <div className="space-y-1">
+              <div className="h-1 w-6 rounded bg-zinc-800" />
+              <div className="h-2 w-14 rounded bg-sky-400/40" />
+            </div>
+            <div className="h-6 w-full rounded bg-white/[0.02] border border-white/5" />
+          </div>
+          {/* Sidebar Cards */}
+          <div className="w-14 flex flex-col gap-1.5">
+            <div className="h-7 rounded border border-white/10 bg-white/[0.03]" />
+            <div className="h-7 rounded border border-white/10 bg-white/[0.03]" />
+          </div>
+        </div>
       </div>
     )
   }

@@ -22,7 +22,15 @@ const description =
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">
+      {/* 🔮 Liquid Glass Ambient Refraction Blobs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="liquid-glass-blob absolute top-[5%] left-[-5%] h-[500px] w-[500px] rounded-full bg-sky-400/25 blur-[120px] dark:bg-sky-600/15 animate-blob-1" />
+        <div className="liquid-glass-blob absolute top-[25%] right-[-10%] h-[600px] w-[600px] rounded-full bg-blue-500/20 blur-[130px] dark:bg-blue-600/15 animate-blob-2" />
+        <div className="liquid-glass-blob absolute bottom-[25%] left-[10%] h-[550px] w-[550px] rounded-full bg-pink-500/15 blur-[120px] dark:bg-pink-600/10 animate-blob-3" />
+        <div className="liquid-glass-blob absolute bottom-[5%] right-[10%] h-[450px] w-[450px] rounded-full bg-indigo-500/20 blur-[110px] dark:bg-indigo-600/10 animate-blob-1" />
+      </div>
+
       {/* Navigation Header */}
       <Header />
 
