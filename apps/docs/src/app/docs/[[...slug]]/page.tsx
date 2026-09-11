@@ -422,6 +422,7 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
   Terminal,
   Info,
   CheckCircle2,
@@ -2704,6 +2705,23 @@ export default async function DocsPage({ params }: PageProps) {
         ? flatItems[currentIndex + 1]
         : null
 
+    // Compute 3 related items from category for dense internal linking and PageRank distribution
+    const relatedItems = isComponentPage
+      ? flatItems
+          .filter(
+            (item) =>
+              item.href !== currentHref &&
+              !item.href.endsWith('/' + slug[0]) &&
+              item.title !== 'All Components' &&
+              item.title !== 'All Animations' &&
+              item.title !== 'All Backgrounds',
+          )
+          .slice(
+            Math.max(0, (currentIndex + 2) % Math.max(1, flatItems.length - 4)),
+            Math.max(0, (currentIndex + 2) % Math.max(1, flatItems.length - 4)) + 3,
+          )
+      : []
+
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
@@ -2863,6 +2881,45 @@ export default async function DocsPage({ params }: PageProps) {
                       ) : (
                         <div />
                       )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Related Components & Topic Cluster Internal Links */}
+                {isComponentPage && relatedItems && relatedItems.length > 0 && (
+                  <div className="mt-12 pt-8 border-t border-border/60">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-primary" />
+                        Related Vibe UI Components
+                      </h4>
+                      <Link
+                        href={`/docs/${slug[0]}`}
+                        className="text-xs font-semibold text-primary hover:underline"
+                      >
+                        Explore all {groupTitle.toLowerCase()} →
+                      </Link>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {relatedItems.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="group p-3.5 rounded-xl border border-border bg-card/40 hover:bg-card/80 hover:border-primary/40 transition-all flex flex-col justify-between select-none shadow-xs"
+                        >
+                          <div>
+                            <div className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">
+                              {groupTitle}
+                            </div>
+                            <div className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                              Vibe UI {item.title}
+                            </div>
+                          </div>
+                          <span className="text-[11px] text-muted-foreground mt-2 flex items-center gap-1 group-hover:text-primary transition-colors">
+                            View docs <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+                          </span>
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 )}

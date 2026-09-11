@@ -10,13 +10,14 @@
 <h1 align="center">✦ Vibe UI Kit ✦</h1>
 
 <p align="center">
-  <strong>A premium React component library with 50+ beautifully crafted, multi-preset UI components.</strong><br/>
+  <strong>The modern React & Tailwind CSS component library featuring 92+ accessible UI primitives, WebGL background shaders, and application blocks.</strong><br/>
   Built with <b>React 19</b> · <b>TypeScript</b> · <b>Tailwind CSS v4</b> · <b>Radix UI</b>
 </p>
 
 <p align="center">
-  <a href="https://vibe-ui-kit.vercel.app/"><b>📖 Documentation</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://vibe-ui-kit.vercel.app/docs/components/button"><b>🧩 Components</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://vibe-ui-kit.vercel.app/"><b>📖 Vibe UI Documentation</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://vibe-ui-kit.vercel.app/docs/components"><b>🧩 92+ Components</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://vibe-ui-kit.vercel.app/studio"><b>🎨 Vibe Studio</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="https://github.com/jenishCoderkube/Vibe-uI"><b>⭐ GitHub</b></a>
 </p>
 
@@ -32,11 +33,11 @@ Most component libraries install into `node_modules` — you get **zero design c
 
 | Feature              | Vibe UI                                               | Traditional Libraries                    |
 | :------------------- | :---------------------------------------------------- | :--------------------------------------- |
-| **Components Count** | **50+ premium, production-ready**                     | Typically 15-20                          |
+| **Components Count** | **92+ premium, production-ready**                     | Typically 15-20                          |
 | **Install Location** | Your local `src/components/ui/` folder                | Bundled inside `node_modules/`           |
 | **Customization**    | Full control — modify and customize the code directly | Override styles with wrapper css hacks   |
 | **Bundle Size**      | Minimal — only components you add are compiled        | Heavy — loads the entire package library |
-| **Theme Presets**    | **4 built-in** (Default, Glassmorphism, Retro, Glow)  | Usually 1 theme                          |
+| **Theme Presets**    | **5 built-in** (Default, Glassmorphism, Retro, Glow, Cyberpunk) | Usually 1 theme                |
 | **Accessibility**    | Built on top of Radix UI primitives                   | Varies / Often lacking                   |
 
 <br/>

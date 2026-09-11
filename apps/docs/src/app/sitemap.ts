@@ -107,13 +107,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       // Avoid duplicate entries if already added in core routes
       if (routes.some((r) => r.url === `${baseUrl}${docPath}`)) continue
 
+      const isHub =
+        docPath === '/docs/components' ||
+        docPath === '/docs/animations' ||
+        docPath === '/docs/backgrounds'
+      const isComparison = docPath.startsWith('/docs/comparisons/')
       const isComponent = docPath.startsWith('/docs/components/')
       const isAnimation = docPath.startsWith('/docs/animations/')
       const isBackground = docPath.startsWith('/docs/backgrounds/')
       const isBlock = docPath.startsWith('/docs/blocks/')
 
-      const priority =
-        isComponent || isAnimation || isBackground || isBlock ? 0.85 : 0.75
+      const priority = isHub || isComparison
+        ? 0.9
+        : isComponent || isAnimation || isBackground || isBlock
+          ? 0.85
+          : 0.75
 
       routes.push({
         url: `${baseUrl}${docPath}`,

@@ -9,11 +9,15 @@
 [![tailwind](https://img.shields.io/badge/Tailwind-3.x%20%7C%204.x-38bdf8.svg?style=flat-square)](https://tailwindcss.com/)
 [![license](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
+<br/>
+
+**[📖 Vibe UI Documentation](https://vibe-ui-kit.vercel.app/)** · **[🧩 92+ Components](https://vibe-ui-kit.vercel.app/docs/components)** · **[🎨 Vibe Studio](https://vibe-ui-kit.vercel.app/studio)**
+
 </div>
 
 ---
 
-`vibe-ui-kit` is the official package distribution of Vibe UI. It contains **75+ beautiful, highly accessible React components** built with **Radix UI** and **Tailwind CSS**, featuring custom styling variants (`glass`, `glow`, `retro`, `cyberpunk`).
+`vibe-ui-kit` is the official package distribution of Vibe UI. It contains **92+ beautiful, highly accessible React components, WebGL background shaders, and blocks** built with **React 19**, **Radix UI**, and **Tailwind CSS v4**, featuring custom styling variants (`glass`, `glow`, `retro`, `cyberpunk`).
 
 ## ⚙️ Installation
 

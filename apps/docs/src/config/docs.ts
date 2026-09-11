@@ -51,8 +51,29 @@ export const docsConfig: DocsConfig = {
       ],
     },
     {
+      title: 'Comparisons',
+      items: [
+        {
+          title: 'Vibe UI vs shadcn/ui',
+          href: '/docs/comparisons/vibe-ui-vs-shadcn',
+        },
+        {
+          title: 'Vibe UI vs Magic UI',
+          href: '/docs/comparisons/vibe-ui-vs-magic-ui',
+        },
+        {
+          title: 'Vibe UI vs Aceternity',
+          href: '/docs/comparisons/vibe-ui-vs-aceternity',
+        },
+      ],
+    },
+    {
       title: 'Components',
       items: [
+        {
+          title: 'All Components',
+          href: '/docs/components',
+        },
         {
           title: 'Accordion',
           href: '/docs/components/accordion',
@@ -296,6 +317,10 @@ export const docsConfig: DocsConfig = {
       title: 'Animations',
       items: [
         {
+          title: 'All Animations',
+          href: '/docs/animations',
+        },
+        {
           title: 'Typing Animation',
           href: '/docs/animations/typing-animation',
         },
@@ -380,6 +405,10 @@ export const docsConfig: DocsConfig = {
     {
       title: 'Backgrounds',
       items: [
+        {
+          title: 'All Backgrounds',
+          href: '/docs/backgrounds',
+        },
         {
           title: 'Light Tunnel',
           href: '/docs/backgrounds/light-tunnel',
