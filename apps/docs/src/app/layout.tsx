@@ -113,7 +113,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+      'fp6o82sGO1t1dyt13kAfQVNrfZr05iMoJ-6yABHI_B8',
   },
   other: {
     'mobile-web-app-capable': 'yes',
