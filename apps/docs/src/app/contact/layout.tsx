@@ -1,31 +1,17 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Contact - Get in Touch',
+  title: 'Contact & Community Support | Vibe UI',
   description:
-    'Have questions about Vibe UI? Reach out to us for support, partnerships, or feature requests. We would love to hear from you.',
-  openGraph: {
-    title: 'Contact | Vibe UI',
-    description:
-      'Have questions about Vibe UI? Reach out to us for support, partnerships, or feature requests.',
-    url: 'https://vibe-ui-kit.vercel.app/contact',
-    type: 'website',
-    siteName: 'Vibe UI',
-    images: [
-      {
-        url: 'https://vibe-ui-kit.vercel.app/og-image.jpg',
-        width: 512,
-        height: 512,
-        alt: 'Vibe UI Logo',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary',
-    title: 'Contact | Vibe UI',
-    description:
-      'Have questions about Vibe UI? Reach out to us for support, partnerships, or feature requests.',
-    images: ['https://vibe-ui-kit.vercel.app/og-image.jpg'],
+    'Get in touch with the Vibe UI team for technical support, feature requests, bug reports, and enterprise collaborations.',
+  keywords: [
+    'vibe ui contact',
+    'vibe ui support',
+    'vibe ui github',
+    'react component library help',
+  ],
+  alternates: {
+    canonical: 'https://vibe-ui-kit.vercel.app/contact',
   },
 }
 

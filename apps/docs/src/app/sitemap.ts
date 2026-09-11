@@ -4,36 +4,81 @@ import path from 'path'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://vibe-ui-kit.vercel.app'
+  const now = new Date()
 
-  // Core pages
+  // 1. Core Top-Level Landing & Hub Routes
   const routes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'daily',
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/docs/introduction`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/docs/installation`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/docs/cli`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/blocks`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/charts`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/studio`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/contact`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.5,
+      priority: 0.6,
     },
   ]
 
-  // Read docs content directory dynamically to populate MDX paths
+  // 2. Add individual Block Preview routes
+  const blockSlugs = [
+    'dashboard-01',
+    'dashboard-02',
+    'ecommerce-01',
+    'ecommerce-02',
+    'chat-01',
+    'auth-01',
+    'crypto-glass-01',
+  ]
+
+  for (const slug of blockSlugs) {
+    routes.push({
+      url: `${baseUrl}/blocks/${slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    })
+  }
+
+  // 3. Dynamically discover all MDX documentation pages (Components, Animations, Backgrounds, Blocks)
   const docsDir = path.join(process.cwd(), 'src/content/docs')
 
   const getMdxFiles = (dir: string, urlPrefix = '/docs'): string[] => {
@@ -59,13 +104,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const docPaths = getMdxFiles(docsDir)
     for (const docPath of docPaths) {
+      // Avoid duplicate entries if already added in core routes
+      if (routes.some((r) => r.url === `${baseUrl}${docPath}`)) continue
+
       const isComponent = docPath.startsWith('/docs/components/')
       const isAnimation = docPath.startsWith('/docs/animations/')
+      const isBackground = docPath.startsWith('/docs/backgrounds/')
+      const isBlock = docPath.startsWith('/docs/blocks/')
+
+      const priority =
+        isComponent || isAnimation || isBackground || isBlock ? 0.85 : 0.75
+
       routes.push({
         url: `${baseUrl}${docPath}`,
-        lastModified: new Date(),
+        lastModified: now,
         changeFrequency: 'weekly',
-        priority: isComponent ? 0.8 : isAnimation ? 0.8 : 0.7,
+        priority,
       })
     }
   } catch (error) {

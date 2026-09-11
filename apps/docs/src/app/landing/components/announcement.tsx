@@ -13,7 +13,7 @@ export function Announcement() {
       className="cursor-pointer bg-muted hover:bg-muted/80 text-foreground border-transparent px-3 py-1 text-xs font-medium flex items-center gap-1.5 transition-colors"
     >
       <Link href="/docs/introduction">
-        <span>Vibe UI v1.0 has launched</span>
+        <span>Introducing Vibe UI • 92+ Components & Blocks</span>
         <ArrowRight className="size-3.5" />
       </Link>
     </Badge>

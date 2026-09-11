@@ -2,10 +2,10 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Vibe UI - Premium React Component Library',
+    name: 'Vibe UI - The Modern React & Tailwind CSS Component Library',
     short_name: 'Vibe UI',
     description:
-      '75+ production-ready themed React components built on Radix UI primitives and Tailwind CSS v4.',
+      '92+ production-ready accessible React components, Motion animations, WebGL background shaders, and application blocks built on Radix UI and Tailwind CSS v4.',
     start_url: '/',
     display: 'standalone',
     background_color: '#09090b',

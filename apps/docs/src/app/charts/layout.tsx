@@ -1,31 +1,36 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Charts - Interactive Data Visualization Components',
+  title: 'Interactive Charts & Visualizations | Vibe UI',
   description:
-    'Explore 50+ interactive chart components for React including Area, Bar, Line, Pie, Radar, Radial, Scatter, and Composed charts. Built on Recharts with Vibe UI theming.',
+    '34 interactive charts for React and Next.js built with Recharts and Tailwind CSS v4. Area, Bar, Line, Pie, Radar, Radial, and Composed charts.',
+  keywords: [
+    'vibe ui charts',
+    'react charts',
+    'recharts tailwind',
+    'tailwind css charts',
+    'area chart react',
+    'bar chart react',
+    'pie chart react',
+    'radar chart react',
+    'interactive chart components',
+  ],
+  alternates: {
+    canonical: 'https://vibe-ui-kit.vercel.app/charts',
+  },
   openGraph: {
-    title: 'Charts - Data Visualization | Vibe UI',
+    title: 'Interactive Charts & Visualizations | Vibe UI',
     description:
-      'Explore 50+ interactive chart components for React including Area, Bar, Line, Pie, Radar, Radial, Scatter, and Composed charts.',
+      '34 interactive charts for React and Next.js built with Recharts and Tailwind CSS v4.',
     url: 'https://vibe-ui-kit.vercel.app/charts',
-    type: 'website',
-    siteName: 'Vibe UI',
     images: [
       {
-        url: 'https://vibe-ui-kit.vercel.app/og-image.jpg',
-        width: 512,
-        height: 512,
-        alt: 'Vibe UI Logo',
+        url: 'https://vibe-ui-kit.vercel.app/api/og?title=Charts%20%26%20Graphs&category=Visualizations&desc=34%20Interactive%20Charts%20built%20with%20Recharts%20and%20Tailwind%20CSS',
+        width: 1200,
+        height: 630,
+        alt: 'Vibe UI Charts',
       },
     ],
-  },
-  twitter: {
-    card: 'summary',
-    title: 'Charts - Data Visualization | Vibe UI',
-    description:
-      'Explore 50+ interactive chart components for React including Area, Bar, Line, Pie, Radar, Radial, Scatter, and Composed charts.',
-    images: ['https://vibe-ui-kit.vercel.app/og-image.jpg'],
   },
 }
 

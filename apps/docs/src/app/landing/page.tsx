@@ -15,9 +15,9 @@ import {
 } from './components/page-header'
 import { CardsDemo } from './components/cards-demo'
 
-const title = 'Build Beautiful Interfaces with Vibe UI'
+const title = 'Vibe UI - The Modern React & Tailwind CSS Component Library'
 const description =
-  'An open-source collection of premium, highly-interactive component presets. Switch dynamically between Glassmorphism, Retro Brutalism, Cyberpunk, and Neon Glow styles instantly.'
+  '92+ accessible, copy-paste React & Next.js components, motion animations, WebGL background shaders, and application blocks. Built on Radix UI primitives with Glassmorphism, Neon Glow, Retro, and Cyberpunk presets.'
 
 export default function LandingPage() {
   return (
@@ -41,9 +41,14 @@ export default function LandingPage() {
           <PageHeaderHeading className="max-w-4xl">{title}</PageHeaderHeading>
           <PageHeaderDescription>{description}</PageHeaderDescription>
           <PageActions>
-            <Button asChild size="sm" className="h-[32px] rounded-lg">
+            <Button asChild size="sm" className="h-[34px] rounded-lg px-4">
               <Link href="/docs/introduction">
-                Get Started <ArrowRight className="size-3.5" />
+                Get Started <ArrowRight className="size-3.5 ml-1.5" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm" className="h-[34px] rounded-lg px-4">
+              <Link href="/blocks">
+                Browse Blocks
               </Link>
             </Button>
           </PageActions>

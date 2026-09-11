@@ -1,4 +1,5 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
 import Link from 'next/link'
@@ -440,59 +441,6 @@ import {
   RefreshCw,
   Globe,
 } from 'lucide-react'
-
-interface PageProps {
-  params: Promise<{
-    slug?: string[]
-  }>
-}
-
-export async function generateMetadata({ params }: PageProps) {
-  const resolvedParams = await params
-  const slug = resolvedParams.slug || ['introduction']
-
-  const pageTitle = slug[slug.length - 1]
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-
-  const isComponent = slug[0] === 'components'
-  const isAnimation = slug[0] === 'animations'
-  const isBackground = slug[0] === 'backgrounds'
-  const descriptionText = isComponent
-    ? `Explore visual styles, responsive console layouts, CLI setup instructions, API properties reference, and implementation codes for the custom ${pageTitle} component in Vibe UI.`
-    : isAnimation
-      ? `Learn how to integrate the dynamic, hardware-accelerated Vibe UI ${pageTitle} animation into your React and Next.js applications.`
-      : isBackground
-        ? `Learn how to configure, style, install, and optimize the hardware-accelerated Vibe UI ${pageTitle} background effect into your React and Next.js applications.`
-        : `Learn how to configure, style, install, and optimize the Vibe UI framework for the ${pageTitle} page with modern React best practices.`
-
-  return {
-    title: pageTitle,
-    description: descriptionText,
-    openGraph: {
-      title: `${pageTitle} ${isComponent ? 'Component' : isAnimation ? 'Animation' : isBackground ? 'Background' : 'Guide'} | Vibe UI`,
-      description: descriptionText,
-      url: `https://vibe-ui-kit.vercel.app/docs/${slug.join('/')}`,
-      type: 'article',
-      siteName: 'Vibe UI',
-      images: [
-        {
-          url: 'https://vibe-ui-kit.vercel.app/og-image.jpg',
-          width: 512,
-          height: 512,
-          alt: 'Vibe UI Logo',
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary',
-      title: `${pageTitle} | Vibe UI`,
-      description: descriptionText,
-      images: ['https://vibe-ui-kit.vercel.app/og-image.jpg'],
-    },
-  }
-}
 
 const cn = (...classes: any[]) => classes.filter(Boolean).join(' ')
 
@@ -2556,6 +2504,125 @@ const mdxComponents = {
   },
 }
 
+interface PageProps {
+  params: Promise<{
+    slug?: string[]
+  }>
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const resolvedParams = await params
+  const slug = resolvedParams.slug || ['introduction']
+
+  const mdxPath = path.join(
+    process.cwd(),
+    'src/content/docs',
+    `${slug.join('/')}.mdx`,
+  )
+
+  let title = slug[slug.length - 1]
+    ? slug[slug.length - 1]
+        .split('-')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ')
+    : 'Introduction'
+  let description =
+    'Production-ready React & Next.js components built with Radix UI and Tailwind CSS v4.'
+
+  if (fs.existsSync(mdxPath)) {
+    const fileContent = fs.readFileSync(mdxPath, 'utf8')
+    const h1Match = fileContent.match(/^#\s+(.*)/m)
+    if (h1Match) {
+      title = h1Match[1].trim()
+      const remaining = fileContent.slice(h1Match.index! + h1Match[0].length)
+      const firstParaMatch = remaining.match(/^\s*([A-Za-z].*)/m)
+      if (firstParaMatch) {
+        description = firstParaMatch[1].trim()
+      }
+    }
+  }
+
+  const category = slug.length > 1 ? slug[0] : 'Docs'
+  const categoryCapitalized =
+    category.charAt(0).toUpperCase() + category.slice(1)
+  const canonicalPath = `/docs/${slug.join('/')}`
+  const canonicalUrl = `https://vibe-ui-kit.vercel.app${canonicalPath}`
+
+  const isComponent = slug[0] === 'components'
+  const isAnimation = slug[0] === 'animations'
+  const isBackground = slug[0] === 'backgrounds'
+  const isBlock = slug[0] === 'blocks'
+
+  const roleTitle = isComponent
+    ? 'Component'
+    : isAnimation
+      ? 'Animation'
+      : isBackground
+        ? 'Background Shader'
+        : isBlock
+          ? 'Application Block'
+          : 'Guide'
+
+  const pageTitle = `${title} - React & Tailwind CSS ${roleTitle} | Vibe UI`
+
+  const ogUrl = `https://vibe-ui-kit.vercel.app/api/og?title=${encodeURIComponent(
+    title,
+  )}&category=${encodeURIComponent(categoryCapitalized)}&desc=${encodeURIComponent(
+    description.slice(0, 120),
+  )}`
+
+  return {
+    title: pageTitle,
+    description: description,
+    keywords: [
+      'vibe ui',
+      'vibe ui kit',
+      `vibe ui ${title.toLowerCase()}`,
+      `${title.toLowerCase()} react`,
+      `${title.toLowerCase()} tailwind`,
+      `${title.toLowerCase()} tailwind css`,
+      `${title.toLowerCase()} component`,
+      `nextjs ${title.toLowerCase()}`,
+      `radix ${title.toLowerCase()}`,
+      'react components',
+      'tailwind css v4',
+      'radix ui primitives',
+      'copy paste ui',
+      'free react components',
+      'dark mode react components',
+    ],
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: pageTitle,
+      description: description,
+      url: canonicalUrl,
+      type: 'article',
+      siteName: 'Vibe UI',
+      authors: ['https://github.com/jenishCoderkube'],
+      section: categoryCapitalized,
+      tags: [title, 'React', 'Tailwind CSS', 'Vibe UI', 'Next.js'],
+      images: [
+        {
+          url: ogUrl,
+          width: 1200,
+          height: 630,
+          alt: `${title} - Vibe UI`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: pageTitle,
+      description: description,
+      images: [ogUrl],
+    },
+  }
+}
+
 export default async function DocsPage({ params }: PageProps) {
   try {
     const resolvedParams = await params
@@ -2650,6 +2717,94 @@ export default async function DocsPage({ params }: PageProps) {
           <main className="relative py-6 md:py-8 lg:py-10 flex-1 min-w-0 md:pl-8 lg:pl-10">
             <div className="xl:grid xl:grid-cols-[1fr_240px] gap-10">
               <article className="min-w-0">
+                {/* JSON-LD Schemas: BreadcrumbList, TechArticle & FAQPage for Google Rich Snippets */}
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      '@context': 'https://schema.org',
+                      '@type': 'BreadcrumbList',
+                      itemListElement: [
+                        {
+                          '@type': 'ListItem',
+                          position: 1,
+                          name: 'Home',
+                          item: 'https://vibe-ui-kit.vercel.app',
+                        },
+                        {
+                          '@type': 'ListItem',
+                          position: 2,
+                          name: groupTitle,
+                          item: `https://vibe-ui-kit.vercel.app/docs/${slug[0] || 'introduction'}`,
+                        },
+                        {
+                          '@type': 'ListItem',
+                          position: 3,
+                          name: title,
+                          item: `https://vibe-ui-kit.vercel.app/docs/${slug.join('/')}`,
+                        },
+                      ],
+                    }),
+                  }}
+                />
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      '@context': 'https://schema.org',
+                      '@type': 'TechArticle',
+                      headline: `${title} - React & Tailwind CSS Component`,
+                      description: description,
+                      url: `https://vibe-ui-kit.vercel.app/docs/${slug.join('/')}`,
+                      author: {
+                        '@type': 'Person',
+                        name: 'Jenish Sabhadiya',
+                        url: 'https://github.com/jenishCoderkube',
+                      },
+                      publisher: {
+                        '@type': 'Organization',
+                        name: 'Vibe UI',
+                        url: 'https://vibe-ui-kit.vercel.app',
+                      },
+                    }),
+                  }}
+                />
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      '@context': 'https://schema.org',
+                      '@type': 'FAQPage',
+                      mainEntity: [
+                        {
+                          '@type': 'Question',
+                          name: `How do I install the Vibe UI ${title} component?`,
+                          acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: `You can install ${title} into your React or Next.js project using the Vibe UI CLI: run "npx vibe-ui-kit add ${slug[slug.length - 1]}" in your terminal.`,
+                          },
+                        },
+                        {
+                          '@type': 'Question',
+                          name: `Does Vibe UI ${title} support Tailwind CSS v4?`,
+                          acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: `Yes, Vibe UI natively supports both modern Tailwind CSS v4 (@theme directives) and Tailwind CSS v3 with zero configuration.`,
+                          },
+                        },
+                        {
+                          '@type': 'Question',
+                          name: `Is the Vibe UI ${title} component accessible?`,
+                          acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: `Yes, Vibe UI primitives are built upon WAI-ARIA compliant Radix UI primitives with full keyboard navigation and screen reader support.`,
+                          },
+                        },
+                      ],
+                    }),
+                  }}
+                />
+
                 {isComponentPage && (
                   <ComponentHeader
                     name={slug[1]}
