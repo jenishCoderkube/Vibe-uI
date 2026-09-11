@@ -190,6 +190,12 @@ export default function RootLayout({
       className={`${fontSans.variable} ${fontMono.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <meta
+          name="google-site-verification"
+          content="fp6o82sGO1t1dyt13kAfQVNrfZr05iMoJ-6yABHI_B8"
+        />
+      </head>
       <body
         className="min-h-screen bg-background font-sans antialiased"
         suppressHydrationWarning
