@@ -1,10 +1,10 @@
 {
   "name": "alert-dialog",
   "dependencies": [
-    "@radix-ui/react-alert-dialog",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-alert-dialog"
   ],
   "registryDependencies": [
     "utils",

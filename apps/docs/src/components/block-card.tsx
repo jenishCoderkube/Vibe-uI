@@ -152,7 +152,7 @@ export function BlockCard({
   description,
   urlPath,
   code,
-  previewComponent,
+  previewComponent: _previewComponent,
   vibeDeps,
 }: BlockCardProps) {
   const { resolvedTheme } = useTheme()

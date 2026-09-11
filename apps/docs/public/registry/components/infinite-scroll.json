@@ -1,10 +1,10 @@
 {
   "name": "infinite-scroll",
   "dependencies": [
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "lucide-react"
   ],
   "registryDependencies": [
     "utils"

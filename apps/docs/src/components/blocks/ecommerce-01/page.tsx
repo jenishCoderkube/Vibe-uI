@@ -18,7 +18,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   ChevronRight,
-  ShieldAlert,
   ArrowRight,
   Mail,
   Zap,
@@ -195,7 +194,7 @@ export default function Ecommerce01Page() {
                   desc: 'Tactile sliders adjust spatial dimensions and balance active parameters in real time.',
                   icon: Sliders,
                 },
-              ].map((spec, index) => {
+              ].map((spec, _index) => {
                 const Icon = spec.icon
                 return (
                   <Card key={spec.title} variant="glow" className="text-left border-border/70 flex flex-col justify-between">
@@ -326,7 +325,7 @@ export default function Ecommerce01Page() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {categories.map((cat, i) => (
+              {categories.map((cat, _i) => (
                 <Card
                   key={cat.title}
                   variant={cat.variant}

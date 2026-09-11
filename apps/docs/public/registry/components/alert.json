@@ -1,7 +1,6 @@
 {
   "name": "alert",
   "dependencies": [
-    "lucide-react",
     "tailwind-variants",
     "clsx",
     "tailwind-merge"

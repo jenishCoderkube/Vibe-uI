@@ -22,435 +22,94 @@ interface RegistryEntry {
   files: RegistryFile[]
 }
 
-const componentDeps: Record<string, string[]> = {
-  button: [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-    '@radix-ui/react-slot',
-  ],
-  input: ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  card: [
-    '@radix-ui/react-slot',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  label: [
-    '@radix-ui/react-label',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  checkbox: [
-    '@radix-ui/react-checkbox',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  avatar: [
-    '@radix-ui/react-avatar',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  tooltip: [
-    '@radix-ui/react-tooltip',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  accordion: [
-    '@radix-ui/react-accordion',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  alert: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'alert-dialog': [
-    '@radix-ui/react-alert-dialog',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  progress: [
-    '@radix-ui/react-progress',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  slider: [
-    '@radix-ui/react-slider',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'radio-group': [
-    '@radix-ui/react-radio-group',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'dropdown-menu': [
-    '@radix-ui/react-dropdown-menu',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  dialog: [
-    '@radix-ui/react-dialog',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  sheet: [
-    '@radix-ui/react-dialog',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  skeleton: ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  select: [
-    '@radix-ui/react-select',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  command: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'multi-select': [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  drawer: ['vaul', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  table: ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  breadcrumb: [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-    '@radix-ui/react-slot',
-  ],
-  pagination: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'scroll-area': [
-    '@radix-ui/react-scroll-area',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'hover-card': [
-    '@radix-ui/react-hover-card',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  popover: [
-    '@radix-ui/react-popover',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  toast: [
-    '@radix-ui/react-toast',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  calendar: [
-    'react-day-picker',
-    'date-fns',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'date-picker': [
-    'date-fns',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'context-menu': [
-    '@radix-ui/react-context-menu',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  carousel: [
-    'embla-carousel-react',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  uploader: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'layout-shell': [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'infinite-scroll': [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  collapsible: [
-    '@radix-ui/react-collapsible',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  menubar: [
-    '@radix-ui/react-menubar',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  chart: ['recharts', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'button-group': ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  empty: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  combobox: ['lucide-react', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'animated-shiny-text': ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  'spinning-text': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'scroll-based-velocity': [
-    'motion',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'blur-fade': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'number-ticker': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'animated-gradient-text': ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  'comic-text': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'dia-text-reveal': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'kinetic-text': ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  'line-shadow-text': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'morphing-text': ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  'text-3d-flip': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'text-animate': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'video-text': ['tailwind-variants', 'clsx', 'tailwind-merge'],
-  'light-tunnel': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'web-threads': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'sliced-waves': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'scanner': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'lightfall': ['ogl', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  sidebar: [
-    '@radix-ui/react-slot',
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  form: [
-    'react-hook-form',
-    '@hookform/resolvers',
-    'zod',
-    '@radix-ui/react-slot',
-  ],
-  switch: [
-    '@radix-ui/react-switch',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  toggle: [
-    '@radix-ui/react-toggle',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'input-otp': [
-    'input-otp',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  'word-rotate': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'typing-animation': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'text-reveal': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'sparkles-text': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  'hyper-text': ['motion', 'tailwind-variants', 'clsx', 'tailwind-merge'],
-  separator: [
-    '@radix-ui/react-slot',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  badge: [
-    '@radix-ui/react-slot',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  kbd: [
-    '@radix-ui/react-slot',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  item: [
-    '@radix-ui/react-slot',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-  marker: [
-    '@radix-ui/react-slot',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
+function getInternalDependencies(code: string, currentName: string): string[] {
+  const matches = [...code.matchAll(/from\s+['"]\.\/([a-zA-Z0-9_-]+)['"]/g)]
+  const deps = new Set<string>()
+  for (const m of matches) {
+    const dep = m[1]
+    if (
+      dep !== currentName &&
+      dep !== 'utils' &&
+      fs.existsSync(path.join(COMPONENTS_DIR, `${dep}.tsx`))
+    ) {
+      deps.add(dep)
+    }
+  }
+  return Array.from(deps)
 }
 
-const componentRegistryDeps: Record<string, string[]> = {
-  'alert-dialog': ['button'],
-  calendar: ['button'],
-  carousel: ['button'],
-  pagination: ['button'],
-  uploader: ['button', 'progress', 'badge'],
-  combobox: ['popover', 'command', 'button'],
-  'date-picker': ['popover', 'calendar', 'button'],
-  empty: ['button'],
-  sidebar: ['button', 'input', 'separator', 'drawer', 'skeleton', 'tooltip'],
-  form: ['label'],
+function getNpmDependencies(code: string): string[] {
+  const matches = [...code.matchAll(/from\s+['"]([@a-zA-Z0-9_/-]+)['"]/g)]
+  const deps = new Set<string>(['tailwind-variants', 'clsx', 'tailwind-merge'])
+  for (const m of matches) {
+    const pkg = m[1]
+    if (pkg.startsWith('.') || pkg === 'react' || pkg === 'react-dom') continue
+    let rootPkg = pkg
+    if (pkg.startsWith('@')) {
+      const parts = pkg.split('/')
+      rootPkg = `${parts[0]}/${parts[1]}`
+    } else {
+      rootPkg = pkg.split('/')[0]
+    }
+    if (rootPkg !== 'react' && rootPkg !== 'react-dom') {
+      deps.add(rootPkg)
+    }
+  }
+  return Array.from(deps)
 }
 
-const blockDeps: Record<string, string[]> = {
-  'dashboard-01': [
-    'lucide-react',
+function getBlockDependencies(
+  files: RegistryFile[],
+  availableComponents: Set<string>,
+  availableBlocks: Set<string>,
+): { dependencies: string[]; registryDependencies: string[] } {
+  const npmDeps = new Set<string>([
     'tailwind-variants',
     'clsx',
     'tailwind-merge',
-  ],
-  'ecommerce-01': [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-    'motion',
-  ],
-  'ecommerce-02': [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-    'motion',
-  ],
-  'chat-01': [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-    'motion',
-    'prism-react-renderer',
-  ],
-  'auth-01': [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-    'motion',
-  ],
-  'crypto-glass-01': [
-    'lucide-react',
-    'tailwind-variants',
-    'clsx',
-    'tailwind-merge',
-  ],
-}
+  ])
+  const regDeps = new Set<string>(['utils'])
 
-const blockRegistryDeps: Record<string, string[]> = {
-  'dashboard-01': [
-    'sidebar',
-    'card',
-    'badge',
-    'button',
-    'input',
-    'avatar',
-    'table',
-    'checkbox',
-    'select',
-    'dropdown-menu',
-    'drawer',
-    'uploader',
-    'progress',
-    'collapsible',
-    'dialog',
-  ],
-  'ecommerce-01': [
-    'button',
-    'badge',
-    'card',
-    'input',
-    'avatar',
-    'sheet',
-    'dropdown-menu',
-    'dialog',
-    'tooltip',
-    'blur-fade',
-  ],
-  'ecommerce-02': [
-    'button',
-    'badge',
-    'card',
-    'input',
-    'avatar',
-    'sheet',
-    'dropdown-menu',
-    'dialog',
-    'tooltip',
-    'accordion',
-    'blur-fade',
-    'textarea',
-    'label',
-    'ecommerce-01',
-  ],
-  'chat-01': [
-    'button',
-    'input',
-    'scroll-area',
-    'sheet',
-    'dropdown-menu',
-    'dialog',
-    'avatar',
-    'tooltip',
-    'theme-switcher',
-    'textarea',
-    'badge',
-    'card',
-  ],
-  'auth-01': [
-    'button',
-    'input',
-    'card',
-    'checkbox',
-    'form',
-  ],
-  'crypto-glass-01': [
-    'button',
-    'card',
-    'input',
-    'badge',
-    'table',
-    'switch',
-    'slider',
-    'select',
-  ],
+  for (const file of files) {
+    const code = file.content
+
+    // 1. Scan external NPM dependencies
+    const npmMatches = [...code.matchAll(/from\s+['"]([@a-zA-Z0-9_/-]+)['"]/g)]
+    for (const m of npmMatches) {
+      const pkg = m[1]
+      if (pkg.startsWith('.') || pkg.startsWith('@/')) continue
+      let rootPkg = pkg
+      if (pkg.startsWith('@')) {
+        const parts = pkg.split('/')
+        rootPkg = `${parts[0]}/${parts[1]}`
+      } else {
+        rootPkg = pkg.split('/')[0]
+      }
+      if (rootPkg !== 'react' && rootPkg !== 'react-dom') {
+        npmDeps.add(rootPkg)
+      }
+    }
+
+    // 2. Scan internal UI component & block dependencies
+    const compMatches = [
+      ...code.matchAll(
+        /(?:@\/components\/ui\/|\.\/|\.\.\/)([a-zA-Z0-9_-]+)/g,
+      ),
+    ]
+    for (const m of compMatches) {
+      const depName = m[1]
+      if (availableComponents.has(depName)) {
+        regDeps.add(depName)
+      } else if (availableBlocks.has(depName)) {
+        regDeps.add(depName)
+      }
+    }
+  }
+
+  return {
+    dependencies: Array.from(npmDeps).sort(),
+    registryDependencies: Array.from(regDeps).sort(),
+  }
 }
 
 function getBlockFiles(dir: string, baseDir: string): RegistryFile[] {
@@ -524,12 +183,8 @@ function buildRegistry() {
     const filePath = path.join(COMPONENTS_DIR, file)
     const content = fs.readFileSync(filePath, 'utf8')
 
-    const deps = componentDeps[name] || [
-      'tailwind-variants',
-      'clsx',
-      'tailwind-merge',
-    ]
-    const regDeps = ['utils', ...(componentRegistryDeps[name] || [])]
+    const deps = getNpmDependencies(content)
+    const regDeps = ['utils', ...getInternalDependencies(content, name)]
 
     const entry: RegistryEntry = {
       name,
@@ -559,17 +214,6 @@ function buildRegistry() {
       )
     }
 
-    if (name === 'button') {
-      const groupContent = fs.readFileSync(
-        path.resolve(COMPONENTS_DIR, 'button-group.tsx'),
-        'utf8',
-      )
-      entry.files.push({
-        name: 'button-group.tsx',
-        content: groupContent,
-      })
-    }
-
     fs.writeFileSync(
       path.join(COMP_OUTPUT_DIR, `${name}.json`),
       JSON.stringify(entry, null, 2),
@@ -581,9 +225,7 @@ function buildRegistry() {
       files:
         name === 'sidebar'
           ? [`${name}.tsx`, 'hooks/use-mobile.ts']
-          : name === 'button'
-            ? [`${name}.tsx`, 'button-group.tsx']
-            : [`${name}.tsx`],
+          : [`${name}.tsx`],
       dependencies: deps,
       registryDependencies: regDeps,
     })
@@ -596,16 +238,25 @@ function buildRegistry() {
   )
   if (fs.existsSync(BLOCKS_DIR)) {
     const blocks = fs.readdirSync(BLOCKS_DIR)
+    const availableComponentNames = new Set(
+      components.map((c) => path.basename(c, '.tsx')),
+    )
+    const availableBlockNames = new Set(
+      blocks.filter((b) =>
+        fs.statSync(path.join(BLOCKS_DIR, b)).isDirectory(),
+      ),
+    )
+
     for (const name of blocks) {
       const blockPath = path.join(BLOCKS_DIR, name)
       if (fs.statSync(blockPath).isDirectory()) {
         const files = getBlockFiles(blockPath, BLOCKS_DIR)
-        const deps = blockDeps[name] || [
-          'tailwind-variants',
-          'clsx',
-          'tailwind-merge',
-        ]
-        const regDeps = ['utils', ...(blockRegistryDeps[name] || [])]
+        const { dependencies: deps, registryDependencies: regDeps } =
+          getBlockDependencies(
+            files,
+            availableComponentNames,
+            availableBlockNames,
+          )
 
         const entry: RegistryEntry = {
           name,
@@ -636,6 +287,142 @@ function buildRegistry() {
     JSON.stringify(registryEntries, null, 2),
   )
   console.log('Built registry/index.json successfully!')
+
+  // 5. Automated validation of all registry items
+  validateRegistry(registryEntries)
+}
+
+function validateRegistry(registryEntries: any[]) {
+  console.log(
+    '\nValidating all registry entries for transitive dependency integrity...',
+  )
+  const COMP_OUTPUT_DIR = path.join(OUTPUT_DIR, 'components')
+
+  let errorsCount = 0
+
+  for (const item of registryEntries) {
+    const compName = item.name
+
+    // 1. Simulate recursive resolution
+    const resolved = new Set<string>()
+    const queue = [compName]
+
+    while (queue.length > 0) {
+      const current = queue.shift()!
+      if (resolved.has(current)) continue
+      resolved.add(current)
+
+      const info = registryEntries.find((c) => c.name === current)
+      if (info && info.registryDependencies) {
+        for (const dep of info.registryDependencies) {
+          if (dep !== 'utils' && !resolved.has(dep)) {
+            queue.push(dep)
+          }
+        }
+      }
+    }
+
+    // 2. Build virtual file map
+    const virtualFs = new Set<string>([
+      '/src/lib/utils.ts',
+      '/src/lib/utils.js',
+      '/src/lib/utils',
+    ])
+
+    const filesToCheck: {
+      targetPath: string
+      rawName: string
+      content: string
+    }[] = []
+
+    for (const c of resolved) {
+      const jsonPath = path.join(COMP_OUTPUT_DIR, `${c}.json`)
+      if (fs.existsSync(jsonPath)) {
+        const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'))
+        for (const f of data.files) {
+          const targetFilePath = path.posix.join(
+            '/src/components/ui',
+            f.name.replace(/\\/g, '/'),
+          )
+          virtualFs.add(targetFilePath)
+          virtualFs.add(targetFilePath.replace(/\.[jt]sx?$/, ''))
+          filesToCheck.push({
+            targetPath: targetFilePath,
+            rawName: f.name,
+            content: f.content,
+          })
+        }
+      }
+    }
+
+    // 3. Check imports
+    for (const f of filesToCheck) {
+      const fileDir = path.posix.dirname(f.targetPath)
+      const code = f.content
+
+      // Relative imports
+      const relMatches = [
+        ...code.matchAll(/from\s+['"](\.\.?\/[^'"]+)['"]/g),
+      ]
+      for (const m of relMatches) {
+        const importPath = m[1]
+        if (importPath === '../lib/utils' || importPath === './utils')
+          continue
+        const resolvedTarget = path.posix.normalize(
+          path.posix.join(fileDir, importPath),
+        )
+        const exists =
+          virtualFs.has(resolvedTarget) ||
+          virtualFs.has(`${resolvedTarget}.tsx`) ||
+          virtualFs.has(`${resolvedTarget}.ts`) ||
+          virtualFs.has(`${resolvedTarget}.jsx`) ||
+          virtualFs.has(`${resolvedTarget}.js`)
+
+        if (!exists) {
+          console.error(
+            `❌ [Registry Error] In component "${compName}" (${f.rawName}): Cannot resolve module "${importPath}"!`,
+          )
+          errorsCount++
+        }
+      }
+
+      // Alias imports
+      const aliasMatches = [
+        ...code.matchAll(
+          /from\s+['"]@\/components\/ui\/([^'"]+)['"]/g,
+        ),
+      ]
+      for (const m of aliasMatches) {
+        const compImported = m[1]
+        const targetPath = path.posix.join(
+          '/src/components/ui',
+          compImported,
+        )
+        const exists =
+          virtualFs.has(targetPath) ||
+          virtualFs.has(`${targetPath}.tsx`) ||
+          virtualFs.has(`${targetPath}.ts`)
+
+        if (!exists) {
+          console.error(
+            `❌ [Registry Error] In component "${compName}" (${f.rawName}): Cannot resolve @/components/ui/${compImported}!`,
+          )
+          errorsCount++
+        }
+      }
+    }
+  }
+
+  if (errorsCount > 0) {
+    throw new Error(
+      `Registry validation failed with ${errorsCount} unresolved dependency error(s)!`,
+    )
+  }
+
+  console.log(
+    `✓ Registry validation passed! All ${registryEntries.length} items are 100% self-contained and resolve cleanly.`,
+  )
 }
 
 buildRegistry()
+

@@ -30,7 +30,12 @@ const PopoverTrigger = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger>
 >(({ className, ...props }, ref) => (
-  <PopoverPrimitive.Trigger ref={ref} data-slot="popover-trigger" {...props} />
+  <PopoverPrimitive.Trigger
+    ref={ref}
+    data-slot="popover-trigger"
+    className={className}
+    {...props}
+  />
 ))
 PopoverTrigger.displayName = PopoverPrimitive.Trigger.displayName
 
@@ -38,7 +43,12 @@ const PopoverAnchor = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Anchor>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Anchor>
 >(({ className, ...props }, ref) => (
-  <PopoverPrimitive.Anchor ref={ref} data-slot="popover-anchor" {...props} />
+  <PopoverPrimitive.Anchor
+    ref={ref}
+    data-slot="popover-anchor"
+    className={className}
+    {...props}
+  />
 ))
 PopoverAnchor.displayName = PopoverPrimitive.Anchor.displayName
 

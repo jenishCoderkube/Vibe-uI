@@ -1,10 +1,10 @@
 {
   "name": "text-reveal",
   "dependencies": [
-    "motion",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "motion"
   ],
   "registryDependencies": [
     "utils"

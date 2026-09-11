@@ -9,7 +9,6 @@ import { ProductReviews } from './components/product-reviews'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { Card, CardContent, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Zap, Star } from 'lucide-react'
 
 interface CartItem {

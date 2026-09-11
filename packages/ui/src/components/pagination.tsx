@@ -760,4 +760,5 @@ export {
   PaginationLoadMore,
   PaginationDropdown,
   PaginationProgressLine,
+  paginationVariants,
 }

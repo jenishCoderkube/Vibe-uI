@@ -9,13 +9,10 @@ import {
   AtSign,
   Code2,
   MoreHorizontal,
-  ChevronLeft,
   ChevronRight,
   Sparkles,
-  Bot,
   LogOut,
   Search,
-  Check,
   PanelLeft,
   ChevronDown,
   Settings,
@@ -32,7 +29,6 @@ import {
   Archive,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Sheet,
@@ -46,7 +42,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubTrigger,
@@ -92,11 +87,11 @@ export function ChatSidebar({
   isCollapsed,
   onToggleCollapse,
   searchQuery,
-  setSearchQuery,
+  setSearchQuery: _setSearchQuery,
   mobileOpen,
   setMobileOpen,
-  selectedModel,
-  onSelectModel,
+  selectedModel: _selectedModel,
+  onSelectModel: _onSelectModel,
 }: ChatSidebarProps) {
 
 

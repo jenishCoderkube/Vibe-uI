@@ -13,7 +13,6 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from './components/page-header'
-import { DashboardPreview } from './components/dashboard-preview'
 import { CardsDemo } from './components/cards-demo'
 
 const title = 'Build Beautiful Interfaces with Vibe UI'

@@ -15,7 +15,6 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-  Button,
 } from 'vibe-ui'
 
 export function TeamMembers() {

@@ -33,7 +33,7 @@ describe('Command Component', () => {
   })
 
   it('supports multi-aesthetic variants (retro, glow, glass)', () => {
-    const { container: retroContainer } = render(
+    render(
       <Command variant="retro">
         <CommandInput placeholder="Retro search..." />
         <CommandList>

@@ -5,7 +5,6 @@ import {
   Sparkles,
   Bot,
   Trash,
-  ChevronRight,
   ChevronDown,
   PanelLeft,
   SquarePen,

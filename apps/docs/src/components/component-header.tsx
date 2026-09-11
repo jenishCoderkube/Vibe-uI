@@ -6,7 +6,6 @@ import {
   Check,
   Copy,
   ExternalLink,
-  Terminal,
   ChevronDown,
   FileText,
   Zap,
@@ -16,7 +15,6 @@ import {
   ChevronRight,
   Loader2,
 } from 'lucide-react'
-import { cn } from '../lib/utils'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -43,7 +41,6 @@ export function ComponentHeader({
   prevItem,
   nextItem,
 }: ComponentHeaderProps) {
-  const [copied, setCopied] = useState(false)
   const [copiedPage, setCopiedPage] = useState(false)
   const [copyingPage, setCopyingPage] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -62,13 +59,6 @@ export function ComponentHeader({
       .split('-')
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ')
-  const cliCommand = `npx vibe-ui-kit add ${name}`
-
-  const copyCommand = () => {
-    navigator.clipboard.writeText(cliCommand)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   const getDynamicDocUrl = () => {
     if (typeof window !== 'undefined') {

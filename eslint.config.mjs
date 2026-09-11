@@ -10,6 +10,8 @@ export default tseslint.config(
       '**/.next/**',
       '**/node_modules/**',
       '**/out/**',
+      '**/coverage/**',
+      '**/scratch/**',
       '**/pnpm-lock.yaml',
       '**/vibe-ui-kit-*.tgz'
     ]

@@ -1,19 +1,22 @@
 {
   "name": "auth-01",
   "dependencies": [
-    "lucide-react",
-    "tailwind-variants",
+    "@hookform/resolvers",
     "clsx",
+    "lucide-react",
+    "motion",
+    "react-hook-form",
     "tailwind-merge",
-    "motion"
+    "tailwind-variants",
+    "zod"
   ],
   "registryDependencies": [
-    "utils",
     "button",
-    "input",
     "card",
     "checkbox",
-    "form"
+    "form",
+    "input",
+    "utils"
   ],
   "files": [
     {

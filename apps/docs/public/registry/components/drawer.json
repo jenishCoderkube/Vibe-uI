@@ -1,10 +1,10 @@
 {
   "name": "drawer",
   "dependencies": [
-    "vaul",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "vaul"
   ],
   "registryDependencies": [
     "utils"

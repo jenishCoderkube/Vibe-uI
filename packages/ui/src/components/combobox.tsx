@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Check, ChevronsUpDown, Search } from 'lucide-react'
-import { tv, type VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 import { cn } from '../lib/utils'
 import { Button } from './button'
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
@@ -316,7 +316,6 @@ export const ComboboxEmpty = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, ...props }, ref) => {
-  const { searchQuery } = React.useContext(ComboboxContext)
   // Only display Empty status in composed structures if filter doesn't match
   return (
     <div

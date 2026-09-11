@@ -4,7 +4,6 @@ import React from 'react'
 import {
   Message,
   MessageGroup,
-  MessageAvatar,
   MessageContent,
   MessageHeader,
   MessageFooter,

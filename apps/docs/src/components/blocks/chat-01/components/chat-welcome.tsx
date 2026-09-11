@@ -5,8 +5,7 @@ import {
   Code,
   FileText,
   Lightbulb,
-  Compass,
-  ArrowUpRight
+  Compass
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Bot } from 'lucide-react'
@@ -23,7 +22,7 @@ interface ChatWelcomeProps {
   selectedModel: string
 }
 
-export function ChatWelcome({ onSelectPrompt, selectedModel }: ChatWelcomeProps) {
+export function ChatWelcome({ onSelectPrompt, selectedModel: _selectedModel }: ChatWelcomeProps) {
   const prompts: SuggestedPrompt[] = [
     {
       title: 'Explain code',

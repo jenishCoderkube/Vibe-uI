@@ -116,7 +116,7 @@ export interface StepProps {
   stepNumber?: number
 }
 
-export function Step({ title, children, stepNumber }: StepProps) {
+export function Step({ title, children, stepNumber: _stepNumber }: StepProps) {
   return (
     <div className="relative pl-10 before:content-[counter(step)] [counter-increment:step] before:absolute before:left-0 before:top-0 before:flex before:h-7 before:w-7 before:items-center before:justify-center before:rounded-full before:border before:border-primary/30 before:bg-primary/10 before:text-xs before:font-bold before:text-primary before:shadow-xs">
       <h3 className="text-lg font-bold text-foreground tracking-tight mb-2 pt-0.5">

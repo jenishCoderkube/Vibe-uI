@@ -1,10 +1,10 @@
 {
   "name": "label",
   "dependencies": [
-    "@radix-ui/react-label",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-label"
   ],
   "registryDependencies": [
     "utils"

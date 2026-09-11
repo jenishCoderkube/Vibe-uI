@@ -1,11 +1,11 @@
 {
   "name": "carousel",
   "dependencies": [
-    "embla-carousel-react",
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "embla-carousel-react",
+    "lucide-react"
   ],
   "registryDependencies": [
     "utils",

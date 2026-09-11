@@ -69,7 +69,7 @@ export default function DashboardView({
   swapAmount,
   setSwapAmount,
   isSwapping,
-  swapSuccess,
+  swapSuccess: _swapSuccess,
   handleSwapExecute,
   getSwapOutput
 }: DashboardViewProps) {

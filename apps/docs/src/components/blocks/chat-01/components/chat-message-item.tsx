@@ -1,18 +1,16 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   Copy,
   Check,
   ThumbsUp,
   ThumbsDown,
   RefreshCw,
-  Sparkles,
   Pencil,
   Download,
   Maximize2,
   Minimize2,
-  Store,
   Upload
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'

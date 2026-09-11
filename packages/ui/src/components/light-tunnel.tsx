@@ -215,14 +215,19 @@ export const LightTunnel: React.FC<LightTunnelProps> = ({
     const container = containerRef.current
     if (!container) return
 
-    const renderer = new Renderer({
-      webgl: 2,
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: false,
-      preserveDrawingBuffer: true,
-      dpr: Math.min(window.devicePixelRatio || 1, 2),
-    })
+    let renderer: Renderer
+    try {
+      renderer = new Renderer({
+        webgl: 2,
+        alpha: true,
+        premultipliedAlpha: true,
+        antialias: false,
+        preserveDrawingBuffer: true,
+        dpr: Math.min(window.devicePixelRatio || 1, 2),
+      })
+    } catch {
+      return
+    }
 
     const gl = renderer.gl
     gl.clearColor(0, 0, 0, 0)

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Spinner, Button, Card } from 'vibe-ui'
+import { Spinner, Button } from 'vibe-ui'
 import { UploadCloud, CheckCircle2 } from 'lucide-react'
 
 // Standard wrapper card

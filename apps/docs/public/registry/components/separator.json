@@ -1,10 +1,10 @@
 {
   "name": "separator",
   "dependencies": [
-    "@radix-ui/react-slot",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-slot"
   ],
   "registryDependencies": [
     "utils"

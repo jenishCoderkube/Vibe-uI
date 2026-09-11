@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { cn } from '../lib/utils'
-import { tv, type VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 import { Menu, ChevronLeft } from 'lucide-react'
 
 // Layout Context for sharing collapsing state

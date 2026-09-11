@@ -8,7 +8,6 @@ import {
   CreditCard,
   DollarSign,
   Menu,
-  Package,
   Search,
   Users,
 } from 'lucide-react'

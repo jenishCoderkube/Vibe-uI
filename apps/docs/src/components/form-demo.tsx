@@ -314,7 +314,7 @@ export function SignupFormDemo() {
           <FormField
             control={form.control}
             name="coverPhoto"
-            render={({ field: { value, onChange, ...fieldProps } }) => (
+            render={({ field: { value: _value, onChange, ...fieldProps } }) => (
               <FormItem>
                 <FormLabel>Cover Photo</FormLabel>
                 <FormControl>

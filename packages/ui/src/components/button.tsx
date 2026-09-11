@@ -4,7 +4,17 @@ import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '../lib/utils'
-import { ButtonGroupContext } from './button-group'
+export interface ButtonGroupContextValue {
+  value?: string
+  onValueChange?: (value: string) => void
+  variant?: 'default' | 'glass' | 'retro' | 'glow'
+  radius?: 'default' | 'sm' | 'lg' | 'full' | 'none'
+  orientation?: 'horizontal' | 'vertical'
+  registerRef?: (val: string, node: HTMLButtonElement | null) => void
+}
+
+export const ButtonGroupContext =
+  React.createContext<ButtonGroupContextValue | null>(null)
 
 export const buttonVariants = tv({
   base: 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-60 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:-translate-y-0.5 hover:shadow-sm hover:opacity-90 active:translate-y-0 active:scale-95 cursor-pointer',

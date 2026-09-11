@@ -104,7 +104,7 @@ export default function CryptoGlass01Page() {
 
   // Calculator state
   const [calcAmount, setCalcAmount] = useState('1000')
-  const [calcPeriod, setCalcPeriod] = useState('365')
+  const [calcPeriod] = useState('365')
 
   // Settings states
   const [rpcNode, setRpcNode] = useState('solana-mainnet')

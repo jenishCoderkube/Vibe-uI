@@ -58,7 +58,7 @@ export interface PropsTableProps {
 }
 
 export function PropsTable({
-  title,
+  title: _title,
   items,
   data,
   props: rawProps,

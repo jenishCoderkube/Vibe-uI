@@ -2,7 +2,6 @@ import React from 'react'
 import fs from 'fs'
 import path from 'path'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { docsConfig } from '../../../config/docs'
 import { Header } from '../../../components/header'
@@ -195,11 +194,6 @@ import {
   CollapsibleContent,
   Toggle,
   Spinner,
-  InputOTP,
-  Item,
-  Menubar,
-  Message,
-  MessageScroller,
   Marker,
   MarkerIcon,
   MarkerContent,
@@ -1898,7 +1892,7 @@ function getHeadingId(children: React.ReactNode) {
 }
 
 function HeadingAnchor({
-  id,
+  id: _id,
   children,
 }: {
   id?: string
@@ -2612,12 +2606,18 @@ export default async function DocsPage({ params }: PageProps) {
       }
     }
 
-    // Component/Animation/Background Navigation & Header calculation
-    const isComponentPage = ['components', 'animations', 'backgrounds'].includes(slug[0])
-    
+    // Component/Animation/Background/Block Navigation & Header calculation
+    const isComponentPage = [
+      'components',
+      'animations',
+      'backgrounds',
+      'blocks',
+    ].includes(slug[0])
+
     let groupTitle = 'Components'
     if (slug[0] === 'animations') groupTitle = 'Animations'
     else if (slug[0] === 'backgrounds') groupTitle = 'Backgrounds'
+    else if (slug[0] === 'blocks') groupTitle = 'Blocks'
 
     const componentNavItems =
       docsConfig.sidebarNav.find((group) => group.title === groupTitle)

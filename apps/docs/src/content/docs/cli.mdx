@@ -1,9 +1,9 @@
 # CLI Reference
 
-Use the `vibe-ui-kit` CLI to quickly scaffold templates and add components directly into your project.
+Use the `vibe-ui-kit` CLI to quickly initialize themes, scaffold utilities, list registry items, and add components directly into your project.
 
 <Callout type="info" title="Zero Configuration">
-  The CLI automatically detects whether your project uses TypeScript or JavaScript, pnpm, npm, yarn, or bun.
+  The CLI automatically detects your package manager (pnpm, npm, yarn, or bun), project language (TypeScript or JavaScript), and framework directory structure (`src/` vs root).
 </Callout>
 
 ---
@@ -12,7 +12,7 @@ Use the `vibe-ui-kit` CLI to quickly scaffold templates and add components direc
 
 ### `init`
 
-Initialize Vibe UI configurations and tailwind theme setup in your project:
+Initialize Vibe UI configurations, stylesheet themes, and workspace paths in your project:
 
 ```bash
 npx vibe-ui-kit@latest init
@@ -20,20 +20,19 @@ npx vibe-ui-kit@latest init
 
 #### Flags
 
-- `-y, --yes`: Skip confirmation prompts and use default paths (`@/components/ui`).
-- `-c, --cwd <path>`: Specify the current working directory.
+- `-y, --yes`: Skip confirmation prompts and use default detected paths (`@/components/ui`, `@/lib/utils`, theme CSS).
 
 ---
 
 ### `add`
 
-Add individual or multiple components to your project on demand:
+Add individual or multiple components to your project on demand. The CLI automatically resolves and installs subcomponent dependencies (for instance, adding `button-group` will also install `button`).
 
 ```bash
 npx vibe-ui-kit@latest add button card dialog
 ```
 
-If run without component arguments, the CLI opens an **interactive multi-select menu**:
+If run without arguments, the CLI launches an **interactive multi-select prompt**:
 
 ```bash
 npx vibe-ui-kit@latest add
@@ -41,30 +40,86 @@ npx vibe-ui-kit@latest add
 
 #### Flags
 
-- `-y, --yes`: Skip confirmation prompts and overwrite existing files without confirmation.
-- `-o, --overwrite`: Force overwrite existing component files.
-- `-c, --cwd <path>`: Working directory location.
+- `-y, --yes`: Skip interactive confirmation prompts and install using detected defaults.
+- `-o, --overwrite`: Overwrite existing local component files with the latest registry code.
+- `-a, --all`: Install all 92 components, animations, backgrounds, and blocks at once.
 
 ---
 
-## `vibe.json` Config Specification
+### `list`
 
-When `npx vibe-ui-kit init` runs, it creates a `vibe.json` configuration file in your project root:
+Explore all available components, animations, canvas backgrounds, and template blocks directly in your terminal:
+
+```bash
+npx vibe-ui-kit@latest list
+```
+
+#### Flags
+
+- `-c, --category <category>`: Filter components by category (`components`, `animations`, `backgrounds`, `blocks`).
+- `-s, --search <term>`: Search components by name, dependency, or keyword.
+
+```bash
+# Filter only canvas backgrounds
+npx vibe-ui-kit@latest list --category backgrounds
+
+# Search for animation components
+npx vibe-ui-kit@latest list --search text
+```
+
+---
+
+### `info`
+
+Inspect detailed metadata for any component, including category, source files, registry dependencies, and required npm packages:
+
+```bash
+npx vibe-ui-kit@latest info button-group
+```
+
+Output:
+```text
+button-group
+  Category:              components
+  Files:                 button-group.tsx
+  Registry Dependencies: button
+  NPM Dependencies:      tailwind-variants, clsx, tailwind-merge
+
+  Installation:
+    npx vibe-ui-kit add button-group
+```
+
+---
+
+### `diff`
+
+Compare your local component implementation against the official remote registry version:
+
+```bash
+# Diff all installed components
+npx vibe-ui-kit@latest diff
+
+# Diff a specific component
+npx vibe-ui-kit@latest diff button
+```
+
+If differences are detected, you can view a line-by-line diff or choose to update your local component.
+
+---
+
+## `components.json` Configuration
+
+When `npx vibe-ui-kit init` runs, it creates or updates `components.json` in your project root:
 
 ```json
 {
-  "$schema": "https://vibe-ui-kit.vercel.app/schema.json",
-  "style": "default",
-  "rsc": true,
-  "tsx": true,
-  "tailwind": {
-    "config": "tailwind.config.js",
-    "css": "src/app/globals.css",
-    "baseColor": "slate"
-  },
-  "aliases": {
-    "components": "@/components/ui",
-    "utils": "@/lib/utils"
+  "language": "typescript",
+  "paths": {
+    "components": "./src/components/ui",
+    "utils": "./src/lib/utils.ts",
+    "css": "./src/app/globals.css"
   }
 }
 ```
+
+The CLI also natively honors standard shadcn `components.json` alias schemas (`aliases.components`, `aliases.ui`, `aliases.utils`, and `tailwind.css`).

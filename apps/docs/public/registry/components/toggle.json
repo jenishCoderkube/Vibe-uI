@@ -1,10 +1,10 @@
 {
   "name": "toggle",
   "dependencies": [
-    "@radix-ui/react-toggle",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-toggle"
   ],
   "registryDependencies": [
     "utils"

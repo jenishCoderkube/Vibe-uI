@@ -1,11 +1,11 @@
 {
   "name": "toast",
   "dependencies": [
-    "@radix-ui/react-toast",
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-toast",
+    "lucide-react"
   ],
   "registryDependencies": [
     "utils"

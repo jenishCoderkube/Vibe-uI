@@ -4,7 +4,6 @@ import * as React from 'react'
 import { UploadCloud, File, X, CheckCircle, AlertCircle } from 'lucide-react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '../lib/utils'
-import { Button } from './button'
 import { Progress } from './progress'
 import { Badge } from './badge'
 

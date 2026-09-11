@@ -18,7 +18,6 @@ import {
 import {
   Mail,
   MessageSquare,
-  Globe,
   Send,
   CheckCircle,
   Loader2,

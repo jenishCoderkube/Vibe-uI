@@ -5,11 +5,11 @@
       "accordion.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-accordion",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-accordion",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -21,10 +21,10 @@
       "alert-dialog.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-alert-dialog",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-alert-dialog"
     ],
     "registryDependencies": [
       "utils",
@@ -37,7 +37,6 @@
       "alert.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
@@ -108,10 +107,10 @@
       "avatar.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-avatar",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-avatar"
     ],
     "registryDependencies": [
       "utils"
@@ -123,10 +122,10 @@
       "badge.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-slot"
     ],
     "registryDependencies": [
       "utils"
@@ -138,10 +137,10 @@
       "blur-fade.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -153,11 +152,11 @@
       "breadcrumb.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge",
-      "@radix-ui/react-slot"
+      "@radix-ui/react-slot",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -174,17 +173,16 @@
       "tailwind-merge"
     ],
     "registryDependencies": [
-      "utils"
+      "utils",
+      "button"
     ]
   },
   {
     "name": "button",
     "files": [
-      "button.tsx",
-      "button-group.tsx"
+      "button.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge",
@@ -200,12 +198,11 @@
       "calendar.tsx"
     ],
     "dependencies": [
-      "react-day-picker",
-      "date-fns",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "react-day-picker",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils",
@@ -218,10 +215,10 @@
       "card.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-slot"
     ],
     "registryDependencies": [
       "utils"
@@ -233,11 +230,11 @@
       "carousel.tsx"
     ],
     "dependencies": [
-      "embla-carousel-react",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "embla-carousel-react",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils",
@@ -250,10 +247,10 @@
       "chart.tsx"
     ],
     "dependencies": [
-      "recharts",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "recharts"
     ],
     "registryDependencies": [
       "utils"
@@ -265,11 +262,11 @@
       "checkbox.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-checkbox",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-checkbox",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -281,10 +278,10 @@
       "collapsible.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-collapsible",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-collapsible"
     ],
     "registryDependencies": [
       "utils"
@@ -296,16 +293,15 @@
       "combobox.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils",
-      "popover",
-      "command",
-      "button"
+      "button",
+      "popover"
     ]
   },
   {
@@ -314,10 +310,10 @@
       "comic-text.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -329,13 +325,15 @@
       "command.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "cmdk",
+      "lucide-react"
     ],
     "registryDependencies": [
-      "utils"
+      "utils",
+      "dialog"
     ]
   },
   {
@@ -344,11 +342,11 @@
       "context-menu.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-context-menu",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-context-menu",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -362,10 +360,17 @@
     "dependencies": [
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
-      "utils"
+      "utils",
+      "avatar",
+      "badge",
+      "button",
+      "card",
+      "input",
+      "drawer"
     ]
   },
   {
@@ -374,17 +379,18 @@
       "date-picker.tsx"
     ],
     "dependencies": [
-      "date-fns",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "date-fns",
+      "lucide-react",
+      "react-day-picker"
     ],
     "registryDependencies": [
       "utils",
-      "popover",
+      "button",
       "calendar",
-      "button"
+      "popover"
     ]
   },
   {
@@ -393,10 +399,10 @@
       "dia-text-reveal.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -408,11 +414,11 @@
       "dialog.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-dialog",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-dialog",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -424,10 +430,10 @@
       "drawer.tsx"
     ],
     "dependencies": [
-      "vaul",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "vaul"
     ],
     "registryDependencies": [
       "utils"
@@ -439,11 +445,11 @@
       "dropdown-menu.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-dropdown-menu",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-dropdown-menu",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -455,14 +461,12 @@
       "empty.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
       "tailwind-merge"
     ],
     "registryDependencies": [
-      "utils",
-      "button"
+      "utils"
     ]
   },
   {
@@ -471,10 +475,11 @@
       "form.tsx"
     ],
     "dependencies": [
-      "react-hook-form",
-      "@hookform/resolvers",
-      "zod",
-      "@radix-ui/react-slot"
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge",
+      "@radix-ui/react-slot",
+      "react-hook-form"
     ],
     "registryDependencies": [
       "utils",
@@ -487,10 +492,10 @@
       "hover-card.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-hover-card",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-hover-card"
     ],
     "registryDependencies": [
       "utils"
@@ -502,10 +507,10 @@
       "hyper-text.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -517,10 +522,10 @@
       "infinite-scroll.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -532,10 +537,10 @@
       "input-otp.tsx"
     ],
     "dependencies": [
-      "input-otp",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "input-otp"
     ],
     "registryDependencies": [
       "utils"
@@ -561,10 +566,10 @@
       "item.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-slot"
     ],
     "registryDependencies": [
       "utils"
@@ -576,10 +581,10 @@
       "kbd.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-slot"
     ],
     "registryDependencies": [
       "utils"
@@ -605,10 +610,10 @@
       "label.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-label",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-label"
     ],
     "registryDependencies": [
       "utils"
@@ -620,10 +625,10 @@
       "layout-shell.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -635,10 +640,10 @@
       "light-tunnel.tsx"
     ],
     "dependencies": [
-      "ogl",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "ogl"
     ],
     "registryDependencies": [
       "utils"
@@ -650,10 +655,10 @@
       "lightfall.tsx"
     ],
     "dependencies": [
-      "ogl",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "ogl"
     ],
     "registryDependencies": [
       "utils"
@@ -665,10 +670,10 @@
       "line-shadow-text.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -680,10 +685,10 @@
       "marker.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-slot"
     ],
     "registryDependencies": [
       "utils"
@@ -709,11 +714,11 @@
       "menubar.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-menubar",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-menubar",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -727,10 +732,12 @@
     "dependencies": [
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
-      "utils"
+      "utils",
+      "button"
     ]
   },
   {
@@ -767,10 +774,10 @@
       "multi-select.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -782,10 +789,10 @@
       "number-ticker.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -797,10 +804,10 @@
       "pagination.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils",
@@ -813,10 +820,10 @@
       "popover.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-popover",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-popover"
     ],
     "registryDependencies": [
       "utils"
@@ -828,10 +835,10 @@
       "progress.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-progress",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-progress"
     ],
     "registryDependencies": [
       "utils"
@@ -843,11 +850,10 @@
       "radio-group.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-radio-group",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-radio-group"
     ],
     "registryDependencies": [
       "utils"
@@ -859,10 +865,10 @@
       "scanner.tsx"
     ],
     "dependencies": [
-      "ogl",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "ogl"
     ],
     "registryDependencies": [
       "utils"
@@ -874,10 +880,10 @@
       "scroll-area.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-scroll-area",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-scroll-area"
     ],
     "registryDependencies": [
       "utils"
@@ -889,10 +895,10 @@
       "scroll-based-velocity.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -904,11 +910,11 @@
       "select.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-select",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-select",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -920,10 +926,10 @@
       "separator.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-slot",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-slot"
     ],
     "registryDependencies": [
       "utils"
@@ -935,11 +941,11 @@
       "sheet.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-dialog",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-dialog",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -952,11 +958,11 @@
       "hooks/use-mobile.ts"
     ],
     "dependencies": [
-      "@radix-ui/react-slot",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react",
+      "@radix-ui/react-slot"
     ],
     "registryDependencies": [
       "utils",
@@ -988,10 +994,10 @@
       "sliced-waves.tsx"
     ],
     "dependencies": [
-      "ogl",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "ogl"
     ],
     "registryDependencies": [
       "utils"
@@ -1003,10 +1009,10 @@
       "slider.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-slider",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-slider"
     ],
     "registryDependencies": [
       "utils"
@@ -1018,10 +1024,10 @@
       "sparkles-text.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -1047,10 +1053,10 @@
       "spinning-text.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -1062,10 +1068,10 @@
       "switch.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-switch",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-switch"
     ],
     "registryDependencies": [
       "utils"
@@ -1105,10 +1111,10 @@
       "text-3d-flip.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -1120,10 +1126,10 @@
       "text-animate.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -1149,10 +1155,10 @@
       "text-reveal.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -1180,10 +1186,12 @@
     "dependencies": [
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
-      "utils"
+      "utils",
+      "dropdown-menu"
     ]
   },
   {
@@ -1192,11 +1200,11 @@
       "toast.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-toast",
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-toast",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils"
@@ -1208,10 +1216,10 @@
       "toggle.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-toggle",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-toggle"
     ],
     "registryDependencies": [
       "utils"
@@ -1223,10 +1231,10 @@
       "tooltip.tsx"
     ],
     "dependencies": [
-      "@radix-ui/react-tooltip",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "@radix-ui/react-tooltip"
     ],
     "registryDependencies": [
       "utils"
@@ -1238,10 +1246,10 @@
       "typing-animation.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -1253,14 +1261,13 @@
       "uploader.tsx"
     ],
     "dependencies": [
-      "lucide-react",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "lucide-react"
     ],
     "registryDependencies": [
       "utils",
-      "button",
       "progress",
       "badge"
     ]
@@ -1285,10 +1292,10 @@
       "web-threads.tsx"
     ],
     "dependencies": [
-      "ogl",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "ogl"
     ],
     "registryDependencies": [
       "utils"
@@ -1300,10 +1307,10 @@
       "word-rotate.tsx"
     ],
     "dependencies": [
-      "motion",
       "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
+      "motion"
     ],
     "registryDependencies": [
       "utils"
@@ -1319,19 +1326,22 @@
       "auth-01/page.tsx"
     ],
     "dependencies": [
-      "lucide-react",
-      "tailwind-variants",
+      "@hookform/resolvers",
       "clsx",
+      "lucide-react",
+      "motion",
+      "react-hook-form",
       "tailwind-merge",
-      "motion"
+      "tailwind-variants",
+      "zod"
     ],
     "registryDependencies": [
-      "utils",
       "button",
-      "input",
       "card",
       "checkbox",
-      "form"
+      "form",
+      "input",
+      "utils"
     ]
   },
   {
@@ -1344,27 +1354,24 @@
       "chat-01/page.tsx"
     ],
     "dependencies": [
-      "lucide-react",
-      "tailwind-variants",
       "clsx",
-      "tailwind-merge",
+      "lucide-react",
       "motion",
-      "prism-react-renderer"
+      "prism-react-renderer",
+      "tailwind-merge",
+      "tailwind-variants"
     ],
     "registryDependencies": [
-      "utils",
-      "button",
-      "input",
-      "scroll-area",
-      "sheet",
-      "dropdown-menu",
-      "dialog",
       "avatar",
-      "tooltip",
-      "theme-switcher",
+      "button",
+      "card",
+      "dropdown-menu",
+      "scroll-area",
+      "separator",
+      "sheet",
       "textarea",
-      "badge",
-      "card"
+      "tooltip",
+      "utils"
     ]
   },
   {
@@ -1379,21 +1386,21 @@
       "crypto-glass-01/YieldStakingView.tsx"
     ],
     "dependencies": [
-      "lucide-react",
-      "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "lucide-react",
+      "tailwind-merge",
+      "tailwind-variants"
     ],
     "registryDependencies": [
-      "utils",
+      "badge",
       "button",
       "card",
       "input",
-      "badge",
-      "table",
-      "switch",
+      "select",
       "slider",
-      "select"
+      "switch",
+      "table",
+      "utils"
     ]
   },
   {
@@ -1411,28 +1418,28 @@
       "dashboard-01/page.tsx"
     ],
     "dependencies": [
-      "lucide-react",
-      "tailwind-variants",
       "clsx",
-      "tailwind-merge"
+      "lucide-react",
+      "tailwind-merge",
+      "tailwind-variants"
     ],
     "registryDependencies": [
-      "utils",
-      "sidebar",
-      "card",
+      "avatar",
       "badge",
       "button",
-      "input",
-      "avatar",
-      "table",
+      "card",
       "checkbox",
-      "select",
-      "dropdown-menu",
-      "drawer",
-      "uploader",
-      "progress",
       "collapsible",
-      "dialog"
+      "dialog",
+      "drawer",
+      "dropdown-menu",
+      "input",
+      "progress",
+      "select",
+      "sidebar",
+      "table",
+      "uploader",
+      "utils"
     ]
   },
   {
@@ -1444,24 +1451,24 @@
       "ecommerce-01/page.tsx"
     ],
     "dependencies": [
-      "lucide-react",
-      "tailwind-variants",
       "clsx",
+      "lucide-react",
+      "motion",
       "tailwind-merge",
-      "motion"
+      "tailwind-variants"
     ],
     "registryDependencies": [
-      "utils",
-      "button",
-      "badge",
-      "card",
-      "input",
       "avatar",
-      "sheet",
-      "dropdown-menu",
+      "badge",
+      "blur-fade",
+      "button",
+      "card",
       "dialog",
+      "dropdown-menu",
+      "input",
+      "sheet",
       "tooltip",
-      "blur-fade"
+      "utils"
     ]
   },
   {
@@ -1473,28 +1480,24 @@
       "ecommerce-02/page.tsx"
     ],
     "dependencies": [
-      "lucide-react",
-      "tailwind-variants",
       "clsx",
+      "lucide-react",
       "tailwind-merge",
-      "motion"
+      "tailwind-variants"
     ],
     "registryDependencies": [
-      "utils",
-      "button",
-      "badge",
-      "card",
-      "input",
-      "avatar",
-      "sheet",
-      "dropdown-menu",
-      "dialog",
-      "tooltip",
       "accordion",
+      "avatar",
+      "badge",
       "blur-fade",
-      "textarea",
+      "button",
+      "card",
+      "dialog",
+      "ecommerce-01",
+      "input",
       "label",
-      "ecommerce-01"
+      "textarea",
+      "utils"
     ]
   }
 ]

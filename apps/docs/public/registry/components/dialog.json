@@ -1,11 +1,11 @@
 {
   "name": "dialog",
   "dependencies": [
-    "@radix-ui/react-dialog",
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-dialog",
+    "lucide-react"
   ],
   "registryDependencies": [
     "utils"

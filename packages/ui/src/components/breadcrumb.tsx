@@ -36,7 +36,7 @@ const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
       ref={ref}
       aria-label="breadcrumb"
       data-slot="breadcrumb"
-      className={className}
+      className={cn(breadcrumbVariants({ variant }), className)}
       {...props}
     />
   ),

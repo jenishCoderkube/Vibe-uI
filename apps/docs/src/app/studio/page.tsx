@@ -16,7 +16,6 @@ import {
   LightTunnel,
   WebThreads,
   SlicedWaves,
-  Scanner,
   Switch,
   Select,
   SelectTrigger,

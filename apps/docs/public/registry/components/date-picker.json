@@ -1,17 +1,18 @@
 {
   "name": "date-picker",
   "dependencies": [
-    "date-fns",
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "date-fns",
+    "lucide-react",
+    "react-day-picker"
   ],
   "registryDependencies": [
     "utils",
-    "popover",
+    "button",
     "calendar",
-    "button"
+    "popover"
   ],
   "files": [
     {

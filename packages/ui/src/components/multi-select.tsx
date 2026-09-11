@@ -70,7 +70,7 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
       mode = 'multi',
       children,
     },
-    ref,
+    _ref,
   ) => {
     const [selectedValues, setSelectedValues] = React.useState<string[]>(
       defaultValue || value || [],

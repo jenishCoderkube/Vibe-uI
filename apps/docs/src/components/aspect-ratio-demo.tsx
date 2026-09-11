@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { AspectRatio, Button } from 'vibe-ui'
-import { Star, Play, Clock, ArrowRight, Eye, Heart } from 'lucide-react'
+import { Star, Play, Clock, ArrowRight, Heart } from 'lucide-react'
 
 // Helper card wrapper to standardise demo frames
 function DemoCard({

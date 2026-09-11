@@ -1,11 +1,11 @@
 {
   "name": "menubar",
   "dependencies": [
-    "@radix-ui/react-menubar",
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-menubar",
+    "lucide-react"
   ],
   "registryDependencies": [
     "utils"

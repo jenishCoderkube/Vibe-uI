@@ -6,11 +6,6 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
-  GitPullRequest,
-  Milestone,
-  Trash2,
-  ShieldCheck,
-  Play,
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react'

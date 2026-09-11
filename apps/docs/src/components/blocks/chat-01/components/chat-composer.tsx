@@ -9,7 +9,6 @@ import {
   Globe,
   ShoppingBag,
   Sparkles,
-  Search,
   Key,
   Palette,
   Mic,
@@ -30,20 +29,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-
-const NextIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M7 17V7l10 10V7" />
-  </svg>
-)
 
 interface AttachedFile {
   id: string
@@ -68,7 +53,7 @@ export function ChatComposer({
   onSend,
   isGenerating,
   onStop,
-  selectedModel,
+  selectedModel: _selectedModel,
 }: ChatComposerProps) {
   const [attachments, setAttachments] = useState<AttachedFile[]>([])
   const [isRecording, setIsRecording] = useState(false)

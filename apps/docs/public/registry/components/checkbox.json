@@ -1,11 +1,11 @@
 {
   "name": "checkbox",
   "dependencies": [
-    "@radix-ui/react-checkbox",
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-checkbox",
+    "lucide-react"
   ],
   "registryDependencies": [
     "utils"

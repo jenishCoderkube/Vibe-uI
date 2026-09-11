@@ -1,11 +1,10 @@
 {
   "name": "radio-group",
   "dependencies": [
-    "@radix-ui/react-radio-group",
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-radio-group"
   ],
   "registryDependencies": [
     "utils"

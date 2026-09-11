@@ -1,10 +1,10 @@
 {
   "name": "avatar",
   "dependencies": [
-    "@radix-ui/react-avatar",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-avatar"
   ],
   "registryDependencies": [
     "utils"

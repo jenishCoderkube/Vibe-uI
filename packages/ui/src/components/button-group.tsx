@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '../lib/utils'
-import { Button, type ButtonProps } from './button'
+import { Button, ButtonGroupContext, type ButtonProps } from './button'
 
 const buttonGroupVariants = tv({
   base: 'relative inline-flex items-center justify-center bg-muted/80 p-1 text-muted-foreground select-none border border-border/80 shadow-xs gap-1 max-w-full overflow-x-auto scrollbar-none w-auto [&_button]:relative [&_button]:z-10 [&_button]:!bg-transparent [&_button]:hover:!bg-transparent [&_button]:text-muted-foreground [&_button]:shadow-none [&_button]:hover:shadow-none [&_button]:border-none [&_button]:![transform:none] [&_button]:![translate:none] [&_button]:hover:![transform:none] [&_button]:hover:![translate:none] [&_button]:hover:!translate-y-0 [&_button]:!transition-none [&_button]:hover:opacity-100 [&_button]:h-8 [&_button]:px-3 sm:[&_button]:px-3.5 [&_button]:text-xs [&_button]:font-semibold [&_button]:gap-1.5 sm:[&_button]:gap-2 [&_button]:flex-initial [&_button]:min-w-0',
@@ -92,17 +92,7 @@ const buttonGroupItemVariants = tv({
   },
 })
 
-export interface ButtonGroupContextValue {
-  value?: string
-  onValueChange?: (value: string) => void
-  variant?: 'default' | 'glass' | 'retro' | 'glow'
-  radius?: 'default' | 'sm' | 'lg' | 'full' | 'none'
-  orientation?: 'horizontal' | 'vertical'
-  registerRef?: (val: string, node: HTMLButtonElement | null) => void
-}
-
-export const ButtonGroupContext =
-  React.createContext<ButtonGroupContextValue | null>(null)
+export type { ButtonGroupContextValue } from './button'
 
 export interface ButtonGroupProps
   extends
@@ -133,6 +123,16 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
     const itemRefs = React.useRef<Map<string, HTMLButtonElement>>(new Map())
     const containerRef = React.useRef<HTMLDivElement | null>(null)
     const isInitialRender = React.useRef(true)
+    const rafRef = React.useRef<number | null>(null)
+
+    React.useEffect(() => {
+      return () => {
+        if (rafRef.current) {
+          cancelAnimationFrame(rafRef.current)
+          rafRef.current = null
+        }
+      }
+    }, [])
 
     const [pillStyle, setPillStyle] = React.useState<{
       left: number
@@ -173,20 +173,16 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
 
       const queried = containerRef.current.querySelector(
         `[data-value="${CSS.escape(activeValue)}"], [value="${CSS.escape(activeValue)}"], [data-state="active"]`,
-      ) as HTMLElement | null
-
-      return queried
+      )
+      return queried as HTMLElement | null
     }, [activeValue])
 
     const updatePillPosition = React.useCallback(() => {
       const activeNode = getActiveNode()
-      const containerNode = containerRef.current
-
-      if (activeNode && containerNode) {
-        const containerRect = containerNode.getBoundingClientRect()
+      if (activeNode && containerRef.current) {
         const activeRect = activeNode.getBoundingClientRect()
-        const containerStyle = window.getComputedStyle(containerNode)
-
+        const containerRect = containerRef.current.getBoundingClientRect()
+        const containerStyle = window.getComputedStyle(containerRef.current)
         const borderLeft = parseFloat(containerStyle.borderLeftWidth) || 0
         const borderTop = parseFloat(containerStyle.borderTopWidth) || 0
 
@@ -206,8 +202,10 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
         })
 
         if (isInitialRender.current) {
-          requestAnimationFrame(() => {
+          if (rafRef.current) cancelAnimationFrame(rafRef.current)
+          rafRef.current = requestAnimationFrame(() => {
             isInitialRender.current = false
+            rafRef.current = null
           })
         }
       } else {
@@ -314,4 +312,9 @@ const ButtonGroupItem = React.forwardRef<
 >((props, ref) => <Button ref={ref} {...props} />)
 ButtonGroupItem.displayName = 'ButtonGroupItem'
 
-export { ButtonGroup, ButtonGroupItem }
+export {
+  ButtonGroup,
+  ButtonGroupItem,
+  buttonGroupVariants,
+  buttonGroupItemVariants,
+}

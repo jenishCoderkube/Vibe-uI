@@ -6,11 +6,9 @@ import {
   Table,
   TableHeader,
   TableBody,
-  TableFooter,
   TableHead,
   TableRow,
   TableCell,
-  TableCaption,
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
@@ -32,15 +30,12 @@ import {
   PaginationDropdown,
   PaginationProgressLine,
   ScrollArea,
-  ScrollBar,
   HoverCard,
   HoverCardTrigger,
   HoverCardContent,
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverAnchor,
-  PopoverHeader,
   PopoverTitle,
   PopoverDescription,
   ToastProvider,
@@ -85,13 +80,11 @@ import {
   EmptyDescription,
   EmptyActions,
   ButtonGroup,
-  ButtonGroupItem,
   ContextMenu,
   ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuCheckboxItem,
-  ContextMenuRadioItem,
   ContextMenuLabel,
   ContextMenuSeparator,
   ContextMenuShortcut,
@@ -165,24 +158,19 @@ import {
   Copy,
   Check,
   Search,
-  Sparkles,
-  ArrowRight,
   TrendingUp,
   Volume2,
   Download,
   UploadCloud,
   FolderOpen,
   LayoutGrid,
-  FileCode,
   Terminal,
   Folder,
   Play,
-  Code,
   List,
   Columns,
   Inbox,
   RefreshCw,
-  Filter,
   ShieldCheck,
   Layers,
   Loader2,
@@ -201,8 +189,15 @@ import {
   ChevronsRight,
   Eye,
   Edit,
-  GripVertical,
 } from 'lucide-react'
+import {
+  Dashboard01Block,
+  Ecommerce01Block,
+  Ecommerce02Block,
+  Chat01Block,
+  Auth01Block,
+  CryptoGlass01Block,
+} from './vibe-blocks'
 
 // ==========================================
 // 1. TABLE DEMOS (10 Examples)
@@ -1236,14 +1231,14 @@ function getPaginationRange(
   const lastPageIndex = totalPages
 
   if (!shouldShowLeftDots && shouldShowRightDots) {
-    let leftItemCount = 3 + 2 * siblingCount
-    let leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1)
+    const leftItemCount = 3 + 2 * siblingCount
+    const leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1)
     return [...leftRange, 'ellipsis', totalPages]
   }
 
   if (shouldShowLeftDots && !shouldShowRightDots) {
-    let rightItemCount = 3 + 2 * siblingCount
-    let rightRange = Array.from(
+    const rightItemCount = 3 + 2 * siblingCount
+    const rightRange = Array.from(
       { length: rightItemCount },
       (_, i) => totalPages - rightItemCount + i + 1,
     )
@@ -1251,7 +1246,7 @@ function getPaginationRange(
   }
 
   if (shouldShowLeftDots && shouldShowRightDots) {
-    let middleRange = Array.from(
+    const middleRange = Array.from(
       { length: rightSiblingIndex - leftSiblingIndex + 1 },
       (_, i) => leftSiblingIndex + i,
     )
@@ -5061,13 +5056,6 @@ const frameworks = [
   { value: 'nuxt', label: 'Nuxt.js' },
 ]
 
-const roles = [
-  { value: 'admin', label: 'System Admin' },
-  { value: 'developer', label: 'Lead Developer' },
-  { value: 'designer', label: 'UI/UX Designer' },
-  { value: 'viewer', label: 'Read-only Viewer' },
-]
-
 // Member details for composed assignee selector
 const members = [
   {
@@ -5412,12 +5400,60 @@ export function ContextMenuCyberpunkDemo() {
 }
 
 // ==========================================
-// DASHBOARD BLOCK 02 DEMO
+// BLOCK DEMOS
 // ==========================================
+export function Dashboard01Demo() {
+  return (
+    <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
+      <Dashboard01Block />
+    </div>
+  )
+}
+
 export function Dashboard02Demo() {
   return (
     <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
       <DashboardBlock02 />
+    </div>
+  )
+}
+
+export function Ecommerce01Demo() {
+  return (
+    <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
+      <Ecommerce01Block />
+    </div>
+  )
+}
+
+export function Ecommerce02Demo() {
+  return (
+    <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
+      <Ecommerce02Block />
+    </div>
+  )
+}
+
+export function Chat01Demo() {
+  return (
+    <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
+      <Chat01Block />
+    </div>
+  )
+}
+
+export function Auth01Demo() {
+  return (
+    <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
+      <Auth01Block />
+    </div>
+  )
+}
+
+export function CryptoGlass01Demo() {
+  return (
+    <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
+      <CryptoGlass01Block />
     </div>
   )
 }

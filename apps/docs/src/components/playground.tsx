@@ -21,7 +21,6 @@ import {
   Tabs,
   TabsList,
   TabsTrigger,
-  TabsContent,
   Marquee,
   TextGlitch,
   TypingAnimation,
@@ -51,7 +50,7 @@ import {
   Scanner,
 } from 'vibe-ui'
 import type { AnimationVariant, SlicedWavesOrientation, ScanDirection, FanMode } from 'vibe-ui'
-import { Copy, Check, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Copy, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Highlight, themes } from 'prism-react-renderer'
 
@@ -888,7 +887,6 @@ export default function ScannerDemo() {
 
   const CopyIcon = Copy as any
   const CheckIcon = Check as any
-  const RefreshIcon = RefreshCw as any
 
   const tabsRef = React.useRef<HTMLDivElement>(null)
 
@@ -2924,7 +2922,7 @@ export default function ScannerDemo() {
             code={generateCode()}
             language="tsx"
           >
-            {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            {({ className: _className, style, tokens, getLineProps, getTokenProps }) => (
               <pre
                 className={`overflow-x-auto p-4 text-xs font-mono leading-relaxed max-h-[190px]`}
                 style={{ ...style, backgroundColor: 'transparent' }}

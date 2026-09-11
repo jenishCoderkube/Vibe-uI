@@ -115,7 +115,7 @@ ${cleanedMarkdown}
         'Cache-Control': 'public, max-age=3600, must-revalidate',
       },
     })
-  } catch (error) {
+  } catch {
     return new NextResponse('Internal Server Error', { status: 500 })
   }
 }

@@ -62,7 +62,7 @@ describe('Toast Component', () => {
   })
 
   it('renders with correct position and design variants classes', () => {
-    const { container } = render(
+    render(
       <ToastProvider>
         <Toast open variant="retro" position="top-left">
           <ToastTitle>Retro Top Left</ToastTitle>

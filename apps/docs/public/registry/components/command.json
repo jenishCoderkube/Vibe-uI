@@ -1,13 +1,15 @@
 {
   "name": "command",
   "dependencies": [
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "cmdk",
+    "lucide-react"
   ],
   "registryDependencies": [
-    "utils"
+    "utils",
+    "dialog"
   ],
   "files": [
     {

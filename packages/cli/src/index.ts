@@ -108,6 +108,8 @@ program
   .description('Add components to your project')
   .argument('[components...]', 'The components to add')
   .option('-y, --yes', 'Skip confirmation prompts and use default paths', false)
+  .option('-o, --overwrite', 'Overwrite existing component files', false)
+  .option('-a, --all', 'Install all available components and blocks', false)
   .action(async (components, options) => {
     try {
       // 1. Fetch index registry
@@ -119,7 +121,14 @@ program
 
       let componentsToInstall: string[] = []
 
-      if (components && components.length > 0) {
+      if (
+        options.all ||
+        (components &&
+          (components.includes('all') || components.includes('--all')))
+      ) {
+        // Bulk install all registry components
+        componentsToInstall = registryIndex.map((c) => c.name)
+      } else if (components && components.length > 0) {
         // Multiple components mode
         for (const comp of components) {
           const componentInfo = registryIndex.find((c) => c.name === comp)
@@ -321,20 +330,41 @@ program
           componentData.registryDependencies?.includes('utils') &&
           !hasInstalledUtils
         ) {
-          const utilsRes = await fetch(`${REGISTRY_URL}/utils.json`)
-          if (utilsRes.ok) {
-            const utilsData = (await utilsRes.json()) as any
-            const utilFile = utilsData.files[0]
-            let utilsContent = utilFile.content
+          const utilsExists = fs.existsSync(utilsPath)
+          let shouldWriteUtils = !utilsExists || options.overwrite
 
-            if (language === 'javascript') {
-              utilsContent = transpileToJs(utilsContent, false)
+          if (utilsExists && !options.overwrite) {
+            if (!options.yes) {
+              const confirm = await prompts({
+                type: 'confirm',
+                name: 'overwrite',
+                message: `Utilities helper at "${utilsPathInput}" already exists. Overwrite?`,
+                initial: false,
+              })
+              shouldWriteUtils = confirm.overwrite
+            } else {
+              shouldWriteUtils = false
             }
-
-            await fs.writeFile(utilsPath, utilsContent)
-            console.log(`✓ Created utilities helper at ${utilsPathInput}`)
-            hasInstalledUtils = true
           }
+
+          if (shouldWriteUtils) {
+            const utilsRes = await fetch(`${REGISTRY_URL}/utils.json`)
+            if (utilsRes.ok) {
+              const utilsData = (await utilsRes.json()) as any
+              const utilFile = utilsData.files[0]
+              let utilsContent = utilFile.content
+
+              if (language === 'javascript') {
+                utilsContent = transpileToJs(utilsContent, false)
+              }
+
+              await fs.writeFile(utilsPath, utilsContent)
+              console.log(`✓ Created utilities helper at ${utilsPathInput}`)
+            }
+          } else {
+            console.log(`○ Using existing utilities helper at ${utilsPathInput}`)
+          }
+          hasInstalledUtils = true
         }
 
         // Write component files
@@ -351,6 +381,29 @@ program
 
           const targetFilePath = path.join(componentPath, fileName)
 
+          const fileExists = fs.existsSync(targetFilePath)
+          if (fileExists && !options.overwrite) {
+            if (!options.yes) {
+              const confirm = await prompts({
+                type: 'confirm',
+                name: 'overwrite',
+                message: `File "${path.join(componentPathInput, fileName)}" already exists. Overwrite?`,
+                initial: false,
+              })
+              if (!confirm.overwrite) {
+                console.log(
+                  `○ Skipped ${path.join(componentPathInput, fileName)}`,
+                )
+                continue
+              }
+            } else {
+              console.log(
+                `○ Skipped ${path.join(componentPathInput, fileName)} (already exists. Use -o/--overwrite to overwrite)`,
+              )
+              continue
+            }
+          }
+
           // Calculate relative import path from component file to utility helper
           const componentDir = path.dirname(targetFilePath)
           let relativePathToUtils = path.relative(componentDir, utilsPath)
@@ -365,6 +418,33 @@ program
             /(\.\.\/lib\/utils|@\/lib\/utils)/g,
             relativePathToUtils,
           )
+
+          // Replace any @/components/ui/<component> imports with relative paths
+          content = content.replace(
+            /@\/components\/ui\/([a-zA-Z0-9_-]+)/g,
+            (_match: string, compName: string) => {
+              const targetCompPath = path.join(componentPath, compName)
+              let relPath = path
+                .relative(componentDir, targetCompPath)
+                .replace(/\\/g, '/')
+              if (!relPath.startsWith('.')) {
+                relPath = './' + relPath
+              }
+              return relPath
+            },
+          )
+
+          // Replace any @/hooks/use-mobile imports with relative paths
+          content = content.replace(/@\/hooks\/use-mobile/g, () => {
+            const targetHookPath = path.join(componentPath, 'hooks/use-mobile')
+            let relPath = path
+              .relative(componentDir, targetHookPath)
+              .replace(/\\/g, '/')
+            if (!relPath.startsWith('.')) {
+              relPath = './' + relPath
+            }
+            return relPath
+          })
 
           await fs.ensureDir(path.dirname(targetFilePath))
           await fs.writeFile(targetFilePath, content)
@@ -820,4 +900,209 @@ program
     }
   })
 
+function getComponentCategory(
+  name: string,
+): 'components' | 'animations' | 'backgrounds' | 'blocks' {
+  const backgrounds = [
+    'light-tunnel',
+    'web-threads',
+    'sliced-waves',
+    'scanner',
+    'lightfall',
+  ]
+  const blocks = [
+    'dashboard-01',
+    'dashboard-02',
+    'ecommerce-01',
+    'ecommerce-02',
+    'chat-01',
+    'auth-01',
+    'crypto-glass-01',
+  ]
+  const animations = [
+    'animated-gradient-text',
+    'animated-shiny-text',
+    'aurora-text',
+    'blur-fade',
+    'comic-text',
+    'dia-text-reveal',
+    'hyper-text',
+    'kinetic-text',
+    'line-shadow-text',
+    'marquee',
+    'message-scroller',
+    'morphing-text',
+    'number-ticker',
+    'scroll-based-velocity',
+    'sparkles-text',
+    'spinning-text',
+    'text-3d-flip',
+    'text-animate',
+    'text-glitch',
+    'text-reveal',
+    'typing-animation',
+    'video-text',
+    'word-rotate',
+  ]
+  if (backgrounds.includes(name)) return 'backgrounds'
+  if (blocks.includes(name)) return 'blocks'
+  if (animations.includes(name)) return 'animations'
+  return 'components'
+}
+
+program
+  .command('list')
+  .description(
+    'List all available components, animations, backgrounds, and blocks',
+  )
+  .option(
+    '-c, --category <category>',
+    'Filter by category (components, animations, backgrounds, blocks)',
+  )
+  .option('-s, --search <term>', 'Search components by name or dependency')
+  .action(async (options) => {
+    try {
+      const indexRes = await fetch(`${REGISTRY_URL}/index.json`)
+      if (!indexRes.ok) {
+        throw new Error('Failed to fetch the component registry index.')
+      }
+      let items = (await indexRes.json()) as Array<{
+        name: string
+        files: string[]
+        dependencies?: string[]
+        registryDependencies?: string[]
+      }>
+
+      if (options.search) {
+        const query = options.search.toLowerCase()
+        items = items.filter(
+          (item) =>
+            item.name.toLowerCase().includes(query) ||
+            item.dependencies?.some((d) => d.toLowerCase().includes(query)) ||
+            item.registryDependencies?.some((d) =>
+              d.toLowerCase().includes(query),
+            ),
+        )
+      }
+
+      const groups: Record<
+        'components' | 'animations' | 'backgrounds' | 'blocks',
+        typeof items
+      > = {
+        components: [],
+        animations: [],
+        backgrounds: [],
+        blocks: [],
+      }
+
+      for (const item of items) {
+        const cat = getComponentCategory(item.name)
+        groups[cat].push(item)
+      }
+
+      const selectedCategory = options.category
+        ? options.category.toLowerCase()
+        : null
+
+      const categoryLabels: Record<
+        'components' | 'animations' | 'backgrounds' | 'blocks',
+        { title: string; icon: string }
+      > = {
+        components: { title: 'Components', icon: '📦' },
+        animations: { title: 'Animations', icon: '✨' },
+        backgrounds: { title: 'Backgrounds', icon: '🎨' },
+        blocks: { title: 'Blocks', icon: '🧩' },
+      }
+
+      console.log(
+        `\n\x1b[1m\x1b[36mVibe UI Registry\x1b[0m — ${items.length} item(s) available\n`,
+      )
+
+      for (const cat of [
+        'components',
+        'animations',
+        'backgrounds',
+        'blocks',
+      ] as const) {
+        if (selectedCategory && selectedCategory !== cat) continue
+        const list = groups[cat]
+        if (list.length === 0) continue
+
+        const { title, icon } = categoryLabels[cat]
+        console.log(`\x1b[1m${icon} ${title} (${list.length})\x1b[0m`)
+
+        for (const item of list) {
+          const regDeps = (item.registryDependencies || []).filter(
+            (d) => d !== 'utils',
+          )
+          const depHint =
+            regDeps.length > 0
+              ? ` \x1b[90m(requires: ${regDeps.join(', ')})\x1b[0m`
+              : ''
+          console.log(`  • \x1b[32m${item.name}\x1b[0m${depHint}`)
+        }
+        console.log('')
+      }
+
+      console.log(
+        `\x1b[90mRun "vibe-ui-kit add <name>" to install or "vibe-ui-kit info <name>" for details.\x1b[0m\n`,
+      )
+    } catch (err: any) {
+      console.error('Error fetching component list:', err.message)
+      process.exit(1)
+    }
+  })
+
+program
+  .command('info')
+  .description('Display detailed information and dependencies for a component')
+  .argument('<component>', 'The component name to inspect')
+  .action(async (componentName) => {
+    try {
+      const compRes = await fetch(
+        `${REGISTRY_URL}/components/${componentName}.json`,
+      )
+      if (!compRes.ok) {
+        console.error(
+          `\x1b[31mError: Component "${componentName}" not found in the registry.\x1b[0m`,
+        )
+        console.log(`Run "vibe-ui-kit list" to see all available components.`)
+        process.exit(1)
+      }
+
+      const data = (await compRes.json()) as {
+        name: string
+        dependencies?: string[]
+        registryDependencies?: string[]
+        files?: Array<{ name: string }>
+      }
+
+      const cat = getComponentCategory(data.name)
+      const regDeps = (data.registryDependencies || []).filter(
+        (d) => d !== 'utils',
+      )
+      const npmDeps = data.dependencies || []
+      const fileNames = (data.files || []).map((f) => f.name)
+
+      console.log(`\n\x1b[1m\x1b[36m${data.name}\x1b[0m`)
+      console.log(`  \x1b[1mCategory:\x1b[0m             ${cat}`)
+      console.log(
+        `  \x1b[1mFiles:\x1b[0m                ${fileNames.join(', ') || 'N/A'}`,
+      )
+      console.log(
+        `  \x1b[1mRegistry Dependencies:\x1b[0m ${regDeps.length > 0 ? regDeps.join(', ') : 'none (standalone)'}`,
+      )
+      console.log(
+        `  \x1b[1mNPM Dependencies:\x1b[0m      ${npmDeps.length > 0 ? npmDeps.join(', ') : 'none'}`,
+      )
+      console.log(
+        `\n  \x1b[1mInstallation:\x1b[0m\n    \x1b[32mnpx vibe-ui-kit add ${data.name}\x1b[0m\n`,
+      )
+    } catch (err: any) {
+      console.error('Error retrieving component info:', err.message)
+      process.exit(1)
+    }
+  })
+
 program.parse(process.argv)
+

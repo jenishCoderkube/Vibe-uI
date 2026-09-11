@@ -1,11 +1,11 @@
 {
   "name": "context-menu",
   "dependencies": [
-    "@radix-ui/react-context-menu",
-    "lucide-react",
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "@radix-ui/react-context-menu",
+    "lucide-react"
   ],
   "registryDependencies": [
     "utils"

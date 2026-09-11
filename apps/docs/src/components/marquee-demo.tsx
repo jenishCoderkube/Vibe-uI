@@ -4,29 +4,19 @@ import React from 'react'
 import { Marquee } from 'vibe-ui'
 import {
   Code,
-  Activity,
   Shield,
   Layers,
-  Heart,
   Star,
   Sparkles,
   Command,
   Globe,
   Hexagon,
   Cpu,
-  Terminal,
-  Zap,
-  Flame,
-  User,
-  Coffee,
 } from 'lucide-react'
 import { cn } from '../lib/utils'
 
 // Types and icons definition
 const ShieldIcon = Shield as any
-const SparkIcon = Sparkles as any
-const ActivityIcon = Activity as any
-const TerminalIcon = Terminal as any
 const StarIcon = Star as any
 
 const BRANDS = [

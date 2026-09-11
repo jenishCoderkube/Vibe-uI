@@ -3,10 +3,12 @@
   "dependencies": [
     "tailwind-variants",
     "clsx",
-    "tailwind-merge"
+    "tailwind-merge",
+    "lucide-react"
   ],
   "registryDependencies": [
-    "utils"
+    "utils",
+    "button"
   ],
   "files": [
     {

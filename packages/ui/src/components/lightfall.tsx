@@ -232,11 +232,16 @@ export const Lightfall: React.FC<LightfallProps> = ({
     const container = containerRef.current
     if (!container) return
 
-    const renderer = new Renderer({
-      dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
-      alpha: true,
-      antialias: true,
-    })
+    let renderer: Renderer
+    try {
+      renderer = new Renderer({
+        dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
+        alpha: true,
+        antialias: true,
+      })
+    } catch {
+      return
+    }
     rendererRef.current = renderer
     const gl = renderer.gl
     const canvas = gl.canvas as HTMLCanvasElement

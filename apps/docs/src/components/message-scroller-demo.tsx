@@ -9,7 +9,6 @@ import {
   MessageScrollerButton,
   Message,
   MessageContent,
-  MessageAvatar,
   Input,
   Button,
   DropdownMenu,

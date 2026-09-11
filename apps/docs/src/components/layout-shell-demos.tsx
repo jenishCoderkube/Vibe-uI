@@ -36,8 +36,6 @@ import {
   Cloud,
   RefreshCw,
   Plus,
-  Play,
-  ArrowUpRight,
   HardDrive,
   Cpu,
   CheckCircle2,
@@ -46,7 +44,7 @@ import {
   LogOut,
 } from 'lucide-react'
 
-// Icon wrappers for standard ESM definitions
+// Icon wrappers for Lucide Icons
 const LayersIcon = Layers as any
 const SettingsIcon = Settings as any
 const UsersIcon = Users as any
@@ -58,8 +56,6 @@ const CreditCardIcon = CreditCard as any
 const CloudIcon = Cloud as any
 const RefreshCwIcon = RefreshCw as any
 const PlusIcon = Plus as any
-const PlayIcon = Play as any
-const ArrowUpRightIcon = ArrowUpRight as any
 const HardDriveIcon = HardDrive as any
 const CpuIcon = Cpu as any
 const CheckIcon = CheckCircle2 as any

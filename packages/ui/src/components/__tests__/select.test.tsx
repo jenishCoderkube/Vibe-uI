@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, act, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {
   Select,
@@ -124,7 +124,7 @@ describe('Select Component', () => {
   it('applies styling variants to the trigger and content', async () => {
     const user = userEvent.setup()
 
-    const { rerender } = render(
+    render(
       <Select variant="retro">
         <SelectTrigger>
           <SelectValue placeholder="Retro select" />
