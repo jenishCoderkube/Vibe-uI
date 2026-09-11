@@ -48,6 +48,12 @@ npx vibe-ui-kit info chat-01
 
 # 5. Check if local components diverge from the registry
 npx vibe-ui-kit diff button
+
+# 6. Run diagnostics on Tailwind, CSS directives, and peer dependencies
+npx vibe-ui-kit doctor
+
+# 7. Batch upgrade installed components to latest upstream versions
+npx vibe-ui-kit update --all
 ```
 
 ---

@@ -107,6 +107,54 @@ If differences are detected, you can view a line-by-line diff or choose to updat
 
 ---
 
+### `doctor`
+
+Run automated project diagnostics to inspect your Node environment, package manager, Tailwind CSS version, CSS directives, and required peer dependencies:
+
+```bash
+npx vibe-ui-kit@latest doctor
+```
+
+Output:
+```text
+🩺 Running Vibe UI Project Diagnostics...
+
+  ✓ Node.js runtime (v20.10.0) is compatible (>= 18 required)
+  ✓ Package manager detected: pnpm
+  ✓ components.json found and component path verified (./src/components/ui)
+  ✓ Tailwind CSS v4 detected
+  ✓ Tailwind v4 directives correctly configured in src/app/globals.css
+  ✓ All core utility dependencies present (clsx, tailwind-merge, tailwind-variants, lucide-react)
+  ✓ Found 14 installed component(s) in src/components/ui
+
+Diagnostics Result: Healthy (5/5 checks passed)
+  Your project is perfectly configured for Vibe UI components! 🚀
+```
+
+---
+
+### `update`
+
+Batch update installed components to their latest upstream registry versions with interactive multi-select or one-click `--all`:
+
+```bash
+# Interactively select which outdated components to upgrade
+npx vibe-ui-kit@latest update
+
+# Update specific components directly
+npx vibe-ui-kit@latest update button card dialog
+
+# Upgrade all installed components without prompts
+npx vibe-ui-kit@latest update --all
+```
+
+#### Flags
+
+- `-a, --all`: Update all installed components without interactive confirmation.
+- `-y, --yes`: Skip confirmation prompts and automatically install newly introduced dependencies.
+
+---
+
 ## `components.json` Configuration
 
 When `npx vibe-ui-kit init` runs, it creates or updates `components.json` in your project root:

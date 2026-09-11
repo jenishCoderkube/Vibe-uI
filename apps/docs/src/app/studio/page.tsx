@@ -8,7 +8,10 @@ import {
   RotateCcw,
   Code,
   ArrowLeft,
+  Palette,
+  Sparkles,
 } from 'lucide-react'
+import { ThemeCustomizer } from './theme-customizer'
 import { Highlight, themes } from 'prism-react-renderer'
 import * as SliderPrimitive from '@radix-ui/react-slider'
 import { useTheme } from 'next-themes'
@@ -209,17 +212,22 @@ const BG_IDS = [
 export default function BackgroundStudio() {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [studioMode, setStudioMode] = useState<'backgrounds' | 'themes'>('backgrounds')
   const [activeBg, setActiveBg] = useState<'light-tunnel' | 'web-threads' | 'sliced-waves' | 'scanner' | 'lightfall'>('light-tunnel')
   const [showDemoContent, setShowDemoContent] = useState(true)
   const [copied, setCopied] = useState(false)
   const [showCodeModal, setShowCodeModal] = useState(false)
   const previewRef = useRef<HTMLDivElement | null>(null)
 
-  // Parse URL search parameters on load to auto-select background
+  // Parse URL search parameters on load to auto-select background or mode
   useEffect(() => {
     setMounted(true)
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search)
+      const tabParam = params.get('tab') || params.get('mode')
+      if (tabParam === 'themes' || tabParam === 'theme') {
+        setStudioMode('themes')
+      }
       const bgParam = params.get('bg')
       if (bgParam && BG_IDS.some((b) => b.id === bgParam)) {
         setActiveBg(bgParam as any)
@@ -743,31 +751,70 @@ export default function LightfallDemo() {
             size="sm"
             className="h-8 px-3 text-xs font-semibold rounded-lg text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-850 border border-zinc-200 dark:border-zinc-800 transition-all cursor-pointer active:scale-95 shadow-sm select-none"
           >
-            <Link href={`/docs/backgrounds/${activeBg}`}>
+            <Link href={studioMode === 'themes' ? '/docs' : `/docs/backgrounds/${activeBg}`}>
               <ArrowLeft className="w-3.5 h-3.5 mr-1" />
               Back to Docs
             </Link>
           </Button>
           <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
           <h1 className="text-xs font-extrabold tracking-widest uppercase bg-gradient-to-r from-purple-600 via-indigo-500 to-pink-600 dark:from-purple-400 dark:via-indigo-300 dark:to-pink-400 bg-clip-text text-transparent select-none">
-            Background Studio
+            Vibe Studio
           </h1>
         </div>
 
-        {/* Demo Content Toggle in Header */}
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-500 select-none">
-            Demo Content
-          </span>
-          <Switch
-            checked={showDemoContent}
-            onCheckedChange={setShowDemoContent}
-          />
+        {/* Central Studio Mode Switcher */}
+        <div className="inline-flex rounded-xl border border-zinc-200 dark:border-zinc-800 p-1 bg-zinc-100 dark:bg-zinc-900/80 shadow-inner select-none">
+          <button
+            onClick={() => setStudioMode('backgrounds')}
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer',
+              studioMode === 'backgrounds'
+                ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
+                : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+            )}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+            Background Shaders
+          </button>
+          <button
+            onClick={() => setStudioMode('themes')}
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer',
+              studioMode === 'themes'
+                ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
+                : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+            )}
+          >
+            <Palette className="w-3.5 h-3.5 text-indigo-500" />
+            Theme Customizer & CSS Exporter
+          </button>
+        </div>
+
+        {/* Right Controls */}
+        <div className="flex items-center gap-3">
+          {studioMode === 'backgrounds' ? (
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-500 select-none">
+                Demo Content
+              </span>
+              <Switch
+                checked={showDemoContent}
+                onCheckedChange={setShowDemoContent}
+              />
+            </div>
+          ) : (
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">
+              Live Theme Engine
+            </span>
+          )}
         </div>
       </header>
 
       {/* ── MAIN STUDIO CONTENT ── */}
-      <div className="flex-1 flex overflow-hidden">
+      {studioMode === 'themes' ? (
+        <ThemeCustomizer />
+      ) : (
+        <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR: CONTROLS PANEL */}
         <aside className="w-[320px] shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 backdrop-blur-sm flex flex-col h-full overflow-hidden select-none transition-colors duration-200">
           {/* Scrollable controls area */}
@@ -1401,6 +1448,7 @@ export default function LightfallDemo() {
           )}
         </main>
       </div>
+      )}
 
       {/* ── CODE EXPORT MODAL DIALOG ── */}
       {showCodeModal && (
