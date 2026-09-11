@@ -21,6 +21,7 @@ import {
   Callout,
 } from '../../../components/installation-guide-components'
 import { TableOfContents } from '../../../components/toc'
+import { ComparisonMatrix } from '../../../components/comparison-matrix'
 import { Footer } from '../../../components/footer'
 import {
   Button,
@@ -2506,7 +2507,7 @@ const mdxComponents = {
   },
   table: ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
     <div className="my-6 w-full overflow-x-auto rounded-xl border border-border bg-card/40 backdrop-blur-xs shadow-xs">
-      <table className={cn('w-full text-sm text-left border-collapse', className)} {...props} />
+      <table className={cn('w-full text-sm text-left border-collapse min-w-[620px]', className)} {...props} />
     </div>
   ),
   thead: ({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => (
@@ -2524,6 +2525,7 @@ const mdxComponents = {
   td: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
     <td className={cn('px-4 py-3.5 text-foreground/90 first:pl-6 last:pr-6 align-middle', className)} {...props} />
   ),
+  ComparisonMatrix,
 }
 
 interface PageProps {
