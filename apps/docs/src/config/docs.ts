@@ -71,10 +71,6 @@ export const docsConfig: DocsConfig = {
       title: 'Components',
       items: [
         {
-          title: 'All Components',
-          href: '/docs/components',
-        },
-        {
           title: 'Accordion',
           href: '/docs/components/accordion',
         },
@@ -317,10 +313,6 @@ export const docsConfig: DocsConfig = {
       title: 'Animations',
       items: [
         {
-          title: 'All Animations',
-          href: '/docs/animations',
-        },
-        {
           title: 'Typing Animation',
           href: '/docs/animations/typing-animation',
         },
@@ -406,10 +398,6 @@ export const docsConfig: DocsConfig = {
       title: 'Backgrounds',
       items: [
         {
-          title: 'All Backgrounds',
-          href: '/docs/backgrounds',
-        },
-        {
           title: 'Light Tunnel',
           href: '/docs/backgrounds/light-tunnel',
         },
@@ -428,39 +416,6 @@ export const docsConfig: DocsConfig = {
         {
           title: 'Lightfall',
           href: '/docs/backgrounds/lightfall',
-        },
-      ],
-    },
-    {
-      title: 'Blocks',
-      items: [
-        {
-          title: 'Dashboard 01',
-          href: '/docs/blocks/dashboard-01',
-        },
-        {
-          title: 'Dashboard 02',
-          href: '/docs/blocks/dashboard-02',
-        },
-        {
-          title: 'E-Commerce 01',
-          href: '/docs/blocks/ecommerce-01',
-        },
-        {
-          title: 'E-Commerce 02',
-          href: '/docs/blocks/ecommerce-02',
-        },
-        {
-          title: 'Chat 01',
-          href: '/docs/blocks/chat-01',
-        },
-        {
-          title: 'Auth 01',
-          href: '/docs/blocks/auth-01',
-        },
-        {
-          title: 'Crypto Glass 01',
-          href: '/docs/blocks/crypto-glass-01',
         },
       ],
     },

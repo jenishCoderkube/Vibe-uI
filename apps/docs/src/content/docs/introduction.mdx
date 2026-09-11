@@ -1,24 +1,24 @@
 # Introduction to Vibe UI
 
-**Vibe UI** is a premier collection of **92+ accessible, copy-and-paste React and Next.js components**, high-performance Motion animations, GPU-accelerated WebGL background shaders, and full application blocks built on top of **Radix UI** primitives and **Tailwind CSS v4**.
+Vibe UI is a premier collection of 92+ accessible, copy-and-paste React and Next.js components, high-performance Motion animations, GPU-accelerated WebGL background shaders, and full application blocks built on top of Radix UI primitives and Tailwind CSS v4.
 
 Designed for developers who want distinctive, stunning interfaces without being locked into heavyweight monolithic UI libraries, Vibe UI delivers complete source code directly into your repository with full customization freedom.
 
 ---
 
-## 🚀 Core Philosophy
+## Core Philosophy
 
 Traditional UI libraries force you to adopt restrictive abstractions, oversized bundles, and rigid opinionated designs. Vibe UI takes a modern developer-first approach:
 
 1. **Own Your Code**: Components are installed straight into your codebase via the official CLI. You have 100% control over the markup, styles, and behaviors.
 2. **Multi-Aesthetic Presets**: Switch dynamically between `glass` (translucent frosted glassmorphism), `glow` (neon drop-shadow luminescence), `retro` (bold neobrutalism), and `cyberpunk` (monospace terminal matrix) presets with zero extra CSS.
-3. **Tailwind CSS v4 & v3 Dual Compatibility**: Works effortlessly with modern Tailwind v4 `@theme` setups as well as classic Tailwind v3 configurations without breaking directives.
+3. **Tailwind CSS v4 and v3 Dual Compatibility**: Works effortlessly with modern Tailwind v4 `@theme` setups as well as classic Tailwind v3 configurations without breaking directives.
 4. **WAI-ARIA Accessibility First**: Built on battle-tested Radix UI primitives ensuring keyboard navigation, focus management, and screen reader support out of the box.
 5. **Zero Vendor Lock-in**: No runtime lock-in, no proprietary styling engines. Standard React, TypeScript, and Tailwind CSS.
 
 ---
 
-## 📦 Quick Start with the CLI
+## Quick Start with the CLI
 
 Initialize Vibe UI in any React, Next.js, Vite, or Remix project in seconds:
 
@@ -34,22 +34,25 @@ npx vibe-ui-kit list
 
 # 4. Compare your local components against the upstream registry
 npx vibe-ui-kit diff button
+
+# 5. Run project diagnostics to ensure compatibility
+npx vibe-ui-kit doctor
 ```
 
 ---
 
-## 🧩 The Vibe UI Collection (92 Items)
+## The Vibe UI Collection (92 Items)
 
 The Vibe UI registry spans four distinct categories:
 
 ### 1. UI Primitives (57 Accessible Components)
 Essential foundational building blocks crafted on Radix UI:
 - **Form Controls**: `button`, `button-group`, `input`, `input-otp`, `textarea`, `checkbox`, `switch`, `select`, `combobox`, `multi-select`, `radio-group`, `slider`, `date-picker`, `form`, `uploader`
-- **Overlays & Dialogs**: `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `hover-card`, `tooltip`, `dropdown-menu`, `context-menu`, `menubar`
-- **Data Display & Layout**: `card`, `table`, `tabs`, `accordion`, `collapsible`, `separator`, `scroll-area`, `breadcrumb`, `pagination`, `layout-shell`, `sidebar`, `carousel`
-- **Feedback & Utilities**: `alert`, `badge`, `progress`, `spinner`, `skeleton`, `toast`, `empty`, `item`, `kbd`, `marker`, `message`, `message-scroller`, `theme-switcher`
+- **Overlays and Dialogs**: `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `hover-card`, `tooltip`, `dropdown-menu`, `context-menu`, `menubar`
+- **Data Display and Layout**: `card`, `table`, `tabs`, `accordion`, `collapsible`, `separator`, `scroll-area`, `breadcrumb`, `pagination`, `layout-shell`, `sidebar`, `carousel`
+- **Feedback and Utilities**: `alert`, `badge`, `progress`, `spinner`, `skeleton`, `toast`, `empty`, `item`, `kbd`, `marker`, `message`, `message-scroller`, `theme-switcher`
 
-### 2. Motion & Typography Effects (23 Animations)
+### 2. Motion and Typography Effects (23 Animations)
 High-performance visual and text animations powered by Motion:
 - `animated-gradient-text`, `animated-shiny-text`, `aurora-text`, `blur-fade`, `comic-text`, `dia-text-reveal`, `hyper-text`, `kinetic-text`, `line-shadow-text`, `marquee`, `morphing-text`, `number-ticker`, `scroll-based-velocity`, `sparkles-text`, `spinning-text`, `text-3d-flip`, `text-animate`, `text-glitch`, `text-reveal`, `typing-animation`, `video-text`, `word-rotate`
 
@@ -59,17 +62,17 @@ GPU-accelerated ambient canvases featuring automatic WebGL context loss recovery
 
 ### 4. Full Application Blocks (7 Drop-in Templates)
 Complete responsive application flows ready for immediate integration:
-- `dashboard-01` (Enterprise Operations & Team Roster)
-- `dashboard-02` (Executive Financial & Quick Action Analytics)
-- `ecommerce-01` (Catalog Grid & Sliding Shopping Bag)
-- `ecommerce-02` (Checkout Flow & Order Review)
-- `chat-01` (Full-Screen AI Chat Assistant & Stream Composer)
+- `dashboard-01` (Enterprise Operations and Team Roster)
+- `dashboard-02` (Executive Financial and Quick Action Analytics)
+- `ecommerce-01` (Catalog Grid and Sliding Shopping Bag)
+- `ecommerce-02` (Checkout Flow and Order Review)
+- `chat-01` (Full-Screen AI Chat Assistant and Stream Composer)
 - `auth-01` (Split-Screen Glassmorphism Authentication)
 - `crypto-glass-01` (Web3 Glassmorphism DeFi Portfolio Tracker)
 
 ---
 
-## 🛠️ Usage Example
+## Usage Example
 
 ```tsx
 import { Button } from "@/components/ui/button"
@@ -88,7 +91,7 @@ export default function Demo() {
 
 ---
 
-## ⚡ Frequently Asked Questions
+## Frequently Asked Questions
 
 ### Is Vibe UI completely free to use?
 Yes, Vibe UI is 100% free, open-source, and licensed under the MIT License for both personal and commercial web projects.
@@ -97,4 +100,4 @@ Yes, Vibe UI is 100% free, open-source, and licensed under the MIT License for b
 Vibe UI builds upon the copy-paste philosophy by adding built-in multi-aesthetic themes (Glass, Glow, Retro, Cyberpunk), GPU WebGL shaders, Motion typography animations, complete application blocks, and dual compatibility with both Tailwind CSS v3 and v4.
 
 ### How do I update components when improvements are published?
-Run `npx vibe-ui-kit diff <component>` to inspect differences line-by-line, or run `npx vibe-ui-kit add <component> --overwrite` to overwrite your local file with the latest registry release.
+Run `npx vibe-ui-kit update` to interactively update components, or run `npx vibe-ui-kit update --all` to batch upgrade your local components with the latest registry release.

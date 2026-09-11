@@ -2533,7 +2533,8 @@ export async function generateMetadata({
     'Production-ready React & Next.js components built with Radix UI and Tailwind CSS v4.'
 
   if (fs.existsSync(mdxPath)) {
-    const fileContent = fs.readFileSync(mdxPath, 'utf8')
+    const rawContent = fs.readFileSync(mdxPath, 'utf8')
+    const fileContent = rawContent.replace(/^---[\s\S]*?---\s*/, '')
     const h1Match = fileContent.match(/^#\s+(.*)/m)
     if (h1Match) {
       title = h1Match[1].trim()
@@ -2653,7 +2654,8 @@ export default async function DocsPage({ params }: PageProps) {
       )
     }
 
-    const fileContent = fs.readFileSync(mdxPath, 'utf8')
+    const rawContent = fs.readFileSync(mdxPath, 'utf8')
+    const fileContent = rawContent.replace(/^---[\s\S]*?---\s*/, '')
 
     // Parse title & description dynamically from MDX heading & first paragraph
     let title = slug[1]
@@ -2674,18 +2676,16 @@ export default async function DocsPage({ params }: PageProps) {
       }
     }
 
-    // Component/Animation/Background/Block Navigation & Header calculation
+    // Component/Animation/Background Navigation & Header calculation
     const isComponentPage = [
       'components',
       'animations',
       'backgrounds',
-      'blocks',
     ].includes(slug[0])
 
     let groupTitle = 'Components'
     if (slug[0] === 'animations') groupTitle = 'Animations'
     else if (slug[0] === 'backgrounds') groupTitle = 'Backgrounds'
-    else if (slug[0] === 'blocks') groupTitle = 'Blocks'
 
     const componentNavItems =
       docsConfig.sidebarNav.find((group) => group.title === groupTitle)

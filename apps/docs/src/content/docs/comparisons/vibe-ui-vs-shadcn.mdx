@@ -1,29 +1,24 @@
----
-title: Vibe UI vs shadcn/ui
-description: A comprehensive architectural comparison between Vibe UI and shadcn/ui. Compare component counts, styling presets, WebGL shaders, Tailwind v4 support, and CLI features.
----
+# Vibe UI vs shadcn/ui
 
-# Vibe UI vs shadcn/ui: In-Depth Comparison (2026)
+A comprehensive architectural comparison between Vibe UI and shadcn/ui. Compare component counts, styling presets, WebGL shaders, Tailwind CSS v4 support, and CLI features.
 
-When choosing a modern React component library, developers today overwhelmingly favor **copy-paste architectures** over traditional `node_modules` lock-in. Both **Vibe UI** and **shadcn/ui** champion this model: you copy code directly into your repository, retaining 100% control.
+When choosing a modern React component library, developers favor copy-paste architectures over traditional `node_modules` lock-in. Both **Vibe UI** and **shadcn/ui** champion this model: you copy code directly into your repository, retaining 100% control.
 
-However, Vibe UI was engineered to push this paradigm further—combining standard primitives with **multi-preset theme engines (Glassmorphism, Neon Glow, Retro, Cyberpunk)**, **WebGL background shaders**, **rich text animations**, and a **next-generation CLI**.
-
-Here is how Vibe UI compares directly against shadcn/ui.
+However, Vibe UI was engineered to push this paradigm further by combining standard primitives with multi-preset theme engines (Glassmorphism, Neon Glow, Retro, Cyberpunk), WebGL background shaders, rich text animations, and an automated diagnostics CLI.
 
 ---
 
-## 📊 Feature Comparison Matrix
+## Feature Comparison Matrix
 
 | Feature | Vibe UI | shadcn/ui |
 | :--- | :--- | :--- |
 | **Total Components & Primitives** | **92+** | ~48 |
 | **Styling Variants Built-in** | **5 Presets** (Glass, Glow, Retro, Minimal, Cyber) | Neutral / Monochromatic default |
-| **WebGL Background Shaders** | **Yes (5 Shaders via OGL)** | ❌ None (Third-party required) |
-| **Text & Motion Animations** | **Yes (20+ Motion Primitives)** | ❌ None |
+| **WebGL Background Shaders** | **Yes (5 Shaders via OGL)** | None (Third-party required) |
+| **Text & Motion Animations** | **Yes (20+ Motion Primitives)** | None |
 | **Application Blocks (Dashboards, Auth)** | **Yes (7+ Full Templates)** | Partial (Community blocks) |
 | **Tailwind CSS v4 Native Support** | **Yes (`@theme inline`)** | In transition (primarily v3) |
-| **Built-in Diagnostics CLI (`doctor`)** | **Yes (`vibe-ui-kit doctor`)** | ❌ None |
+| **Built-in Diagnostics CLI (`doctor`)** | **Yes (`vibe-ui-kit doctor`)** | None |
 | **Batch Component Upgrades (`update`)** | **Yes (`vibe-ui-kit update --all`)** | Diff review tool |
 | **Interactive Studio & Theme Exporter** | **Yes (Web Studio with CSS Export)** | Theme previewer only |
 | **Radix UI Accessibility Primitives** | **Yes (100% WAI-ARIA)** | Yes (100% WAI-ARIA) |
@@ -31,34 +26,34 @@ Here is how Vibe UI compares directly against shadcn/ui.
 
 ---
 
-## 🔍 Key Architectural Differences
+## Key Architectural Differences
 
 ### 1. Beyond Monochromatic Minimalist Styling
-* **shadcn/ui** excels at providing a clean, black-and-white slate based on Slate/Zinc tokens.
-* **Vibe UI** includes rich design presets out of the box. Whether your product requires **frosted glassmorphism**, **high-energy neon cyberpunk glow**, or **editorial retro shadow lines**, Vibe UI components adapt with a simple `variant="glow"` or `variant="glass"` prop.
+- **shadcn/ui** excels at providing a clean, black-and-white foundation based on Slate/Zinc tokens.
+- **Vibe UI** includes rich design presets out of the box. Whether your product requires frosted glassmorphism, high-energy neon cyberpunk glow, or editorial retro shadow lines, Vibe UI components adapt with a simple `variant="glow"` or `variant="glass"` prop.
 
 ### 2. Built-in Kinetic Animation & Background Engine
-Building high-converting SaaS landing pages typically requires piecing together 3–4 different libraries (shadcn for inputs, Aceternity for hero backgrounds, Magic UI for marquee/text). 
+Building high-converting SaaS landing pages typically requires piecing together 3–4 different libraries (shadcn for inputs, Aceternity for hero backgrounds, Magic UI for marquee/text).
 
-**Vibe UI unifies the entire stack into one coherent registry:**
-* Buttons, inputs, modals, and charts for your dashboard.
-* Hypnotic WebGL shaders (`<LightTunnel />`, `<WebThreads />`, `<Lightfall />`) for your hero sections.
-* Kinetic text animations (`<AuroraText />`, `<HyperText />`, `<NumberTicker />`) for announcements and metrics.
+Vibe UI unifies the entire stack into one coherent registry:
+- Buttons, inputs, modals, and charts for your dashboard.
+- Hypnotic WebGL shaders (`<LightTunnel />`, `<WebThreads />`, `<Lightfall />`) for your hero sections.
+- Kinetic text animations (`<AuroraText />`, `<HyperText />`, `<NumberTicker />`) for announcements and metrics.
 
-### 3. CLI Intelligence: `doctor` and `update`
+### 3. CLI Intelligence: doctor and update
 Managing copy-paste components over time can create drift. Vibe UI’s CLI provides automated maintenance tools:
-* `npx vibe-ui-kit doctor` — Inspects package managers, verifies Tailwind v4 directives, checks peer dependencies (`clsx`, `tailwind-merge`, `lucide-react`), and reports configuration health.
-* `npx vibe-ui-kit update --all` — Scans local components against the upstream registry, downloads improvements, and installs newly required packages automatically.
+- `npx vibe-ui-kit doctor` — Inspects package managers, verifies Tailwind v4 directives, checks peer dependencies (`clsx`, `tailwind-merge`, `lucide-react`), and reports configuration health.
+- `npx vibe-ui-kit update --all` — Scans local components against the upstream registry, downloads improvements, and installs newly required packages automatically.
 
 ---
 
-## 🔄 Can I Use Both Together?
+## Can I Use Both Together?
 
-**Yes!** Because both Vibe UI and shadcn/ui output standard Tailwind CSS and React code into your `@/components/ui` folder, you can seamlessly use Vibe UI components alongside existing shadcn/ui components in the same Next.js or Vite codebase without conflict.
+Yes. Because both Vibe UI and shadcn/ui output standard Tailwind CSS and React code into your `@/components/ui` folder, you can seamlessly use Vibe UI components alongside existing shadcn/ui components in the same Next.js or Vite codebase without conflict.
 
 ---
 
-## 🚀 Getting Started with Vibe UI
+## Getting Started with Vibe UI
 
 Initialize your project in under 60 seconds:
 
