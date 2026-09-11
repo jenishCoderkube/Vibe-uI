@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && node dist/index.js",
     "dev": "tsc --watch",
-    "test": "node dist/index.js",
+    "test": "tsc && node dist/index.js",
     "lint": "eslint ."
   },
   "devDependencies": {

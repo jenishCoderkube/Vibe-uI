@@ -586,8 +586,37 @@ program
       await fs.writeFile(utilsPath, utilsContent)
       console.log(`✓ Created utilities helper at ${utilsPathInput}`)
 
-      // 3. Configure Tailwind v4 Theme in CSS file
-      const themeContent = `@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+      // 3. Configure Tailwind Theme in CSS file
+      let isTailwindV3 = false
+      if (fs.existsSync(cssPath)) {
+        const existingCss = await fs.readFile(cssPath, 'utf8')
+        if (existingCss.includes('@tailwind')) {
+          isTailwindV3 = true
+        }
+      }
+      try {
+        const projectPkgPath = path.join(baseDir, 'package.json')
+        if (fs.existsSync(projectPkgPath)) {
+          const projectPkg = fs.readJsonSync(projectPkgPath)
+          const allDeps = {
+            ...(projectPkg.dependencies || {}),
+            ...(projectPkg.devDependencies || {}),
+          }
+          const twVer = allDeps['tailwindcss'] || ''
+          if (
+            !allDeps['@tailwindcss/postcss'] &&
+            (twVer.startsWith('3') ||
+              twVer.startsWith('^3') ||
+              twVer.startsWith('~3'))
+          ) {
+            isTailwindV3 = true
+          }
+        }
+      } catch {
+        // ignore
+      }
+
+      const v4ThemeHeader = `@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -623,8 +652,16 @@ program
 
   --radius: 0.75rem;
 }
+`
 
-@layer base {
+      const v3ThemeHeader = `@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+`
+
+      const commonThemeBody = `@layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
@@ -645,6 +682,7 @@ program
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 270 76% 53%;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -689,6 +727,9 @@ program
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 `
+
+      const themeContent = `${isTailwindV3 ? v3ThemeHeader : v4ThemeHeader}\n${commonThemeBody}`
+
 
       let shouldWriteCss = true
       if (fs.existsSync(cssPath)) {
