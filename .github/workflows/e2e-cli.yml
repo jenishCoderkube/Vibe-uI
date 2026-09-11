@@ -1,0 +1,76 @@
+name: E2E CLI Installation Smoke Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-install:
+    name: Test Real Next.js Consumer App Installation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install monorepo dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages & registry
+        run: |
+          pnpm --filter vibe-ui-kit build
+          pnpm --filter @vibe-ui/registry build
+
+      - name: Serve local registry
+        run: |
+          npx --yes serve apps/docs/public -l 3333 &
+          sleep 3
+          curl --retry 5 --retry-connrefused http://localhost:3333/registry/index.json
+
+      - name: Create fresh Next.js consumer project
+        run: |
+          npx --yes create-next-app@15.1.0 test-app \
+            --typescript \
+            --tailwind \
+            --eslint \
+            --app \
+            --src-dir \
+            --import-alias "@/*" \
+            --use-pnpm \
+            --skip-install
+          cd test-app
+          pnpm install
+
+      - name: Initialize Vibe UI in consumer app
+        run: |
+          cd test-app
+          VIBE_REGISTRY_URL=http://localhost:3333/registry node ../packages/cli/dist/index.js init -y
+
+      - name: Install components via Vibe UI CLI
+        run: |
+          cd test-app
+          VIBE_REGISTRY_URL=http://localhost:3333/registry node ../packages/cli/dist/index.js add button dialog card -y -o
+
+      - name: Verify consumer app production build
+        run: |
+          cd test-app
+          pnpm build
