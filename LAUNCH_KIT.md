@@ -125,7 +125,7 @@ What components should we build next? Let me know below! 👇
 ## 🔴 4. Reddit Community Posts
 
 ### Post 1: `r/reactjs`
-- **Title**: I built Vibe UI: 92+ open-source copy-paste React components with dual Tailwind v3/v4 support, Motion text effects, and WebGL shaders
+- **Title**: I built Vibe UI: 92+ open-source React components with Tailwind v4, Motion effects & WebGL shaders
 - **Body**:
 ```text
 Hey r/reactjs!
