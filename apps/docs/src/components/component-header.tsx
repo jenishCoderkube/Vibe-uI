@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  Terminal,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -41,6 +42,7 @@ export function ComponentHeader({
   prevItem,
   nextItem,
 }: ComponentHeaderProps) {
+  const [copiedCmd, setCopiedCmd] = useState(false)
   const [copiedPage, setCopiedPage] = useState(false)
   const [copyingPage, setCopyingPage] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -148,8 +150,20 @@ export function ComponentHeader({
     }
   }
 
+  const handleCopyInstallCmd = async () => {
+    try {
+      const cleanName = cleanNameForUrl(name)
+      await navigator.clipboard.writeText(`npx vibe-ui-kit add ${cleanName}`)
+      setCopiedCmd(true)
+      setTimeout(() => setCopiedCmd(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy install command:', err)
+    }
+  }
+
   const CopyIcon = Copy as any
   const CheckIcon = Check as any
+  const cleanName = cleanNameForUrl(name)
 
   return (
     <div className="mb-8 space-y-4 border-b border-border pb-6">
@@ -282,9 +296,24 @@ export function ComponentHeader({
         </div>
       </div>
 
-      {/* Action Bar: Component API Link */}
-      {radixUrl && (
-        <div className="flex flex-wrap items-center gap-3 pt-2">
+      {/* Action Bar: 1-Click Install Command + Component API Link */}
+      <div className="flex flex-wrap items-center gap-2.5 pt-1">
+        <button
+          type="button"
+          onClick={handleCopyInstallCmd}
+          className="group inline-flex items-center gap-2 rounded-lg border border-border bg-muted/40 hover:bg-muted/80 px-3 py-1.5 text-xs font-mono text-muted-foreground hover:text-foreground transition-all cursor-pointer select-none"
+          title="Click to copy CLI command"
+        >
+          <Terminal className="h-3.5 w-3.5 text-primary shrink-0" />
+          <span className="text-foreground font-semibold">npx vibe-ui-kit add {cleanName}</span>
+          {copiedCmd ? (
+            <CheckIcon className="h-3.5 w-3.5 text-emerald-500 shrink-0 ml-1" />
+          ) : (
+            <CopyIcon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground shrink-0 ml-1 transition-colors" />
+          )}
+        </button>
+
+        {radixUrl && (
           <a
             href={radixUrl}
             target="_blank"
@@ -294,8 +323,8 @@ export function ComponentHeader({
             <span>Component API</span>
             <ExternalLink className="h-3 w-3" />
           </a>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

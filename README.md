@@ -2,54 +2,101 @@
 
 # ⚡ Vibe UI
 
-### _Beautiful, accessible React components with multi-aesthetic theme variants._
+### _A modern, high-fidelity React & Next.js component library with multi-aesthetic themes._
 
+[![CI](https://github.com/jenishCoderkube/Vibe-uI/actions/workflows/ci.yml/badge.svg)](https://github.com/jenishCoderkube/Vibe-uI/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/jenishCoderkube/Vibe-uI/actions/workflows/codeql.yml/badge.svg)](https://github.com/jenishCoderkube/Vibe-uI/actions/workflows/codeql.yml)
+[![Secret Scan](https://github.com/jenishCoderkube/Vibe-uI/actions/workflows/secret-scan.yml/badge.svg)](https://github.com/jenishCoderkube/Vibe-uI/actions/workflows/secret-scan.yml)
+[![E2E CLI](https://github.com/jenishCoderkube/Vibe-uI/actions/workflows/e2e-cli.yml/badge.svg)](https://github.com/jenishCoderkube/Vibe-uI/actions/workflows/e2e-cli.yml)
 [![npm](https://img.shields.io/npm/v/vibe-ui-kit.svg?style=flat-square&color=black)](https://www.npmjs.com/package/vibe-ui-kit)
-[![typescript](https://img.shields.io/badge/TypeScript-5.x-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
-[![tailwind](https://img.shields.io/badge/Tailwind-3.x%20%7C%204.x-38bdf8.svg?style=flat-square)](https://tailwindcss.com/)
 [![license](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+
+[**Documentation & Interactive Previews**](https://vibe-ui-kit.vercel.app/) • [**Component Registry**](https://vibe-ui-kit.vercel.app/registry/index.json) • [**CLI Guide**](https://vibe-ui-kit.vercel.app/docs/cli)
 
 </div>
 
 ---
 
-<!-- Test commit: verifying GitHub push access. -->
-
-**Vibe UI** is a professional collection of **75+ high-fidelity React components** built on top of **Radix UI** primitives and **Tailwind CSS**. It is designed to give your applications a distinct, premium look with native support for multiple design styles.
+**Vibe UI** is a professional collection of **92 curated React & Next.js items** built on top of **Radix UI** primitives, **Tailwind CSS (v3 & v4)**, and **Motion**. It provides copy-and-paste components, text animations, WebGL background shaders, and full application blocks with native support for multiple design styles.
 
 ## 🚀 Core Features
 
 - **Multi-Aesthetic Presets:** Switch between `glass` (translucent frosted), `glow` (neon drop-shadows), `retro` (flat hard shadows), or `cyberpunk` (monospace matrix) variants instantly.
-- **Hybrid API Architecture:** Prototype instantly with a simple, prop-driven API, or compose layout hierarchies using primitive subcomponents for advanced customization.
+- **Tailwind v3 & v4 Dual-Compatible:** Works out of the box with modern Tailwind CSS v4 `@theme` setups as well as classic Tailwind CSS v3 `@tailwind base` configurations.
+- **Copy-Paste CLI Architecture:** Install components directly into your own codebase with automatic dependency tracking, overwrite safety, and zero vendor lock-in.
 - **Accessible & Type-Safe:** 100% WAI-ARIA compliant keyboard navigation out of the box, fully written in strict TypeScript.
+- **Production-Grade CI/CD:** Monorepo tested with 86 test files (212 unit tests), automated registry graph validation, Gitleaks secret detection, and CodeQL static security analysis.
 
-## 📦 Installation & Quick Start
+---
 
-Install the library using your preferred package manager:
+## 📦 Quick Start with the CLI
+
+Initialize Vibe UI in your React or Next.js project:
 
 ```bash
-# npm
-npm install vibe-ui-kit lucide-react tailwind-variants
+# 1. Initialize Vibe UI configuration
+npx vibe-ui-kit init
 
-# pnpm
-pnpm add vibe-ui-kit lucide-react tailwind-variants
+# 2. Add components to your project
+npx vibe-ui-kit add button dialog card
 
-# yarn
-yarn add vibe-ui-kit lucide-react tailwind-variants
+# 3. Explore available components directly from your terminal
+npx vibe-ui-kit list
+
+# 4. Inspect a component's dependencies before installing
+npx vibe-ui-kit info chat-01
+
+# 5. Check if local components diverge from the registry
+npx vibe-ui-kit diff button
 ```
 
-## 🛠️ Usage Examples
+---
 
-### 1. Style Aesthetics
+## 🧩 The Registry (92 Items Available)
 
-Import components and customize variants directly:
+Vibe UI components are categorized into 4 distinct groups:
+
+### 1. 📦 UI Primitives (57 Components)
+Essential accessible building blocks built on Radix UI:
+
+| Group | Components |
+| :--- | :--- |
+| **Forms & Inputs** | `button`, `button-group`, `input`, `input-otp`, `textarea`, `checkbox`, `switch`, `select`, `combobox`, `multi-select`, `radio-group`, `slider`, `date-picker`, `form`, `uploader` |
+| **Overlays & Dialogs** | `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `hover-card`, `tooltip`, `dropdown-menu`, `context-menu`, `menubar` |
+| **Data & Layout** | `card`, `table`, `tabs`, `accordion`, `collapsible`, `separator`, `scroll-area`, `breadcrumb`, `pagination`, `layout-shell`, `sidebar`, `carousel` |
+| **Feedback & Badges** | `alert`, `badge`, `progress`, `spinner`, `skeleton`, `toast`, `empty`, `item`, `kbd`, `marker`, `message`, `message-scroller`, `theme-switcher` |
+
+### 2. ✨ Motion & Text Effects (23 Animations)
+High-performance visual and typography animations powered by Motion:
+
+`animated-gradient-text` • `animated-shiny-text` • `aurora-text` • `blur-fade` • `comic-text` • `dia-text-reveal` • `hyper-text` • `kinetic-text` • `line-shadow-text` • `marquee` • `message-scroller` • `morphing-text` • `number-ticker` • `scroll-based-velocity` • `sparkles-text` • `spinning-text` • `text-3d-flip` • `text-animate` • `text-glitch` • `text-reveal` • `typing-animation` • `video-text` • `word-rotate`
+
+### 3. 🎨 Interactive WebGL Backgrounds (5 Shaders)
+GPU-accelerated ambient backgrounds with automatic context loss recovery and fallback protection:
+
+`light-tunnel` • `lightfall` • `scanner` • `sliced-waves` • `web-threads`
+
+### 4. 🧩 Full Application Blocks (7 Ready-to-Use Templates)
+Complete responsive views ready for drop-in use:
+
+- **`dashboard-01`**: Analytics and directory administration dashboard with lifecycle metrics, data table, and drawer details.
+- **`dashboard-02`**: Metrics overview with dynamic date-range filtering, interactive charts, and CSV/PDF export.
+- **`ecommerce-01`**: Modern storefront with shopping bag sheet, filter chips, and responsive product catalog.
+- **`ecommerce-02`**: Minimalist product grid with sorting, category navigation, and quick review modal.
+- **`chat-01`**: Modern AI chat workspace with pinned prompt suggestions, message streaming UI, and composer.
+- **`auth-01`**: Split-screen glassmorphism authentication with social logins, validation, and dark mode.
+- **`crypto-glass-01`**: Dark-mode DeFi portfolio tracker with live market tickers and yield calculator.
+
+---
+
+## 🛠️ Usage Example
 
 ```tsx
-import { Button } from 'vibe-ui-kit'
+import { Button } from "@/components/ui/button"
 
 export default function Demo() {
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 p-6">
       <Button variant="default">Standard</Button>
       <Button variant="glass">Glassmorphism</Button>
       <Button variant="glow">Neon Glow</Button>
@@ -60,71 +107,28 @@ export default function Demo() {
 }
 ```
 
-### 2. Hybrid API (Simple vs. Composed)
+---
 
-#### Simple Layout (Prototype Fast)
-
-```tsx
-import { InputOTP } from 'vibe-ui-kit'
-
-export default function Simple() {
-  return <InputOTP length={6} value={otp} onChange={setOtp} />
-}
-```
-
-#### Composed Layout (Maximum Control)
-
-```tsx
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-  InputOTPSeparator,
-} from 'vibe-ui-kit'
-
-export default function Composed() {
-  return (
-    <InputOTP maxLength={4} value={otp} onChange={setOtp}>
-      <InputOTPGroup>
-        <InputOTPSlot index={0} />
-        <InputOTPSlot index={1} />
-      </InputOTPGroup>
-      <InputOTPSeparator />
-      <InputOTPGroup>
-        <InputOTPSlot index={2} />
-        <InputOTPSlot index={3} />
-      </InputOTPGroup>
-    </InputOTP>
-  )
-}
-```
-
-## 🧩 Component Library (75+ Presets)
-
-Vibe UI includes a wide range of components divided into category types:
-
-- **Forms & Inputs:** Button, Input, Checkbox, Switch, Textarea, Select, Combobox, Multi-Select, InputOTP, Date-Picker, Uploader
-- **Layout & Structure:** Card, Carousel, Tabs, Breadcrumb, Pagination, Table, Scroll-Area, Separator, Accordion, Collapsible
-- **Feedback & States:** Alert, Alert-Dialog, Progress, Slider, Toast, Tooltip, Skeleton, Empty, Spinner
-- **Motion & Typography:** WordRotate, TextGlitch, HyperText, SparklesText, Marquee, TypingAnimation, NumberTicker, AnimatedShinyText, SpinningText, ScrollBasedVelocity, BlurFade, AnimatedGradientText
-
-## 💻 Local Development
-
-Run the monorepo workspace locally:
+## 💻 Monorepo Development
 
 ```bash
-# Install dependencies
+# Install dependencies across all workspaces
 pnpm install
 
 # Start documentation dev server
 pnpm dev
 
-# Run Vitest test suite
+# Run Vitest test suite (86 test files, 212 tests) + registry validation
 pnpm test
 
-# Build files and compile registries
+# Run ESLint across all workspaces (0 errors, 0 warnings policy)
+pnpm lint
+
+# Build all packages and compile Next.js production app
 pnpm build
 ```
+
+---
 
 ## 📄 License
 

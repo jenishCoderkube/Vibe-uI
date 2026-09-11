@@ -816,9 +816,26 @@ program
 
       const baseDir = process.cwd()
       const hasSrc = fs.existsSync(path.join(baseDir, 'src'))
-      const defaultComponentPath = hasSrc
+      let defaultComponentPath = hasSrc
         ? './src/components/ui'
         : './components/ui'
+
+      const configPath = path.join(baseDir, 'components.json')
+      if (fs.existsSync(configPath)) {
+        try {
+          const config = fs.readJsonSync(configPath)
+          if (config.paths?.components) {
+            defaultComponentPath = config.paths.components
+          } else if (config.aliases?.ui) {
+            defaultComponentPath = config.aliases.ui.replace(
+              /^@\//,
+              hasSrc ? './src/' : './',
+            )
+          }
+        } catch {
+          // ignore
+        }
+      }
 
       const componentPath = path.resolve(baseDir, defaultComponentPath)
 
@@ -1146,4 +1163,5 @@ program
   })
 
 program.parse(process.argv)
+
 

@@ -2,13 +2,13 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, FileText, Component, ArrowRight } from 'lucide-react'
+import { Search, FileText, Component, ArrowRight, Layers } from 'lucide-react'
 import { Dialog, DialogContent, DialogTrigger } from 'vibe-ui'
 
 interface SearchItem {
   title: string
   subtitle?: string
-  category: 'Documentation' | 'Components'
+  category: 'Documentation' | 'Components' | 'Blocks'
   href: string
 }
 
@@ -985,6 +985,50 @@ const SEARCH_ITEMS: SearchItem[] = [
     category: 'Components',
     href: '/docs/backgrounds/lightfall',
   },
+
+  // 7 Application Blocks
+  {
+    title: 'Dashboard 01',
+    subtitle: 'Enterprise Operations & Team Directory',
+    category: 'Blocks',
+    href: '/docs/blocks/dashboard-01',
+  },
+  {
+    title: 'Dashboard 02',
+    subtitle: 'Executive Financial & Quick Action Analytics',
+    category: 'Blocks',
+    href: '/docs/blocks/dashboard-02',
+  },
+  {
+    title: 'E-commerce 01',
+    subtitle: 'Product Catalog Grid & Shopping Cart Slideout',
+    category: 'Blocks',
+    href: '/docs/blocks/ecommerce-01',
+  },
+  {
+    title: 'E-commerce 02',
+    subtitle: 'Checkout Flow & Payment Summary Review',
+    category: 'Blocks',
+    href: '/docs/blocks/ecommerce-02',
+  },
+  {
+    title: 'Chat 01',
+    subtitle: 'Full-Screen Messenger & Real-Time Chat System',
+    category: 'Blocks',
+    href: '/docs/blocks/chat-01',
+  },
+  {
+    title: 'Auth 01',
+    subtitle: 'Split-Screen Authentication & Glassmorphism Portal',
+    category: 'Blocks',
+    href: '/docs/blocks/auth-01',
+  },
+  {
+    title: 'Crypto Glass 01',
+    subtitle: 'Web3 Glassmorphism Dashboard & Token Tracker',
+    category: 'Blocks',
+    href: '/docs/blocks/crypto-glass-01',
+  },
 ]
 
 export function SearchDialog() {
@@ -1034,6 +1078,9 @@ export function SearchDialog() {
 
   const docsResults = filteredItems.filter(
     (i) => i.category === 'Documentation',
+  )
+  const blockResults = filteredItems.filter(
+    (i) => i.category === 'Blocks',
   )
   const componentResults = filteredItems.filter(
     (i) => i.category === 'Components',
@@ -1088,6 +1135,36 @@ export function SearchDialog() {
                       >
                         <div className="flex items-center gap-2.5">
                           <FileText className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <div className="flex flex-col">
+                            <span>{item.title}</span>
+                            {item.subtitle && (
+                              <span className="text-[10px] text-muted-foreground/80">
+                                {item.subtitle}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <ArrowRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-all text-muted-foreground group-hover:translate-x-0.5" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {blockResults.length > 0 && (
+                <div className="space-y-1">
+                  <div className="px-3 py-1 text-[10px] font-bold text-muted-foreground/80 tracking-wider uppercase select-none">
+                    Blocks
+                  </div>
+                  <div className="space-y-0.5">
+                    {blockResults.map((item, idx) => (
+                      <button
+                        key={`${item.href}-${idx}`}
+                        onClick={() => handleSelect(item.href)}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm text-foreground hover:bg-secondary/70 dark:hover:bg-secondary/20 rounded-md transition-all duration-150 text-left cursor-pointer group hover:pl-4"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Layers className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                           <div className="flex flex-col">
                             <span>{item.title}</span>
                             {item.subtitle && (
