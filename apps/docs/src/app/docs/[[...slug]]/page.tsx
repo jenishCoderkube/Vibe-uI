@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import Link from 'next/link'
 import { MDXRemote } from 'next-mdx-remote/rsc'
+import remarkGfm from 'remark-gfm'
 import { docsConfig } from '../../../config/docs'
 import { Header } from '../../../components/header'
 import { Sidebar } from '../../../components/sidebar'
@@ -2503,6 +2504,26 @@ const mdxComponents = {
       />
     )
   },
+  table: ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
+    <div className="my-6 w-full overflow-x-auto rounded-xl border border-border bg-card/40 backdrop-blur-xs shadow-xs">
+      <table className={cn('w-full text-sm text-left border-collapse', className)} {...props} />
+    </div>
+  ),
+  thead: ({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => (
+    <thead className={cn('border-b border-border bg-muted/60 text-xs font-bold uppercase tracking-wider text-muted-foreground', className)} {...props} />
+  ),
+  tbody: ({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => (
+    <tbody className={cn('divide-y divide-border/60 [&>tr:hover]:bg-muted/30 transition-colors', className)} {...props} />
+  ),
+  tr: ({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => (
+    <tr className={cn('border-b border-border/40 transition-colors', className)} {...props} />
+  ),
+  th: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
+    <th className={cn('px-4 py-3.5 font-bold text-foreground first:pl-6 last:pr-6 whitespace-nowrap', className)} {...props} />
+  ),
+  td: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
+    <td className={cn('px-4 py-3.5 text-foreground/90 first:pl-6 last:pr-6 align-middle', className)} {...props} />
+  ),
 }
 
 interface PageProps {
@@ -2840,7 +2861,15 @@ export default async function DocsPage({ params }: PageProps) {
                     isComponentPage && 'typeset-component',
                   )}
                 >
-                  <MDXRemote source={fileContent} components={mdxComponents} />
+                  <MDXRemote
+                    source={fileContent}
+                    components={mdxComponents}
+                    options={{
+                      mdxOptions: {
+                        remarkPlugins: [remarkGfm],
+                      },
+                    }}
+                  />
                 </div>
 
                 {/* Bottom Pagination Arrows */}
