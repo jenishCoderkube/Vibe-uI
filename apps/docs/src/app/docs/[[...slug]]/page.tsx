@@ -2534,6 +2534,27 @@ interface PageProps {
   }>
 }
 
+export async function generateStaticParams() {
+  const docsDir = path.join(process.cwd(), 'src/content/docs')
+  const params: { slug?: string[] }[] = [{ slug: [] }]
+
+  const getMdxFiles = (dir: string, baseSegments: string[] = []) => {
+    if (!fs.existsSync(dir)) return
+    const entries = fs.readdirSync(dir, { withFileTypes: true })
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        getMdxFiles(path.join(dir, entry.name), [...baseSegments, entry.name])
+      } else if (entry.isFile() && entry.name.endsWith('.mdx')) {
+        const fileSlug = entry.name.replace(/\.mdx$/, '')
+        params.push({ slug: [...baseSegments, fileSlug] })
+      }
+    }
+  }
+
+  getMdxFiles(docsDir)
+  return params
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -2700,11 +2721,9 @@ export default async function DocsPage({ params }: PageProps) {
     }
 
     // Component/Animation/Background Navigation & Header calculation
-    const isComponentPage = [
-      'components',
-      'animations',
-      'backgrounds',
-    ].includes(slug[0])
+    const isComponentPage =
+      ['components', 'animations', 'backgrounds'].includes(slug[0]) &&
+      slug.length > 1
 
     let groupTitle = 'Components'
     if (slug[0] === 'animations') groupTitle = 'Animations'

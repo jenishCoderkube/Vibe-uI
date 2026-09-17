@@ -1,94 +1,77 @@
-'use client'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { BlockDetailView } from './block-detail-view'
+import { BLOCKS_METADATA, VALID_BLOCK_SLUGS } from './blocks-data'
 
-import React from 'react'
-import { useParams } from 'next/navigation'
-import { Header } from '../../../components/header'
-import { Footer } from '../../../components/footer'
-import { BlockCard } from '../../../components/block-card'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block, CryptoGlass01Block } from '../../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code, cryptoGlass01Code } from '../../../components/vibe-blocks-code'
-
-const BLOCKS_MAP = {
-  'dashboard-01': {
-    title: 'Vibe Analytics Dashboard',
-    description: 'Vibe statistics dashboard featuring Total Revenue metrics, an active CPU workload sparkline graph, sync card status checkers, and an interactive data table.',
-    vibeDeps: 'sidebar, card, badge, button, input, avatar, table, checkbox, select, dropdown-menu',
-    code: dashboard01Code,
-    previewComponent: <Dashboard01Block />,
-  },
-  'ecommerce-01': {
-    title: 'Vibe E-commerce Store',
-    description: 'A premium, production-ready e-commerce experience featuring search dialog overlays, wishlist/shopping cart drawers, product sliders, specs listings, and special deals grids.',
-    vibeDeps: 'button, badge, card, input, avatar, sheet, dropdown-menu, dialog, tooltip, blur-fade',
-    code: ecommerce01Code,
-    previewComponent: <Ecommerce01Block />,
-  },
-  'ecommerce-02': {
-    title: 'Vibe E-commerce Product Details',
-    description: 'A high-fidelity product details layout featuring interactive thumbnail-selector galleries, custom cushions and variant options, specifications accordions, and verified customer review charts.',
-    vibeDeps: 'button, badge, card, input, avatar, sheet, dropdown-menu, dialog, tooltip, accordion, blur-fade',
-    code: ecommerce02Code,
-    previewComponent: <Ecommerce02Block />,
-  },
-  'chat-01': {
-    title: 'Vibe Chat Assistant',
-    description: 'A premium, responsive AI chat assistant layout featuring collapsible sidebars, streaming response states, prompt suggestion cards, file attachments, and rate inputs.',
-    vibeDeps: 'button, input, scroll-area, sheet, dropdown-menu, dialog, avatar, tooltip, theme-switcher, textarea, badge, card',
-    code: chat01Code,
-    previewComponent: <Chat01Block />,
-  },
-  'auth-01': {
-    title: 'Vibe Modern Authentication',
-    description: 'A complete authentication system block with fluid Framer Motion animations. Handles Login, Register, Forgot Password, and Reset Password views in a fully validated, routes-agnostic single-page design.',
-    vibeDeps: 'button, card, input, checkbox, form, motion',
-    code: auth01Code,
-    previewComponent: <Auth01Block />,
-  },
-  'crypto-glass-01': {
-    title: 'Liquid Glass Crypto Portfolio',
-    description: 'A premium, glassmorphic portfolio dashboard block featuring asset summaries, interactive transaction tables, asset search, and a vector trend chart.',
-    vibeDeps: 'button, card, input, badge, wallet, table, switch, slider, select',
-    code: cryptoGlass01Code,
-    previewComponent: <CryptoGlass01Block />,
-  },
+interface PageProps {
+  params: Promise<{
+    blockName: string
+  }>
 }
 
-export default function BlockDetailPage() {
-  const params = useParams()
-  const blockName = params.blockName as string
-  const block = BLOCKS_MAP[blockName as keyof typeof BLOCKS_MAP]
+export async function generateStaticParams() {
+  return VALID_BLOCK_SLUGS.map((slug) => ({
+    blockName: slug,
+  }))
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const resolvedParams = await params
+  const { blockName } = resolvedParams
+  const block = BLOCKS_METADATA[blockName]
 
   if (!block) {
-    return (
-      <div className="flex min-h-screen flex-col bg-background font-sans">
-        <Header />
-        <main className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center space-y-2">
-            <h2 className="text-xl font-bold">Block Not Found</h2>
-            <p className="text-xs text-muted-foreground">The requested block does not exist.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    )
+    return {
+      title: 'Block Not Found | Vibe UI',
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }
   }
 
-  return (
-    <div className="flex min-h-screen flex-col bg-background font-sans">
-      <Header />
-      <main className="flex-1 w-full px-2 sm:px-4 py-6 sm:py-8">
-        <div className="w-full">
-          <BlockCard
-            title={block.title}
-            description={block.description}
-            urlPath={blockName}
-            code={block.code}
-            previewComponent={block.previewComponent}
-            vibeDeps={block.vibeDeps}
-          />
-        </div>
-      </main>
-      <Footer />
-    </div>
-  )
+  const canonicalUrl = `https://vibe-ui-kit.vercel.app/blocks/${blockName}`
+  const ogImage = `https://vibe-ui-kit.vercel.app/api/og?title=${encodeURIComponent(
+    block.title,
+  )}&category=Blocks&desc=${encodeURIComponent(block.description.slice(0, 120))}`
+
+  return {
+    title: `${block.title} - Application Block | Vibe UI`,
+    description: block.description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${block.title} - Application Block | Vibe UI`,
+      description: block.description,
+      url: canonicalUrl,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${block.title} - Vibe UI`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${block.title} - Application Block | Vibe UI`,
+      description: block.description,
+      images: [ogImage],
+    },
+  }
+}
+
+export default async function BlockDetailPage({ params }: PageProps) {
+  const resolvedParams = await params
+  const { blockName } = resolvedParams
+
+  if (!VALID_BLOCK_SLUGS.includes(blockName)) {
+    notFound()
+  }
+
+  return <BlockDetailView blockName={blockName} />
 }

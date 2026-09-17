@@ -61,7 +61,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 2. Add individual Block Preview routes
   const blockSlugs = [
     'dashboard-01',
-    'dashboard-02',
     'ecommerce-01',
     'ecommerce-02',
     'chat-01',

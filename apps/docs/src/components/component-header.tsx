@@ -57,10 +57,12 @@ export function ComponentHeader({
   }, [])
   const displayTitle =
     title ||
-    name
-      .split('-')
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(' ')
+    (name
+      ? name
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')
+      : '')
 
   const getDynamicDocUrl = () => {
     if (typeof window !== 'undefined') {
@@ -329,6 +331,7 @@ export function ComponentHeader({
   )
 }
 
-function cleanNameForUrl(name: string): string {
+function cleanNameForUrl(name?: string): string {
+  if (!name) return ''
   return name.replace(/\.md$/, '')
 }
