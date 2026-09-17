@@ -6,8 +6,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "preinstall": "node -e \"require('fs').existsSync('.git/hooks/code-guardian/git-hooks/checkInstall.cjs') && require('child_process').execFileSync('node', ['.git/hooks/code-guardian/git-hooks/checkInstall.cjs'], {stdio:'inherit'})\""
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
