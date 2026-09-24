@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import fs from 'fs'
 import path from 'path'
+import { VALID_BLOCK_SLUGS } from './blocks/[blockName]/blocks-data'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://vibe-ui-kit.vercel.app'
@@ -13,6 +14,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'daily',
       priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/docs`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
     },
     {
       url: `${baseUrl}/docs/introduction`,
@@ -59,16 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   // 2. Add individual Block Preview routes
-  const blockSlugs = [
-    'dashboard-01',
-    'ecommerce-01',
-    'ecommerce-02',
-    'chat-01',
-    'auth-01',
-    'crypto-glass-01',
-  ]
-
-  for (const slug of blockSlugs) {
+  for (const slug of VALID_BLOCK_SLUGS) {
     routes.push({
       url: `${baseUrl}/blocks/${slug}`,
       lastModified: now,

@@ -38,7 +38,7 @@ export async function generateMetadata({
   )}&category=Blocks&desc=${encodeURIComponent(block.description.slice(0, 120))}`
 
   return {
-    title: `${block.title} - Application Block | Vibe UI`,
+    title: `${block.title} - Application Block`,
     description: block.description,
     alternates: {
       canonical: canonicalUrl,

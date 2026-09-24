@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import { docsConfig } from '../../../config/docs'
@@ -2561,11 +2562,21 @@ export async function generateMetadata({
   const resolvedParams = await params
   const slug = resolvedParams.slug || ['introduction']
 
-  const mdxPath = path.join(
-    process.cwd(),
-    'src/content/docs',
-    `${slug.join('/')}.mdx`,
-  )
+  const docsDir = path.resolve(process.cwd(), 'src/content/docs')
+  const mdxPath = path.resolve(docsDir, `${slug.join('/')}.mdx`)
+
+  if (!mdxPath.startsWith(docsDir) || !fs.existsSync(mdxPath)) {
+    return {
+      title: 'Page Not Found',
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }
+  }
+
+  const rawContent = fs.readFileSync(mdxPath, 'utf8')
+  const fileContent = rawContent.replace(/^---[\s\S]*?---\s*/, '')
 
   let title = slug[slug.length - 1]
     ? slug[slug.length - 1]
@@ -2576,24 +2587,23 @@ export async function generateMetadata({
   let description =
     'Production-ready React & Next.js components built with Radix UI and Tailwind CSS v4.'
 
-  if (fs.existsSync(mdxPath)) {
-    const rawContent = fs.readFileSync(mdxPath, 'utf8')
-    const fileContent = rawContent.replace(/^---[\s\S]*?---\s*/, '')
-    const h1Match = fileContent.match(/^#\s+(.*)/m)
-    if (h1Match) {
-      title = h1Match[1].trim()
-      const remaining = fileContent.slice(h1Match.index! + h1Match[0].length)
-      const firstParaMatch = remaining.match(/^\s*([A-Za-z].*)/m)
-      if (firstParaMatch) {
-        description = firstParaMatch[1].trim()
-      }
+  const h1Match = fileContent.match(/^#\s+(.*)/m)
+  if (h1Match) {
+    title = h1Match[1].trim()
+    const remaining = fileContent.slice(h1Match.index! + h1Match[0].length)
+    const firstParaMatch = remaining.match(/^\s*([A-Za-z].*)/m)
+    if (firstParaMatch) {
+      description = firstParaMatch[1].trim()
     }
   }
 
   const category = slug.length > 1 ? slug[0] : 'Docs'
   const categoryCapitalized =
     category.charAt(0).toUpperCase() + category.slice(1)
-  const canonicalPath = `/docs/${slug.join('/')}`
+  const canonicalPath =
+    slug.length === 1 && slug[0] === 'introduction'
+      ? '/docs/introduction'
+      : `/docs/${slug.join('/')}`
   const canonicalUrl = `https://vibe-ui-kit.vercel.app${canonicalPath}`
 
   const isComponent = slug[0] === 'components'
@@ -2611,7 +2621,7 @@ export async function generateMetadata({
           ? 'Application Block'
           : 'Guide'
 
-  const pageTitle = `${title} - React & Tailwind CSS ${roleTitle} | Vibe UI`
+  const pageTitle = `${title} - React & Tailwind CSS ${roleTitle}`
 
   const ogUrl = `https://vibe-ui-kit.vercel.app/api/og?title=${encodeURIComponent(
     title,
@@ -2670,34 +2680,17 @@ export async function generateMetadata({
 }
 
 export default async function DocsPage({ params }: PageProps) {
+  const resolvedParams = await params
+  const slug = resolvedParams.slug || ['introduction']
+
+  const docsDir = path.resolve(process.cwd(), 'src/content/docs')
+  const mdxPath = path.resolve(docsDir, `${slug.join('/')}.mdx`)
+
+  if (!mdxPath.startsWith(docsDir) || !fs.existsSync(mdxPath)) {
+    notFound()
+  }
+
   try {
-    const resolvedParams = await params
-    const slug = resolvedParams.slug || ['introduction']
-
-    const mdxPath = path.join(
-      process.cwd(),
-      'src/content/docs',
-      `${slug.join('/')}.mdx`,
-    )
-
-    if (!fs.existsSync(mdxPath)) {
-      return (
-        <div
-          style={{
-            padding: 24,
-            background: '#fef3c7',
-            color: '#92400e',
-            fontFamily: 'sans-serif',
-          }}
-        >
-          <h1>MDX File Not Found</h1>
-          <p>
-            Tried resolving path: <strong>{mdxPath}</strong>
-          </p>
-        </div>
-      )
-    }
-
     const rawContent = fs.readFileSync(mdxPath, 'utf8')
     const fileContent = rawContent.replace(/^---[\s\S]*?---\s*/, '')
 
@@ -3006,6 +2999,12 @@ export default async function DocsPage({ params }: PageProps) {
       </div>
     )
   } catch (error: any) {
+    if (
+      error?.digest === 'NEXT_NOT_FOUND' ||
+      error?.message === 'NEXT_NOT_FOUND'
+    ) {
+      throw error
+    }
     return (
       <div
         style={{

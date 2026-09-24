@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   },
   title: {
     default:
-      'Vibe UI - The Modern React & Tailwind CSS Component Library (92+ Components)',
-    template: '%s | Vibe UI - The Modern React & Tailwind CSS Component Library',
+      'Vibe UI - Modern React & Tailwind CSS Component Library (92+ Components)',
+    template: '%s | Vibe UI',
   },
   description:
     'Vibe UI is a premium, production-ready React & Next.js component library featuring 92+ accessible UI primitives, text animations, WebGL background shaders, and application blocks with Glassmorphism, Neon Glow, Retro, and Cyberpunk themes.',
