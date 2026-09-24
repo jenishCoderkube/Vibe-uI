@@ -15,9 +15,9 @@ Requirements for active milestone. Each maps to roadmap phases.
 
 ### CLI Architecture & Developer Experience
 
-- [ ] **CLI-01**: Decompose `packages/cli/src/index.ts` into discrete command modules (`src/commands/init.ts`, `src/commands/add.ts`, `src/commands/list.ts`).
-- [ ] **CLI-02**: Add download checksum verification and safe path validation to prevent code injection or path traversal during component addition.
-- [ ] **CLI-03**: Support `--yes` / `--force` flags for non-interactive component installation in CI/CD environments.
+- [x] **CLI-01**: Decompose `packages/cli/src/index.ts` into discrete command modules (`src/commands/init.ts`, `src/commands/add.ts`, `src/commands/list.ts`).
+- [x] **CLI-02**: Add download checksum verification and safe path validation to prevent code injection or path traversal during component addition.
+- [x] **CLI-03**: Support `--yes` / `--force` flags for non-interactive component installation in CI/CD environments.
 
 ### Registry & Tooling Pipeline
 
@@ -57,9 +57,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | TEST-01 | Phase 1: Quality & Testing Infrastructure | Complete |
 | TEST-02 | Phase 1: Quality & Testing Infrastructure | Complete |
 | CLEAN-01 | Phase 1: Quality & Testing Infrastructure | Complete |
-| CLI-01 | Phase 2: CLI Modularization & DX | Pending |
-| CLI-02 | Phase 2: CLI Modularization & DX | Pending |
-| CLI-03 | Phase 2: CLI Modularization & DX | Pending |
+| CLI-01 | Phase 2: CLI Modularization & DX | Complete |
+| CLI-02 | Phase 2: CLI Modularization & DX | Complete |
+| CLI-03 | Phase 2: CLI Modularization & DX | Complete |
 | REG-01 | Phase 3: Registry Pipeline Reliability | Pending |
 | REG-02 | Phase 3: Registry Pipeline Reliability | Pending |
 | PERF-01 | Phase 4: Docs Bundle & Performance Optimization | Pending |

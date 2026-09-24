@@ -11,7 +11,7 @@ A structured execution roadmap addressing technical debt, hardening developer ex
 - Decimal phases (1.1, 2.1): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Quality & Testing Infrastructure** - Add automated test suites for CLI and eliminate repository artifact debt
-- [ ] **Phase 2: CLI Modularization & DX** - Refactor monolithic CLI codebase into discrete command handlers with input sanitization
+- [x] **Phase 2: CLI Modularization & DX** - Refactor monolithic CLI codebase into discrete command handlers with input sanitization
 - [ ] **Phase 3: Registry Pipeline Reliability** - Upgrade registry parser from regex to AST with automated drift verification
 - [ ] **Phase 4: Docs Bundle & Performance Optimization** - Code-split monolithic documentation demo strings and optimize client bundle footprints
 
@@ -44,8 +44,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: Modularize CLI command routing and split subcommands into dedicated modules.
-- [ ] 02-02: Add non-interactive flag support and security verification on downloaded components.
+- [x] 02-01: Modularize CLI command routing and split subcommands into dedicated modules.
+- [x] 02-02: Add non-interactive flag support and security verification on downloaded components.
 
 ### Phase 3: Registry Pipeline Reliability
 **Goal**: Upgrade `packages/registry` parsing logic to use true TypeScript AST parsing and ensure synchronization with `packages/ui`.  
