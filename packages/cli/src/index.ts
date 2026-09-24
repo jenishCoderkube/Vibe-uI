@@ -49,9 +49,11 @@ function getPackageManager(): string {
   return 'npm'
 }
 
-function filterMissingDependencies(dependencies: string[]): string[] {
+function filterMissingDependencies(
+  dependencies: string[],
+  baseDir: string = process.cwd(),
+): string[] {
   try {
-    const baseDir = process.cwd()
     const pkgPath = path.join(baseDir, 'package.json')
     if (fs.existsSync(pkgPath)) {
       const pkg = fs.readJsonSync(pkgPath)
@@ -1539,6 +1541,10 @@ program
     }
   })
 
-program.parse(process.argv)
+if (process.env.NODE_ENV !== 'test') {
+  program.parse(process.argv)
+}
+
+export { program, transpileToJs, getPackageManager, filterMissingDependencies }
 
 
