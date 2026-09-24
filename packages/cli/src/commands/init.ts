@@ -5,12 +5,14 @@ import prompts from 'prompts'
 import { REGISTRY_URL } from '../utils/constants.js'
 import { transpileToJs } from '../utils/transpile.js'
 import { installDependencies } from '../utils/pm.js'
+import { validateSafePath, validateRegistryPayload } from '../utils/fs.js'
 
 export function registerInitCommand(program: Command): void {
   program
     .command('init')
     .description('Initialize Vibe UI theme and workspace utilities configuration')
     .option('-y, --yes', 'Skip confirmation prompts and use default paths', false)
+    .option('-f, --force', 'Force overwrite of existing configuration and styles', false)
     .action(async (options) => {
       try {
         console.log('Initializing Vibe UI workspace configuration...')
@@ -90,9 +92,9 @@ export function registerInitCommand(program: Command): void {
           cssPathInput = answers.cssPath || defaultCssPath
         }
 
-        const componentPath = path.resolve(baseDir, componentPathInput)
-        const utilsPath = path.resolve(baseDir, utilsPathInput)
-        const cssPath = path.resolve(baseDir, cssPathInput)
+        const componentPath = validateSafePath(baseDir, componentPathInput)
+        const utilsPath = validateSafePath(baseDir, utilsPathInput)
+        const cssPath = validateSafePath(baseDir, cssPathInput)
 
         // Ensure directory structures exist
         await fs.ensureDir(componentPath)
@@ -107,7 +109,11 @@ export function registerInitCommand(program: Command): void {
             'Failed to fetch utilities helper schema from registry.',
           )
         }
-        const utilsData = (await utilsRes.json()) as any
+        const rawUtilsData = await utilsRes.json()
+        if (!validateRegistryPayload(rawUtilsData)) {
+          throw new Error('Invalid registry payload received for utilities helper.')
+        }
+        const utilsData = rawUtilsData
         const utilFile = utilsData.files[0]
         let utilsContent = utilFile.content
 
@@ -272,7 +278,9 @@ export function registerInitCommand(program: Command): void {
             console.log(
               `\nNote: Tailwind v4 @theme values detected in ${cssPathInput}.`,
             )
-            if (!options.yes) {
+            if (options.force) {
+              shouldWriteCss = true
+            } else if (!options.yes) {
               const cssResponse = await prompts({
                 type: 'confirm',
                 name: 'overwrite',

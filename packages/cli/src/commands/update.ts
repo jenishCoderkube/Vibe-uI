@@ -4,6 +4,7 @@ import path from 'path'
 import prompts from 'prompts'
 import { REGISTRY_URL } from '../utils/constants.js'
 import { installDependencies } from '../utils/pm.js'
+import { validateSafePath, validateRegistryPayload } from '../utils/fs.js'
 
 export function registerUpdateCommand(program: Command): void {
   program
@@ -13,6 +14,7 @@ export function registerUpdateCommand(program: Command): void {
     )
     .option('-a, --all', 'Update all installed components without prompting')
     .option('-y, --yes', 'Skip confirmation prompts')
+    .option('-f, --force', 'Force overwrite without confirmation', false)
     .action(async (components, options) => {
       try {
         const baseDir = process.cwd()
@@ -38,7 +40,7 @@ export function registerUpdateCommand(program: Command): void {
           }
         }
 
-        const componentPath = path.resolve(baseDir, defaultComponentPath)
+        const componentPath = validateSafePath(baseDir, defaultComponentPath)
         if (!fs.existsSync(componentPath)) {
           console.log(
             `\x1b[31mComponent directory not found at ${defaultComponentPath}. Run "init" first.\x1b[0m`,
@@ -102,7 +104,7 @@ export function registerUpdateCommand(program: Command): void {
             return
           }
 
-          if (options.all || options.yes) {
+          if (options.all || options.yes || options.force) {
             targetComponents = outdated
           } else {
             const response = await prompts({
@@ -135,9 +137,14 @@ export function registerUpdateCommand(program: Command): void {
             continue
           }
 
-          const data = (await compRes.json()) as any
+          const rawData = await compRes.json()
+          if (!validateRegistryPayload(rawData)) {
+            console.log(`\x1b[33m⚠ Skipped ${name}: invalid registry payload received\x1b[0m`)
+            continue
+          }
+          const data = rawData
           for (const file of data.files || []) {
-            const filePath = path.join(componentPath, file.name)
+            const filePath = validateSafePath(componentPath, file.name)
             await fs.outputFile(filePath, file.content)
           }
 

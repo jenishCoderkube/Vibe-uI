@@ -5,6 +5,7 @@ import prompts from 'prompts'
 import { REGISTRY_URL } from '../utils/constants.js'
 import { transpileToJs } from '../utils/transpile.js'
 import { installDependencies } from '../utils/pm.js'
+import { validateSafePath, validateRegistryPayload } from '../utils/fs.js'
 
 export function registerAddCommand(program: Command): void {
   program
@@ -13,6 +14,7 @@ export function registerAddCommand(program: Command): void {
     .argument('[components...]', 'The components to add')
     .option('-y, --yes', 'Skip confirmation prompts and use default paths', false)
     .option('-o, --overwrite', 'Overwrite existing component files', false)
+    .option('-f, --force', 'Force overwrite of existing files (alias for --overwrite)', false)
     .option('-a, --all', 'Install all available components and blocks', false)
     .action(async (components, options) => {
       try {
@@ -47,6 +49,9 @@ export function registerAddCommand(program: Command): void {
             }
           }
           componentsToInstall = components
+        } else if (options.yes) {
+          console.log('No components specified. Please specify components to add when running with --yes.')
+          return
         } else {
           // Interactive multi-select mode
           const response = await prompts({
@@ -212,8 +217,9 @@ export function registerAddCommand(program: Command): void {
           }
         }
 
-        const componentPath = path.resolve(baseDir, componentPathInput)
-        const utilsPath = path.resolve(baseDir, utilsPathInput)
+        const componentPath = validateSafePath(baseDir, componentPathInput)
+        const utilsPath = validateSafePath(baseDir, utilsPathInput)
+        const overwrite = Boolean(options.overwrite || options.force)
 
         // Ensure directory structures exist
         await fs.ensureDir(componentPath)
@@ -230,7 +236,11 @@ export function registerAddCommand(program: Command): void {
           if (!compRes.ok) {
             throw new Error(`Failed to fetch component "${name}" data.`)
           }
-          const componentData = (await compRes.json()) as any
+          const rawComponentData = await compRes.json()
+          if (!validateRegistryPayload(rawComponentData)) {
+            throw new Error(`Invalid registry payload received for component "${name}".`)
+          }
+          const componentData = rawComponentData
 
           // Check and write registry dependencies (e.g. utils)
           if (
@@ -238,9 +248,9 @@ export function registerAddCommand(program: Command): void {
             !hasInstalledUtils
           ) {
             const utilsExists = fs.existsSync(utilsPath)
-            let shouldWriteUtils = !utilsExists || options.overwrite
+            let shouldWriteUtils = !utilsExists || overwrite
 
-            if (utilsExists && !options.overwrite) {
+            if (utilsExists && !overwrite) {
               if (!options.yes) {
                 const confirm = await prompts({
                   type: 'confirm',
@@ -257,7 +267,11 @@ export function registerAddCommand(program: Command): void {
             if (shouldWriteUtils) {
               const utilsRes = await fetch(`${REGISTRY_URL}/utils.json`)
               if (utilsRes.ok) {
-                const utilsData = (await utilsRes.json()) as any
+                const rawUtilsData = await utilsRes.json()
+                if (!validateRegistryPayload(rawUtilsData)) {
+                  throw new Error('Invalid registry payload received for utilities helper.')
+                }
+                const utilsData = rawUtilsData
                 const utilFile = utilsData.files[0]
                 let utilsContent = utilFile.content
 
@@ -288,10 +302,10 @@ export function registerAddCommand(program: Command): void {
               content = transpileToJs(content, fileName.endsWith('.jsx'))
             }
 
-            const targetFilePath = path.join(componentPath, fileName)
+            const targetFilePath = validateSafePath(componentPath, fileName)
 
             const fileExists = fs.existsSync(targetFilePath)
-            if (fileExists && !options.overwrite) {
+            if (fileExists && !overwrite) {
               if (!options.yes) {
                 const confirm = await prompts({
                   type: 'confirm',
@@ -307,7 +321,7 @@ export function registerAddCommand(program: Command): void {
                 }
               } else {
                 console.log(
-                  `○ Skipped ${path.join(componentPathInput, fileName)} (already exists. Use -o/--overwrite to overwrite)`,
+                  `○ Skipped ${path.join(componentPathInput, fileName)} (already exists. Use -o/--overwrite or -f/--force to overwrite)`,
                 )
                 continue
               }
