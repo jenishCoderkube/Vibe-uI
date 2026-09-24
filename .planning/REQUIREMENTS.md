@@ -9,9 +9,9 @@ Requirements for active milestone. Each maps to roadmap phases.
 
 ### CLI & Testing Infrastructure
 
-- [ ] **TEST-01**: CLI package (`packages/cli`) has automated Vitest unit tests verifying command option parsing.
-- [ ] **TEST-02**: CLI package has automated integration tests simulating component scaffolding (`init`, `add`).
-- [ ] **CLEAN-01**: Remove committed `vibe-ui-kit-*.tgz` files and rogue `package-lock.json` from `packages/cli`.
+- [x] **TEST-01**: CLI package (`packages/cli`) has automated Vitest unit tests verifying command option parsing.
+- [x] **TEST-02**: CLI package has automated integration tests simulating component scaffolding (`init`, `add`).
+- [x] **CLEAN-01**: Remove committed `vibe-ui-kit-*.tgz` files and rogue `package-lock.json` from `packages/cli`.
 
 ### CLI Architecture & Developer Experience
 
@@ -54,9 +54,9 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TEST-01 | Phase 1: Quality & Testing Infrastructure | Pending |
-| TEST-02 | Phase 1: Quality & Testing Infrastructure | Pending |
-| CLEAN-01 | Phase 1: Quality & Testing Infrastructure | Pending |
+| TEST-01 | Phase 1: Quality & Testing Infrastructure | Complete |
+| TEST-02 | Phase 1: Quality & Testing Infrastructure | Complete |
+| CLEAN-01 | Phase 1: Quality & Testing Infrastructure | Complete |
 | CLI-01 | Phase 2: CLI Modularization & DX | Pending |
 | CLI-02 | Phase 2: CLI Modularization & DX | Pending |
 | CLI-03 | Phase 2: CLI Modularization & DX | Pending |

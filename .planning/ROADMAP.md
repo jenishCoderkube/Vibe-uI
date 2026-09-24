@@ -10,7 +10,7 @@ A structured execution roadmap addressing technical debt, hardening developer ex
 - Integer phases (1, 2, 3, 4): Planned milestone work
 - Decimal phases (1.1, 2.1): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Quality & Testing Infrastructure** - Add automated test suites for CLI and eliminate repository artifact debt
+- [x] **Phase 1: Quality & Testing Infrastructure** - Add automated test suites for CLI and eliminate repository artifact debt
 - [ ] **Phase 2: CLI Modularization & DX** - Refactor monolithic CLI codebase into discrete command handlers with input sanitization
 - [ ] **Phase 3: Registry Pipeline Reliability** - Upgrade registry parser from regex to AST with automated drift verification
 - [ ] **Phase 4: Docs Bundle & Performance Optimization** - Code-split monolithic documentation demo strings and optimize client bundle footprints
@@ -30,8 +30,8 @@ A structured execution roadmap addressing technical debt, hardening developer ex
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: Setup Vitest in `packages/cli` and add unit/integration tests for command handlers.
-- [ ] 01-02: Clean up committed tarballs and rogue lockfile, updating `.gitignore` rules.
+- [x] 01-01: Setup Vitest in `packages/cli` and add unit/integration tests for command handlers.
+- [x] 01-02: Clean up committed tarballs and rogue lockfile, updating `.gitignore` rules.
 
 ### Phase 2: CLI Modularization & DX
 **Goal**: Refactor `packages/cli/src/index.ts` from a single 1200+ line monolith into structured modules.  
@@ -82,7 +82,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Quality & Testing Infrastructure | 0/2 | Not started | - |
+| 1. Quality & Testing Infrastructure | 2/2 | Completed | 2026-09-24 |
 | 2. CLI Modularization & DX | 0/2 | Not started | - |
 | 3. Registry Pipeline Reliability | 0/2 | Not started | - |
 | 4. Docs Bundle & Performance Optimization | 0/2 | Not started | - |
