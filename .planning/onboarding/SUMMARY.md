@@ -1,10 +1,10 @@
 # Onboarding Summary
 
 ## Project State
-- PROJECT.md: missing
-- REQUIREMENTS.md: missing
-- ROADMAP.md: missing
-- STATE.md: missing
+- PROJECT.md: present
+- REQUIREMENTS.md: present
+- ROADMAP.md: present
+- STATE.md: present
 
 ## Codebase Context
 - Brownfield repo: yes
@@ -16,4 +16,4 @@
 - Existing ADR/PRD/SPEC/RFC candidates: 0
 
 ## Recommended Next Step
-- /gsd-new-project
+- /gsd-progress
