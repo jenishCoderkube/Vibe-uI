@@ -24,7 +24,7 @@
     "react-hook-form": "^7.53.0",
     "recharts": "^2.15.0",
     "remark-gfm": "^4.0.1",
-    "tailwind-merge": "^3.6.0",
+    "tailwind-merge": "^3.7.0",
     "vibe-ui": "workspace:^",
     "zod": "^3.23.8"
   },
