@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Header } from '../../components/header'
 import { Footer } from '../../components/footer'
@@ -17,50 +18,7 @@ const BLOCKS = [
     code: dashboard01Code,
     previewComponent: <Dashboard01Block />,
     category: 'Dashboard',
-    mockup: (
-      <div className="w-full h-full bg-zinc-950 dark:bg-zinc-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
-        {/* Mockup Sidebar + Header + Content */}
-        <div className="flex gap-2 h-full">
-          {/* Mock Sidebar */}
-          <div className="w-8 shrink-0 border-r border-zinc-800/80 flex flex-col gap-2 pt-1">
-            <div className="h-1.5 w-full rounded bg-zinc-800" />
-            <div className="h-1.5 w-5/6 rounded bg-zinc-800" />
-            <div className="h-1.5 w-4/5 rounded bg-zinc-800" />
-          </div>
-          {/* Mock Main Area */}
-          <div className="flex-1 flex flex-col gap-2">
-            {/* Mock Header */}
-            <div className="h-3 border-b border-zinc-800/80 flex justify-between items-center pb-1">
-              <div className="h-1 w-10 rounded bg-zinc-800" />
-              <div className="h-2 w-2 rounded-full bg-zinc-800" />
-            </div>
-            {/* Mock Grid */}
-            <div className="grid grid-cols-3 gap-1.5">
-              <div className="h-7 rounded border border-zinc-850 bg-zinc-900/60 p-1 space-y-1">
-                <div className="h-1 w-6 rounded bg-zinc-800" />
-                <div className="h-2 w-10 rounded bg-primary/40" />
-              </div>
-              <div className="h-7 rounded border border-zinc-850 bg-zinc-900/60 p-1 space-y-1">
-                <div className="h-1 w-8 rounded bg-zinc-800" />
-                <div className="h-2 w-8 rounded bg-zinc-800" />
-              </div>
-              <div className="h-7 rounded border border-zinc-850 bg-zinc-900/60 p-1 space-y-1">
-                <div className="h-1 w-4 rounded bg-zinc-800" />
-                <div className="h-2 w-6 rounded bg-zinc-800" />
-              </div>
-            </div>
-            {/* Mock Table */}
-            <div className="border border-zinc-850 rounded p-1 space-y-1 flex-1">
-              <div className="h-1 w-full rounded bg-zinc-850" />
-              <div className="h-1 w-5/6 rounded bg-zinc-850" />
-              <div className="h-1 w-4/5 rounded bg-zinc-850" />
-            </div>
-          </div>
-        </div>
-        {/* Glow Overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(120px_circle_at_50%_50%,rgba(168,85,247,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>
-    )
+    image: '/images/blocks/dashboard-01.png',
   },
   {
     id: 'ecommerce-01',
@@ -70,46 +28,7 @@ const BLOCKS = [
     code: ecommerce01Code,
     previewComponent: <Ecommerce01Block />,
     category: 'E-commerce',
-    mockup: (
-      <div className="w-full h-full bg-zinc-950 dark:bg-zinc-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
-        {/* Mockup Store Header */}
-        <div className="h-3 border-b border-zinc-800/80 flex justify-between items-center pb-1">
-          <div className="h-1 w-8 rounded bg-primary/40" />
-          <div className="flex gap-1">
-            <div className="h-1 w-3 rounded bg-zinc-800" />
-            <div className="h-1 w-3 rounded bg-zinc-800" />
-            <div className="h-1 w-3 rounded bg-zinc-800" />
-          </div>
-          <div className="h-1.5 w-1.5 rounded-full bg-zinc-800" />
-        </div>
-        {/* Mockup Hero Banner */}
-        <div className="h-11 bg-gradient-to-r from-primary/5 via-indigo-950/10 to-purple-950/5 border border-zinc-850 rounded flex items-center justify-between p-2">
-          <div className="space-y-1">
-            <div className="h-1.5 w-12 rounded bg-zinc-800" />
-            <div className="h-1 w-16 rounded bg-zinc-850" />
-            <div className="h-2 w-8 rounded bg-primary/55" />
-          </div>
-          <div className="h-6 w-6 rounded bg-zinc-900/80 border border-zinc-800 flex items-center justify-center shrink-0">
-            <div className="h-4 w-4 rounded-full bg-zinc-800" />
-          </div>
-        </div>
-        {/* Mockup Products Grid */}
-        <div className="grid grid-cols-2 gap-1.5 flex-1">
-          <div className="border border-zinc-850 rounded p-1 space-y-1">
-            <div className="h-4 w-full rounded bg-zinc-900" />
-            <div className="h-1 w-10 rounded bg-zinc-800" />
-            <div className="h-0.5 w-6 rounded bg-zinc-850" />
-          </div>
-          <div className="border border-zinc-850 rounded p-1 space-y-1">
-            <div className="h-4 w-full rounded bg-zinc-900" />
-            <div className="h-1 w-8 rounded bg-zinc-800" />
-            <div className="h-0.5 w-4 rounded bg-zinc-850" />
-          </div>
-        </div>
-        {/* Glow Overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(120px_circle_at_50%_50%,rgba(168,85,247,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>
-    )
+    image: '/images/blocks/ecommerce-01.png',
   },
   {
     id: 'ecommerce-02',
@@ -119,49 +38,7 @@ const BLOCKS = [
     code: ecommerce02Code,
     previewComponent: <Ecommerce02Block />,
     category: 'E-commerce',
-    mockup: (
-      <div className="w-full h-full bg-zinc-950 dark:bg-zinc-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
-        {/* Mockup Store Header */}
-        <div className="h-3 border-b border-zinc-800/80 flex justify-between items-center pb-1">
-          <div className="h-1 w-8 rounded bg-primary/40" />
-          <div className="h-1.5 w-12 rounded bg-zinc-850" />
-          <div className="h-1.5 w-1.5 rounded-full bg-zinc-800" />
-        </div>
-        {/* Mockup Detail View Split */}
-        <div className="flex gap-2 flex-1">
-          {/* Mock Gallery Column */}
-          <div className="w-2/5 flex flex-col gap-1.5">
-            <div className="flex-1 rounded border border-zinc-850 bg-zinc-900/60 flex items-center justify-center">
-              <div className="h-5 w-5 rounded-full bg-zinc-850" />
-            </div>
-            <div className="grid grid-cols-4 gap-0.5 h-2 shrink-0">
-              <div className="rounded bg-zinc-900 border border-zinc-800" />
-              <div className="rounded bg-zinc-900 border border-zinc-800" />
-              <div className="rounded bg-zinc-900 border border-zinc-800" />
-              <div className="rounded bg-zinc-900 border border-zinc-800" />
-            </div>
-          </div>
-          {/* Mock Product Info Column */}
-          <div className="flex-1 flex flex-col gap-2 pt-0.5">
-            <div className="space-y-0.5">
-              <div className="h-2 w-16 rounded bg-zinc-800" />
-              <div className="h-1 w-8 rounded bg-zinc-850" />
-            </div>
-            <div className="h-2 w-10 rounded bg-primary/50" />
-            <div className="space-y-0.5">
-              <div className="h-0.5 w-full rounded bg-zinc-850" />
-              <div className="h-0.5 w-5/6 rounded bg-zinc-850" />
-            </div>
-            <div className="flex gap-1 pt-1">
-              <div className="h-3 flex-1 rounded bg-primary/60" />
-              <div className="h-3 w-3 rounded bg-zinc-900 border border-zinc-800" />
-            </div>
-          </div>
-        </div>
-        {/* Glow Overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(120px_circle_at_50%_50%,rgba(168,85,247,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>
-    )
+    image: '/images/blocks/ecommerce-02.png',
   },
   {
     id: 'chat-01',
@@ -171,42 +48,7 @@ const BLOCKS = [
     code: chat01Code,
     previewComponent: <Chat01Block />,
     category: 'Chat',
-    mockup: (
-      <div className="w-full h-full bg-zinc-950 dark:bg-zinc-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
-        {/* Mockup Chat Header */}
-        <div className="h-3 border-b border-zinc-800/80 flex justify-between items-center pb-1">
-          <div className="h-1.5 w-8 rounded bg-primary/40" />
-          <div className="h-1.5 w-1.5 rounded-full bg-zinc-800" />
-        </div>
-        {/* Mockup Main Split */}
-        <div className="flex gap-2 h-full">
-          {/* Mock Sidebar */}
-          <div className="w-6 shrink-0 border-r border-zinc-800/80 flex flex-col gap-1 pt-0.5">
-            <div className="h-1 w-full rounded bg-zinc-850" />
-            <div className="h-1 w-4/5 rounded bg-zinc-850" />
-            <div className="h-1 w-5/6 rounded bg-zinc-850" />
-          </div>
-          {/* Mock Chat Area */}
-          <div className="flex-1 flex flex-col gap-1.5 relative">
-            <div className="space-y-1 flex-1 overflow-hidden">
-              <div className="flex gap-1 justify-end">
-                <div className="h-1.5 w-10 rounded-sm bg-primary/30 border border-primary/20" />
-              </div>
-              <div className="flex gap-1 justify-start">
-                <div className="h-2.5 w-16 rounded-sm bg-zinc-900 border border-zinc-850" />
-              </div>
-            </div>
-            {/* Mock Composer */}
-            <div className="h-3 border border-zinc-850 rounded bg-zinc-900/60 flex items-center justify-between px-1 shrink-0">
-              <div className="h-0.5 w-6 rounded bg-zinc-800" />
-              <div className="h-1 w-1 rounded bg-primary/60" />
-            </div>
-          </div>
-        </div>
-        {/* Glow Overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(120px_circle_at_50%_50%,rgba(168,85,247,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>
-    )
+    image: '/images/blocks/chat-01.png',
   },
   {
     id: 'auth-01',
@@ -216,36 +58,7 @@ const BLOCKS = [
     code: auth01Code,
     previewComponent: <Auth01Block />,
     category: 'Authentication',
-    mockup: (
-      <div className="w-full h-full bg-zinc-950 dark:bg-zinc-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
-        {/* Mockup split screen */}
-        <div className="flex gap-2 h-full">
-          {/* Mock Left Banner */}
-          <div className="w-2/5 shrink-0 bg-gradient-to-br from-violet-600/30 to-indigo-600/20 border border-zinc-800 rounded p-1.5 flex flex-col justify-between">
-            <div className="h-1.5 w-6 rounded bg-white/40" />
-            <div className="space-y-1">
-              <div className="h-1.5 w-10 rounded bg-white/70" />
-              <div className="h-1 w-12 rounded bg-white/40" />
-            </div>
-            <div className="h-1 w-full rounded bg-white/20" />
-          </div>
-          {/* Mock Right Form Card */}
-          <div className="flex-1 flex items-center justify-center p-1">
-            <div className="border border-zinc-800 bg-zinc-900/60 rounded-md p-2 w-full space-y-1.5 shadow-sm">
-              <div className="h-2 w-8 rounded bg-zinc-850 mx-auto" />
-              <div className="h-1 w-12 rounded bg-zinc-800 mx-auto" />
-              <div className="space-y-1 pt-1.5">
-                <div className="h-2 rounded bg-zinc-900 border border-zinc-850" />
-                <div className="h-2 rounded bg-zinc-900 border border-zinc-850" />
-              </div>
-              <div className="h-3 rounded bg-primary/70 mt-1" />
-            </div>
-          </div>
-        </div>
-        {/* Glow Overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(120px_circle_at_50%_50%,rgba(168,85,247,0.1),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>
-    )
+    image: '/images/blocks/auth-01.png',
   },
   {
     id: 'crypto-glass-01',
@@ -255,39 +68,8 @@ const BLOCKS = [
     code: cryptoGlass01Code,
     previewComponent: <CryptoGlass01Block />,
     category: 'Dashboard',
-    mockup: (
-      <div className="w-full h-full bg-slate-950 border border-zinc-800 rounded-lg p-3 flex flex-col gap-2 relative overflow-hidden group-hover:border-primary/45 transition-colors duration-300 select-none">
-        {/* Ambient blobs in mockup background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
-          <div className="absolute -top-4 -left-4 h-12 w-12 rounded-full bg-sky-500/20 blur-md" />
-          <div className="absolute -bottom-4 -right-4 h-14 w-14 rounded-full bg-emerald-500/20 blur-md" />
-        </div>
-        
-        {/* Mockup Header */}
-        <div className="h-4 border-b border-zinc-800/80 flex justify-between items-center pb-1 relative z-10">
-          <div className="h-1.5 w-12 rounded bg-zinc-800" />
-          <div className="h-2 w-2 rounded bg-zinc-800" />
-        </div>
-        
-        {/* Mockup Content Grid */}
-        <div className="flex gap-2 flex-1 relative z-10">
-          {/* Main Card */}
-          <div className="flex-1 rounded border border-white/10 bg-white/[0.03] p-1.5 flex flex-col justify-between">
-            <div className="space-y-1">
-              <div className="h-1 w-6 rounded bg-zinc-800" />
-              <div className="h-2 w-14 rounded bg-sky-400/40" />
-            </div>
-            <div className="h-6 w-full rounded bg-white/[0.02] border border-white/5" />
-          </div>
-          {/* Sidebar Cards */}
-          <div className="w-14 flex flex-col gap-1.5">
-            <div className="h-7 rounded border border-white/10 bg-white/[0.03]" />
-            <div className="h-7 rounded border border-white/10 bg-white/[0.03]" />
-          </div>
-        </div>
-      </div>
-    )
-  }
+    image: '/images/blocks/crypto-glass-01.png',
+  },
 ]
 
 export default function BlocksPage() {
@@ -327,9 +109,16 @@ export default function BlocksPage() {
                 onClick={() => router.push(`/blocks/${block.id}`)}
                 className="group relative flex flex-col rounded-xl border border-border bg-card hover:bg-muted/10 p-5 cursor-pointer shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 text-left"
               >
-                {/* Visual Mockup Container */}
-                <div className="w-full h-40 bg-zinc-900/10 dark:bg-zinc-950/20 border border-border/70 rounded-lg overflow-hidden p-3 flex items-center justify-center select-none mb-4">
-                  {block.mockup}
+                {/* Visual Image Preview */}
+                <div className="w-full h-44 bg-zinc-950 border border-border/70 rounded-lg overflow-hidden relative select-none mb-4 group-hover:border-primary/50 transition-colors">
+                  <Image
+                    src={block.image}
+                    alt={block.title}
+                    fill
+                    className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent pointer-events-none" />
                 </div>
 
                 <div className="flex flex-1 flex-col justify-between space-y-4">
