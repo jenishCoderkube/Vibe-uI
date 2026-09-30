@@ -20,6 +20,12 @@ const description =
   '92+ accessible, copy-paste React & Next.js components, motion animations, WebGL background shaders, and application blocks. Built on Radix UI primitives with Glassmorphism, Neon Glow, Retro, and Cyberpunk presets.'
 
 export default function LandingPage() {
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">
       {/* 🔮 Liquid Glass Ambient Refraction Blobs */}

@@ -10,26 +10,67 @@ const CommandContext = React.createContext<{
   variant?: 'default' | 'glass' | 'retro' | 'glow'
 }>({})
 
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect
+
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive> & {
     variant?: 'default' | 'glass' | 'retro' | 'glow'
   }
->(({ className, variant = 'default', ...props }, ref) => (
-  <CommandContext.Provider value={{ variant }}>
-    <CommandPrimitive
-      ref={ref}
-      className={cn(
-        'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
-        (variant === 'glass' || variant === 'glow') &&
-          'bg-transparent text-foreground dark:text-white',
-        variant === 'retro' && 'bg-background text-foreground',
-        className,
-      )}
-      {...props}
-    />
-  </CommandContext.Provider>
-))
+>(({ className, variant = 'default', ...props }, ref) => {
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  React.useImperativeHandle(ref, () => containerRef.current!)
+
+  useIsomorphicLayoutEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const overrideScroll = () => {
+      const list = container.querySelector('[cmdk-list]') as HTMLElement | null
+      const scrollHandler = (el: HTMLElement) => {
+        if (!list) return
+        const listRect = list.getBoundingClientRect()
+        const elRect = el.getBoundingClientRect()
+        if (elRect.bottom > listRect.bottom) {
+          list.scrollTop += elRect.bottom - listRect.bottom
+        } else if (elRect.top < listRect.top) {
+          list.scrollTop -= listRect.top - elRect.top
+        }
+      }
+
+      container
+        .querySelectorAll<HTMLElement>('[cmdk-item], [cmdk-group-heading]')
+        .forEach((el) => {
+          el.scrollIntoView = () => scrollHandler(el)
+        })
+    }
+
+    overrideScroll()
+
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(overrideScroll)
+      observer.observe(container, { childList: true, subtree: true })
+      return () => observer.disconnect()
+    }
+  }, [])
+
+  return (
+    <CommandContext.Provider value={{ variant }}>
+      <CommandPrimitive
+        ref={containerRef}
+        className={cn(
+          'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
+          (variant === 'glass' || variant === 'glow') &&
+            'bg-transparent text-foreground dark:text-white',
+          variant === 'retro' && 'bg-background text-foreground',
+          className,
+        )}
+        {...props}
+      />
+    </CommandContext.Provider>
+  )
+})
 Command.displayName = CommandPrimitive.displayName
 
 export interface CommandDialogProps extends React.ComponentPropsWithoutRef<
