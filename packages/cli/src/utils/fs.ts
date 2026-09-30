@@ -26,8 +26,18 @@ export function validateSafePath(baseDir: string, relativePath: string): string 
     throw new Error('Invalid path: null bytes are not allowed')
   }
 
+  // Reject Windows-style drive letter absolute paths on any platform (e.g. C:\... or C:/...)
+  if (/^[a-zA-Z]:[\\/]/.test(relativePath)) {
+    throw new Error(
+      `Directory traversal detected: path "${relativePath}" resolves outside base directory "${baseDir}"`,
+    )
+  }
+
+  // Normalize backslashes to forward slashes for cross-platform traversal defense
+  const normalizedRelative = relativePath.replace(/\\/g, '/')
+
   const resolvedBase = path.resolve(baseDir)
-  const resolvedTarget = path.resolve(resolvedBase, relativePath)
+  const resolvedTarget = path.resolve(resolvedBase, normalizedRelative)
 
   const relativeFromBase = path.relative(resolvedBase, resolvedTarget)
 
