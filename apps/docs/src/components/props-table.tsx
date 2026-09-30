@@ -58,7 +58,7 @@ export interface PropsTableProps {
 }
 
 export function PropsTable({
-  title: _title,
+  title,
   items,
   data,
   props: rawProps,
@@ -68,7 +68,12 @@ export function PropsTable({
   const propRows = items || data || rawProps || rows
 
   return (
-    <div className="space-y-3 my-6">
+    <div className="space-y-2.5 my-6">
+      {title && (
+        <h4 className="text-sm font-semibold tracking-tight text-foreground font-mono">
+          {title}
+        </h4>
+      )}
       <div className="w-full overflow-x-auto rounded-lg border border-border custom-scrollbar bg-card shadow-xs">
         <table className="w-full min-w-[650px] text-sm text-left border-collapse">
           <thead className="bg-muted/50 border-b border-border text-foreground font-semibold">

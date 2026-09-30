@@ -51,23 +51,6 @@ export const docsConfig: DocsConfig = {
       ],
     },
     {
-      title: 'Comparisons',
-      items: [
-        {
-          title: 'Vibe UI vs shadcn/ui',
-          href: '/docs/comparisons/vibe-ui-vs-shadcn',
-        },
-        {
-          title: 'Vibe UI vs Magic UI',
-          href: '/docs/comparisons/vibe-ui-vs-magic-ui',
-        },
-        {
-          title: 'Vibe UI vs Aceternity',
-          href: '/docs/comparisons/vibe-ui-vs-aceternity',
-        },
-      ],
-    },
-    {
       title: 'Components',
       items: [
         {

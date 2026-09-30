@@ -108,13 +108,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         docPath === '/docs/components' ||
         docPath === '/docs/animations' ||
         docPath === '/docs/backgrounds'
-      const isComparison = docPath.startsWith('/docs/comparisons/')
       const isComponent = docPath.startsWith('/docs/components/')
       const isAnimation = docPath.startsWith('/docs/animations/')
       const isBackground = docPath.startsWith('/docs/backgrounds/')
       const isBlock = docPath.startsWith('/docs/blocks/')
 
-      const priority = isHub || isComparison
+      const priority = isHub
         ? 0.9
         : isComponent || isAnimation || isBackground || isBlock
           ? 0.85
