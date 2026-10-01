@@ -6,7 +6,10 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "publish:cli": "pnpm --filter vibe-ui-kit publish --no-git-checks --access public",
+    "publish:ui": "pnpm --filter vibe-ui publish --no-git-checks --access public",
+    "publish:all": "pnpm --filter vibe-ui publish --no-git-checks --access public && pnpm --filter vibe-ui-kit publish --no-git-checks --access public"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
