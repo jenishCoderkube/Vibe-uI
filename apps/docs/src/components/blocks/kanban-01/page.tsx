@@ -769,7 +769,7 @@ export default function Kanban01Block() {
               </div>
 
               {/* Tag Pill Filter */}
-              <div className="hidden sm:flex items-center gap-1 overflow-x-auto max-w-sm py-0.5">
+              <div className="flex items-center gap-1 overflow-x-auto max-w-full py-0.5 scrollbar-none no-scrollbar">
                 {TAGS.slice(0, 5).map((tag) => (
                   <Button
                     key={tag}
@@ -883,9 +883,9 @@ export default function Kanban01Block() {
         </header>
 
         {/* MAIN BODY: BOARD OR ANALYTICS */}
-        <main className="flex-1 p-3 sm:p-5 overflow-y-auto">
+        <main className="flex-1 w-full p-3 sm:p-5 lg:p-6 overflow-y-auto">
           {activeTab === 'board' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-start">
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-start">
               {COLUMNS.map((column) => {
                 // If mobile view is filtered to one column, hide others
                 if (mobileColumnTab !== 'all' && mobileColumnTab !== column.id) {
@@ -900,7 +900,7 @@ export default function Kanban01Block() {
                 return (
                   <div
                     key={column.id}
-                    className="flex flex-col rounded-xl border border-border bg-card/60 p-3 transition-colors shadow-xs"
+                    className="min-w-0 flex flex-col rounded-xl border border-border bg-card/60 p-3 transition-colors shadow-xs"
                   >
                     {/* Column Header */}
                     <div className="flex items-center justify-between pb-3 px-1">
@@ -1155,10 +1155,10 @@ export default function Kanban01Block() {
               })}
             </div>
           ) : (
-            /* ANALYTICS & SPRINT SUMMARY VIEW */
-            <div className="max-w-5xl mx-auto space-y-6 py-4">
+            /* ANALYTICS & SPRINT SUMMARY VIEW - FULL WIDTH & RESPONSIVE */
+            <div className="w-full space-y-6 py-2">
               {/* Top KPI Cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
                 <Card className="p-4 border-border/80 bg-card/60 backdrop-blur-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground font-medium">
@@ -1221,7 +1221,7 @@ export default function Kanban01Block() {
               </div>
 
               {/* Middle Section: Progress Circle + Stage Distribution */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <Card className="p-5 flex flex-col items-center justify-center text-center bg-card/60">
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
                     Sprint Completion
@@ -1238,7 +1238,7 @@ export default function Kanban01Block() {
                   </p>
                 </Card>
 
-                <Card className="md:col-span-2 p-5 space-y-4 bg-card/60">
+                <Card className="lg:col-span-2 p-5 space-y-4 bg-card/60">
                   <div>
                     <h3 className="text-sm font-semibold">Workflow Column Allocation</h3>
                     <p className="text-xs text-muted-foreground">
@@ -1273,7 +1273,7 @@ export default function Kanban01Block() {
               </div>
 
               {/* Team Workload Table */}
-              <Card className="p-5 space-y-3 bg-card/60">
+              <Card className="p-4 sm:p-5 space-y-3 bg-card/60 w-full">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-sm font-semibold">Team Allocation & Velocity</h3>
@@ -1299,25 +1299,25 @@ export default function Kanban01Block() {
                     return (
                       <div
                         key={member.id}
-                        className="py-3 flex items-center justify-between flex-wrap gap-2"
+                        className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                       >
                         <div className="flex items-center gap-3">
-                          <Avatar size="default" className="size-9 border border-border">
+                          <Avatar size="default" className="size-9 border border-border shrink-0">
                             <AvatarImage src={member.avatar} alt={member.name} />
                             <AvatarFallback>{member.initials}</AvatarFallback>
                           </Avatar>
-                          <div>
-                            <div className="text-xs font-semibold text-foreground">
+                          <div className="min-w-0">
+                            <div className="text-xs font-semibold text-foreground truncate">
                               {member.name}
                             </div>
-                            <div className="text-[11px] text-muted-foreground">
+                            <div className="text-[11px] text-muted-foreground truncate">
                               {member.role}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4 text-xs font-mono">
-                          <div className="text-right">
+                        <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-5 text-xs font-mono">
+                          <div className="text-left sm:text-right">
                             <span className="text-muted-foreground text-[10px] block">
                               ACTIVE
                             </span>
@@ -1325,11 +1325,11 @@ export default function Kanban01Block() {
                               {inFlight}
                             </span>
                           </div>
-                          <div className="text-right">
+                          <div className="text-left sm:text-right">
                             <span className="text-muted-foreground text-[10px] block">
                               RESOLVED
                             </span>
-                            <span className="font-bold text-emerald-500">
+                            <span className="font-bold text-foreground">
                               {doneCount}
                             </span>
                           </div>
@@ -1340,7 +1340,7 @@ export default function Kanban01Block() {
                               setSelectedAssignee(member.id)
                               setActiveTab('board')
                             }}
-                            className="h-7 text-xs"
+                            className="h-7 text-xs shrink-0"
                           >
                             View Cards
                           </Button>

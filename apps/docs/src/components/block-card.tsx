@@ -485,11 +485,17 @@ export function BlockCard({
                         : 'border border-border rounded-xl',
                     )}
                     style={{
-                      height: urlPath.startsWith('dashboard') || urlPath.startsWith('chat') || urlPath.startsWith('crypto')
-                        ? '720px'
-                        : urlPath.startsWith('login')
-                          ? '620px'
-                          : '580px',
+                      height:
+                        urlPath.startsWith('kanban') ||
+                        urlPath.startsWith('dashboard') ||
+                        urlPath.startsWith('chat') ||
+                        urlPath.startsWith('crypto') ||
+                        urlPath.startsWith('pricing') ||
+                        urlPath.startsWith('ecommerce')
+                          ? '820px'
+                          : urlPath.startsWith('login') || urlPath.startsWith('auth')
+                            ? '680px'
+                            : '600px',
                     }}
                   />
                 </div>
