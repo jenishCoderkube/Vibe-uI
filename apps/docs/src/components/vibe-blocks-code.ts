@@ -6971,17 +6971,20 @@ export default function Pricing01Page() {
               {/* Currency Selector */}
               <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-lg border border-border/60">
                 {(['USD', 'EUR', 'GBP'] as Currency[]).map((cur) => (
-                  <button
+                  <Button
                     key={cur}
+                    type="button"
+                    variant={currency === cur ? 'default' : 'ghost'}
+                    size="sm"
                     onClick={() => setCurrency(cur)}
-                    className={\`px-2.5 py-1 text-xs font-semibold rounded-md transition-all \${
+                    className={\`h-7 px-2.5 text-xs font-semibold rounded-md transition-all \${
                       currency === cur
-                        ? 'bg-background text-foreground shadow-sm'
+                        ? 'shadow-sm'
                         : 'text-muted-foreground hover:text-foreground'
                     }\`}
                   >
                     {cur} ({CURRENCY_MAP[cur].symbol})
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -7029,19 +7032,32 @@ export default function Pricing01Page() {
                     </CardDescription>
 
                     {/* Price display */}
-                    <div className="pt-4 flex items-baseline gap-1">
-                      <span className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+                    <div className="pt-4 flex items-baseline gap-2">
+                      <span className="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground">
                         {formatPrice(price)}
                       </span>
+                      {isYearly && (
+                        <span className="text-base sm:text-lg font-semibold text-muted-foreground line-through decoration-muted-foreground/60">
+                          {formatPrice(plan.monthlyPrice)}
+                        </span>
+                      )}
                       <span className="text-sm font-medium text-muted-foreground">
                         / month
                       </span>
                     </div>
-                    {isYearly && (
-                      <p className="text-[11px] text-muted-foreground font-mono">
-                        {formatPrice(price * 12)} billed every 12 months
-                      </p>
-                    )}
+
+                    <div className="h-5 flex items-center">
+                      {isYearly ? (
+                        <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium font-mono flex items-center gap-1">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          <span>{formatPrice(price * 12)}/yr (Save {formatPrice((plan.monthlyPrice - plan.annualMonthlyPrice) * 12)}/yr)</span>
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-muted-foreground font-mono">
+                          Billed monthly, cancel anytime
+                        </p>
+                      )}
+                    </div>
                   </CardHeader>
 
                   <CardContent className="flex-1 space-y-4 pt-2">
