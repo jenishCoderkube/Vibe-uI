@@ -934,7 +934,7 @@ export default config`
                     <ShieldCheck className="w-3.5 h-3.5" />
                     Pro Architecture
                   </span>
-                  <span className="text-xs font-bold opacity-60">v0.1.34</span>
+                  <span className="text-xs font-bold opacity-60">v0.1.35</span>
                 </div>
 
                 <div>

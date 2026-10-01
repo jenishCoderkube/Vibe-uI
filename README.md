@@ -17,7 +17,7 @@
 
 ---
 
-**Vibe UI** is a professional collection of **92 curated React & Next.js items** built on top of **Radix UI** primitives, **Tailwind CSS (v3 & v4)**, and **Motion**. It provides copy-and-paste components, text animations, WebGL background shaders, and full application blocks with native support for multiple design styles.
+**Vibe UI** is a professional collection of **94 curated React & Next.js items** built on top of **Radix UI** primitives, **Tailwind CSS (v3 & v4)**, and **Motion**. It provides copy-and-paste components, text animations, WebGL background shaders, and full application blocks with native support for multiple design styles.
 
 ## 🚀 Core Features
 
@@ -58,7 +58,7 @@ npx vibe-ui-kit update --all
 
 ---
 
-## 🧩 The Registry (92 Items Available)
+## 🧩 The Registry (94 Items Available)
 
 Vibe UI components are categorized into 4 distinct groups:
 
@@ -82,9 +82,11 @@ GPU-accelerated ambient backgrounds with automatic context loss recovery and fal
 
 `light-tunnel` • `lightfall` • `scanner` • `sliced-waves` • `web-threads`
 
-### 4. 🧩 Full Application Blocks (7 Ready-to-Use Templates)
+### 4. 🧩 Full Application Blocks (9 Ready-to-Use Templates)
 Complete responsive views ready for drop-in use:
 
+- **`pricing-01`**: High-converting SaaS tiered pricing matrix with monthly/annual savings toggle, live multi-currency switcher, feature matrix table, and interactive slide-over checkout drawer.
+- **`kanban-01`**: Agile sprint project management board with 4 workflow swimlanes, subtask checklists, priority badges, member workload allocation, interactive task creation modal with React Hook Form, and sprint analytics.
 - **`dashboard-01`**: Analytics and directory administration dashboard with lifecycle metrics, data table, and drawer details.
 - **`dashboard-02`**: Metrics overview with dynamic date-range filtering, interactive charts, and CSV/PDF export.
 - **`ecommerce-01`**: Modern storefront with shopping bag sheet, filter chips, and responsive product catalog.

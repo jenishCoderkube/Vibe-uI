@@ -10,7 +10,7 @@ Update your GitHub repository settings at `https://github.com/jenishCoderkube/Vi
 
 1. **Website Field**: Set to `https://vibe-ui-kit.vercel.app`
 2. **About / Description**:
-   > Vibe UI: The Modern React & Tailwind CSS Component Library. 92+ accessible UI primitives, Motion animations, WebGL background shaders, and full application blocks.
+   > Vibe UI: The Modern React & Tailwind CSS Component Library. 94+ accessible UI primitives, Motion animations, WebGL background shaders, and full application blocks.
 3. **Repository Topics / Tags**:
    `vibe-ui` • `vibe-ui-kit` • `react` • `nextjs` • `tailwind-css` • `tailwind-v4` • `radix-ui` • `components` • `ui-library` • `glassmorphism` • `motion` • `webgl-shaders` • `design-system` • `typescript`
 
@@ -20,13 +20,13 @@ Update your GitHub repository settings at `https://github.com/jenishCoderkube/Vi
 
 ### Product Details
 - **Product Name**: Vibe UI
-- **Tagline**: The Modern React & Tailwind CSS Component Library (92+ Items)
+- **Tagline**: The Modern React & Tailwind CSS Component Library (94+ Items)
 - **Website Link**: `https://vibe-ui-kit.vercel.app`
 - **Pricing**: 100% Free & Open Source (MIT)
 - **Categories**: Developer Tools, Open Source, Design Tools, React, Web App
 
 ### Product Description
-> Vibe UI is a premier open-source collection of 92+ accessible, copy-and-paste React & Next.js components, text animations, GPU-accelerated WebGL background shaders, and full application blocks built on Radix UI primitives and Tailwind CSS v4.
+> Vibe UI is a premier open-source collection of 94+ accessible, copy-and-paste React & Next.js components, text animations, GPU-accelerated WebGL background shaders, and full application blocks built on Radix UI primitives and Tailwind CSS v4.
 >
 > Features multi-aesthetic presets (Glassmorphism, Neon Glow, Retro Brutalism, Cyberpunk), dual Tailwind v3 & v4 compatibility, and an official CLI for instant zero-configuration scaffolding.
 
@@ -40,9 +40,9 @@ Like many developers, I love the copy-paste philosophy pioneered by shadcn/ui. B
 ✨ Translucent frosted glassmorphism & neon luminescence presets
 🎬 Fluid motion text effects and typography animations
 🎨 Ambient WebGL canvas shaders with automatic GPU recovery
-🧩 Full application blocks (analytics dashboards, e-commerce storefronts, AI chat assistants)
+🧩 Full application blocks (pricing tables, agile sprint boards, analytics dashboards, e-commerce storefronts, AI chat assistants)
 
-So I built Vibe UI — a curated collection of 92+ items with 100% source-code ownership:
+So I built Vibe UI — a curated collection of 94+ items with 100% source-code ownership:
 - Zero vendor lock-in: files live right in your project
 - Dual Tailwind compatibility: works seamlessly with both modern Tailwind v4 (@theme) and Tailwind v3
 - Automated CLI (`npx vibe-ui-kit`): init, add, list, diff, doctor, and update
@@ -60,11 +60,11 @@ I'd love to hear your feedback, feature ideas, or which component you'd like to 
 ```text
 Introducing Vibe UI 🚀
 
-The modern React & Tailwind CSS component library with 92+ items:
+The modern React & Tailwind CSS component library with 94+ items:
 ✨ 57 Accessible UI Primitives
 🎬 23 Motion Typography Animations
 🎨 5 WebGL Background Shaders
-🧩 7 Full Application Blocks
+🧩 9 Full Application Blocks (Pricing, Kanban, Dashboard, E-commerce, Chat, Auth, Crypto)
 
 100% open source & copy-paste ready.
 
@@ -125,7 +125,7 @@ What components should we build next? Let me know below! 👇
 ## 🔴 4. Reddit Community Posts
 
 ### Post 1: `r/reactjs`
-- **Title**: I built Vibe UI: 92+ open-source React components with Tailwind v4, Motion effects & WebGL shaders
+- **Title**: I built Vibe UI: 94+ open-source React components with Tailwind v4, Motion effects & WebGL shaders
 - **Body**:
 ```text
 Hey r/reactjs!
@@ -135,11 +135,11 @@ Over the past few months, I've been working on Vibe UI (https://vibe-ui-kit.verc
 ### What is it?
 Rather than an npm package that hides your styling behind opaque wrappers, Vibe UI provides copy-and-paste source code directly into your repository via an official CLI (`npx vibe-ui-kit add <name>`).
 
-### What's included (92 items)?
+### What's included (94 items)?
 1. 57 UI Primitives (Accordion, Dialog, Drawer, Calendar, Tables, Select, Multi-Select, OTP Input, Carousel, etc.)
 2. 23 Motion Text Animations (Aurora Text, Glitch, Shiny Text, Velocity Scroll, Morphing Text, Kinetic Text)
 3. 5 WebGL Background Shaders (Light Tunnel, Web Threads, Sliced Waves, Scanner, Lightfall)
-4. 7 Application Blocks (Enterprise Operations Dashboard, Financial Metrics, E-commerce Storefront, AI Chat Assistant, Glassmorphism Auth)
+4. 9 Application Blocks (SaaS Pricing Matrix, Agile Kanban Sprint Board, Enterprise Operations Dashboard, Financial Metrics, E-commerce Storefront, AI Chat Assistant, Glassmorphism Auth, Crypto Portfolio)
 
 ### Why Tailwind v4 & v3 dual support?
 Many teams are migrating to Tailwind CSS v4, but thousands of projects still run Tailwind v3. The Vibe UI CLI automatically detects your Tailwind version and configures directives accordingly.

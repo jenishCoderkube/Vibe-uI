@@ -14,8 +14,8 @@ export function Announcement() {
     >
       <Link href="/docs/introduction" className="inline-flex items-center gap-1.5 max-w-full truncate">
         <span className="truncate">
-          <span className="sm:hidden">Vibe UI • 92+ Components & Blocks</span>
-          <span className="hidden sm:inline">Introducing Vibe UI • 92+ Components & Blocks</span>
+          <span className="sm:hidden">Vibe UI • 94+ Components & Blocks</span>
+          <span className="hidden sm:inline">Introducing Vibe UI • 94+ Components & Blocks</span>
         </span>
         <ArrowRight className="size-3.5 shrink-0" />
       </Link>

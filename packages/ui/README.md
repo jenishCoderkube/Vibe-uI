@@ -11,13 +11,13 @@
 
 <br/>
 
-**[📖 Vibe UI Documentation](https://vibe-ui-kit.vercel.app/)** · **[🧩 92+ Components](https://vibe-ui-kit.vercel.app/docs/components)** · **[🎨 Vibe Studio](https://vibe-ui-kit.vercel.app/studio)**
+**[📖 Vibe UI Documentation](https://vibe-ui-kit.vercel.app/)** · **[🧩 94+ Components & Blocks](https://vibe-ui-kit.vercel.app/docs/components)** · **[🎨 Vibe Studio](https://vibe-ui-kit.vercel.app/studio)**
 
 </div>
 
 ---
 
-`vibe-ui-kit` is the official package distribution of Vibe UI. It contains **92+ beautiful, highly accessible React components, WebGL background shaders, and blocks** built with **React 19**, **Radix UI**, and **Tailwind CSS v4**, featuring custom styling variants (`glass`, `glow`, `retro`, `cyberpunk`).
+`vibe-ui-kit` is the official package distribution of Vibe UI. It contains **94+ beautiful, highly accessible React components, WebGL background shaders, and blocks** built with **React 19**, **Radix UI**, and **Tailwind CSS v4**, featuring custom styling variants (`glass`, `glow`, `retro`, `cyberpunk`).
 
 ## ⚙️ Installation
 
@@ -99,12 +99,15 @@ export default function Composed() {
 
 ---
 
-## 🧩 Component Library (75+ Presets)
+## 🧩 Component Library (94+ Items)
 
-- **Forms & Inputs:** Button, Input, Checkbox, Switch, Textarea, Select, Combobox, Multi-Select, InputOTP, Date-Picker, Uploader
-- **Layout & Structure:** Card, Carousel, Tabs, Breadcrumb, Pagination, Table, Scroll-Area, Separator, Accordion, Collapsible
-- **Feedback & States:** Alert, Alert-Dialog, Progress, Slider, Toast, Tooltip, Skeleton, Empty, Spinner
-- **Motion & Typography:** WordRotate, TextGlitch, HyperText, SparklesText, Marquee, TypingAnimation, NumberTicker, AnimatedShinyText, SpinningText, ScrollBasedVelocity, BlurFade, AnimatedGradientText
+- **Forms & Inputs:** Button, Button-Group, Input, Checkbox, Switch, Textarea, Select, Combobox, Multi-Select, Radio-Group, Slider, Date-Picker, InputOTP, Uploader, Form
+- **Layout & Structure:** Card, Carousel, Tabs, Breadcrumb, Pagination, Table, Scroll-Area, Separator, Accordion, Collapsible, Layout-Shell, Sidebar
+- **Overlays & Dialogs:** Dialog, Alert-Dialog, Sheet, Drawer, Popover, Hover-Card, Tooltip, Dropdown-Menu, Context-Menu, Menubar
+- **Feedback & States:** Alert, Badge, Progress, Slider, Toast, Tooltip, Skeleton, Empty, Spinner, Marker, Kbd, Message, Message-Scroller
+- **Motion & Typography:** WordRotate, TextGlitch, HyperText, SparklesText, Marquee, TypingAnimation, NumberTicker, AnimatedShinyText, SpinningText, ScrollBasedVelocity, BlurFade, AnimatedGradientText, KineticText, MorphingText, Text3DFlip, VideoText
+- **WebGL Background Shaders:** Light-Tunnel, Lightfall, Scanner, Sliced-Waves, Web-Threads
+- **Application Blocks:** SaaS Pricing (`pricing-01`), Agile Kanban Board (`kanban-01`), Analytics Dashboard (`dashboard-01`), E-commerce Store (`ecommerce-01`, `ecommerce-02`), AI Chat Workspace (`chat-01`), Modern Authentication (`auth-01`), DeFi Portfolio (`crypto-glass-01`)
 
 ---
 

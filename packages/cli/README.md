@@ -10,13 +10,13 @@
 <h1 align="center">✦ Vibe UI Kit ✦</h1>
 
 <p align="center">
-  <strong>The modern React & Tailwind CSS component library featuring 92+ accessible UI primitives, WebGL background shaders, and application blocks.</strong><br/>
+  <strong>The modern React & Tailwind CSS component library featuring 94+ accessible UI primitives, WebGL background shaders, and application blocks.</strong><br/>
   Built with <b>React 19</b> · <b>TypeScript</b> · <b>Tailwind CSS v4</b> · <b>Radix UI</b>
 </p>
 
 <p align="center">
   <a href="https://vibe-ui-kit.vercel.app/"><b>📖 Vibe UI Documentation</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://vibe-ui-kit.vercel.app/docs/components"><b>🧩 92+ Components</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://vibe-ui-kit.vercel.app/docs/components"><b>🧩 94+ Components</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="https://vibe-ui-kit.vercel.app/studio"><b>🎨 Vibe Studio</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="https://github.com/jenishCoderkube/Vibe-uI"><b>⭐ GitHub</b></a>
 </p>
@@ -33,7 +33,7 @@ Most component libraries install into `node_modules` — you get **zero design c
 
 | Feature              | Vibe UI                                               | Traditional Libraries                    |
 | :------------------- | :---------------------------------------------------- | :--------------------------------------- |
-| **Components Count** | **92+ premium, production-ready**                     | Typically 15-20                          |
+| **Components Count** | **94+ premium, production-ready**                     | Typically 15-20                          |
 | **Install Location** | Your local `src/components/ui/` folder                | Bundled inside `node_modules/`           |
 | **Customization**    | Full control — modify and customize the code directly | Override styles with wrapper css hacks   |
 | **Bundle Size**      | Minimal — only components you add are compiled        | Heavy — loads the entire package library |
@@ -203,7 +203,7 @@ my-vibe-app/
 
 ---
 
-## 🧩 All 51 Components
+## 🧩 Components, Shaders & Application Blocks (94+ Items)
 
 ### 🎛️ Inputs & Controls (13)
 
@@ -280,6 +280,29 @@ my-vibe-app/
 | **Message Scroller** | Container streams with message history listings            | [View →](https://vibe-ui-kit.vercel.app/docs/components/message-scroller) |
 | **Text Glitch**      | Animated title headers with cyber glitch effects           |   [View →](https://vibe-ui-kit.vercel.app/docs/components/text-glitch)    |
 | **Theme Switcher**   | Toggles resolving dark/light settings across layout frames |  [View →](https://vibe-ui-kit.vercel.app/docs/components/theme-switcher)  |
+
+### 🧩 Full Application Blocks (8)
+
+| Block                  | Description                                                      |                                  Docs                                  |
+| :--------------------- | :--------------------------------------------------------------- | :--------------------------------------------------------------------: |
+| **Pricing 01**         | SaaS tiered pricing table with currency switcher & checkout      |     [View →](https://vibe-ui-kit.vercel.app/docs/blocks/pricing-01)     |
+| **Kanban 01**          | Agile sprint board with swimlanes, subtasks & sprint analytics   |     [View →](https://vibe-ui-kit.vercel.app/docs/blocks/kanban-01)      |
+| **Dashboard 01**       | Admin dashboard with lifecycle metrics & data table drawer       |    [View →](https://vibe-ui-kit.vercel.app/docs/blocks/dashboard-01)    |
+| **E-commerce 01**      | Modern storefront with shopping bag sheet & responsive catalog   |    [View →](https://vibe-ui-kit.vercel.app/docs/blocks/ecommerce-01)    |
+| **E-commerce 02**      | Minimalist product grid with category filters & review modal     |    [View →](https://vibe-ui-kit.vercel.app/docs/blocks/ecommerce-02)    |
+| **Chat 01**            | AI chat workspace with prompt chips, streaming UI & composer     |       [View →](https://vibe-ui-kit.vercel.app/docs/blocks/chat-01)       |
+| **Auth 01**            | Glassmorphism authentication with social logins & form validation|       [View →](https://vibe-ui-kit.vercel.app/docs/blocks/auth-01)       |
+| **Crypto Glass 01**    | Dark-mode DeFi portfolio tracker with live market charts         |   [View →](https://vibe-ui-kit.vercel.app/docs/blocks/crypto-glass-01)   |
+
+### 🌌 WebGL Background Shaders (5)
+
+| Shader             | Description                                                  |                                  Docs                                  |
+| :----------------- | :----------------------------------------------------------- | :--------------------------------------------------------------------: |
+| **Light Tunnel**   | Hyperspace ray-marched warp tunnel shader                    |  [View →](https://vibe-ui-kit.vercel.app/docs/backgrounds/light-tunnel)   |
+| **Lightfall**      | Ambient cyber digital rain with falling glowing particles    |    [View →](https://vibe-ui-kit.vercel.app/docs/backgrounds/lightfall)   |
+| **Scanner**        | Tron-style holographic glowing grid horizon                  |     [View →](https://vibe-ui-kit.vercel.app/docs/backgrounds/scanner)     |
+| **Sliced Waves**   | Smooth ribbon waves with custom gradient amplitudes          |   [View →](https://vibe-ui-kit.vercel.app/docs/backgrounds/sliced-waves)  |
+| **Web Threads**    | Intertwined neon laser lines with reactive mouse deflection  |   [View →](https://vibe-ui-kit.vercel.app/docs/backgrounds/web-threads)   |
 
 <br/>
 

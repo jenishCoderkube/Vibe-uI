@@ -166,7 +166,7 @@ const jsonLd = {
       alternateName: 'Vibe UI Kit',
       applicationCategory: 'DeveloperApplication',
       operatingSystem: 'Any',
-      softwareVersion: '0.1.34',
+      softwareVersion: '0.1.35',
       license: 'https://opensource.org/licenses/MIT',
       offers: {
         '@type': 'Offer',

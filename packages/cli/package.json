@@ -1,7 +1,7 @@
 {
   "name": "vibe-ui-kit",
-  "version": "0.1.34",
-  "description": "The official CLI companion for Vibe UI - A premium themed React and Next.js component library.",
+  "version": "0.1.35",
+  "description": "The official CLI companion for Vibe UI - A premium themed React and Next.js component library featuring 94+ accessible components, WebGL shaders, and application blocks.",
   "license": "MIT",
   "keywords": [
     "react",
@@ -22,7 +22,12 @@
     "accessible",
     "themed-components",
     "admin-dashboard",
-    "layout-shell"
+    "layout-shell",
+    "saas-pricing",
+    "kanban-board",
+    "application-blocks",
+    "motion-animations",
+    "webgl-shaders"
   ],
   "homepage": "https://vibe-ui-kit.vercel.app/",
   "repository": {
