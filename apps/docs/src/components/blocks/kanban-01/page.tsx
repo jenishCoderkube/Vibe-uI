@@ -59,6 +59,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from '@/components/ui/dialog'
 import {
   Sheet,
@@ -67,6 +68,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
+  SheetClose,
 } from '@/components/ui/sheet'
 import {
   DropdownMenu,
@@ -448,6 +450,28 @@ export default function Kanban01Block() {
   const [selectedTask, setSelectedTask] = useState<TaskItem | null>(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
 
+  const handleOpenChangeCreate = (open: boolean) => {
+    setIsCreateOpen(open)
+    if (!open && typeof document !== 'undefined') {
+      setTimeout(() => {
+        document.body.style.pointerEvents = ''
+        document.body.style.overflow = ''
+        document.body.removeAttribute('data-scroll-locked')
+      }, 0)
+    }
+  }
+
+  const handleOpenChangeDetail = (open: boolean) => {
+    setIsDetailOpen(open)
+    if (!open && typeof document !== 'undefined') {
+      setTimeout(() => {
+        document.body.style.pointerEvents = ''
+        document.body.style.overflow = ''
+        document.body.removeAttribute('data-scroll-locked')
+      }, 0)
+    }
+  }
+
   // React Hook Form for Task Creation
   const form = useForm<CreateTaskFormValues>({
     defaultValues: {
@@ -471,7 +495,7 @@ export default function Kanban01Block() {
       dueDate: 'Oct 20',
       description: '',
     })
-    setIsCreateOpen(true)
+    handleOpenChangeCreate(true)
   }
 
   // New comment input in drawer
@@ -509,7 +533,7 @@ export default function Kanban01Block() {
   const handleDeleteTask = (taskId: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== taskId))
     if (selectedTask?.id === taskId) {
-      setIsDetailOpen(false)
+      handleOpenChangeDetail(false)
       setSelectedTask(null)
     }
   }
@@ -609,7 +633,7 @@ export default function Kanban01Block() {
     }
 
     setTasks((prev) => [newTask, ...prev])
-    setIsCreateOpen(false)
+    handleOpenChangeCreate(false)
     form.reset()
   }
 
@@ -1355,7 +1379,7 @@ export default function Kanban01Block() {
         </main>
 
         {/* CREATE TASK MODAL (DIALOG) WITH REACT-HOOK-FORM */}
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <Dialog open={isCreateOpen} onOpenChange={handleOpenChangeCreate}>
           <DialogContent className="sm:max-w-lg p-5">
             <DialogHeader>
               <DialogTitle className="text-base font-bold flex items-center gap-2">
@@ -1554,15 +1578,16 @@ export default function Kanban01Block() {
                 />
 
                 <DialogFooter className="pt-2 gap-2 sm:gap-0">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsCreateOpen(false)}
-                    className="text-xs"
-                  >
-                    Cancel
-                  </Button>
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
                   <Button
                     type="submit"
                     variant="default"
@@ -1578,7 +1603,7 @@ export default function Kanban01Block() {
         </Dialog>
 
         {/* TASK DETAIL DRAWER (SHEET) */}
-        <Sheet open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <Sheet open={isDetailOpen} onOpenChange={handleOpenChangeDetail}>
           <SheetContent className="w-full sm:max-w-xl overflow-y-auto p-5 space-y-5">
             {selectedTask && (
               <>
@@ -1796,14 +1821,15 @@ export default function Kanban01Block() {
                     <Trash2 className="size-3.5" />
                     Delete Issue
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsDetailOpen(false)}
-                    className="text-xs"
-                  >
-                    Close Drawer
-                  </Button>
+                  <SheetClose asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                    >
+                      Close Drawer
+                    </Button>
+                  </SheetClose>
                 </SheetFooter>
               </>
             )}

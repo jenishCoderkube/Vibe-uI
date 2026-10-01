@@ -1010,4 +1010,9 @@ div[data-slot="chart"] {
   animation: float-blob-3 28s infinite ease-in-out;
 }
 
+/* Ensure Radix UI dialog/select unmount edge cases never leave the document unclickable */
+body:not(:has([role="dialog"][data-state="open"])):not(:has([data-radix-portal] [data-state="open"])) {
+  pointer-events: auto !important;
+}
+
 
