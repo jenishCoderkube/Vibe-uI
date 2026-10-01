@@ -27,13 +27,13 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-x-hidden">
       {/* 🔮 Liquid Glass Ambient Refraction Blobs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="liquid-glass-blob absolute top-[5%] left-[-5%] h-[500px] w-[500px] rounded-full bg-sky-400/25 blur-[120px] dark:bg-sky-600/15 animate-blob-1" />
-        <div className="liquid-glass-blob absolute top-[25%] right-[-10%] h-[600px] w-[600px] rounded-full bg-blue-500/20 blur-[130px] dark:bg-blue-600/15 animate-blob-2" />
-        <div className="liquid-glass-blob absolute bottom-[25%] left-[10%] h-[550px] w-[550px] rounded-full bg-pink-500/15 blur-[120px] dark:bg-pink-600/10 animate-blob-3" />
-        <div className="liquid-glass-blob absolute bottom-[5%] right-[10%] h-[450px] w-[450px] rounded-full bg-indigo-500/20 blur-[110px] dark:bg-indigo-600/10 animate-blob-1" />
+        <div className="liquid-glass-blob absolute top-[3%] left-[-10%] sm:left-[-5%] h-[280px] w-[280px] sm:h-[500px] sm:w-[500px] rounded-full bg-sky-400/25 blur-[70px] sm:blur-[120px] dark:bg-sky-600/15 animate-blob-1" />
+        <div className="liquid-glass-blob absolute top-[20%] right-[-12%] sm:right-[-10%] h-[320px] w-[320px] sm:h-[600px] sm:w-[600px] rounded-full bg-blue-500/20 blur-[80px] sm:blur-[130px] dark:bg-blue-600/15 animate-blob-2" />
+        <div className="liquid-glass-blob absolute bottom-[25%] left-[2%] sm:left-[10%] h-[300px] w-[300px] sm:h-[550px] sm:w-[550px] rounded-full bg-pink-500/15 blur-[70px] sm:blur-[120px] dark:bg-pink-600/10 animate-blob-3" />
+        <div className="liquid-glass-blob absolute bottom-[5%] right-[2%] sm:right-[10%] h-[260px] w-[260px] sm:h-[450px] sm:w-[450px] rounded-full bg-indigo-500/20 blur-[70px] sm:blur-[110px] dark:bg-indigo-600/10 animate-blob-1" />
       </div>
 
       {/* Navigation Header */}
@@ -47,22 +47,23 @@ export default function LandingPage() {
           <PageHeaderHeading className="max-w-4xl">{title}</PageHeaderHeading>
           <PageHeaderDescription>{description}</PageHeaderDescription>
           <PageActions>
-            <Button asChild size="sm" className="h-[34px] rounded-lg px-4">
-              <Link href="/docs/introduction">
-                Get Started <ArrowRight className="size-3.5 ml-1.5" />
+            <Button asChild size="sm" className="h-10 sm:h-9 w-full sm:w-auto rounded-lg px-5 font-semibold text-xs sm:text-sm shadow-sm">
+              <Link href="/docs/introduction" className="flex items-center justify-center gap-1.5">
+                <span>Get Started</span>
+                <ArrowRight className="size-3.5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="sm" className="h-[34px] rounded-lg px-4">
-              <Link href="/blocks">
-                Browse Blocks
+            <Button asChild variant="outline" size="sm" className="h-10 sm:h-9 w-full sm:w-auto rounded-lg px-5 font-semibold text-xs sm:text-sm">
+              <Link href="/blocks" className="flex items-center justify-center">
+                <span>Browse Blocks</span>
               </Link>
             </Button>
           </PageActions>
         </PageHeader>
 
-        {/* Section 2 & 3: Mobile Dashboard Preview & Desktop Cards Showcase */}
+        {/* Section 2: Mobile Dashboard Preview & Desktop Cards Showcase */}
         <div className="mx-auto w-full flex-grow p-0">
-          <div className="mx-auto w-full overflow-hidden">
+          <div className="mx-auto w-full overflow-x-clip">
             <CardsDemo />
           </div>
         </div>

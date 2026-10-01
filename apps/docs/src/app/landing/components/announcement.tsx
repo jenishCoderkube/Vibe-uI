@@ -10,11 +10,14 @@ export function Announcement() {
     <Badge
       asChild
       variant="secondary"
-      className="cursor-pointer bg-muted hover:bg-muted/80 text-foreground border-transparent px-3 py-1 text-xs font-medium flex items-center gap-1.5 transition-colors"
+      className="cursor-pointer bg-muted/80 hover:bg-muted text-foreground border border-border/50 px-3 py-1 text-xs font-medium inline-flex items-center gap-1.5 transition-all max-w-[92vw] sm:max-w-none shadow-xs"
     >
-      <Link href="/docs/introduction">
-        <span>Introducing Vibe UI • 92+ Components & Blocks</span>
-        <ArrowRight className="size-3.5" />
+      <Link href="/docs/introduction" className="inline-flex items-center gap-1.5 max-w-full truncate">
+        <span className="truncate">
+          <span className="sm:hidden">Vibe UI • 92+ Components & Blocks</span>
+          <span className="hidden sm:inline">Introducing Vibe UI • 92+ Components & Blocks</span>
+        </span>
+        <ArrowRight className="size-3.5 shrink-0" />
       </Link>
     </Badge>
   )

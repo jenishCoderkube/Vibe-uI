@@ -11,6 +11,7 @@ import {
   Chat01Block,
   Auth01Block,
   CryptoGlass01Block,
+  Pricing01Block,
 } from '../../../components/vibe-blocks'
 import {
   dashboard01Code,
@@ -19,6 +20,7 @@ import {
   chat01Code,
   auth01Code,
   cryptoGlass01Code,
+  pricing01Code,
 } from '../../../components/vibe-blocks-code'
 import { BLOCKS_METADATA, VALID_BLOCK_SLUGS } from './blocks-data'
 
@@ -54,6 +56,10 @@ const BLOCKS_COMPONENT_MAP: Record<
   'crypto-glass-01': {
     code: cryptoGlass01Code,
     previewComponent: <CryptoGlass01Block />,
+  },
+  'pricing-01': {
+    code: pricing01Code,
+    previewComponent: <Pricing01Block />,
   },
 }
 

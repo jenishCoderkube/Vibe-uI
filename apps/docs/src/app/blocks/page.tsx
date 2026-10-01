@@ -5,8 +5,8 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Header } from '../../components/header'
 import { Footer } from '../../components/footer'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block, CryptoGlass01Block } from '../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code, cryptoGlass01Code } from '../../components/vibe-blocks-code'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block, CryptoGlass01Block, Pricing01Block } from '../../components/vibe-blocks'
+import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code, cryptoGlass01Code, pricing01Code } from '../../components/vibe-blocks-code'
 import { Sparkles, Layout } from 'lucide-react'
 
 const BLOCKS = [
@@ -69,6 +69,16 @@ const BLOCKS = [
     previewComponent: <CryptoGlass01Block />,
     category: 'Dashboard',
     image: '/images/blocks/crypto-glass-01.png',
+  },
+  {
+    id: 'pricing-01',
+    title: 'Vibe Modern SaaS Pricing & Tier Matrix',
+    description: 'A high-converting, professional SaaS pricing and plan comparison block featuring monthly/annual billing toggles, currency switching, interactive checkout drawer, feature matrix table, and FAQ accordion.',
+    vibeDeps: 'button, card, badge, switch, input, sheet, accordion, tooltip, table',
+    code: pricing01Code,
+    previewComponent: <Pricing01Block />,
+    category: 'Pricing',
+    image: '/images/blocks/pricing-01.png',
   },
 ]
 

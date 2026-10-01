@@ -1029,6 +1029,12 @@ const SEARCH_ITEMS: SearchItem[] = [
     category: 'Blocks',
     href: '/docs/blocks/crypto-glass-01',
   },
+  {
+    title: 'Pricing 01',
+    subtitle: 'Modern SaaS Pricing & Interactive Tier Matrix',
+    category: 'Blocks',
+    href: '/docs/blocks/pricing-01',
+  },
 ]
 
 export function SearchDialog() {

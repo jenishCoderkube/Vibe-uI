@@ -1499,5 +1499,29 @@
       "textarea",
       "utils"
     ]
+  },
+  {
+    "name": "pricing-01",
+    "files": [
+      "pricing-01/page.tsx"
+    ],
+    "dependencies": [
+      "clsx",
+      "lucide-react",
+      "tailwind-merge",
+      "tailwind-variants"
+    ],
+    "registryDependencies": [
+      "accordion",
+      "badge",
+      "button",
+      "card",
+      "input",
+      "sheet",
+      "switch",
+      "table",
+      "tooltip",
+      "utils"
+    ]
   }
 ]

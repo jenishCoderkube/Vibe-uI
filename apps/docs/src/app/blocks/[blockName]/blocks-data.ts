@@ -47,6 +47,13 @@ export const BLOCKS_METADATA: Record<
     vibeDeps:
       'button, card, input, badge, wallet, table, switch, slider, select',
   },
+  'pricing-01': {
+    title: 'Vibe Modern SaaS Pricing & Tier Matrix',
+    description:
+      'A high-converting, professional SaaS pricing and plan comparison block featuring monthly/annual billing toggles, currency switching, interactive checkout drawer, feature matrix table, and FAQ accordion.',
+    vibeDeps:
+      'button, card, badge, switch, input, sheet, accordion, tooltip, table',
+  },
 }
 
 export const VALID_BLOCK_SLUGS = [
@@ -56,4 +63,5 @@ export const VALID_BLOCK_SLUGS = [
   'chat-01',
   'auth-01',
   'crypto-glass-01',
+  'pricing-01',
 ]

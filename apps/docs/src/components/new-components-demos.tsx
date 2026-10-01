@@ -197,6 +197,7 @@ import {
   Chat01Block,
   Auth01Block,
   CryptoGlass01Block,
+  Pricing01Block,
 } from './vibe-blocks'
 
 // ==========================================
@@ -5454,6 +5455,14 @@ export function CryptoGlass01Demo() {
   return (
     <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
       <CryptoGlass01Block />
+    </div>
+  )
+}
+
+export function Pricing01Demo() {
+  return (
+    <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
+      <Pricing01Block />
     </div>
   )
 }

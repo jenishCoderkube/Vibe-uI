@@ -16,6 +16,7 @@ export function getComponentCategory(
     'chat-01',
     'auth-01',
     'crypto-glass-01',
+    'pricing-01',
   ]
   const animations = [
     'animated-gradient-text',

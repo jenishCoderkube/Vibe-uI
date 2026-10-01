@@ -6,6 +6,7 @@ import { Ecommerce02Page } from './blocks/ecommerce-02/page'
 import { Chat01Page } from './blocks/chat-01/page'
 import Auth01Page from './blocks/auth-01/page'
 import CryptoGlass01Page from './blocks/crypto-glass-01/page'
+import Pricing01Page from './blocks/pricing-01/page'
 
 export function Dashboard01Block() {
   return <Dashboard01Page />
@@ -29,4 +30,8 @@ export function Auth01Block() {
 
 export function CryptoGlass01Block() {
   return <CryptoGlass01Page />
+}
+
+export function Pricing01Block() {
+  return <Pricing01Page />
 }

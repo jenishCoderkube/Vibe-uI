@@ -45,7 +45,7 @@ describe('Blocks Detail Page Route Handlers', () => {
         'https://vibe-ui-kit.vercel.app/blocks/crypto-glass-01',
       )
       expect(metadata.openGraph?.images).toBeDefined()
-      expect(metadata.twitter?.card).toBe('summary_large_image')
+      expect((metadata.twitter as any)?.card).toBe('summary_large_image')
     })
 
     it('returns not found metadata with robots noindex for an invalid block slug', async () => {
