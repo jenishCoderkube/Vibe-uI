@@ -138,7 +138,7 @@ export default function BlocksPage() {
                     className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/40 to-transparent pointer-events-none" />
                 </div>
 
                 <div className="flex flex-1 flex-col justify-between space-y-4">
