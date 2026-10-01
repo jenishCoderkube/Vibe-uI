@@ -7,6 +7,7 @@ import { Chat01Page } from './blocks/chat-01/page'
 import Auth01Page from './blocks/auth-01/page'
 import CryptoGlass01Page from './blocks/crypto-glass-01/page'
 import Pricing01Page from './blocks/pricing-01/page'
+import Kanban01Page from './blocks/kanban-01/page'
 
 export function Dashboard01Block() {
   return <Dashboard01Page />
@@ -34,4 +35,8 @@ export function CryptoGlass01Block() {
 
 export function Pricing01Block() {
   return <Pricing01Page />
+}
+
+export function Kanban01Block() {
+  return <Kanban01Page />
 }

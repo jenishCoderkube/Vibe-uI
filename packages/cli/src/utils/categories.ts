@@ -17,6 +17,7 @@ export function getComponentCategory(
     'auth-01',
     'crypto-glass-01',
     'pricing-01',
+    'kanban-01',
   ]
   const animations = [
     'animated-gradient-text',

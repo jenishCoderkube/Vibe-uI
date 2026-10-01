@@ -1035,6 +1035,12 @@ const SEARCH_ITEMS: SearchItem[] = [
     category: 'Blocks',
     href: '/docs/blocks/pricing-01',
   },
+  {
+    title: 'Kanban 01',
+    subtitle: 'Interactive Agile Project & Sprint Kanban Board',
+    category: 'Blocks',
+    href: '/docs/blocks/kanban-01',
+  },
 ]
 
 export function SearchDialog() {

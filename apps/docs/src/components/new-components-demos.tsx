@@ -198,6 +198,7 @@ import {
   Auth01Block,
   CryptoGlass01Block,
   Pricing01Block,
+  Kanban01Block,
 } from './vibe-blocks'
 
 // ==========================================
@@ -5463,6 +5464,14 @@ export function Pricing01Demo() {
   return (
     <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
       <Pricing01Block />
+    </div>
+  )
+}
+
+export function Kanban01Demo() {
+  return (
+    <div className="w-full rounded-xl overflow-hidden border border-border shadow-2xl scale-[0.95] origin-top">
+      <Kanban01Block />
     </div>
   )
 }

@@ -40,6 +40,19 @@ export async function generateMetadata({
   return {
     title: `${block.title} - Application Block`,
     description: block.description,
+    keywords: [
+      'vibe ui',
+      'vibe ui blocks',
+      block.title.toLowerCase(),
+      `${blockName} react`,
+      `${blockName} nextjs`,
+      `${blockName} tailwind`,
+      'application block',
+      'react template',
+      'nextjs template',
+      'copy paste ui block',
+      ...block.vibeDeps.split(',').map((d) => `${d.trim()} react component`),
+    ],
     alternates: {
       canonical: canonicalUrl,
     },
@@ -47,6 +60,8 @@ export async function generateMetadata({
       title: `${block.title} - Application Block | Vibe UI`,
       description: block.description,
       url: canonicalUrl,
+      type: 'website',
+      siteName: 'Vibe UI',
       images: [
         {
           url: ogImage,
@@ -73,5 +88,67 @@ export default async function BlockDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  return <BlockDetailView blockName={blockName} />
+  const block = BLOCKS_METADATA[blockName]
+  const canonicalUrl = `https://vibe-ui-kit.vercel.app/blocks/${blockName}`
+  const imageUrl = `https://vibe-ui-kit.vercel.app/images/blocks/${blockName}.png`
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://vibe-ui-kit.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Application Blocks',
+        item: 'https://vibe-ui-kit.vercel.app/blocks',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: block?.title || blockName,
+        item: canonicalUrl,
+      },
+    ],
+  }
+
+  const softwareJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: block?.title || blockName,
+    description: block?.description || '',
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Any',
+    url: canonicalUrl,
+    image: imageUrl,
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    author: {
+      '@type': 'Person',
+      name: 'Jenish Sabhadiya',
+      url: 'https://github.com/jenishCoderkube',
+    },
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+      />
+      <BlockDetailView blockName={blockName} />
+    </>
+  )
 }

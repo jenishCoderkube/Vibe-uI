@@ -5,8 +5,8 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Header } from '../../components/header'
 import { Footer } from '../../components/footer'
-import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block, CryptoGlass01Block, Pricing01Block } from '../../components/vibe-blocks'
-import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code, cryptoGlass01Code, pricing01Code } from '../../components/vibe-blocks-code'
+import { Dashboard01Block, Ecommerce01Block, Ecommerce02Block, Chat01Block, Auth01Block, CryptoGlass01Block, Pricing01Block, Kanban01Block } from '../../components/vibe-blocks'
+import { dashboard01Code, ecommerce01Code, ecommerce02Code, chat01Code, auth01Code, cryptoGlass01Code, pricing01Code, kanban01Code } from '../../components/vibe-blocks-code'
 import { Sparkles, Layout } from 'lucide-react'
 
 const BLOCKS = [
@@ -79,6 +79,16 @@ const BLOCKS = [
     previewComponent: <Pricing01Block />,
     category: 'Pricing',
     image: '/images/blocks/pricing-01.png',
+  },
+  {
+    id: 'kanban-01',
+    title: 'Vibe Interactive Agile Project & Kanban Board',
+    description: 'A high-performance agile sprint board featuring 4 workflow swimlanes, subtask checklists, priority badges, member workload allocation, interactive task creation modal, drawer inspector, and real-time sprint analytics.',
+    vibeDeps: 'button, card, badge, avatar, progress, input, textarea, dialog, sheet, dropdown-menu, select, tooltip, tabs, checkbox, separator, form',
+    code: kanban01Code,
+    previewComponent: <Kanban01Block />,
+    category: 'Project Management',
+    image: '/images/blocks/kanban-01.png',
   },
 ]
 

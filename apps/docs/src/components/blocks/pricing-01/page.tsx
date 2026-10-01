@@ -398,7 +398,7 @@ export default function Pricing01Page() {
                     <span className="sm:hidden">Annual</span>
                     <span className="hidden sm:inline">Annual billing</span>
                   </span>
-                  <Badge variant="glow" className="text-[9px] sm:text-[10px] uppercase font-bold py-0.5 px-1.5 sm:px-2 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">
+                  <Badge variant="secondary" className="text-[9px] sm:text-[10px] uppercase font-bold py-0.5 px-1.5 sm:px-2">
                     Save 25%
                   </Badge>
                 </div>
@@ -576,7 +576,7 @@ export default function Pricing01Page() {
                           <TableCell className="text-center py-3">
                             {typeof row.starter === 'boolean' ? (
                               row.starter ? (
-                                <Check className="h-4 w-4 text-emerald-500 mx-auto" />
+                                <Check className="h-4 w-4 text-foreground mx-auto" />
                               ) : (
                                 <X className="h-4 w-4 text-muted-foreground/40 mx-auto" />
                               )
@@ -587,7 +587,7 @@ export default function Pricing01Page() {
                             )}
                           </TableCell>
 
-                          <TableCell className="text-center py-3 bg-primary/5">
+                          <TableCell className="text-center py-3 bg-muted/30">
                             {typeof row.pro === 'boolean' ? (
                               row.pro ? (
                                 <Check className="h-4 w-4 text-primary font-bold mx-auto" />
@@ -604,7 +604,7 @@ export default function Pricing01Page() {
                           <TableCell className="text-center py-3 pr-6">
                             {typeof row.enterprise === 'boolean' ? (
                               row.enterprise ? (
-                                <Check className="h-4 w-4 text-emerald-500 mx-auto" />
+                                <Check className="h-4 w-4 text-foreground mx-auto" />
                               ) : (
                                 <X className="h-4 w-4 text-muted-foreground/40 mx-auto" />
                               )
@@ -639,7 +639,6 @@ export default function Pricing01Page() {
                 <AccordionItem
                   key={idx}
                   value={`faq-${idx}`}
-                  variant="glass"
                   className="px-4"
                 >
                   <AccordionTrigger className="text-left text-sm font-semibold text-foreground hover:no-underline py-4">
@@ -723,8 +722,8 @@ export default function Pricing01Page() {
                       </div>
 
                       {promoApplied && (
-                        <div className="flex justify-between text-xs text-emerald-600 dark:text-emerald-400">
-                          <span className="flex items-center gap-1 font-medium">
+                        <div className="flex justify-between text-xs text-foreground font-medium">
+                          <span className="flex items-center gap-1">
                             <Tag className="h-3 w-3" /> Promo Code (10% Off)
                           </span>
                           <span className="font-bold">
@@ -772,7 +771,7 @@ export default function Pricing01Page() {
                         </Button>
                       </div>
                       {promoApplied && (
-                        <p className="text-[11px] font-medium text-emerald-500 flex items-center gap-1">
+                        <p className="text-[11px] font-medium text-foreground flex items-center gap-1">
                           <CheckCircle2 className="h-3 w-3" /> Coupon applied successfully!
                         </p>
                       )}
@@ -813,7 +812,7 @@ export default function Pricing01Page() {
                 ) : (
                   /* Success State */
                   <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 py-12">
-                    <div className="h-16 w-16 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center animate-bounce">
+                    <div className="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center">
                       <CheckCircle2 className="h-8 w-8" />
                     </div>
                     <h3 className="text-xl font-bold text-foreground">

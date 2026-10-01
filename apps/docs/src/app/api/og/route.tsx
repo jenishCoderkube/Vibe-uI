@@ -182,7 +182,7 @@ export async function GET(request: NextRequest) {
                   color: '#c084fc',
                 }}
               >
-                92+ Components & Blocks
+                94+ Components & Blocks
               </div>
               <div
                 style={{

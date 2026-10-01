@@ -12,6 +12,7 @@ import {
   Auth01Block,
   CryptoGlass01Block,
   Pricing01Block,
+  Kanban01Block,
 } from '../../../components/vibe-blocks'
 import {
   dashboard01Code,
@@ -21,6 +22,7 @@ import {
   auth01Code,
   cryptoGlass01Code,
   pricing01Code,
+  kanban01Code,
 } from '../../../components/vibe-blocks-code'
 import { BLOCKS_METADATA, VALID_BLOCK_SLUGS } from './blocks-data'
 
@@ -60,6 +62,10 @@ const BLOCKS_COMPONENT_MAP: Record<
   'pricing-01': {
     code: pricing01Code,
     previewComponent: <Pricing01Block />,
+  },
+  'kanban-01': {
+    code: kanban01Code,
+    previewComponent: <Kanban01Block />,
   },
 }
 

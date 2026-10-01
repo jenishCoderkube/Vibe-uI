@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   },
   title: {
     default:
-      'Vibe UI - Modern React & Tailwind CSS Component Library (92+ Components)',
+      'Vibe UI - Modern React & Tailwind CSS Component Library (94+ Components)',
     template: '%s | Vibe UI',
   },
   description:
-    'Vibe UI is a premium, production-ready React & Next.js component library featuring 92+ accessible UI primitives, text animations, WebGL background shaders, and application blocks with Glassmorphism, Neon Glow, Retro, and Cyberpunk themes.',
+    'Vibe UI is a premium, production-ready React & Next.js component library featuring 94+ accessible UI primitives, text animations, WebGL background shaders, and full application blocks with Glassmorphism, Neon Glow, Retro, and Cyberpunk themes.',
   keywords: [
     'vibe ui',
     'vibe ui kit',
@@ -52,6 +52,8 @@ export const metadata: Metadata = {
     'motion react animations',
     'webgl background shaders',
     'application blocks',
+    'kanban board react',
+    'saas pricing table react',
     'admin dashboard templates',
     'copy paste ui',
     'accessible react components',
@@ -71,14 +73,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Vibe UI - The Modern React & Tailwind CSS Component Library',
     description:
-      'Build stunning web applications with 92+ accessible React and Next.js components, copy-paste CLI, Motion animations, WebGL background shaders, and full application blocks.',
+      'Build stunning web applications with 94+ accessible React and Next.js components, copy-paste CLI, Motion animations, WebGL background shaders, and full application blocks.',
     url: SITE_URL,
     siteName: 'Vibe UI',
     locale: 'en_US',
     type: 'website',
     images: [
       {
-        url: `${SITE_URL}/api/og?title=Vibe%20UI&category=Component%20Library&desc=92%2B%20Accessible%20React%20Components%2C%20Motion%20Animations%20%26%20WebGL%20Shaders`,
+        url: `${SITE_URL}/api/og?title=Vibe%20UI&category=Component%20Library&desc=94%2B%20Accessible%20React%20Components%2C%20Motion%20Animations%20%26%20WebGL%20Shaders`,
         width: 1200,
         height: 630,
         alt: 'Vibe UI - The Modern React & Tailwind CSS Component Library',
@@ -95,10 +97,10 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Vibe UI - The Modern React & Tailwind CSS Component Library',
     description:
-      '92+ production-ready themed React components, Motion animations, and WebGL backgrounds built on Radix UI and Tailwind CSS v4.',
+      '94+ production-ready themed React components, Motion animations, and WebGL backgrounds built on Radix UI and Tailwind CSS v4.',
     creator: '@vibeui',
     images: [
-      `${SITE_URL}/api/og?title=Vibe%20UI&category=Component%20Library&desc=92%2B%20Accessible%20React%20Components%2C%20Motion%20Animations%20%26%20WebGL%20Shaders`,
+      `${SITE_URL}/api/og?title=Vibe%20UI&category=Component%20Library&desc=94%2B%20Accessible%20React%20Components%2C%20Motion%20Animations%20%26%20WebGL%20Shaders`,
     ],
   },
   robots: {
@@ -135,7 +137,7 @@ const jsonLd = {
       name: 'Vibe UI',
       alternateName: ['Vibe UI Kit', 'vibe-ui-kit', 'Vibe UI React', 'Vibe-UI', 'vibeui'],
       description:
-        'A premium, production-ready React component library with 92+ themed components, animations, WebGL shaders, and full application blocks.',
+        'A premium, production-ready React component library with 94+ themed components, animations, WebGL shaders, and full application blocks.',
       publisher: { '@id': `${SITE_URL}/#organization` },
       potentialAction: {
         '@type': 'SearchAction',
@@ -164,7 +166,7 @@ const jsonLd = {
       alternateName: 'Vibe UI Kit',
       applicationCategory: 'DeveloperApplication',
       operatingSystem: 'Any',
-      softwareVersion: '0.1.33',
+      softwareVersion: '0.1.34',
       license: 'https://opensource.org/licenses/MIT',
       offers: {
         '@type': 'Offer',
@@ -172,7 +174,7 @@ const jsonLd = {
         priceCurrency: 'USD',
       },
       description:
-        'Premium React & Next.js component library with 92+ themed, accessible components, Motion animations, and WebGL shaders for modern web applications.',
+        'Premium React & Next.js component library with 94+ themed, accessible components, Motion animations, and WebGL shaders for modern web applications.',
     },
   ],
 }

@@ -54,6 +54,13 @@ export const BLOCKS_METADATA: Record<
     vibeDeps:
       'button, card, badge, switch, input, sheet, accordion, tooltip, table',
   },
+  'kanban-01': {
+    title: 'Vibe Interactive Agile Project & Kanban Board',
+    description:
+      'A high-performance agile sprint board featuring 4 workflow swimlanes, subtask checklists, priority badges, member workload allocation, interactive task creation modal, drawer inspector, and real-time sprint analytics.',
+    vibeDeps:
+      'button, card, badge, avatar, progress, input, textarea, dialog, sheet, dropdown-menu, select, tooltip, tabs, checkbox, separator, form',
+  },
 }
 
 export const VALID_BLOCK_SLUGS = [
@@ -64,4 +71,5 @@ export const VALID_BLOCK_SLUGS = [
   'auth-01',
   'crypto-glass-01',
   'pricing-01',
+  'kanban-01',
 ]

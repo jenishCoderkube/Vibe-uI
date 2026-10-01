@@ -1501,6 +1501,39 @@
     ]
   },
   {
+    "name": "kanban-01",
+    "files": [
+      "kanban-01/page.tsx"
+    ],
+    "dependencies": [
+      "clsx",
+      "lucide-react",
+      "react-hook-form",
+      "tailwind-merge",
+      "tailwind-variants"
+    ],
+    "registryDependencies": [
+      "avatar",
+      "badge",
+      "button",
+      "card",
+      "checkbox",
+      "dialog",
+      "dropdown-menu",
+      "form",
+      "input",
+      "kbd",
+      "progress",
+      "select",
+      "separator",
+      "sheet",
+      "tabs",
+      "textarea",
+      "tooltip",
+      "utils"
+    ]
+  },
+  {
     "name": "pricing-01",
     "files": [
       "pricing-01/page.tsx"

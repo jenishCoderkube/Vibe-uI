@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Vibe UI - The Modern React & Tailwind CSS Component Library',
     short_name: 'Vibe UI',
     description:
-      '92+ production-ready accessible React components, Motion animations, WebGL background shaders, and application blocks built on Radix UI and Tailwind CSS v4.',
+      '94+ production-ready accessible React components, Motion animations, WebGL background shaders, and application blocks built on Radix UI and Tailwind CSS v4.',
     start_url: '/',
     display: 'standalone',
     background_color: '#09090b',
