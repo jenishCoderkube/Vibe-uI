@@ -12,17 +12,14 @@ build/
 
 # IDE configs and OS metadata
 .idea/
-.vscode/
 .DS_Store
 Thumbs.db
+temp_auto_push.bat
 
 # Turborepo cache
 .turbo/
 
 # Local env files
-.env
-.env.local
-.env.*
 
 # Documentation mock preview assets
 apps/docs/public/images/dashboard-*
@@ -34,3 +31,6 @@ scratch/
 # Package archives and secondary lockfiles
 *.tgz
 package-lock.json
+config.bat
+.gitignore
+branch_structure.json
