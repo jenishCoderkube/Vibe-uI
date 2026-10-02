@@ -12,10 +12,10 @@ build/
 
 # IDE configs and OS metadata
 .idea/
-.vscode/
 .DS_Store
 Thumbs.db
 
+temp_auto_push.bat
 # Turborepo cache
 .turbo/
 
@@ -34,3 +34,5 @@ scratch/
 # Package archives and secondary lockfiles
 *.tgz
 package-lock.json
+.gitignore
+branch_structure.json
