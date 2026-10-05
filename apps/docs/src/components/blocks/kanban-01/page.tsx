@@ -4,50 +4,32 @@ import React, { useState, useMemo } from 'react'
 import {
   Plus,
   Search,
-  Filter,
   MoreVertical,
   CheckCircle2,
-  Clock,
   AlertCircle,
   Flame,
   Calendar,
   Paperclip,
   MessageSquare,
-  ChevronRight,
-  ArrowRight,
-  Sparkles,
   Layers,
   BarChart3,
-  User,
   Trash2,
-  Tag,
-  Check,
   X,
   Play,
   Eye,
-  SlidersHorizontal,
   RefreshCw,
   Send,
   Kanban as KanbanIcon,
   CheckSquare,
-  ArrowUpRight,
   ListTodo,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-  AvatarGroup,
 } from '@/components/ui/avatar'
 import { Progress, CircularProgress } from '@/components/ui/progress'
 import { Input } from '@/components/ui/input'
@@ -86,10 +68,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tooltip } from '@/components/ui/tooltip'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
-import { Kbd } from '@/components/ui/kbd'
 import { useForm } from 'react-hook-form'
 import {
   Form,
@@ -642,7 +623,6 @@ export default function Kanban01Block() {
   const completedTasksCount = tasks.filter((t) => t.column === 'done').length
   const inProgressCount = tasks.filter((t) => t.column === 'in-progress').length
   const inReviewCount = tasks.filter((t) => t.column === 'in-review').length
-  const backlogCount = tasks.filter((t) => t.column === 'backlog').length
   const urgentCount = tasks.filter((t) => t.priority === 'urgent').length
   const sprintProgress =
     totalTasksCount > 0

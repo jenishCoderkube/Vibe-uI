@@ -11,7 +11,6 @@ import {
   ArrowRight,
   Lock,
   Building2,
-  Users,
   Rocket,
   Star,
   CheckCircle2,
@@ -44,12 +43,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/components/ui/accordion'
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipProvider } from '@/components/ui/tooltip'
 import {
   Table,
   TableHeader,
