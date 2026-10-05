@@ -1,74 +1,135 @@
 # Installation & Setup
 
-Choose your preferred framework and toolchain below to get step-by-step setup guidance.
+Get started with **Vibe UI** in your React or Next.js project. Vibe UI is a copy-and-paste component collection built with Tailwind CSS, Radix UI, and Motion.
 
-<Callout type="tip" title="Quick Automated Setup">
-  Using our CLI is the fastest way to add Vibe UI components to any React app. Run `npx vibe-ui-kit@latest init` to auto-configure paths, dependencies, and Tailwind theme tokens.
+<Callout type="warning" title="Important Notice">
+  Do <strong>not</strong> run <code>npm install vibe-ui</code>. The <code>vibe-ui</code> package on npm is an unrelated third-party library. Always install and manage components using our official CLI: <strong><code>npx vibe-ui-kit</code></strong>.
 </Callout>
-
-## Choose Your Framework
-
-Select your project stack for framework-tailored step-by-step installation instructions:
-
-<FrameworkGrid>
-  <FrameworkCard
-    href="/docs/installation/next"
-    title="Next.js"
-    description="Full-stack Next.js App Router setup with Tailwind CSS & TypeScript."
-    badge="Recommended"
-    icon={
-      <svg className="h-6 w-6 text-foreground" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M11.5725 0c-.1763 0-.3098.0013-.3584.0067-.0516.0053-.2159.021-.3636.0328-3.4088.3073-6.6017 2.1463-8.624 4.9728C1.1004 6.584.3802 8.3666.1082 10.255c-.0962.659-.108.8537-.108 1.7474s.012 1.0884.108 1.7476c.652 4.506 3.8591 8.2919 8.2087 9.6945.7789.2511 1.6.4223 2.5337.5255.3636.04 1.9354.04 2.299 0 1.6117-.1783 2.9772-.577 4.3237-1.2643.2065-.1056.2464-.1337.2183-.1573-.0188-.0139-.8987-1.1938-1.9543-2.62l-1.919-2.592-2.4047-3.5583c-1.3231-1.9564-2.4117-3.556-2.4211-3.556-.0094-.0026-.0187 1.5787-.0235 3.509-.0067 3.3802-.0093 3.5162-.0516 3.596-.061.115-.108.1618-.2064.2134-.075.0374-.1408.0445-.495.0445h-.406l-.1078-.068a.4383.4383 0 01-.1572-.1712l-.0493-.1056.0053-4.703.0067-4.7054.0726-.0915c.0376-.0493.1174-.1125.1736-.143.0962-.047.1338-.0517.5396-.0517.4787 0 .5584.0187.6827.1547.0353.0377 1.3373 1.9987 2.895 4.3608a10760.433 10760.433 0 004.7344 7.1706l1.9002 2.8782.096-.0633c.8518-.5536 1.7525-1.3418 2.4657-2.1627 1.5179-1.7429 2.4963-3.868 2.8247-6.134.0961-.6591.1078-.854.1078-1.7475 0-.8937-.012-1.0884-.1078-1.7476-.6522-4.506-3.8592-8.2919-8.2087-9.6945-.7672-.2487-1.5836-.42-2.4985-.5232-.169-.0176-1.0835-.0366-1.6123-.037zm4.0685 7.217c.3473 0 .4082.0053.4857.047.1127.0562.204.1642.237.2767.0186.061.0234 1.3653.0186 4.3044l-.0067 4.2175-.7436-1.14-.7461-1.14v-3.066c0-1.982.0093-3.0963.0234-3.1502.0375-.1313.1196-.2346.2323-.2955.0961-.0494.1313-.054.4997-.054z" />
-      </svg>
-    }
-  />
-  <FrameworkCard
-    href="/docs/installation/vite"
-    title="Vite"
-    description="Fast Single Page Application setup using Vite, React, and `@tailwindcss/vite`."
-    badge="Popular"
-    icon={
-      <svg className="h-6 w-6 text-foreground" viewBox="0 0 24 24" fill="currentColor">
-        <path d="m8.286 10.578.512-8.657a.306.306 0 0 1 .247-.282L17.377.006a.306.306 0 0 1 .353.385l-1.558 5.403a.306.306 0 0 0 .352.385l2.388-.46a.306.306 0 0 1 .332.438l-6.79 13.55-.123.19a.294.294 0 0 1-.252.14c-.177 0-.35-.152-.305-.369l1.095-5.301a.306.306 0 0 0-.388-.355l-1.433.435a.306.306 0 0 1-.389-.354l.69-3.375a.306.306 0 0 0-.37-.36l-2.32.536a.306.306 0 0 1-.374-.316zm14.976-7.926L17.284 3.74l-.544 1.887 2.077-.4a.8.8 0 0 1 .84.369.8.8 0 0 1 .034.783L12.9 19.93l-.013.025-.015.023-.122.19a.801.801 0 0 1-.672.37.826.826 0 0 1-.634-.302.8.8 0 0 1-.16-.67l1.029-4.981-1.12.34a.81.81 0 0 1-.86-.262.802.802 0 0 1-.165-.67l.63-3.08-2.027.468a.808.808 0 0 1-.768-.233.81.81 0 0 1-.217-.6l.389-6.57-7.44-1.33a.612.612 0 0 0-.64.906L11.58 23.691a.612.612 0 0 0 1.066-.004l11.26-20.135a.612.612 0 0 0-.644-.9z" />
-      </svg>
-    }
-  />
-  <FrameworkCard
-    href="/docs/installation/manual"
-    title="Manual Setup"
-    description="Manually configure CSS tokens, path aliases, and utilities into an existing codebase."
-    badge="Custom"
-    icon={
-      <svg className="h-6 w-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-      </svg>
-    }
-  />
-</FrameworkGrid>
 
 ---
 
-## Quick Start Options
+## ⚡ The 3-Step Quick Start
 
-### Option 1 — Using the CLI (Recommended)
+If you already have a project with Tailwind CSS installed, getting started takes under a minute:
 
-Run the CLI command to initialize Vibe UI configuration inside an existing project:
+<Steps>
+
+<Step title="1. Initialize Vibe UI in Your Project">
+
+Run the CLI initializer in your project root:
 
 ```bash
 npx vibe-ui-kit@latest init
 ```
 
-The CLI will prompt you for:
-1. **Language Preference**: TypeScript (`.tsx`) or JavaScript (`.jsx`).
-2. **Components Location**: Default `@/components/ui`.
-3. **CSS File Path**: Path to your global Tailwind CSS file.
+*What this does automatically:*
+- Detects TypeScript or JavaScript and maps your folder structure (e.g. `src/`).
+- Creates `@/lib/utils.ts` with the standard `cn()` class merging utility.
+- Injects Vibe UI design tokens (HSL variables, glassmorphic utilities) into your global CSS (`globals.css` or `index.css`).
+- Installs base peer dependencies (`clsx`, `tailwind-merge`, `tailwind-variants`, `@radix-ui/react-slot`, `lucide-react`).
 
-### Option 2 — Adding Components
+<Callout type="tip" title="Non-Interactive Fast Setup">
+  To skip all interactive prompts and accept recommended defaults automatically, pass <code>--yes</code>:
+  <br />
+  <code>npx vibe-ui-kit@latest init -y</code>
+</Callout>
 
-Add individual components into your project on demand:
+</Step>
+
+<Step title="2. Add the Components You Need">
+
+Add components directly into your codebase with automatic dependency resolution:
 
 ```bash
 npx vibe-ui-kit@latest add button card dialog
 ```
 
-Or run `npx vibe-ui-kit@latest add` without arguments to launch the interactive multi-select menu.
+*What this does:*
+- Downloads the component code directly into `@/components/ui/` (e.g. `src/components/ui/button.tsx`).
+- Automatically resolves and installs any required Radix UI primitives or helper packages.
+- Leaves you with **100% code ownership** — no vendor lock-in, fully editable.
+
+</Step>
+
+<Step title="3. Import & Enjoy Multi-Theme Variants">
+
+Import the components anywhere in your application:
+
+```tsx
+import { Button } from "@/components/ui/button"
+
+export default function Demo() {
+  return (
+    <div className="flex flex-wrap gap-4 p-6">
+      <Button variant="default">Standard</Button>
+      <Button variant="glass">Glassmorphism</Button>
+      <Button variant="glow">Neon Glow</Button>
+      <Button variant="retro">Retro Card</Button>
+      <Button variant="cyberpunk">Cyberpunk</Button>
+    </div>
+  )
+}
+```
+
+</Step>
+
+</Steps>
+
+---
+
+## 🚀 Framework-Specific Setup
+
+Need guidance starting a brand-new project from scratch? Choose your stack:
+
+<FrameworkGrid>
+  <FrameworkCard
+    href="/docs/installation/next"
+    title="Next.js"
+    description="Full-stack Next.js 15 App Router setup with Tailwind CSS & TypeScript."
+    badge="Recommended"
+  />
+  <FrameworkCard
+    href="/docs/installation/vite"
+    title="Vite (React)"
+    description="Fast Single Page Application setup using Vite, React, and @tailwindcss/vite."
+    badge="Popular"
+  />
+  <FrameworkCard
+    href="/docs/installation/manual"
+    title="Manual Setup"
+    description="Manually configure CSS tokens, path aliases, and utilities without using the CLI."
+    badge="No CLI"
+  />
+</FrameworkGrid>
+
+---
+
+## 🛠️ CLI Command Reference
+
+The `vibe-ui-kit` CLI comes with powerful developer tools:
+
+```bash
+# Add specific components
+npx vibe-ui-kit add button card sheet
+
+# Launch interactive component picker
+npx vibe-ui-kit add
+
+# Install all 94 components and application blocks at once
+npx vibe-ui-kit add --all
+
+# List all available components from your terminal
+npx vibe-ui-kit list
+
+# Inspect a component and its dependencies before adding
+npx vibe-ui-kit info chat-01
+
+# Check for differences between local components and upstream registry
+npx vibe-ui-kit diff button
+
+# Run diagnostics on Tailwind, CSS directives, and peer dependencies
+npx vibe-ui-kit doctor
+
+# Upgrade installed components to latest upstream versions
+npx vibe-ui-kit update --all
+```

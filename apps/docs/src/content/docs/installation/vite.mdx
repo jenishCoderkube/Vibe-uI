@@ -1,34 +1,34 @@
 # Vite Installation & Setup
 
-Set up Vibe UI components in a React Single Page Application powered by Vite and `@tailwindcss/vite`.
+Set up **Vibe UI** components in a fast React Single Page Application powered by Vite and Tailwind CSS.
 
-<Callout type="info" title="Fast SPA Setup">
-  Works seamlessly with both TypeScript (`react-ts`) and JavaScript (`react`) templates.
+<Callout type="warning" title="Important Notice">
+  Do <strong>not</strong> run <code>npm install vibe-ui</code>. Vibe UI is distributed via our official CLI: <strong><code>npx vibe-ui-kit</code></strong>.
 </Callout>
 
 <Steps>
 
 <Step title="1. Create a Vite Project">
 
-Create a new Vite application with React:
+Create a new Vite application with React and TypeScript:
 
 ```bash
-npx create-vite@latest my-vibe-app --template react-ts
+npm create vite@latest my-vibe-app -- --template react-ts
 cd my-vibe-app
 npm install
 ```
 
 </Step>
 
-<Step title="2. Install Tailwind CSS v4 & Plugin">
+<Step title="2. Install Tailwind CSS v4 & Configure Path Alias">
 
-Install Tailwind CSS and the Vite plugin:
+Install Tailwind CSS and its official Vite plugin:
 
 ```bash
-npm add -D tailwindcss @tailwindcss/vite
+npm add -D tailwindcss @tailwindcss/vite @types/node
 ```
 
-Configure `@tailwindcss/vite` in your `vite.config.ts`:
+Configure `@tailwindcss/vite` and the `@/*` path alias in `vite.config.ts`:
 
 ```typescript
 import { defineConfig } from 'vite'
@@ -46,11 +46,7 @@ export default defineConfig({
 })
 ```
 
-</Step>
-
-<Step title="3. Configure Path Aliases in tsconfig.json">
-
-Ensure your `@/*` path alias is defined in `tsconfig.json` so component imports resolve cleanly:
+Add the path alias to your `tsconfig.app.json` (or `tsconfig.json`):
 
 ```json
 {
@@ -65,9 +61,82 @@ Ensure your `@/*` path alias is defined in `tsconfig.json` so component imports 
 
 </Step>
 
-<Step title="4. Add Theme Tokens to src/index.css">
+<Step title="3. Initialize Vibe UI">
 
-Add the HSL color variables to `src/index.css`:
+Run the CLI initializer to configure your stylesheet, utility helper, and dependencies:
+
+```bash
+npx vibe-ui-kit@latest init -y
+```
+
+*What this step does automatically:*
+- Detects your Vite configuration and `src/` directory.
+- Creates `src/lib/utils.ts` with the `cn()` helper function.
+- Injects Vibe UI design tokens and theme variables into `src/index.css`.
+- Installs base peer dependencies (`clsx`, `tailwind-merge`, `tailwind-variants`, `@radix-ui/react-slot`, `lucide-react`).
+
+</Step>
+
+<Step title="4. Add Components to Your Project">
+
+Add any component from the 94 available items directly to your project:
+
+```bash
+npx vibe-ui-kit@latest add button card
+```
+
+The component files are created in `src/components/ui/` (e.g. `button.tsx` and `card.tsx`), giving you full code ownership.
+
+</Step>
+
+<Step title="5. Import & Use in Your Application">
+
+Open `src/App.tsx` and use the components:
+
+```tsx
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card"
+
+export default function App() {
+  return (
+    <div className="flex min-h-screen items-center justify-center p-6 bg-background">
+      <Card className="w-[380px]">
+        <CardHeader>
+          <CardTitle>Vite + Vibe UI</CardTitle>
+          <CardDescription>
+            Fast SPA with Multi-Aesthetic Design Presets
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3 pt-2">
+          <Button variant="default">Default Variant</Button>
+          <Button variant="glass">Glassmorphic Variant</Button>
+          <Button variant="glow">Neon Glow Variant</Button>
+          <Button variant="retro">Retro Card Variant</Button>
+          <Button variant="cyberpunk">Cyberpunk Variant</Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+```
+
+Start your Vite development server:
+
+```bash
+npm run dev
+```
+
+</Step>
+
+<Step title="6. (Optional Reference) Customizing Theme Variables">
+
+The `init` command already set up your `src/index.css`. If you want to tweak colors or styles manually, here is the reference configuration:
 
 ```css
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -102,7 +171,7 @@ Add the HSL color variables to `src/index.css`:
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
 
 @layer base {
@@ -113,8 +182,8 @@ Add the HSL color variables to `src/index.css`:
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 270 76% 53%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -125,7 +194,8 @@ Add the HSL color variables to `src/index.css`:
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --ring: 270 76% 53%;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -135,8 +205,8 @@ Add the HSL color variables to `src/index.css`:
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 270 76% 53%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
@@ -147,7 +217,7 @@ Add the HSL color variables to `src/index.css`:
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --ring: 270 76% 53%;
   }
 }
 
@@ -160,30 +230,6 @@ Add the HSL color variables to `src/index.css`:
     color: hsl(var(--foreground));
     font-family: "Inter", sans-serif;
   }
-}
-```
-
-</Step>
-
-<Step title="5. Add Components Using the CLI">
-
-Add components to your Vite project on demand:
-
-```bash
-npx vibe-ui-kit@latest add button card
-```
-
-Import and use in `src/App.tsx`:
-
-```tsx
-import { Button } from '@/components/ui/button'
-
-export default function App() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-background">
-      <Button variant="retro">Vite + Vibe UI</Button>
-    </div>
-  )
 }
 ```
 

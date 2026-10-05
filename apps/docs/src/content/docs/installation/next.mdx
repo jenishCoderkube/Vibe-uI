@@ -1,16 +1,16 @@
 # Next.js Installation & Setup
 
-Set up Vibe UI components in a Next.js 15 App Router application with Tailwind CSS v4.
+Integrate **Vibe UI** components into a Next.js 15 App Router application with Tailwind CSS.
 
-<Callout type="info" title="Next.js App Router">
-  This guide uses the Next.js 15 App Router with standard `@/*` import path aliases.
+<Callout type="warning" title="Important Notice">
+  Do <strong>not</strong> run <code>npm install vibe-ui</code>. Vibe UI is distributed via our official CLI: <strong><code>npx vibe-ui-kit</code></strong>.
 </Callout>
 
 <Steps>
 
 <Step title="1. Create a Next.js Project">
 
-Create a new Next.js application using `create-next-app`:
+Create a new Next.js application using `create-next-app` with TypeScript, Tailwind CSS, and the `@/*` alias:
 
 ```bash
 npx create-next-app@latest my-vibe-app --typescript --tailwind --app --src-dir --import-alias "@/*"
@@ -21,19 +21,80 @@ cd my-vibe-app
 
 <Step title="2. Initialize Vibe UI via CLI">
 
-Run the `vibe-ui-kit` CLI initialization command to configure paths and dependencies:
+Run the `vibe-ui-kit` CLI initializer inside your project directory:
 
 ```bash
-npx vibe-ui-kit@latest init
+npx vibe-ui-kit@latest init -y
 ```
 
-Follow the prompts to select your preferred component directory (`@/components/ui`) and style setup.
+*What this step does:*
+- Detects Next.js and your `src/` folder structure.
+- Creates `src/lib/utils.ts` with the `cn()` class merge utility.
+- Automatically writes Vibe UI design tokens and glassmorphism styles directly into `src/app/globals.css`.
+- Installs required peer packages (`clsx`, `tailwind-merge`, `tailwind-variants`, `@radix-ui/react-slot`, `lucide-react`).
 
 </Step>
 
-<Step title="3. Configure Global CSS Variables">
+<Step title="3. Add Components to Your Project">
 
-Update your `src/app/globals.css` file with the HSL color tokens for automatic Light & Dark theme switching:
+Add any component from the 94 available items directly to your project:
+
+```bash
+npx vibe-ui-kit@latest add button card
+```
+
+The component files are created in `src/components/ui/` (e.g. `button.tsx` and `card.tsx`), giving you full code ownership.
+
+</Step>
+
+<Step title="4. Import & Use in Your Application">
+
+Open `src/app/page.tsx` and use the components with any of the built-in theme presets:
+
+```tsx
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card"
+
+export default function Home() {
+  return (
+    <main className="flex min-h-screen items-center justify-center p-6 bg-background">
+      <Card className="w-[380px]">
+        <CardHeader>
+          <CardTitle>Welcome to Vibe UI</CardTitle>
+          <CardDescription>
+            Next.js 15 + Tailwind CSS + Multi-Aesthetic Themes
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3 pt-2">
+          <Button variant="default">Default Variant</Button>
+          <Button variant="glass">Glassmorphic Variant</Button>
+          <Button variant="glow">Neon Glow Variant</Button>
+          <Button variant="retro">Retro Card Variant</Button>
+          <Button variant="cyberpunk">Cyberpunk Variant</Button>
+        </CardContent>
+      </Card>
+    </main>
+  )
+}
+```
+
+Start your dev server to see it in action:
+
+```bash
+npm run dev
+```
+
+</Step>
+
+<Step title="5. (Optional Reference) Customizing Theme Variables">
+
+The `init` command already set up your `src/app/globals.css`. If you ever want to adjust default colors, border radiuses, or shadows, here is the reference configuration:
 
 ```css
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -68,7 +129,7 @@ Update your `src/app/globals.css` file with the HSL color tokens for automatic L
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
 
 @layer base {
@@ -79,8 +140,8 @@ Update your `src/app/globals.css` file with the HSL color tokens for automatic L
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 270 76% 53%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -91,7 +152,8 @@ Update your `src/app/globals.css` file with the HSL color tokens for automatic L
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --ring: 270 76% 53%;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -101,8 +163,8 @@ Update your `src/app/globals.css` file with the HSL color tokens for automatic L
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 270 76% 53%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
@@ -113,7 +175,7 @@ Update your `src/app/globals.css` file with the HSL color tokens for automatic L
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --ring: 270 76% 53%;
   }
 }
 
@@ -126,39 +188,6 @@ Update your `src/app/globals.css` file with the HSL color tokens for automatic L
     color: hsl(var(--foreground));
     font-family: "Inter", sans-serif;
   }
-}
-```
-
-</Step>
-
-<Step title="4. Add Components & Use in Your Application">
-
-Now you can add any component directly into your project using the CLI:
-
-```bash
-npx vibe-ui-kit@latest add button card
-```
-
-Import and use the component inside your Next.js page (`src/app/page.tsx`):
-
-```tsx
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-
-export default function Home() {
-  return (
-    <main className="flex min-h-screen items-center justify-center p-6 bg-background">
-      <Card className="w-[350px]">
-        <CardHeader>
-          <CardTitle>Welcome to Vibe UI</CardTitle>
-          <CardDescription>Next.js 15 + Tailwind CSS v4 setup</CardDescription>
-        </CardHeader>
-        <CardContent className="flex justify-center pt-2">
-          <Button variant="glow">Explore Components</Button>
-        </CardContent>
-      </Card>
-    </main>
-  )
 }
 ```
 

@@ -1,26 +1,32 @@
 # Manual Setup Guide
 
-Configure Vibe UI manually into an existing React project without using the CLI.
+If you prefer not to use the CLI, you can manually configure **Vibe UI** into any React project in 4 simple steps.
 
-<Callout type="warning" title="Manual Configuration">
-  Ensure your project has Tailwind CSS and `@/*` import alias configured before proceeding.
+<Callout type="warning" title="Important Notice">
+  Do <strong>not</strong> run <code>npm install vibe-ui</code>. The <code>vibe-ui</code> package on npm is an unrelated package. Follow the manual setup steps below.
 </Callout>
 
 <Steps>
 
-<Step title="1. Install Shared Dependencies">
+<Step title="1. Install Core Dependencies">
 
-Install class merging utilities, variant composers, and Lucide icons:
+Install the required class merge utilities, variant composers, and UI primitives:
 
 ```bash
 npm install clsx tailwind-merge tailwind-variants lucide-react @radix-ui/react-slot
+```
+
+If you plan to use Motion text effects or WebGL background shaders, also install:
+
+```bash
+npm install motion ogl
 ```
 
 </Step>
 
 <Step title="2. Create the Utility Helper File">
 
-Create a file named `src/lib/utils.ts` (or `src/lib/utils.js` for JavaScript projects) and paste the class name merger:
+Create a file at `src/lib/utils.ts` (or `src/lib/utils.js` for JavaScript) and add the `cn()` helper:
 
 ```typescript
 import { clsx, type ClassValue } from 'clsx'
@@ -31,11 +37,24 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
+Make sure your project's `tsconfig.json` has the `@/*` alias mapped to `./src/*`:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
 </Step>
 
 <Step title="3. Configure Tailwind CSS Variables">
 
-Add the theme tokens into your main CSS file (e.g., `src/index.css` or `src/app/globals.css`):
+Add the Vibe UI HSL design tokens and glassmorphism utilities to your main stylesheet (`src/app/globals.css` or `src/index.css`):
 
 ```css
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
@@ -70,7 +89,7 @@ Add the theme tokens into your main CSS file (e.g., `src/index.css` or `src/app/
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
 
 @layer base {
@@ -81,8 +100,8 @@ Add the theme tokens into your main CSS file (e.g., `src/index.css` or `src/app/
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 270 76% 53%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -93,7 +112,8 @@ Add the theme tokens into your main CSS file (e.g., `src/index.css` or `src/app/
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --ring: 270 76% 53%;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -103,8 +123,8 @@ Add the theme tokens into your main CSS file (e.g., `src/index.css` or `src/app/
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 270 76% 53%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
@@ -115,7 +135,7 @@ Add the theme tokens into your main CSS file (e.g., `src/index.css` or `src/app/
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --ring: 270 76% 53%;
   }
 }
 
@@ -129,13 +149,47 @@ Add the theme tokens into your main CSS file (e.g., `src/index.css` or `src/app/
     font-family: "Inter", sans-serif;
   }
 }
+
+/* Glassmorphic backdrop utility */
+.glass-panel {
+  background: rgba(15, 15, 20, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
 ```
 
 </Step>
 
-<Step title="4. Copy Component Code">
+<Step title="4. Copy Desired Components into Your Codebase">
 
-Browse any component documentation page (e.g., [Button](/docs/components/button) or [Card](/docs/components/card)) and copy the installation source code into your `src/components/ui/` directory.
+Create a `src/components/ui/` directory.
+
+You can copy component code directly from the **Code** tab on any component page on the [Vibe UI Documentation](https://vibe-ui-kit.vercel.app/), or fetch raw JSON from the registry at:
+```
+https://vibe-ui-kit.vercel.app/registry/components/[component-name].json
+```
+
+For instance, create `src/components/ui/button.tsx` and paste the Button component source.
+
+</Step>
+
+<Step title="5. Import and Use">
+
+```tsx
+import { Button } from '@/components/ui/button'
+
+export default function App() {
+  return (
+    <div className="flex gap-4 p-8">
+      <Button variant="default">Default</Button>
+      <Button variant="glass">Glass</Button>
+      <Button variant="glow">Glow</Button>
+      <Button variant="retro">Retro</Button>
+      <Button variant="cyberpunk">Cyberpunk</Button>
+    </div>
+  )
+}
+```
 
 </Step>
 

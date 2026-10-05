@@ -15,9 +15,9 @@ import {
 } from './components/page-header'
 import { CardsDemo } from './components/cards-demo'
 
-const title = 'Vibe UI - The Modern React & Tailwind CSS Component Library'
+const title = 'Modern React components with curated vibes'
 const description =
-  '94+ accessible, copy-paste React & Next.js components, motion animations, WebGL background shaders, and application blocks. Built on Radix UI primitives with Glassmorphism, Neon Glow, Retro, and Cyberpunk presets.'
+  '94+ accessible, copy-paste components, motion effects, and application blocks with Glass, Glow, Retro, and Cyberpunk presets.'
 
 export default function LandingPage() {
   React.useEffect(() => {

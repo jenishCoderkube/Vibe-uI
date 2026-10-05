@@ -19,6 +19,9 @@
 
 **Vibe UI** is a professional collection of **94 curated React & Next.js items** built on top of **Radix UI** primitives, **Tailwind CSS (v3 & v4)**, and **Motion**. It provides copy-and-paste components, text animations, WebGL background shaders, and full application blocks with native support for multiple design styles.
 
+> [!NOTE]
+> **How Vibe UI Works:** Vibe UI is a **copy-and-paste component system** (like shadcn/ui). Do **not** run `npm i vibe-ui` (that is an unrelated package). Instead, use the official CLI: `npx vibe-ui-kit init` and `npx vibe-ui-kit add <component>` to add components directly into your project with 100% code ownership.
+
 ## 🚀 Core Features
 
 - **Multi-Aesthetic Presets:** Switch between `glass` (translucent frosted), `glow` (neon drop-shadows), `retro` (flat hard shadows), or `cyberpunk` (monospace matrix) variants instantly.

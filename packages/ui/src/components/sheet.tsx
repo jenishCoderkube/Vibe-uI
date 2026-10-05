@@ -69,13 +69,15 @@ const SheetContent = React.forwardRef<
       // Force cleanup of pointer-events and scroll-locking when sheet unmounts
       if (typeof document !== 'undefined') {
         setTimeout(() => {
-          const openModals = document.querySelectorAll(
-            '[role="dialog"][data-state="open"]',
-          )
-          if (openModals.length === 0) {
-            document.body.style.pointerEvents = ''
-            document.body.style.overflow = ''
-            document.body.removeAttribute('data-scroll-locked')
+          if (typeof document !== 'undefined' && document.body) {
+            const openModals = document.querySelectorAll(
+              '[role="dialog"][data-state="open"]',
+            )
+            if (openModals.length === 0) {
+              document.body.style.pointerEvents = ''
+              document.body.style.overflow = ''
+              document.body.removeAttribute('data-scroll-locked')
+            }
           }
         }, 10)
       }

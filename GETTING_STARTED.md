@@ -4,6 +4,9 @@ Welcome to **Vibe UI**! This guide walks you through integrating our premium, th
 
 ---
 
+> [!WARNING]
+> **Important Notice:** Do **not** run `npm i vibe-ui`. The `vibe-ui` package on npm is an unrelated package. Vibe UI is a copy-and-paste component system powered by the official CLI: **`npx vibe-ui-kit`**.
+
 ## Prerequisites
 
 Before initializing Vibe UI, make sure your project meets the following setup requirements:
@@ -11,6 +14,7 @@ Before initializing Vibe UI, make sure your project meets the following setup re
 - **Framework**: React 18+ (Next.js, Vite, etc.)
 - **Styling**: Tailwind CSS (v4 is recommended, but v3 is fully supported)
 - **Language**: TypeScript or JavaScript
+- **Import Alias**: `@/*` mapped to `./src/*` (or `./*`)
 
 ---
 
