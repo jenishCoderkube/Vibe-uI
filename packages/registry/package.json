@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc && node dist/index.js",
-    "dev": "tsc --watch",
+    "build": "node init && tsc && node dist/index.js",
+    "dev": "node init && tsc --watch",
     "test": "tsc && node dist/index.js",
     "lint": "eslint ."
   },

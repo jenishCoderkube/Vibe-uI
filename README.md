@@ -17,7 +17,7 @@
 
 ---
 
-**Vibe UI** is a professional collection of **94 curated React & Next.js items** built on top of **Radix UI** primitives, **Tailwind CSS (v3 & v4)**, and **Motion**. It provides copy-and-paste components, text animations, WebGL background shaders, and full application blocks with native support for multiple design styles.
+**Vibe UI** is a professional collection of **96 curated React & Next.js items** built on top of **Radix UI** primitives, **Tailwind CSS (v3 & v4)**, and **Motion**. It provides copy-and-paste components, text animations, WebGL background shaders, and full application blocks with native support for multiple design styles.
 
 > [!NOTE]
 > **How Vibe UI Works:** Vibe UI is a **copy-and-paste component system** (like shadcn/ui). Do **not** run `npm i vibe-ui` (that is an unrelated package). Instead, use the official CLI: `npx vibe-ui-kit init` and `npx vibe-ui-kit add <component>` to add components directly into your project with 100% code ownership.
@@ -61,18 +61,18 @@ npx vibe-ui-kit update --all
 
 ---
 
-## 🧩 The Registry (94 Items Available)
+## 🧩 The Registry (96 Items Available)
 
 Vibe UI components are categorized into 4 distinct groups:
 
-### 1. 📦 UI Primitives (57 Components)
+### 1. 📦 UI Primitives (59 Components)
 Essential accessible building blocks built on Radix UI:
 
 | Group | Components |
 | :--- | :--- |
 | **Forms & Inputs** | `button`, `button-group`, `input`, `input-otp`, `textarea`, `checkbox`, `switch`, `select`, `combobox`, `multi-select`, `radio-group`, `slider`, `date-picker`, `form`, `uploader` |
 | **Overlays & Dialogs** | `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `hover-card`, `tooltip`, `dropdown-menu`, `context-menu`, `menubar` |
-| **Data & Layout** | `card`, `table`, `tabs`, `accordion`, `collapsible`, `separator`, `scroll-area`, `breadcrumb`, `pagination`, `layout-shell`, `sidebar`, `carousel` |
+| **Data & Layout** | `card`, `spotlight-card`, `bento-grid`, `table`, `tabs`, `accordion`, `collapsible`, `separator`, `scroll-area`, `breadcrumb`, `pagination`, `layout-shell`, `sidebar`, `carousel` |
 | **Feedback & Badges** | `alert`, `badge`, `progress`, `spinner`, `skeleton`, `toast`, `empty`, `item`, `kbd`, `marker`, `message`, `message-scroller`, `theme-switcher` |
 
 ### 2. ✨ Motion & Text Effects (23 Animations)
