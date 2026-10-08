@@ -138,6 +138,18 @@ import {
   TabsList,
   TabsTrigger,
   Textarea,
+  SpotlightCard,
+  SpotlightCardHeader,
+  SpotlightCardFooter,
+  SpotlightCardTitle,
+  SpotlightCardDescription,
+  SpotlightCardContent,
+  BentoGrid,
+  BentoCard,
+  BentoCardHeader,
+  BentoCardTitle,
+  BentoCardDescription,
+  BentoCardContent,
 } from 'vibe-ui'
 import {
   Home,
@@ -189,6 +201,10 @@ import {
   ChevronsRight,
   Eye,
   Edit,
+  Sparkles,
+  Zap,
+  Shield,
+  ArrowRight,
 } from 'lucide-react'
 import {
   Dashboard01Block,
@@ -8537,3 +8553,357 @@ export function TabsTextareaDemoInteractive() {
     </div>
   )
 }
+
+// ==========================================
+// Spotlight Card Demos
+// ==========================================
+
+export function SpotlightCardDemoBasic() {
+  return (
+    <div className="flex items-center justify-center p-4 w-full">
+      <SpotlightCard variant="glow" className="w-full max-w-md">
+        <SpotlightCardHeader>
+          <div className="flex items-center justify-between mb-1">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20">
+              <Sparkles className="h-3 w-3" />
+              Dynamic Cursor Glow
+            </span>
+          </div>
+          <SpotlightCardTitle>Radial Spotlight</SpotlightCardTitle>
+          <SpotlightCardDescription>
+            Move your cursor across this surface to activate real-time illumination.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+        <SpotlightCardContent>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Pure CSS custom-property driven spotlight coordinates update at 60fps without triggering React component re-renders.
+          </p>
+        </SpotlightCardContent>
+        <SpotlightCardFooter className="flex justify-between items-center text-xs text-muted-foreground">
+          <span>Preset: Neon Glow</span>
+          <span className="font-mono text-[11px] text-primary">--mouse-x, --mouse-y</span>
+        </SpotlightCardFooter>
+      </SpotlightCard>
+    </div>
+  )
+}
+
+export function SpotlightCardDemoPresets() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
+      <SpotlightCard variant="default">
+        <SpotlightCardHeader>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            Default
+          </span>
+          <SpotlightCardTitle className="text-lg">Clean Border</SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs">
+            Subtle modern highlight on dark/light surfaces.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard variant="glass">
+        <SpotlightCardHeader>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+            Glassmorphic
+          </span>
+          <SpotlightCardTitle className="text-lg">Frosted Glass</SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs">
+            Translucent backdrop blur with dynamic luminescence.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard variant="retro">
+        <SpotlightCardHeader>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-foreground">
+            Retro Brutalist
+          </span>
+          <SpotlightCardTitle className="text-lg">Stark Shadow</SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs">
+            High-contrast flat aesthetic with tactile click feel.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard variant="glow">
+        <SpotlightCardHeader>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400">
+            Neon Glow
+          </span>
+          <SpotlightCardTitle className="text-lg">Cyber Violet</SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs">
+            High-energy ultraviolet radial illumination.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard variant="cyberpunk" className="sm:col-span-2 lg:col-span-2">
+        <SpotlightCardHeader>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+            Cyberpunk Matrix
+          </span>
+          <SpotlightCardTitle className="text-lg font-mono text-emerald-400">
+            CYBER_SYS // v2.0
+          </SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs font-mono">
+            Emerald neon tracking with sharp geometric monospace aesthetic.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+    </div>
+  )
+}
+
+export function SpotlightCardDemoRadiance() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl mx-auto">
+      <SpotlightCard
+        variant="default"
+        spotlightColor="rgba(236, 72, 153, 0.25)"
+        spotlightSize={400}
+      >
+        <SpotlightCardHeader>
+          <span className="text-[10px] font-mono uppercase text-pink-500 font-semibold">
+            #ec4899 (Pink Radiance)
+          </span>
+          <SpotlightCardTitle className="text-lg">Hot Pink Aura</SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs">
+            Custom vibrant fuchsia spotlight with a wide 400px radius.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard
+        variant="default"
+        spotlightColor="rgba(6, 182, 212, 0.25)"
+        spotlightSize={400}
+      >
+        <SpotlightCardHeader>
+          <span className="text-[10px] font-mono uppercase text-cyan-400 font-semibold">
+            #06b6d4 (Cyan Ice)
+          </span>
+          <SpotlightCardTitle className="text-lg">Electric Cyan</SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs">
+            Hyper-focused cold cyan beam responding dynamically to mouse movements.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+    </div>
+  )
+}
+
+export function SpotlightCardDemoInteractive() {
+  const [copiedKey, setCopiedKey] = React.useState(false)
+
+  const handleCopy = () => {
+    setCopiedKey(true)
+    setTimeout(() => setCopiedKey(false), 2000)
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
+      {/* Interactive Key Card */}
+      <SpotlightCard variant="glass" className="flex flex-col justify-between">
+        <SpotlightCardHeader>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+              <Zap className="h-3 w-3 text-amber-500" />
+              API Key Vault
+            </span>
+            <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              Active
+            </span>
+          </div>
+          <SpotlightCardTitle className="text-lg mt-1">Production Token</SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs">
+            Used for edge proxy telemetry and automated pipelines.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+        <SpotlightCardContent>
+          <div className="flex items-center justify-between p-2.5 rounded-lg border border-border/70 bg-muted/40 font-mono text-xs">
+            <span className="truncate mr-2 text-foreground/80">vibe_live_948a27d10e...</span>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 px-2.5 text-xs shrink-0"
+              onClick={handleCopy}
+            >
+              {copiedKey ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+              <span className="ml-1">{copiedKey ? 'Copied' : 'Copy'}</span>
+            </Button>
+          </div>
+        </SpotlightCardContent>
+      </SpotlightCard>
+
+      {/* Cloud Cluster KPI Card */}
+      <SpotlightCard variant="glow" className="flex flex-col justify-between">
+        <SpotlightCardHeader>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-primary flex items-center gap-1">
+              <Shield className="h-3 w-3 text-primary" />
+              Multi-Region Cluster
+            </span>
+            <span className="text-[10px] font-mono text-muted-foreground">us-east-1</span>
+          </div>
+          <SpotlightCardTitle className="text-2xl mt-1">99.995%</SpotlightCardTitle>
+          <SpotlightCardDescription className="text-xs">
+            Live availability SLA over the trailing 90 days.
+          </SpotlightCardDescription>
+        </SpotlightCardHeader>
+        <SpotlightCardFooter className="border-t border-border/40 pt-4 flex items-center justify-between text-xs">
+          <span className="text-emerald-500 flex items-center gap-1 font-medium">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            All nodes operational
+          </span>
+          <span className="text-muted-foreground text-[11px]">12ms latency</span>
+        </SpotlightCardFooter>
+      </SpotlightCard>
+    </div>
+  )
+}
+
+// ==========================================
+// Bento Grid Demos
+// ==========================================
+
+export function BentoGridDemoBasic() {
+  return (
+    <BentoGrid className="w-full max-w-4xl mx-auto">
+      <BentoCard
+        name="Real-time Telemetry"
+        description="Stream low-latency observability metrics directly into your live dashboard."
+        icon={Zap}
+        colSpan={2}
+        cta="Explore metrics"
+      />
+      <BentoCard
+        name="Zero-Trust Vault"
+        description="Automated HSM key encryption across all nodes."
+        icon={Shield}
+        colSpan={1}
+        cta="Read security docs"
+      />
+      <BentoCard
+        name="Global Edge Mesh"
+        description="Deploy frontend UI blocks to over 300 distributed point-of-presence servers worldwide."
+        icon={Sparkles}
+        colSpan={3}
+        cta="View network map"
+      />
+    </BentoGrid>
+  )
+}
+
+export function BentoGridDemoPresets() {
+  return (
+    <BentoGrid className="w-full max-w-4xl mx-auto">
+      <BentoCard
+        variant="default"
+        name="Default Preset"
+        description="Clean slate styling with subtle border highlight."
+        colSpan={1}
+      />
+      <BentoCard
+        variant="glass"
+        name="Glassmorphic"
+        description="Frosted glass translucency with backdrop blur."
+        colSpan={1}
+      />
+      <BentoCard
+        variant="glow"
+        name="Neon Glow"
+        description="High-energy ultraviolet border radiance."
+        colSpan={1}
+      />
+      <BentoCard
+        variant="retro"
+        name="Retro Brutalist"
+        description="Hard 4px offset shadow with stark neo-brutalist styling."
+        colSpan={2}
+      />
+      <BentoCard
+        variant="cyberpunk"
+        name="Cyberpunk Matrix"
+        description="Neon green matrix aesthetic with monospace font."
+        colSpan={1}
+      />
+    </BentoGrid>
+  )
+}
+
+export function BentoGridDemoSpans() {
+  return (
+    <BentoGrid className="w-full max-w-4xl mx-auto">
+      <BentoCard
+        colSpan={2}
+        name="Distributed Database Engine"
+        description="Scale transactions across multiple cloud regions seamlessly with zero downtime."
+        icon={Zap}
+        cta="Inspect clusters"
+        background={
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-60" />
+        }
+      />
+      <BentoCard
+        colSpan={1}
+        name="Audit Trail"
+        description="Immutable cryptographic event records."
+        icon={Shield}
+        cta="View logs"
+      />
+      <BentoCard
+        colSpan={1}
+        name="AI Copilot"
+        description="Autonomous workflow assistants integrated into your workspace."
+        icon={Sparkles}
+        cta="Setup assistant"
+      />
+      <BentoCard
+        colSpan={2}
+        name="Global CDN Acceleration"
+        description="Edge caching with instant cache invalidation in under 150ms globally."
+        icon={ArrowRight}
+        cta="Learn about routing"
+      />
+    </BentoGrid>
+  )
+}
+
+export function BentoGridDemoInteractive() {
+  return (
+    <BentoGrid className="w-full max-w-4xl mx-auto">
+      <BentoCard variant="glow" colSpan={2}>
+        <BentoCardHeader>
+          <div className="flex items-center gap-2">
+            <Shield className="h-5 w-5 text-primary" />
+            <span className="text-xs font-semibold text-primary">Zero-Trust SLA</span>
+          </div>
+          <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+            99.99% UP
+          </span>
+        </BentoCardHeader>
+        <BentoCardContent>
+          <BentoCardTitle>Production Health Status</BentoCardTitle>
+          <BentoCardDescription>
+            99.99% uptime maintained across 14 global edge availability zones.
+          </BentoCardDescription>
+        </BentoCardContent>
+      </BentoCard>
+
+      <BentoCard variant="glass" colSpan={1}>
+        <BentoCardHeader>
+          <Sparkles className="h-5 w-5 text-primary" />
+        </BentoCardHeader>
+        <BentoCardContent>
+          <BentoCardTitle>2.4M Active</BentoCardTitle>
+          <BentoCardDescription>
+            Live concurrent sessions streaming across network.
+          </BentoCardDescription>
+        </BentoCardContent>
+      </BentoCard>
+    </BentoGrid>
+  )
+}
+
