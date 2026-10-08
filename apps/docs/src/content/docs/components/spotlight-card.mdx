@@ -1,0 +1,466 @@
+# Spotlight Card
+
+A dynamic interactive card that illuminates a cursor-following radial gradient spotlight with customizable sizes, colors, and multi-aesthetic presets.
+
+## Preview
+
+<ComponentPreview>
+  <SpotlightCardDemoBasic />
+
+```tsx
+import {
+  SpotlightCard,
+  SpotlightCardHeader,
+  SpotlightCardTitle,
+  SpotlightCardDescription,
+  SpotlightCardContent,
+  SpotlightCardFooter,
+} from '@/components/ui/spotlight-card'
+import { Sparkles } from 'lucide-react'
+
+export default function SpotlightDemo() {
+  return (
+    <SpotlightCard variant="glow" className="w-full max-w-md">
+      <SpotlightCardHeader>
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20">
+          <Sparkles className="h-3 w-3" />
+          Dynamic Cursor Glow
+        </span>
+        <SpotlightCardTitle>Radial Spotlight</SpotlightCardTitle>
+        <SpotlightCardDescription>
+          Move your cursor across this surface to activate real-time illumination.
+        </SpotlightCardDescription>
+      </SpotlightCardHeader>
+      <SpotlightCardContent>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Pure CSS custom-property driven spotlight coordinates update at 60fps without triggering React component re-renders.
+        </p>
+      </SpotlightCardContent>
+      <SpotlightCardFooter className="flex justify-between items-center text-xs text-muted-foreground">
+        <span>Preset: Neon Glow</span>
+        <span className="font-mono text-[11px] text-primary">--mouse-x, --mouse-y</span>
+      </SpotlightCardFooter>
+    </SpotlightCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+<Installation name="spotlight-card" npmDeps="@radix-ui/react-slot, tailwind-variants">
+
+```tsx
+// @/components/ui/spotlight-card.tsx
+'use client'
+
+import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { cn } from '@/lib/utils'
+
+const spotlightCardVariants = tv({
+  base: 'relative rounded-xl border text-card-foreground shadow-sm transition-all duration-300 overflow-hidden before:pointer-events-none before:absolute before:inset-0 before:z-0 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:bg-[radial-gradient(var(--spotlight-size,350px)_circle_at_var(--mouse-x,-999px)_var(--mouse-y,-999px),var(--spotlight-color,rgba(168,85,247,0.18)),transparent_80%)]',
+  variants: {
+    variant: {
+      default:
+        'bg-card border-border hover:border-foreground/20 hover:shadow-md [--spotlight-color:rgba(168,85,247,0.15)]',
+      glass:
+        'bg-card/70 dark:bg-zinc-900/60 backdrop-blur-md border-border/80 shadow-lg hover:border-primary/40 [--spotlight-color:rgba(255,255,255,0.15)] dark:[--spotlight-color:rgba(255,255,255,0.08)]',
+      glow:
+        'bg-card/85 border-primary/30 shadow-[0_0_20px_rgba(168,85,247,0.12)] hover:border-primary/60 hover:shadow-[0_0_35px_rgba(168,85,247,0.28)] [--spotlight-color:rgba(168,85,247,0.28)]',
+      retro:
+        'border-2 border-foreground bg-background text-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] rounded-none [--spotlight-color:rgba(0,0,0,0.06)] dark:[--spotlight-color:rgba(255,255,255,0.08)]',
+      cyberpunk:
+        'bg-card border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:border-emerald-400 hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] rounded-none font-mono [--spotlight-color:rgba(16,185,129,0.25)]',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
+
+export interface SpotlightCardProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof spotlightCardVariants> {
+  asChild?: boolean
+  spotlightColor?: string
+  spotlightSize?: number
+}
+
+const SpotlightCard = React.forwardRef<HTMLDivElement, SpotlightCardProps>(
+  (
+    {
+      className,
+      variant,
+      asChild = false,
+      spotlightColor,
+      spotlightSize,
+      style,
+      onMouseMove,
+      ...props
+    },
+    ref,
+  ) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      const card = e.currentTarget
+      const rect = card.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      card.style.setProperty('--mouse-x', `${x}px`)
+      card.style.setProperty('--mouse-y', `${y}px`)
+      onMouseMove?.(e)
+    }
+
+    const Comp = asChild ? Slot : 'div'
+
+    return (
+      <Comp
+        ref={ref}
+        data-slot="spotlight-card"
+        onMouseMove={handleMouseMove}
+        style={{
+          ...(spotlightColor && {
+            ['--spotlight-color' as string]: spotlightColor,
+          }),
+          ...(spotlightSize && {
+            ['--spotlight-size' as string]: `${spotlightSize}px`,
+          }),
+          ...style,
+        }}
+        className={cn(spotlightCardVariants({ variant }), className)}
+        {...props}
+      />
+    )
+  },
+)
+SpotlightCard.displayName = 'SpotlightCard'
+
+const SpotlightCardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-slot="spotlight-card-header"
+    className={cn('relative z-10 flex flex-col space-y-1.5 p-6', className)}
+    {...props}
+  />
+))
+SpotlightCardHeader.displayName = 'SpotlightCardHeader'
+
+const SpotlightCardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    data-slot="spotlight-card-title"
+    className={cn(
+      'text-2xl font-semibold leading-none tracking-tight text-foreground',
+      className,
+    )}
+    {...props}
+  />
+))
+SpotlightCardTitle.displayName = 'SpotlightCardTitle'
+
+const SpotlightCardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    data-slot="spotlight-card-description"
+    className={cn('text-sm text-muted-foreground', className)}
+    {...props}
+  />
+))
+SpotlightCardDescription.displayName = 'SpotlightCardDescription'
+
+const SpotlightCardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-slot="spotlight-card-content"
+    className={cn('relative z-10 p-6 pt-0', className)}
+    {...props}
+  />
+))
+SpotlightCardContent.displayName = 'SpotlightCardContent'
+
+const SpotlightCardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-slot="spotlight-card-footer"
+    className={cn('relative z-10 flex items-center p-6 pt-0', className)}
+    {...props}
+  />
+))
+SpotlightCardFooter.displayName = 'SpotlightCardFooter'
+
+export {
+  SpotlightCard,
+  SpotlightCardHeader,
+  SpotlightCardFooter,
+  SpotlightCardTitle,
+  SpotlightCardDescription,
+  SpotlightCardContent,
+  spotlightCardVariants,
+}
+```
+
+</Installation>
+
+## Preset Variations
+
+Explore the visual design presets of the Spotlight Card component, including Default, Glassmorphic, Retro Brutalist, Neon Glow, and Cyberpunk matrix styles.
+
+<ComponentPreview>
+  <SpotlightCardDemoPresets />
+
+```tsx
+import {
+  SpotlightCard,
+  SpotlightCardHeader,
+  SpotlightCardTitle,
+  SpotlightCardDescription,
+} from '@/components/ui/spotlight-card'
+
+export default function SpotlightPresets() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <SpotlightCard variant="default">
+        <SpotlightCardHeader>
+          <SpotlightCardTitle>Clean Border</SpotlightCardTitle>
+          <SpotlightCardDescription>Subtle modern highlight</SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard variant="glass">
+        <SpotlightCardHeader>
+          <SpotlightCardTitle>Frosted Glass</SpotlightCardTitle>
+          <SpotlightCardDescription>Translucent backdrop blur</SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard variant="retro">
+        <SpotlightCardHeader>
+          <SpotlightCardTitle>Stark Shadow</SpotlightCardTitle>
+          <SpotlightCardDescription>High-contrast flat aesthetic</SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard variant="glow">
+        <SpotlightCardHeader>
+          <SpotlightCardTitle>Cyber Violet</SpotlightCardTitle>
+          <SpotlightCardDescription>Ultraviolet radial illumination</SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard variant="cyberpunk">
+        <SpotlightCardHeader>
+          <SpotlightCardTitle className="font-mono text-emerald-400">CYBER_SYS</SpotlightCardTitle>
+          <SpotlightCardDescription className="font-mono">Emerald matrix styling</SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Custom Radiance & Colors
+
+Customize the radial illumination gradient color and radius size through the `spotlightColor` and `spotlightSize` properties.
+
+<ComponentPreview>
+  <SpotlightCardDemoRadiance />
+
+```tsx
+import {
+  SpotlightCard,
+  SpotlightCardHeader,
+  SpotlightCardTitle,
+  SpotlightCardDescription,
+} from '@/components/ui/spotlight-card'
+
+export default function SpotlightColors() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <SpotlightCard
+        variant="default"
+        spotlightColor="rgba(236, 72, 153, 0.25)"
+        spotlightSize={400}
+      >
+        <SpotlightCardHeader>
+          <SpotlightCardTitle>Hot Pink Aura</SpotlightCardTitle>
+          <SpotlightCardDescription>Wide 400px fuchsia illumination</SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+
+      <SpotlightCard
+        variant="default"
+        spotlightColor="rgba(6, 182, 212, 0.25)"
+        spotlightSize={400}
+      >
+        <SpotlightCardHeader>
+          <SpotlightCardTitle>Electric Cyan</SpotlightCardTitle>
+          <SpotlightCardDescription>Hyper-focused cyan beam</SpotlightCardDescription>
+        </SpotlightCardHeader>
+      </SpotlightCard>
+    </div>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Interactive Use Cases
+
+Combine Spotlight Card presets inside API token containers, pricing plan tiers, and cluster telemetry widgets.
+
+<ComponentPreview>
+  <SpotlightCardDemoInteractive />
+
+```tsx
+import React, { useState } from 'react'
+import {
+  SpotlightCard,
+  SpotlightCardHeader,
+  SpotlightCardTitle,
+  SpotlightCardDescription,
+  SpotlightCardContent,
+} from '@/components/ui/spotlight-card'
+import { Button } from '@/components/ui/button'
+import { Zap, Copy, Check } from 'lucide-react'
+
+export default function TokenVault() {
+  const [copied, setCopied] = useState(false)
+
+  return (
+    <SpotlightCard variant="glass">
+      <SpotlightCardHeader>
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+            <Zap className="h-3 w-3 text-amber-500" />
+            API Key Vault
+          </span>
+        </div>
+        <SpotlightCardTitle>Production Token</SpotlightCardTitle>
+        <SpotlightCardDescription>Edge proxy telemetry and automated pipelines.</SpotlightCardDescription>
+      </SpotlightCardHeader>
+      <SpotlightCardContent>
+        <div className="flex items-center justify-between p-2.5 rounded-lg border border-border/70 bg-muted/40 font-mono text-xs">
+          <span>vibe_live_948a27d10e...</span>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              setCopied(true)
+              setTimeout(() => setCopied(false), 2000)
+            }}
+          >
+            {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+            <span className="ml-1">{copied ? 'Copied' : 'Copy'}</span>
+          </Button>
+        </div>
+      </SpotlightCardContent>
+    </SpotlightCard>
+  )
+}
+```
+
+</ComponentPreview>
+
+## Props
+
+### SpotlightCard
+
+<PropsTable>
+  <PropRow
+    prop="variant"
+    type="'default' | 'glass' | 'retro' | 'glow' | 'cyberpunk'"
+    default="'default'"
+    description="The visual design style preset of the card border, background, and radial highlight."
+  />
+  <PropRow
+    prop="spotlightColor"
+    type="string"
+    default="variant-dependent"
+    description="Custom RGB, RGBA, or HEX color value for the radial spotlight gradient illumination."
+  />
+  <PropRow
+    prop="spotlightSize"
+    type="number"
+    default="350"
+    description="The diameter in pixels of the radial spotlight gradient mask."
+  />
+  <PropRow
+    prop="asChild"
+    type="boolean"
+    default="false"
+    description="Change the default rendered element for the one passed as a child, merging their props and behavior."
+  />
+</PropsTable>
+
+### SpotlightCardHeader
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    default="undefined"
+    description="Additional CSS classes to customize the header container styling."
+  />
+</PropsTable>
+
+### SpotlightCardTitle
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    default="undefined"
+    description="Additional CSS classes to customize the card title typography."
+  />
+</PropsTable>
+
+### SpotlightCardDescription
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    default="undefined"
+    description="Additional CSS classes to customize the secondary subtitle description."
+  />
+</PropsTable>
+
+### SpotlightCardContent
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    default="undefined"
+    description="Additional CSS classes to customize the card body content container."
+  />
+</PropsTable>
+
+### SpotlightCardFooter
+
+<PropsTable>
+  <PropRow
+    prop="className"
+    type="string"
+    default="undefined"
+    description="Additional CSS classes to customize the bottom footer section."
+  />
+</PropsTable>
