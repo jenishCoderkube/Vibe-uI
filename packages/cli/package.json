@@ -48,7 +48,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
+    "dev": "node api.js && tsc --watch",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest"

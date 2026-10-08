@@ -78,6 +78,11 @@ export const docsConfig: DocsConfig = {
           href: '/docs/components/badge',
         },
         {
+          title: 'Bento Grid',
+          href: '/docs/components/bento-grid',
+          isNew: true,
+        },
+        {
           title: 'Breadcrumb',
           href: '/docs/components/breadcrumb',
         },
@@ -237,6 +242,11 @@ export const docsConfig: DocsConfig = {
         {
           title: 'Spinner',
           href: '/docs/components/spinner',
+        },
+        {
+          title: 'Spotlight Card',
+          href: '/docs/components/spotlight-card',
+          isNew: true,
         },
         {
           title: 'Switch',
