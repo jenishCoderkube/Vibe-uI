@@ -132,6 +132,22 @@
     ]
   },
   {
+    "name": "bento-grid",
+    "files": [
+      "bento-grid.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge",
+      "lucide-react",
+      "@radix-ui/react-slot"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "blur-fade",
     "files": [
       "blur-fade.tsx"
@@ -1063,6 +1079,21 @@
     ]
   },
   {
+    "name": "spotlight-card",
+    "files": [
+      "spotlight-card.tsx"
+    ],
+    "dependencies": [
+      "tailwind-variants",
+      "clsx",
+      "tailwind-merge",
+      "@radix-ui/react-slot"
+    ],
+    "registryDependencies": [
+      "utils"
+    ]
+  },
+  {
     "name": "switch",
     "files": [
       "switch.tsx"
@@ -1522,7 +1553,6 @@
       "dropdown-menu",
       "form",
       "input",
-      "kbd",
       "progress",
       "select",
       "separator",
