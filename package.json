@@ -12,7 +12,7 @@
     "publish:all": "pnpm --filter vibe-ui publish --no-git-checks --access public && pnpm --filter vibe-ui-kit publish --no-git-checks --access public"
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
+    "@eslint/js": "^9.39.5",
     "@types/node": "20.0.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.0.0",
