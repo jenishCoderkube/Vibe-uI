@@ -1,5 +1,8 @@
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 export default tseslint.config(
   js.configs.recommended,
@@ -32,4 +35,4 @@ export default tseslint.config(
       '@typescript-eslint/triple-slash-reference': 'off'
     }
   }
-)
+);
